@@ -1,22 +1,20 @@
 body {
   margin: 0;
-  font-family: "Inter", sans-serif;
-  background: linear-gradient(to right, #293241, #EE6C4D); /* Gunmetal → Burnt Sienna */
-}
-
-.login-container {
+  height: 100vh;
+  background: linear-gradient(135deg, #1e3c72, #2a5298); /* Deep Blue Gradient */
+  font-family: 'Poppins', sans-serif;
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
 }
 
+/* Container for two sections */
 .login-box {
   display: flex;
   width: 900px;
   background: #ffffff;
   border-radius: 16px;
-  box-shadow: 0px 8px 24px rgba(41, 50, 65, 0.3); /* Gunmetal shadow */
+  box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.25);
   overflow: hidden;
 }
 
@@ -27,7 +25,7 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  background: #E0FBFC; /* Light Cyan */
+  background: #fafafa; /* clean light */
 }
 
 .brand {
@@ -40,7 +38,7 @@ body {
 .logo {
   width: 40px;
   height: 40px;
-  background: #EE6C4D; /* Burnt Sienna */
+  background: #FF6B6B; /* Softer coral */
   color: white;
   display: flex;
   justify-content: center;
@@ -52,13 +50,13 @@ body {
 .brand h2 {
   margin: 0;
   font-size: 20px;
-  color: #293241; /* Gunmetal */
+  color: #333333;
 }
 
 .brand p {
   margin: 0;
   font-size: 14px;
-  color: #3D5A80; /* YinMn Blue */
+  color: #6A82FB; /* Muted purple */
 }
 
 /* Form Styles */
@@ -66,16 +64,17 @@ body {
   width: 100%;
   padding: 12px;
   margin-bottom: 14px;
-  border: 1px solid #98C1D9; /* Powder Blue */
+  border: 1px solid #ddd;
   border-radius: 8px;
   font-size: 14px;
   background: #ffffff;
 }
 
+/* Primary Button */
 .login-btn {
   width: 100%;
   padding: 12px;
-  background: #EE6C4D; /* Burnt Sienna main button */
+  background: #FF6B6B; /* Coral */
   border: none;
   border-radius: 8px;
   color: white;
@@ -87,13 +86,14 @@ body {
 }
 
 .login-btn:hover {
-  background: #d85a3e; /* Darker sienna */
+  background: #e85a5a;
 }
 
+/* Google Button */
 .google-btn {
   width: 100%;
   padding: 12px;
-  border: 1px solid #98C1D9;
+  border: 1px solid #ccc;
   border-radius: 8px;
   background: white;
   font-size: 14px;
@@ -106,8 +106,8 @@ body {
 }
 
 .google-btn:hover {
-  background: #fdf3f0; /* light sienna tint */
-  border-color: #EE6C4D;
+  background: #f7f7f7;
+  border-color: #6A82FB;
 }
 
 .google-btn img {
@@ -124,7 +124,7 @@ body {
 
 .login-options a {
   font-size: 14px;
-  color: #EE6C4D; /* Burnt Sienna */
+  color: #6A82FB; /* Soft purple */
   text-decoration: none;
 }
 
@@ -135,11 +135,11 @@ body {
 .no-account {
   font-size: 14px;
   text-align: left;
-  color: #293241; /* Gunmetal */
+  color: #333333;
 }
 
 .no-account a {
-  color: #EE6C4D;
+  color: #3CB371; /* Calmer green */
   font-weight: 600;
   text-decoration: none;
 }
@@ -147,28 +147,28 @@ body {
 /* Right Section */
 .login-info-section {
   flex: 1;
-  background: #98C1D9; /* Powder Blue */
+  background: linear-gradient(135deg, #00b4db, #0083b0); /* Teal → Blue */
   padding: 40px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  color: #293241;
+  color: white;
 }
 
 .login-info-section h1 {
   font-size: 28px;
   margin-bottom: 12px;
-  color: #EE6C4D; /* Burnt Sienna Title */
+  color: #FFD580; /* Soft golden accent */
 }
 
 .login-info-section p {
   font-size: 16px;
-  color: #3D5A80; /* YinMn Blue */
+  color: #f0f0f0;
   margin-bottom: 20px;
 }
 
 .illustration img {
   max-width: 280px;
-  border: 4px solid #EE6C4D; /* Burnt Sienna border */
+  border: 4px solid #FFD580; /* Softer yellow border */
   border-radius: 12px;
 }
