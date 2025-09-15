@@ -1,7 +1,7 @@
 body {
   margin: 0;
   font-family: "Inter", sans-serif;
-  background: linear-gradient(to right, #3D5A80, #293241); /* YinMn Blue → Gunmetal */
+  background: linear-gradient(to right, #293241, #EE6C4D); /* Gunmetal → Burnt Sienna */
 }
 
 .login-container {
@@ -51,14 +51,14 @@ body {
 
 .brand h2 {
   margin: 0;
-  font-size: 60px;
+  font-size: 20px;
   color: #293241; /* Gunmetal */
 }
 
 .brand p {
   margin: 0;
   font-size: 14px;
-  color: #3D5A80;
+  color: #3D5A80; /* YinMn Blue */
 }
 
 /* Form Styles */
@@ -135,7 +135,7 @@ body {
 .no-account {
   font-size: 14px;
   text-align: left;
-  color: #293241;
+  color: #293241; /* Gunmetal */
 }
 
 .no-account a {
