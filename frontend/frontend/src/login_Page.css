@@ -1,7 +1,7 @@
 body {
   margin: 0;
   font-family: "Inter", sans-serif;
-  background: linear-gradient(to right, #8ec5fc, #e0c3fc);
+  background: linear-gradient(to right, #98C1D9, #E0FBFC);
 }
 
 .login-container {
@@ -14,18 +14,20 @@ body {
 .login-box {
   display: flex;
   width: 900px;
-  background: #fff;
+  background: #ffffff;
   border-radius: 16px;
-  box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 8px 24px rgba(41, 50, 65, 0.3); /* gunmetal shadow */
   overflow: hidden;
 }
 
+/* Left Section */
 .login-form-section {
   flex: 1;
   padding: 40px;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  background: #E0FBFC; /* light cyan */
 }
 
 .brand {
@@ -38,7 +40,7 @@ body {
 .logo {
   width: 40px;
   height: 40px;
-  background: #4e7fff;
+  background: #3D5A80; /* yinmn blue */
   color: white;
   display: flex;
   justify-content: center;
@@ -50,19 +52,21 @@ body {
 .brand h2 {
   margin: 0;
   font-size: 20px;
+  color: #293241; /* gunmetal */
 }
 
 .brand p {
   margin: 0;
   font-size: 14px;
-  color: #666;
+  color: #3D5A80; /* yinmn blue */
 }
 
+/* Form Styles */
 .login-form input {
   width: 100%;
   padding: 12px;
   margin-bottom: 14px;
-  border: 1px solid #ccc;
+  border: 1px solid #98C1D9; /* powder blue */
   border-radius: 8px;
   font-size: 14px;
 }
@@ -70,19 +74,24 @@ body {
 .login-btn {
   width: 100%;
   padding: 12px;
-  background: #4e7fff;
+  background: #3D5A80; /* yinmn blue */
   border: none;
   border-radius: 8px;
   color: white;
   font-size: 16px;
   margin-bottom: 14px;
   cursor: pointer;
+  transition: background 0.3s;
+}
+
+.login-btn:hover {
+  background: #293241; /* darker gunmetal */
 }
 
 .google-btn {
   width: 100%;
   padding: 12px;
-  border: 1px solid #ccc;
+  border: 1px solid #98C1D9;
   border-radius: 8px;
   background: white;
   font-size: 14px;
@@ -98,6 +107,7 @@ body {
   height: 18px;
 }
 
+/* Links */
 .login-options {
   display: flex;
   justify-content: space-between;
@@ -106,39 +116,42 @@ body {
 
 .login-options a {
   font-size: 14px;
-  color: #4e7fff;
+  color: #EE6C4D; /* burnt sienna */
   text-decoration: none;
 }
 
 .no-account {
   font-size: 14px;
   text-align: left;
+  color: #293241;
 }
 
 .no-account a {
-  color: #4e7fff;
+  color: #EE6C4D; /* burnt sienna */
   font-weight: 600;
   text-decoration: none;
 }
 
+/* Right Section */
 .login-info-section {
   flex: 1;
-  background: #f9fbff;
+  background: #98C1D9; /* powder blue */
   padding: 40px;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  color: #293241;
 }
 
 .login-info-section h1 {
   font-size: 28px;
   margin-bottom: 12px;
-  color: #1d1d1d;
+  color: #293241;
 }
 
 .login-info-section p {
   font-size: 16px;
-  color: #444;
+  color: #3D5A80;
   margin-bottom: 20px;
 }
 
