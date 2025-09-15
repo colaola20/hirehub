@@ -1,0 +1,147 @@
+body {
+  margin: 0;
+  font-family: "Inter", sans-serif;
+  background: linear-gradient(to right, #8ec5fc, #e0c3fc);
+}
+
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.login-box {
+  display: flex;
+  width: 900px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.login-form-section {
+  flex: 1;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.logo {
+  width: 40px;
+  height: 40px;
+  background: #4e7fff;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  border-radius: 8px;
+}
+
+.brand h2 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.brand p {
+  margin: 0;
+  font-size: 14px;
+  color: #666;
+}
+
+.login-form input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 14px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.login-btn {
+  width: 100%;
+  padding: 12px;
+  background: #4e7fff;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 16px;
+  margin-bottom: 14px;
+  cursor: pointer;
+}
+
+.google-btn {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background: white;
+  font-size: 14px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.google-btn img {
+  width: 18px;
+  height: 18px;
+}
+
+.login-options {
+  display: flex;
+  justify-content: space-between;
+  margin: 16px 0;
+}
+
+.login-options a {
+  font-size: 14px;
+  color: #4e7fff;
+  text-decoration: none;
+}
+
+.no-account {
+  font-size: 14px;
+  text-align: left;
+}
+
+.no-account a {
+  color: #4e7fff;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.login-info-section {
+  flex: 1;
+  background: #f9fbff;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.login-info-section h1 {
+  font-size: 28px;
+  margin-bottom: 12px;
+  color: #1d1d1d;
+}
+
+.login-info-section p {
+  font-size: 16px;
+  color: #444;
+  margin-bottom: 20px;
+}
+
+.illustration img {
+  max-width: 280px;
+}
