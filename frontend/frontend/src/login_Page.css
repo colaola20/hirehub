@@ -1,7 +1,7 @@
 body {
   margin: 0;
   font-family: "Inter", sans-serif;
-  background: linear-gradient(to right, #98C1D9, #E0FBFC);
+  background: linear-gradient(to right, #3D5A80, #293241); /* YinMn Blue → Gunmetal */
 }
 
 .login-container {
@@ -16,7 +16,7 @@ body {
   width: 900px;
   background: #ffffff;
   border-radius: 16px;
-  box-shadow: 0px 8px 24px rgba(41, 50, 65, 0.3); /* gunmetal shadow */
+  box-shadow: 0px 8px 24px rgba(41, 50, 65, 0.3); /* Gunmetal shadow */
   overflow: hidden;
 }
 
@@ -27,7 +27,7 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  background: #E0FBFC; /* light cyan */
+  background: #E0FBFC; /* Light Cyan */
 }
 
 .brand {
@@ -40,7 +40,7 @@ body {
 .logo {
   width: 40px;
   height: 40px;
-  background: #3D5A80; /* yinmn blue */
+  background: #EE6C4D; /* Burnt Sienna */
   color: white;
   display: flex;
   justify-content: center;
@@ -52,13 +52,13 @@ body {
 .brand h2 {
   margin: 0;
   font-size: 20px;
-  color: #293241; /* gunmetal */
+  color: #293241; /* Gunmetal */
 }
 
 .brand p {
   margin: 0;
   font-size: 14px;
-  color: #3D5A80; /* yinmn blue */
+  color: #3D5A80;
 }
 
 /* Form Styles */
@@ -66,26 +66,28 @@ body {
   width: 100%;
   padding: 12px;
   margin-bottom: 14px;
-  border: 1px solid #98C1D9; /* powder blue */
+  border: 1px solid #98C1D9; /* Powder Blue */
   border-radius: 8px;
   font-size: 14px;
+  background: #ffffff;
 }
 
 .login-btn {
   width: 100%;
   padding: 12px;
-  background: #3D5A80; /* yinmn blue */
+  background: #EE6C4D; /* Burnt Sienna main button */
   border: none;
   border-radius: 8px;
   color: white;
   font-size: 16px;
   margin-bottom: 14px;
   cursor: pointer;
+  font-weight: 600;
   transition: background 0.3s;
 }
 
 .login-btn:hover {
-  background: #293241; /* darker gunmetal */
+  background: #d85a3e; /* Darker sienna */
 }
 
 .google-btn {
@@ -100,6 +102,12 @@ body {
   align-items: center;
   gap: 8px;
   cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.google-btn:hover {
+  background: #fdf3f0; /* light sienna tint */
+  border-color: #EE6C4D;
 }
 
 .google-btn img {
@@ -116,8 +124,12 @@ body {
 
 .login-options a {
   font-size: 14px;
-  color: #EE6C4D; /* burnt sienna */
+  color: #EE6C4D; /* Burnt Sienna */
   text-decoration: none;
+}
+
+.login-options a:hover {
+  text-decoration: underline;
 }
 
 .no-account {
@@ -127,7 +139,7 @@ body {
 }
 
 .no-account a {
-  color: #EE6C4D; /* burnt sienna */
+  color: #EE6C4D;
   font-weight: 600;
   text-decoration: none;
 }
@@ -135,7 +147,7 @@ body {
 /* Right Section */
 .login-info-section {
   flex: 1;
-  background: #98C1D9; /* powder blue */
+  background: #98C1D9; /* Powder Blue */
   padding: 40px;
   display: flex;
   flex-direction: column;
@@ -146,15 +158,17 @@ body {
 .login-info-section h1 {
   font-size: 28px;
   margin-bottom: 12px;
-  color: #293241;
+  color: #EE6C4D; /* Burnt Sienna Title */
 }
 
 .login-info-section p {
   font-size: 16px;
-  color: #3D5A80;
+  color: #3D5A80; /* YinMn Blue */
   margin-bottom: 20px;
 }
 
 .illustration img {
   max-width: 280px;
+  border: 4px solid #EE6C4D; /* Burnt Sienna border */
+  border-radius: 12px;
 }
