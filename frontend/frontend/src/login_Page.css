@@ -1,31 +1,31 @@
 body {
   margin: 0;
-  height: 100vh;
-  background: linear-gradient(135deg, #1e3c72, #2a5298); /* Deep Blue Gradient */
-  font-family: 'Poppins', sans-serif;
+  font-family: "Inter", sans-serif;
+  background: linear-gradient(to right, #8ec5fc, #e0c3fc);
+}
+
+.login-container {
   display: flex;
   justify-content: center;
   align-items: center;
+  min-height: 100vh;
 }
 
-/* Container for two sections */
 .login-box {
   display: flex;
   width: 900px;
-  background: #ffffff;
+  background: #fff;
   border-radius: 16px;
-  box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.25);
+  box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.1);
   overflow: hidden;
 }
 
-/* Left Section */
 .login-form-section {
   flex: 1;
   padding: 40px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  background: #fafafa; /* clean light */
 }
 
 .brand {
@@ -36,60 +36,61 @@ body {
 }
 
 .logo {
-  width: 40px;
-  height: 40px;
-  background: #FF6B6B; /* Softer coral */
+  width: 50px;
+  height: 50px;
+  background: #4e7fff;
   color: white;
   display: flex;
   justify-content: center;
   align-items: center;
   font-weight: bold;
+  font-size: 20px;
   border-radius: 8px;
 }
 
+/* Make HireHub text bigger and aligned */
 .brand h2 {
   margin: 0;
-  font-size: 20px;
-  color: #333333;
+  font-size: 28px; /* Bigger */
+  font-weight: 700;
+  color: #1d1d1d;
 }
 
 .brand p {
   margin: 0;
   font-size: 14px;
-  color: #6A82FB; /* Muted purple */
+  color: #666;
 }
 
-/* Form Styles */
+/* Input Fields */
 .login-form input {
   width: 100%;
   padding: 12px;
   margin-bottom: 14px;
-  border: 1px solid #ddd;
+  border: 1px solid #ccc;
   border-radius: 8px;
   font-size: 14px;
-  background: #ffffff;
+  background: #fdfdfd;
+  color: #333; /* Softer dark gray instead of black */
 }
 
-/* Primary Button */
+/* Placeholder styling */
+.login-form input::placeholder {
+  color: #999;
+}
+
 .login-btn {
   width: 100%;
   padding: 12px;
-  background: #FF6B6B; /* Coral */
+  background: #4e7fff;
   border: none;
   border-radius: 8px;
   color: white;
   font-size: 16px;
   margin-bottom: 14px;
   cursor: pointer;
-  font-weight: 600;
-  transition: background 0.3s;
 }
 
-.login-btn:hover {
-  background: #e85a5a;
-}
-
-/* Google Button */
 .google-btn {
   width: 100%;
   padding: 12px;
@@ -102,12 +103,6 @@ body {
   align-items: center;
   gap: 8px;
   cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.google-btn:hover {
-  background: #f7f7f7;
-  border-color: #6A82FB;
 }
 
 .google-btn img {
@@ -115,7 +110,6 @@ body {
   height: 18px;
 }
 
-/* Links */
 .login-options {
   display: flex;
   justify-content: space-between;
@@ -124,51 +118,42 @@ body {
 
 .login-options a {
   font-size: 14px;
-  color: #6A82FB; /* Soft purple */
+  color: #4e7fff;
   text-decoration: none;
-}
-
-.login-options a:hover {
-  text-decoration: underline;
 }
 
 .no-account {
   font-size: 14px;
   text-align: left;
-  color: #333333;
 }
 
 .no-account a {
-  color: #3CB371; /* Calmer green */
+  color: #4e7fff;
   font-weight: 600;
   text-decoration: none;
 }
 
-/* Right Section */
 .login-info-section {
   flex: 1;
-  background: linear-gradient(135deg, #00b4db, #0083b0); /* Teal → Blue */
+  background: #f9fbff;
   padding: 40px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  color: white;
 }
 
 .login-info-section h1 {
   font-size: 28px;
   margin-bottom: 12px;
-  color: #FFD580; /* Soft golden accent */
+  color: #1d1d1d;
 }
 
 .login-info-section p {
   font-size: 16px;
-  color: #f0f0f0;
+  color: #444;
   margin-bottom: 20px;
 }
 
 .illustration img {
   max-width: 280px;
-  border: 4px solid #FFD580; /* Softer yellow border */
-  border-radius: 12px;
 }
