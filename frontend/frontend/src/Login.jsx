@@ -3,6 +3,7 @@
 import React from "react";
 // Import the CSS file for styling the login page
 import "./login_Page.css";
+import { Link } from 'react-router-dom';
 
 // LoginPage functional component
 const LoginPage = () => {
@@ -42,7 +43,7 @@ const LoginPage = () => {
           </div>
 
           <p className="no-account">
-            Don’t have an account? <a href="#">Sign up</a>
+             Don’t have an account? <Link to="/register">Sign up</Link>
           </p>
         </div>
 
