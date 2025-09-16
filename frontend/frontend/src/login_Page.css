@@ -38,13 +38,12 @@ body {
 .logo {
   width: 25px;
   height: 25px;
-  background: #4e7fff;
+  background: black;
   color: white;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-weight: bold;
-  font-size: 80px;
+  font-size: 115px;
   border-radius: 8px;
   padding: 40px;
 }
