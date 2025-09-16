@@ -14,7 +14,7 @@ const LoginPage = () => {
           {/* Branding section with logo and app name */}
           <div className="brand">
             <div className="logo">H</div>
-            <h2 className="brand-title">HireHub</h2>
+            <h2 className="brand-title">ireHub</h2>
           </div>
           <p className="brand-tagline">Your AI Career Companion</p>
 
