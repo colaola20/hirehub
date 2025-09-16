@@ -36,14 +36,14 @@ body {
 }
 
 .logo {
-  width: 25px;
-  height: 25px;
+  width: 7px;
+  height: 7px;
   background: black;
   color: white;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 115px;
+  font-size: 605px;
   border-radius: 8px;
   padding: 40px;
 }
