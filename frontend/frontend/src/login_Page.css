@@ -31,13 +31,12 @@ body {
 .brand {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 24px;
+  gap: 8px;
 }
 
 .logo {
-  width: 50px;
-  height: 50px;
+  width: 25px;
+  height: 25px;
   background: #4e7fff;
   color: white;
   display: flex;
@@ -51,7 +50,9 @@ body {
 /* Make HireHub text bigger and aligned */
 .brand h2 {
   margin: 0;
-  font-size: 28px; /* Bigger */
+  font-size: 50px;
+  fill-width: 100%;
+  fill-height: 100%;
   font-weight: 700;
   color: #1d1d1d;
 }
@@ -92,22 +93,17 @@ body {
 }
 
 .google-btn {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  background: white;
-  font-size: 14px;
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 8px;
-  cursor: pointer;
+  gap: 10px;
+  color: #0a0a0a;          /* make text visible */
+  font-weight: 500;
 }
 
 .google-btn img {
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
 }
 
 .login-options {
