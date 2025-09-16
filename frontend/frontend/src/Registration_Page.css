@@ -1,74 +1,136 @@
-.registration-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 80vh;
-    background: #f6f8fa;
+body {
+  margin: 0;
+  font-family: "Inter", sans-serif;
+  background: linear-gradient(to right, #8ec5fc, #e0c3fc);
 }
 
-.registration-box {
-    background: #fff;
-    padding: 32px 28px;
-    border-radius: 12px;
-    box-shadow: 0 2px 16px rgba(0,0,0,0.08);
-    width: 100%;
-    max-width: 400px;
+.register-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
 }
 
-.registration-title {
-    text-align: center;
-    margin-bottom: 24px;
-    font-size: 1.7rem;
-    color: #333;
-    font-weight: 600;
+.register-box {
+  display: flex;
+  width: 900px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
 }
 
-.registration-success {
-    text-align: center;
-    color: #2ecc40;
-    font-size: 1.2rem;
-    margin-top: 16px;
+.register-form-section {
+  flex: 1;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
-.registration-form .form-group {
-    margin-bottom: 18px;
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
 }
 
-.form-group label {
-    display: block;
-    margin-bottom: 6px;
-    color: #555;
-    font-size: 1rem;
+.logo {
+  width: 25px;
+  height: 25px;
+  background: black;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 115%;
+  border-radius: 6px;
 }
 
-.form-input {
-    width: 100%;
-    padding: 10px 12px;
-    border: 1px solid #d1d5db;
-    border-radius: 6px;
-    font-size: 1rem;
-    background: #f9fafb;
-    transition: border-color 0.2s;
+.brand-name {
+  font-size: 22px;
+  font-weight: 700;
 }
 
-.form-input:focus {
-    border-color: #007bff;
-    outline: none;
+.brand-tagline {
+  color: #666;
+  font-size: 14px;
+  margin-bottom: 20px;
 }
 
-.register-btn {
-    width: 100%;
-    padding: 10px 0;
-    background: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    font-size: 1.1rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background 0.2s;
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 }
 
-.register-btn:hover {
-    background: #0056b3;
+.input {
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.btn-primary {
+  background: #4f7eff;
+  color: white;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.btn-primary:hover {
+  background: #3b65e0;
+}
+
+.btn-google {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid #ddd;
+  background: white;
+  padding: 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 15px;
+}
+
+.google-icon {
+  width: 18px;
+  height: 18px;
+}
+
+.form-footer {
+  margin-top: 15px;
+  font-size: 14px;
+}
+
+.form-footer a {
+  color: #4f7eff;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.register-info-section {
+  flex: 1;
+  background: #f8faff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 40px;
+}
+
+.register-info-section h2 {
+  font-size: 26px;
+  margin-bottom: 15px;
+}
+
+.register-info-section p {
+  color: #555;
+  font-size: 16px;
+  line-height: 1.5;
 }

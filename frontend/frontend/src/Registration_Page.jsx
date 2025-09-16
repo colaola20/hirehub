@@ -1,78 +1,54 @@
-import React, { useState } from 'react';
-import './registration_page.css'; // Import the CSS file for styling
+// RegisterPage.jsx
+import React from "react";
+import "./Registration_Page.css";
 
-const Registration_Page = () => {
-    const [form, setForm] = useState({
-        name: '',
-        email: '',
-        password: '',
-    });
+const RegisterPage = () => {
+  return (
+    <div className="register-container">
+      <div className="register-box">
+        {/* Left Section - Registration Form */}
+        <div className="register-form-section">
+          <div className="brand">
+            <div className="logo">H</div>
+            <h1 className="brand-name">HireHub</h1>
+          </div>
+          <p className="brand-tagline">Your AI Career Companion</p>
 
-    const [submitted, setSubmitted] = useState(false);
+          {/* Registration Form */}
+          <form className="form">
+            <input type="text" placeholder="Full Name" className="input" />
+            <input type="email" placeholder="Email" className="input" />
+            <input type="password" placeholder="Password" className="input" />
+            <input type="password" placeholder="Confirm Password" className="input" />
 
-    const handleChange = (e) => {
-        setForm({
-            ...form,
-            [e.target.name]: e.target.value,
-        });
-    };
+            <button type="submit" className="btn-primary">Sign Up</button>
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        // Here you would typically send form data to your backend
-        setSubmitted(true);
-    };
+            <button type="button" className="btn-google">
+              <img 
+                src="https://developers.google.com/identity/images/g-logo.png" 
+                alt="Google logo" 
+                className="google-icon"
+              />
+              Continue with Google
+            </button>
+          </form>
 
-    return (
-        <div className="registration-container">
-            <div className="registration-box">
-                <h2 className="registration-title">Create Your Account</h2>
-                {submitted ? (
-                    <div className="registration-success">Registration successful!</div>
-                ) : (
-                    <form className="registration-form" onSubmit={handleSubmit}>
-                        <div className="form-group">
-                            <label htmlFor="name">Name</label>
-                            <input
-                                type="text"
-                                name="name"
-                                id="name"
-                                value={form.name}
-                                onChange={handleChange}
-                                required
-                                className="form-input"
-                            />
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="email">Email</label>
-                            <input
-                                type="email"
-                                name="email"
-                                id="email"
-                                value={form.email}
-                                onChange={handleChange}
-                                required
-                                className="form-input"
-                            />
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="password">Password</label>
-                            <input
-                                type="password"
-                                name="password"
-                                id="password"
-                                value={form.password}
-                                onChange={handleChange}
-                                required
-                                className="form-input"
-                            />
-                        </div>
-                        <button type="submit" className="register-btn">Register</button>
-                    </form>
-                )}
-            </div>
+          <div className="form-footer">
+            <p>Already have an account? <a href="/login">Login</a></p>
+          </div>
         </div>
-    );
+
+        {/* Right Section - Info */}
+        <div className="register-info-section">
+          <h2>Create Your Account</h2>
+          <p>
+            Join HireHub and let AI help you tailor your resume & cover letter 
+            for every job application.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
 };
 
-export default Registration_Page;
+export default RegisterPage;
