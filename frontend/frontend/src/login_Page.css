@@ -32,6 +32,7 @@ body {
   display: flex;
   align-items: center;
   gap: 8px;
+  height: 20px;
 }
 
 .logo {
@@ -43,15 +44,14 @@ body {
   justify-content: center;
   align-items: center;
   font-weight: bold;
-  font-size: 20px;
+  font-size: 80px;
   border-radius: 8px;
+  padding: 40px;
 }
 
 .brand h2 {
   margin: 0;
   font-size: 50px;
-  fill-width: 100%;
-  fill-height: 100%;
   font-weight: 700;
   color: #1d1d1d;
 }
@@ -59,7 +59,7 @@ body {
 .brand p {
   margin: 0;
   font-size: 14px;
-  color: #666;
+  color: white;
 }
 
 /* Input Fields */
