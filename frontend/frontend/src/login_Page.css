@@ -27,31 +27,38 @@ body {
   flex-direction: column;
   justify-content: center;
 }
-
 .brand {
   display: flex;
   align-items: center;
-  gap: 8px;
-  height: 20px;
+  gap: 10px;   /* space between H box and "ireHub" */
 }
 
-.logo {
-  width: 64px;
-  height: 64px;
+.logo { 
   background: black;
   color: white;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 2.5rem;
-  border-radius: 50%;
-  margin-right: 12px;
-  font-weight: bold;
+  font-size: 7rem;    /* makes the H bigger */
+  font-weight: bold; 
+  border-radius: 8px; /* optional rounded corners */
+  padding: 8px 14px;
+  height: 100px;
+  width: 100px;  /* spacing around H so box isn’t huge */
 }
+
+
+.brand-title {
+  font-size: 48px;
+  font-weight: 700;
+  color: #1d1d1d;
+  margin: 0;
+}
+
 
 .brand h2 {
   margin: 0;
-  font-size: 50px;
+  font-size: 100px;
   font-weight: 700;
   color: #1d1d1d;
 }
