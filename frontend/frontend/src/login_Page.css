@@ -36,16 +36,17 @@ body {
 }
 
 .logo {
-  width: 7px;
-  height: 7px;
+  width: 64px;
+  height: 64px;
   background: black;
   color: white;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 605px;
-  border-radius: 8px;
-  padding: 40px;
+  font-size: 2.5rem;
+  border-radius: 50%;
+  margin-right: 12px;
+  font-weight: bold;
 }
 
 .brand h2 {
