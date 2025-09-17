@@ -103,7 +103,7 @@ body {
 .login-btn {
   width: 100%;
   padding: 12px;
-  background: #4e7fff;
+  background: linear-gradient(to right, #86bbf0, #562fac);
   border: none;
   border-radius: 8px;
   color: white;
@@ -115,7 +115,7 @@ body {
 .google-btn {
   width: 100%;
   padding: 12px;
-  background: #4e7fff;
+  background: linear-gradient(to right, #86bbf0, #562fac);
   border: none;
   border-radius: 8px;
   color: white;
