@@ -12,10 +12,14 @@ const LoginPage = () => {
         <div className="login-form-section">
           {/* Branding */}
           <div className="brand">
-            <div className="logo">H</div>
-            <h2 className="brand-title">ireHub</h2>
-          </div>
-          <p className="brand-tagline">Your AI Career Companion</p>
+    <div className="logo">H</div>
+    <div className="brand-text">
+      <h2 className="brand-title">ireHub</h2>
+      <p className="brand-tagline">Your AI Career Companion</p>
+    </div>
+  </div>
+
+         
 
           {/* Login form */}
           <form className="login-form">

@@ -30,11 +30,33 @@ body {
 .brand {
   display: flex;
   align-items: center;
-  gap: 10px;   /* space between H box and "ireHub" */
+  gap: 10px; /* space between H box and text block */
 }
 
+.brand-text {
+  display: flex;
+  flex-direction: column; /* stack h2 and p */
+  line-height: 1.2;
+}
+
+.brand-title {
+  font-size: 40px;
+  font-weight: 700;
+  color: #1d1d1d;
+  margin: 0;
+}
+
+.brand-tagline {
+  margin-bottom: 1.8px;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: black;
+}
+
+
 .logo { 
-  background: black;
+  margin-bottom: 38px;
+  background: linear-gradient(to right, #8ec5fc, #7a5bbf);
   color: white;
   display: flex;
   justify-content: center;
@@ -47,27 +69,19 @@ body {
   width: 100px;  /* spacing around H so box isn’t huge */
 }
 
-
-.brand-title {
-  font-size: 48px;
-  font-weight: 700;
-  color: #1d1d1d;
-  margin: 0;
-}
-
-
 .brand h2 {
-  margin: 0;
+  margin: -5px;
+  margin-bottom: -30px;
   font-size: 100px;
   font-weight: 700;
-  color: #1d1d1d;
+  background: linear-gradient(to right, #86bbf0, #2b155a); /* gradient */
+  -webkit-background-clip: text; /* for Safari/Chrome */
+  -webkit-text-fill-color: transparent; 
+  background-clip: text; /* fallback */
+  color: transparent; /* ensures only gradient shows */
 }
 
-.brand p {
-  margin: 0;
-  font-size: 14px;
-  color: white;
-}
+
 
 /* Input Fields */
 .login-form input {
