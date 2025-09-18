@@ -3,8 +3,43 @@
 import React from "react";
 import "./login_Page.css";
 import { Link } from 'react-router-dom';
+import {GoogleLogin} from "@react-oauth/google";
+import jwt_decode from "jwt-decode";
 
 const LoginPage = () => {
+
+    // Called when Google login succeeds.
+  const handleSuccess = (credentialResponse) => {
+    // credentialResponse.credential is a JWT token (signed by Google)
+    const token = credentialResponse?.credential;
+    if (!token) {
+      console.error("No credential returned from Google");
+      return;
+    }
+
+    // Decode the JWT to get basic profile info (email, name, picture)
+    const user = jwt_decode(token);
+    console.log("Decoded user:", user);
+
+
+    // Save minimal user info locally (for demo). In production, you'd send the token to your backend.
+    localStorage.setItem("user", JSON.stringify({
+      name: user.name,
+      email: user.email,
+      picture: user.picture,
+      sub: user.sub, // Google's unique user id
+    }));
+
+    // Example: send token to your backend to verify and create a session
+    // fetch("/api/auth/google", { method: "POST", headers: {"Content-Type":"application/json"}, body: JSON.stringify({ credential: token }) })
+    //   .then(res => res.json()).then(data => console.log("Server response:", data));
+  };
+
+  const handleError = () => {
+    console.error("Google login failed or was cancelled.");
+  };
+
+
   return (
     <div className="login-container">
       <div className="login-box">
@@ -28,13 +63,10 @@ const LoginPage = () => {
 
             <button type="submit" className="login-btn">Login</button>
 
-            <button type="button" className="google-btn">
-              <img
-                src="https://developers.google.com/identity/images/g-logo.png"
-                alt="Google"
-              />
-              Continue with Google
-            </button>
+            {/* Google login button (provided by @react-oauth/google) */}
+            <div style={{ marginTop: 10 }}>
+              <GoogleLogin onSuccess={handleSuccess} onError={handleError} />
+            </div>
           </form>
 
           {/* Options below form */}
