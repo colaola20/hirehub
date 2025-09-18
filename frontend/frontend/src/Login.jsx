@@ -67,6 +67,18 @@ const LoginPage = () => {
             <div style={{ marginTop: 10 }}>
               <GoogleLogin onSuccess={handleSuccess} onError={handleError} />
             </div>
+
+            {/* GitHub login button */}
+            <div style={{ marginTop: 10 }}>
+            <button
+              onClick={() => window.location.href = "http://127.0.0.1:5000/login/github"}
+              className="github-btn"
+            >
+              Sign in with GitHub
+            </button>
+            </div>
+
+
           </form>
 
           {/* Options below form */}
