@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify
-from app import db 
+from app import db
+from sqlalchemy import text
 
 home_bp = Blueprint('home', __name__)
 
@@ -15,8 +16,10 @@ def home():
 @home_bp.route('/pingdb')
 def ping_db():
     try:
-        result = db.session.execute("SELECT NOW();")
-        current_time = result.scalar()
+        # Use db.session.connection() to get a proper connection in 2.x
+        with db.session.connection() as conn:
+            result = conn.execute(text("SELECT NOW();"))
+            current_time = result.scalar_one()
         return jsonify({
             "status": "ok",
             "time": str(current_time)

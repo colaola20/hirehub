@@ -69,7 +69,7 @@ const LoginPage = () => {
             <div style={{color:"black", padding: "0 0 0 20px "}}>or login with </div>
             <div className={ "buttons-wrapper"}>
                 {/* Google login button (provided by @react-oauth/google) */}
-              <button className={"google-btn"} onSuccess={handleSuccess} onError={handleError}>
+              <button className={"google-btn"} onClick={() => window.location.href = "http://127.0.0.1:5000/login/google"}>
                 <img src={googleLogo} alt="Google logo" className="Buttonlogo" />
               </button>
               {/*/!* GitHub login button *!/*/}
