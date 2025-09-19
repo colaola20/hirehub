@@ -5,6 +5,9 @@ import "./login_Page.css";
 import { Link } from 'react-router-dom';
 import {GoogleLogin} from "@react-oauth/google";
 import jwt_decode from "jwt-decode";
+import githubLogo from "./assets/github.png";
+import linkedinLogo from "./assets/linkedin.png";
+import googleLogo from "./assets/google.png";
 
 const LoginPage = () => {
 
@@ -63,19 +66,21 @@ const LoginPage = () => {
 
             <button type="submit" className="login-btn">Login</button>
 
-            {/* Google login button (provided by @react-oauth/google) */}
-            <div style={{ marginTop: 10 }}>
-              <GoogleLogin onSuccess={handleSuccess} onError={handleError} />
-            </div>
+            <div style={{color:"black", padding: "0 0 0 20px "}}>or login with </div>
+            <div className={ "buttons-wrapper"}>
+                {/* Google login button (provided by @react-oauth/google) */}
+              <button className={"google-btn"} onSuccess={handleSuccess} onError={handleError}>
+                <img src={googleLogo} alt="Google logo" className="Buttonlogo" />
+              </button>
+              {/*/!* GitHub login button *!/*/}
+              <button className="github-btn" onClick={() => window.location.href = "http://127.0.0.1:5000/login/github"} >
+                <img src={githubLogo} alt="GitHub logo" className="Buttonlogo"/>
+              </button>
+            {/*  */}
+              <button className="linkedIn-btn" onClick={() => window.location.href = ""} >
+                <img src={linkedinLogo} alt="LinkedIn logo" className="Buttonlogo"/>
+              </button>
 
-            {/* GitHub login button */}
-            <div style={{ marginTop: 10 }}>
-            <button
-              onClick={() => window.location.href = "http://127.0.0.1:5000/login/github"}
-              className="github-btn"
-            >
-              Sign in with GitHub
-            </button>
             </div>
 
 
@@ -88,7 +93,7 @@ const LoginPage = () => {
 
           {/* Proper paragraph for register */}
           <p className="no-account">
-            Don’t have an account? <Link to="/register">Sign up</Link>
+            <span style={{color:"black"}}>Don’t have an account?</span> <Link to="/register">Sign up</Link>
           </p>
         </div>
 

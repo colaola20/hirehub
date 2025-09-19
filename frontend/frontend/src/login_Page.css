@@ -29,6 +29,7 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: center;
+
 }
 .brand {
   display: flex;
@@ -104,7 +105,7 @@ body {
 }
 
 .login-btn {
-  width: 100%;
+  width: 106%;
   padding: 12px;
   background: linear-gradient(to right, #86bbf0, #562fac);
   border: none;
@@ -113,27 +114,70 @@ body {
   font-size: 16px;
   margin-bottom: 14px;
   cursor: pointer;
+}
+
+.buttons-wrapper{
+  display: flex;
+  width: 106%;
+  padding: 20px 0 0 0 ;
+  gap: 8px;
+
+
+}
+
+.buttons-wrapper button{
+  height: auto;
+  width: 100%;
+  border-radius: 8px;
+  max-height: 10%;
+  background: #ffffff;
+  border-color: #e60000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+}
+.buttons-wrapper button:hover{
+  background: #cfcfcf;
+}
+
+.Buttonlogo {
+  width: 30px;
+  height: 30px;
 }
 
 .google-btn {
-  width: 100%;
+background: #b5b3b3;
   padding: 12px;
-  background: linear-gradient(to right, #86bbf0, #562fac);
+  /*background: linear-gradient(to right, #86bbf0, #562fac);*/
   border: none;
-  border-radius: 8px;
   color: white;
   font-size: 16px;
   margin-bottom: 14px;
   cursor: pointer;
 }
 
-.google-btn img {
-  width: 16px;
-  height: 16px;
-}
 
 .google-wrapper {
   margin-top: 10px;
+}
+
+.github-btn{
+  /*background: linear-gradient(to right, #86bbf0, #562fac);*/
+  border: none;
+
+  color: white;
+  font-size: 16px;
+  margin-bottom: 14px;
+  cursor: pointer;
+}
+
+.linkedIn-btn{
+  border: none;
+  color: white;
+  font-size: 16px;
+  margin-bottom: 14px;
+
 }
 
 
@@ -159,6 +203,7 @@ body {
   color: #4e7fff;
   font-weight: 600;
   text-decoration: none;
+
 }
 
 .login-info-section {

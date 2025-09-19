@@ -5,9 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a45acd5d-0a0e-4479-af20-a5d6039ca1f5" name="Changes" comment="Google Oauth">
+      <change afterPath="$PROJECT_DIR$/frontend/frontend/src/assets/github.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/frontend/src/assets/google.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/frontend/src/assets/linkedin.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/app/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/app/models/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/models/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/frontend/src/Login.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/frontend/src/Login.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/frontend/src/login_Page.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/frontend/src/login_Page.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -18,6 +21,17 @@
     <option name="groupingKeys">
       <option value="directory" />
       <option value="repository" />
+    </option>
+  </component>
+  <component name="FlaskConsoleOptions" custom-start-script="import sys; print('Python %s on %s' % (sys.version, sys.platform)); sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo, NoAppException&#10;for module in [&quot;main.py&quot;, &quot;wsgi.py&quot;, &quot;app.py&quot;]:&#10;    try: locals().update(ScriptInfo(app_import_path=module, create_app=None).load_app().make_shell_context()); print(&quot;\nFlask App: %s&quot; % app.import_name); break&#10;    except NoAppException: pass">
+    <envs>
+      <env key="FLASK_APP" value="app" />
+    </envs>
+    <option name="myCustomStartScript" value="import sys; print('Python %s on %s' % (sys.version, sys.platform)); sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo, NoAppException&#10;for module in [&quot;main.py&quot;, &quot;wsgi.py&quot;, &quot;app.py&quot;]:&#10;    try: locals().update(ScriptInfo(app_import_path=module, create_app=None).load_app().make_shell_context()); print(&quot;\nFlask App: %s&quot; % app.import_name); break&#10;    except NoAppException: pass" />
+    <option name="myEnvs">
+      <map>
+        <entry key="FLASK_APP" value="app" />
+      </map>
     </option>
   </component>
   <component name="Git.Pull.Settings">
@@ -35,6 +49,12 @@
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/colaola20/hirehub",
+    "accountId": "44875044-42ac-4a4b-87ee-31ef153cecad"
+  }
+}]]></component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 7
 }</component>
@@ -51,7 +71,7 @@
     "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "JPR",
     "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "C:/Users/JPR/Desktop/490/hirehub",
+    "last_opened_file_path": "C:/Users/JPR/Desktop/490/hirehub/frontend/frontend/src/assets",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -61,6 +81,14 @@
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\JPR\Desktop\490\hirehub\frontend\frontend\src\assets" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\JPR\Desktop\490\hirehub\frontend\frontend\src\assets" />
+    </key>
+  </component>
   <component name="RunManager">
     <configuration name="config" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="hirehub" />
