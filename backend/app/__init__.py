@@ -18,6 +18,8 @@ def create_app():
     
     # Register routes
     from app.routes.home import home_bp
+    from app.routes.users import users_bp
     app.register_blueprint(home_bp)
+    app.register_blueprint(users_bp)
     
     return app
