@@ -8,6 +8,7 @@ import githubLogo from "../assets/github.png";
 import linkedinLogo from "../assets/linkedin.png";
 import googleLogo from "../assets/google.png";
 import {useState} from 'react';
+import placeholderImg from "../assets/login_reg_Place_holder1.png";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -112,10 +113,7 @@ const Login = () => {
             dream job faster.
           </p>
           <div className="illustration">
-            <img
-              src="https://cdn-icons-png.flaticon.com/512/4712/4712035.png"
-              alt="AI Assistant"
-            />
+            <img src={placeholderImg} alt="AI Assistant" />
           </div>
         </div>
       </div>
