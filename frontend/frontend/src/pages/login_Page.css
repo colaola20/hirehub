@@ -28,10 +28,12 @@
   margin:0;            
   background:linear-gradient(to right,#8ec5fc,#7a5bbf);
   color:#fff;
-  display:flex;justify-content:center;align-items:center;
+  display:flex;
+  justify-content:center;
+  align-items:center;
   height:clamp(60px,10vw,100px);
   width:clamp(60px,10vw,100px);
-  font-size:clamp(28px,6vw,56px);
+  font-size:clamp(40px,8vw,8rem);
   font-weight:700;
   border-radius:8px;
   margin-top: -30px;
@@ -44,16 +46,6 @@
   line-height: 1.2;
 }
 
-/* DELETE or comment out your old block:
-.brand h2 {
-  margin: -5px;
-  margin-bottom: -30px;
-  font-size: 100px;
-  ...
-}
-*/
-
-/* Use the class you already have */
 .brand-title{
   margin:0;
   line-height:1;
