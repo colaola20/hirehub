@@ -1,17 +1,3 @@
-body {
-  margin: 0;
-  font-family: "Inter", sans-serif;
-  background: linear-gradient(to right, #8ec5fc, #e0c3fc);
-}
-
-.login-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-
-}
-
 .login-box {
   display: flex;
   width: 900px;

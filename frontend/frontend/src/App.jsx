@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { GoogleOAuthProvider } from "@react-oauth/google";
 // Import the Login page component
 import Login from './pages/Login';
+import Registration from './pages/Registration';
 
 const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
@@ -14,7 +15,9 @@ function App() {
       <GoogleOAuthProvider clientId={clientId}>
         <Router>
           <Routes>
-            <Route path="/" element={<Login />} />
+            <Route path="/" element={<App />} />
+            <Route path='login' element={<Login />} />
+            <Route path='registration' element={<Registration />} />
           </Routes>
         </Router>
       </GoogleOAuthProvider>
