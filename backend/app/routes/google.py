@@ -1,14 +1,16 @@
 from flask import Blueprint, redirect, url_for, session, jsonify
 from app.extensions import db, oauth
 from app.models.user import User
+import secrets
 from secrets import token_urlsafe
+
 
 google_bp = Blueprint("google", __name__)
 
 def init_oauth(app):
     oauth.init_app(app)
-    app.config['GOOGLE_CLIENT_ID'] = ""
-    app.config['GOOGLE_CLIENT_SECRET'] = ""
+    app.config['GOOGLE_CLIENT_ID'] = app.config.get("GOOGLE_CLIENT_ID")
+    app.config['GOOGLE_CLIENT_SECRET'] = app.config.get("GOOGLE_CLIENT_SECRET")
 
     oauth.register(
         name="google",
@@ -43,6 +45,8 @@ def authorize_google():
             first_name=user_info.get("given_name", ""),
             last_name=user_info.get("family_name", ""),
         )
+        # Generates a random password for the Oauth user
+        user.set_password(secrets.token_urlsafe(16))
         try:
             db.session.add(user)
             db.session.commit()

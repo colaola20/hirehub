@@ -1,3 +1,5 @@
+import secrets
+
 from flask import Blueprint, redirect, url_for, session, jsonify
 from app.extensions import db, oauth
 from app.models.user import User
@@ -6,8 +8,8 @@ github_bp = Blueprint("github", __name__)
 
 def init_oauth(app):
     oauth.init_app(app)
-    app.config['GITHUB_CLIENT_ID'] = ""
-    app.config['GITHUB_CLIENT_SECRET'] = ""
+    app.config['GITHUB_CLIENT_ID'] = app.config.get("GITHUB_CLIENT_ID")
+    app.config['GITHUB_CLIENT_SECRET'] = app.config.get("GITHUB_CLIENT_SECRET")
 
     oauth.register(
         name="github",
@@ -43,6 +45,9 @@ def authorize_github():
             first_name=user_info.get("name", "").split(" ")[0],
             last_name=" ".join(user_info.get("name", "").split(" ")[1:]) if user_info.get("name") else "",
         )
+        # Generates a random password for the Oauth user
+        user.set_password(secrets.token_urlsafe(16))
+
         try:
             db.session.add(user)
             db.session.commit()

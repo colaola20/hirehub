@@ -3,44 +3,12 @@
 import React from "react";
 import "./login_Page.css";
 import { Link } from 'react-router-dom';
-import {GoogleLogin} from "@react-oauth/google";
 import jwt_decode from "jwt-decode";
 import githubLogo from "./assets/github.png";
 import linkedinLogo from "./assets/linkedin.png";
 import googleLogo from "./assets/google.png";
 
 const LoginPage = () => {
-
-    // Called when Google login succeeds.
-  const handleSuccess = (credentialResponse) => {
-    // credentialResponse.credential is a JWT token (signed by Google)
-    const token = credentialResponse?.credential;
-    if (!token) {
-      console.error("No credential returned from Google");
-      return;
-    }
-
-    // Decode the JWT to get basic profile info (email, name, picture)
-    const user = jwt_decode(token);
-    console.log("Decoded user:", user);
-
-
-    // Save minimal user info locally (for demo). In production, you'd send the token to your backend.
-    localStorage.setItem("user", JSON.stringify({
-      name: user.name,
-      email: user.email,
-      picture: user.picture,
-      sub: user.sub, // Google's unique user id
-    }));
-
-    // Example: send token to your backend to verify and create a session
-    // fetch("/api/auth/google", { method: "POST", headers: {"Content-Type":"application/json"}, body: JSON.stringify({ credential: token }) })
-    //   .then(res => res.json()).then(data => console.log("Server response:", data));
-  };
-
-  const handleError = () => {
-    console.error("Google login failed or was cancelled.");
-  };
 
 
   return (
@@ -68,7 +36,7 @@ const LoginPage = () => {
 
             <div style={{color:"black", padding: "0 0 0 20px "}}>or login with </div>
             <div className={ "buttons-wrapper"}>
-                {/* Google login button (provided by @react-oauth/google) */}
+                {/* Google login button */}
               <button className={"google-btn"} onClick={() => window.location.href = "http://127.0.0.1:5000/login/google"}>
                 <img src={googleLogo} alt="Google logo" className="Buttonlogo" />
               </button>
@@ -76,8 +44,8 @@ const LoginPage = () => {
               <button className="github-btn" onClick={() => window.location.href = "http://127.0.0.1:5000/login/github"} >
                 <img src={githubLogo} alt="GitHub logo" className="Buttonlogo"/>
               </button>
-            {/*  */}
-              <button className="linkedIn-btn" onClick={() => window.location.href = ""} >
+            {/* Linkedin login button */}
+              <button className="linkedIn-btn" onClick={() => window.location.href = "http://127.0.0.1:5000/login/linkedin"} >
                 <img src={linkedinLogo} alt="LinkedIn logo" className="Buttonlogo"/>
               </button>
 
