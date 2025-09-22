@@ -5,7 +5,7 @@ from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identi
 
 users_bp = Blueprint('users', __name__)
 
-@users_bp.route('/users', methods=['GET'])
+@users_bp.route('/api/users', methods=['GET'])
 @jwt_required(optional=True)
 def get_all_users():
     """Get all users from the database."""
@@ -30,7 +30,7 @@ def get_all_users():
             'error': str(e)
         }), 500
 
-@users_bp.route('/register', methods=['POST'])
+@users_bp.route('/api/register', methods=['POST'])
 def register_user():
     """Register a new user."""
     try:
@@ -154,7 +154,7 @@ def login_user():
             'error': str(e)
         }), 500
 
-@users_bp.route('/profile', methods=['GET'])
+@users_bp.route('/api/profile', methods=['GET'])
 @jwt_required()
 def get_user_profile():
     """Get current user's profile."""

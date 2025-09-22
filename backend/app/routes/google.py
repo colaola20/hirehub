@@ -19,14 +19,14 @@ def init_oauth(app):
     )
 
 
-@google_bp.route("/login/google")
+@google_bp.route("/api/login/google")
 def login_google():
     redirect_uri = url_for("google.authorize_google", _external=True)
     nonce = token_urlsafe(16)            # Generate a random nonce
     session['nonce'] = nonce             # Store random nonce
     return oauth.google.authorize_redirect(redirect_uri, nonce=nonce)
 
-@google_bp.route("/login/google/callback")
+@google_bp.route("/api/login/google/callback")
 def authorize_google():
     token = oauth.google.authorize_access_token()
     nonce = session.pop('nonce', None)   # Retrieve nonce
