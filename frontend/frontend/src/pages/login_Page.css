@@ -1,6 +1,21 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
 .login-box {
   display: flex;
-  width: 900px;
+  max-width: 56rem;
+  width: 100%;
+  margin: 0 auto;
   background: #fff;
   border-radius: 16px;
   box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.1);
@@ -18,7 +33,7 @@
 .brand {
   display: flex;
   align-items: center;
-  gap: 10px; /* space between H box and text block */
+  gap: 8px; /* space between H box and text block */
 }
 
 .brand-text {
@@ -35,9 +50,10 @@
 }
 
 .brand-tagline {
-  margin-bottom: 1.8px;
-  font-size: 1.5rem;
-  font-weight: 700;
+  margin-top: 0.5rem;
+  margin-bottom: 0.25rem;
+  font-size: clamp(1rem, 2.5vw, 1.25rem);
+  font-weight: 600;
   color: black;
 }
 
@@ -49,19 +65,19 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 7rem;    /* makes the H bigger */
+  font-size: clamp(2rem, 10vw, 5rem);    /* makes the H bigger */
   font-weight: bold; 
   border-radius: 8px; /* optional rounded corners */
   padding: 8px 14px;
-  height: 100px;
-  width: 100px;  /* spacing around H so box isn’t huge */
+  height: clamp(3rem, 12vw, 6rem);
+  width: clamp(3rem, 12vw, 6rem);  /* spacing around H so box isn’t huge */
 }
 
 .brand h2 {
-  margin: -5px;
-  margin-bottom: -30px;
-  font-size: 100px;
+  font-size: clamp(2rem, 6vw, 5rem);
   font-weight: 700;
+  line-height: 0.75;
+  margin: 0;
   background: linear-gradient(to right, #86bbf0, #2b155a); /* gradient */
   -webkit-background-clip: text; /* for Safari/Chrome */
   -webkit-text-fill-color: transparent; 
@@ -74,11 +90,11 @@
 /* Input Fields */
 .login-form input {
   width: 100%;
-  padding: 12px;
+  padding: 0.75rem 1rem;
   margin-bottom: 14px;
   border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 14px;
+  border-radius: 0.5rem;
+  font-size: 1rem;
   background: #fdfdfd;
   color: #333; /* Softer dark gray instead of black */
 }
@@ -89,24 +105,21 @@
 }
 
 .login-btn {
-  width: 106%;
-  padding: 12px;
+  width: 100%;
+  padding: 0.75rem;
   background: linear-gradient(to right, #86bbf0, #562fac);
   border: none;
   border-radius: 8px;
   color: white;
-  font-size: 16px;
+  font-size: 1rem;
   margin-bottom: 14px;
   cursor: pointer;
 }
 
 .buttons-wrapper{
   display: flex;
-  width: 106%;
-  padding: 20px 0 0 0 ;
-  gap: 8px;
-
-
+  width: 100%;
+  gap: 0.5rem;
 }
 
 .buttons-wrapper button{
@@ -212,5 +225,52 @@ background: #b5b3b3;
 }
 
 .illustration img {
-  max-width: 280px;
+  max-width: 80%;
+  height: auto;
+}
+
+/* For tablets */
+@media all and (max-width: 768px) {
+  .login-box {
+    flex-direction: column;
+    max-width: 100%;
+    margin: 0 10px;
+  }
+
+  .brand h2 {
+    font-size: 48px;
+  }
+
+  .brand-title {
+    font-size: 28px;
+  }
+
+  .logo {
+    width: 70px;
+    height: 70px;
+    font-size: 8rem;
+  }
+}
+
+/* For phones */
+@media all and (max-width: 480px) {
+  .login-form-section, 
+  .login-info-section {
+    padding: 20px;
+  }
+  .brand-title {
+    font-size: 24px;
+  }
+  .logo {
+    width: 60px;
+    height: 60px;
+    font-size: 3rem;
+  }
+  .login-btn,
+  .buttons-wrapper {
+    width: 100%;
+  }
+  .illustration img {
+    max-width: 200px;
+  }
 }

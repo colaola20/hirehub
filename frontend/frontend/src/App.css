@@ -2,7 +2,6 @@
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
-  text-align: center;
 }
 
 body {
@@ -11,9 +10,15 @@ body {
   background: linear-gradient(to right, #8ec5fc, #e0c3fc);
 }
 
-.container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
+
+@media all and (max-width: 768px) {
+  #root {
+    padding: 1rem;
+  }
+}
+
+@media all and (max-width: 480px) {
+  #root {
+    padding: 0.5rem;
+  }
 }
