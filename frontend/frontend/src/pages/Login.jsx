@@ -112,9 +112,9 @@ const Login = () => {
             Tailor your resume & cover letter instantly with AI to land your
             dream job faster.
           </p>
-          <div className="illustration">
+            <div className="illustration">
             <img src={placeholderImg} alt="AI Assistant" />
-          </div>
+            </div>
         </div>
       </div>
     </div>

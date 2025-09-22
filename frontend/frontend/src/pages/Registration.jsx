@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import "./registration.css"; // separate CSS file
 import { Link } from "react-router-dom";
+import placeholderImg from "../assets/login_reg_Place_holder1.png";
 
 const RegistrationPage = () => {
   const [username, setUsername] = useState("");
@@ -124,11 +125,8 @@ const RegistrationPage = () => {
             smarter job applications.
           </p>
           <div className="illustration">
-            <img
-              src="https://cdn-icons-png.flaticon.com/512/4712/4712035.png"
-              alt="AI Assistant"
-            />
-          </div>
+                <img src={placeholderImg} alt="AI Assistant" />
+            </div>
         </div>
       </div>
     </div>
