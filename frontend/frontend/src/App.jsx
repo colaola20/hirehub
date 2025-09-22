@@ -4,7 +4,7 @@ import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { GoogleOAuthProvider } from "@react-oauth/google";
 // Import the Login page component
-import Login from './Login';
+import Login from './pages/Login';
 
 const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
@@ -18,6 +18,7 @@ function App() {
           </Routes>
         </Router>
       </GoogleOAuthProvider>
+
   );
 }
 

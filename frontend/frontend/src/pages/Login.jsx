@@ -5,11 +5,38 @@ import "./login_Page.css";
 import { Link } from 'react-router-dom';
 import {GoogleLogin} from "@react-oauth/google";
 import jwt_decode from "jwt-decode";
-import githubLogo from "./assets/github.png";
-import linkedinLogo from "./assets/linkedin.png";
-import googleLogo from "./assets/google.png";
+import githubLogo from "../assets/github.png";
+import linkedinLogo from "../assets/linkedin.png";
+import googleLogo from "../assets/google.png";
+import {useState} from 'react';
 
-const LoginPage = () => {
+const Login = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch('/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type' : 'application/json',
+        },
+        body: JSON.stringify({email, password}),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        localStorage.setItem('token', data.token);
+        console.log('Login successful:', data)
+        // Redirect to home page
+      } else {
+        console.error('Login failed:', data.message);
+      }
+
+    } catch (error) {
+      console.error('Login error:', error);
+    }
+  };
 
     // Called when Google login succeeds.
   const handleSuccess = (credentialResponse) => {
@@ -60,9 +87,21 @@ const LoginPage = () => {
          
 
           {/* Login form */}
-          <form className="login-form">
-            <input type="email" placeholder="Email" required />
-            <input type="password" placeholder="Password" required />
+          <form className="login-form" onSubmit={handleSubmit}>
+            <input 
+              type="email" 
+              placeholder="Email" 
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required 
+            />
+            <input 
+              type="password" 
+              placeholder="Password" 
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required 
+            />
 
             <button type="submit" className="login-btn">Login</button>
 
@@ -116,4 +155,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default Login;
