@@ -93,7 +93,7 @@ def register_user():
             'error': str(e)
         }), 500
 
-@users_bp.route('/login', methods=['POST'])
+@users_bp.route('/api/login', methods=['POST'])
 def login_user():
     """Authenticate user login."""
     try:
