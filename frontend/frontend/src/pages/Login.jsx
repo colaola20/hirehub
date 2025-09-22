@@ -132,7 +132,7 @@ const Login = () => {
 
           {/* Proper paragraph for register */}
           <p className="no-account">
-            <span style={{color:"black"}}>Don’t have an account?</span> <Link to="/register">Sign up</Link>
+            <span style={{color:"black"}}>Don’t have an account?</span> <Link to="/registration">Sign up</Link>
           </p>
         </div>
 
