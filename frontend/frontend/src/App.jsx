@@ -16,10 +16,11 @@ function App() {
       <GoogleOAuthProvider clientId={clientId}>
         <Router>
           <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path='/login' element={<Login />} />
-            <Route path='/registration' element={<Registration />} />
-          </Routes>
+          <Route path="/" element={<Login />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/registration" element={<Registration />} />
+          <Route path="/home" element={<Home />} />
+        </Routes>
         </Router>
       </GoogleOAuthProvider>
 
