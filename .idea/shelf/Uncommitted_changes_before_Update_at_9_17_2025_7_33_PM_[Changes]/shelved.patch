@@ -1,0 +1,72 @@
+Index: frontend/frontend/src/login_Page.css
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>body {\r\n  margin: 0;\r\n  font-family: \"Inter\", sans-serif;\r\n  background: linear-gradient(to right, #8ec5fc, #e0c3fc);\r\n}\r\n\r\n.login-container {\r\n  display: flex;\r\n  justify-content: center;\r\n  align-items: center;\r\n  min-height: 100vh;\r\n}\r\n\r\n.login-box {\r\n  display: flex;\r\n  width: 900px;\r\n  background: #fff;\r\n  border-radius: 16px;\r\n  box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.1);\r\n  overflow: hidden;\r\n}\r\n\r\n.login-form-section {\r\n  flex: 1;\r\n  padding: 40px;\r\n  display: flex;\r\n  flex-direction: column;\r\n  justify-content: center;\r\n}\r\n\r\n.brand {\r\n  display: flex;\r\n  align-items: center;\r\n  gap: 8px;\r\n  height: 20px;\r\n}\r\n\r\n.logo {\r\n  width: 25px;\r\n  height: 25px;\r\n  background: black;\r\n  color: white;\r\n  display: flex;\r\n  justify-content: center;\r\n  align-items: center;\r\n  font-size: 115px;\r\n  border-radius: 8px;\r\n  padding: 40px;\r\n}\r\n\r\n.brand h2 {\r\n  margin: 0;\r\n  font-size: 50px;\r\n  font-weight: 700;\r\n  color: #1d1d1d;\r\n}\r\n\r\n.brand p {\r\n  margin: 0;\r\n  font-size: 14px;\r\n  color: white;\r\n}\r\n\r\n/* Input Fields */\r\n.login-form input {\r\n  width: 100%;\r\n  padding: 12px;\r\n  margin-bottom: 14px;\r\n  border: 1px solid #ccc;\r\n  border-radius: 8px;\r\n  font-size: 14px;\r\n  background: #fdfdfd;\r\n  color: #333; /* Softer dark gray instead of black */\r\n}\r\n\r\n/* Placeholder styling */\r\n.login-form input::placeholder {\r\n  color: #999;\r\n}\r\n\r\n.login-btn {\r\n  width: 100%;\r\n  padding: 12px;\r\n  background: #4e7fff;\r\n  border: none;\r\n  border-radius: 8px;\r\n  color: white;\r\n  font-size: 16px;\r\n  margin-bottom: 14px;\r\n  cursor: pointer;\r\n}\r\n\r\n.google-btn {\r\n  width: 100%;\r\n  padding: 12px;\r\n  background: #4e7fff;\r\n  border: none;\r\n  border-radius: 8px;\r\n  color: white;\r\n  font-size: 16px;\r\n  margin-bottom: 14px;\r\n  cursor: pointer;\r\n}\r\n\r\n.google-btn img {\r\n  width: 16px;\r\n  height: 16px;\r\n}\r\n\r\n.login-options {\r\n  display: flex;\r\n  justify-content: space-between;\r\n  margin: 16px 0;\r\n}\r\n\r\n.login-options a {\r\n  font-size: 14px;\r\n  color: #4e7fff;\r\n  text-decoration: none;\r\n}\r\n\r\n.no-account {\r\n  font-size: 14px;\r\n  text-align: left;\r\n}\r\n\r\n.no-account a {\r\n  color: #4e7fff;\r\n  font-weight: 600;\r\n  text-decoration: none;\r\n}\r\n\r\n.login-info-section {\r\n  flex: 1;\r\n  background: #f9fbff;\r\n  padding: 40px;\r\n  display: flex;\r\n  flex-direction: column;\r\n  justify-content: center;\r\n}\r\n\r\n.login-info-section h1 {\r\n  font-size: 28px;\r\n  margin-bottom: 12px;\r\n  color: #1d1d1d;\r\n}\r\n\r\n.login-info-section p {\r\n  font-size: 16px;\r\n  color: #444;\r\n  margin-bottom: 20px;\r\n}\r\n\r\n.illustration img {\r\n  max-width: 280px;\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/frontend/frontend/src/login_Page.css b/frontend/frontend/src/login_Page.css
+--- a/frontend/frontend/src/login_Page.css	(revision 023981a6f3f642cff6847c01bdd8a30c96d35952)
++++ b/frontend/frontend/src/login_Page.css	(date 1758151919913)
+@@ -9,6 +9,7 @@
+   justify-content: center;
+   align-items: center;
+   min-height: 100vh;
++
+ }
+ 
+ .login-box {
+@@ -18,6 +19,8 @@
+   border-radius: 16px;
+   box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.1);
+   overflow: hidden;
++
++
+ }
+ 
+ .login-form-section {
+Index: .idea/inspectionProfiles/Project_Default.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/inspectionProfiles/Project_Default.xml b/.idea/inspectionProfiles/Project_Default.xml
+new file mode 100644
+--- /dev/null	(date 1758151919911)
++++ b/.idea/inspectionProfiles/Project_Default.xml	(date 1758151919911)
+@@ -0,0 +1,6 @@
++<component name="InspectionProjectProfileManager">
++  <profile version="1.0">
++    <option name="myName" value="Project Default" />
++    <inspection_tool class="Eslint" enabled="true" level="WARNING" enabled_by_default="true" />
++  </profile>
++</component>
+\ No newline at end of file
+Index: .idea/vcs.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/vcs.xml b/.idea/vcs.xml
+new file mode 100644
+--- /dev/null	(date 1758151919912)
++++ b/.idea/vcs.xml	(date 1758151919912)
+@@ -0,0 +1,6 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="VcsDirectoryMappings">
++    <mapping directory="$PROJECT_DIR$" vcs="Git" />
++  </component>
++</project>
+\ No newline at end of file
+Index: backend/app/models/__init__.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/backend/app/models/__init__.py b/backend/app/models/__init__.py
+--- a/backend/app/models/__init__.py	(revision 023981a6f3f642cff6847c01bdd8a30c96d35952)
++++ b/backend/app/models/__init__.py	(date 1758151919912)
+@@ -1,0 +1,1 @@
++Hello
+\ No newline at end of file

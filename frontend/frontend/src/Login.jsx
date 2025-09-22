@@ -3,8 +3,14 @@
 import React from "react";
 import "./login_Page.css";
 import { Link } from 'react-router-dom';
+import jwt_decode from "jwt-decode";
+import githubLogo from "./assets/github.png";
+import linkedinLogo from "./assets/linkedin.png";
+import googleLogo from "./assets/google.png";
 
 const LoginPage = () => {
+
+
   return (
     <div className="login-container">
       <div className="login-box">
@@ -28,13 +34,24 @@ const LoginPage = () => {
 
             <button type="submit" className="login-btn">Login</button>
 
-            <button type="button" className="google-btn">
-              <img
-                src="https://developers.google.com/identity/images/g-logo.png"
-                alt="Google"
-              />
-              Continue with Google
-            </button>
+            <div style={{color:"black", padding: "0 0 0 20px "}}>or login with </div>
+            <div className={ "buttons-wrapper"}>
+                {/* Google login button */}
+              <button className={"google-btn"} onClick={() => window.location.href = "http://127.0.0.1:5000/login/google"}>
+                <img src={googleLogo} alt="Google logo" className="Buttonlogo" />
+              </button>
+              {/*/!* GitHub login button *!/*/}
+              <button className="github-btn" onClick={() => window.location.href = "http://127.0.0.1:5000/login/github"} >
+                <img src={githubLogo} alt="GitHub logo" className="Buttonlogo"/>
+              </button>
+            {/* Linkedin login button */}
+              <button className="linkedIn-btn" onClick={() => window.location.href = "http://127.0.0.1:5000/login/linkedin"} >
+                <img src={linkedinLogo} alt="LinkedIn logo" className="Buttonlogo"/>
+              </button>
+
+            </div>
+
+
           </form>
 
           {/* Options below form */}
@@ -44,7 +61,7 @@ const LoginPage = () => {
 
           {/* Proper paragraph for register */}
           <p className="no-account">
-            Don’t have an account? <Link to="/register">Sign up</Link>
+            <span style={{color:"black"}}>Don’t have an account?</span> <Link to="/register">Sign up</Link>
           </p>
         </div>
 

@@ -2,17 +2,22 @@
 import './App.css';
 // Import necessary components from react-router-dom
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { GoogleOAuthProvider } from "@react-oauth/google";
 // Import the Login page component
 import Login from './Login';
+
+const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
 // Root App component that renders the Login and Registration pages
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Login />} />
-      </Routes>
-    </Router>
+      <GoogleOAuthProvider clientId={clientId}>
+        <Router>
+          <Routes>
+            <Route path="/" element={<Login />} />
+          </Routes>
+        </Router>
+      </GoogleOAuthProvider>
   );
 }
 
