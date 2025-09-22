@@ -6,8 +6,8 @@ github_bp = Blueprint("github", __name__)
 
 def init_oauth(app):
     oauth.init_app(app)
-    app.config['GITHUB_CLIENT_ID'] = "Ov23li5MUvSDQewrV4PL"
-    app.config['GITHUB_CLIENT_SECRET'] = "cdce1ee8867984013776b2e8010a829f242457c4"
+    app.config['GITHUB_CLIENT_ID'] = ""
+    app.config['GITHUB_CLIENT_SECRET'] = ""
 
     oauth.register(
         name="github",
