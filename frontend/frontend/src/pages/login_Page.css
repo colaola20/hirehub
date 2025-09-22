@@ -24,9 +24,8 @@
   flex-wrap:wrap;         /* wraps on small screens */
 }
 
-/* remove the bottom drop and size responsively */
 .logo{
-  margin:0;               /* <— was margin-bottom: 38px */
+  margin:0;            
   background:linear-gradient(to right,#8ec5fc,#7a5bbf);
   color:#fff;
   display:flex;justify-content:center;align-items:center;
@@ -35,7 +34,7 @@
   font-size:clamp(28px,6vw,56px);
   font-weight:700;
   border-radius:8px;
-  padding:8px 14px;
+  margin-top: -30px;
 }
 
 
