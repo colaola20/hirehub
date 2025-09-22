@@ -19,9 +19,9 @@
 
 .brand{
   display:flex;
-  align-items:center;     /* vertical align */
+  align-items:center;     
   gap:12px;
-  flex-wrap:wrap;         /* wraps on small screens */
+  flex-wrap:wrap;         
 }
 
 .logo{
