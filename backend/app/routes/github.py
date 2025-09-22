@@ -21,12 +21,12 @@ def init_oauth(app):
         client_kwargs={"scope": "user:email"},
     )
 
-@github_bp.route("/login/github")
+@github_bp.route("/api/login/github")
 def login_github():
     redirect_uri = url_for("github.authorize_github", _external=True)
     return oauth.github.authorize_redirect(redirect_uri)
 
-@github_bp.route("/login/github/callback")
+@github_bp.route("/api/login/github/callback")
 def authorize_github():
     token = oauth.github.authorize_access_token()
     user_info = oauth.github.get("user").json()

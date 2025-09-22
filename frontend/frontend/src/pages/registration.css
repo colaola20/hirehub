@@ -1,0 +1,119 @@
+.register-box {
+  display: flex;
+  width: 900px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.register-form-section {
+  flex: 1;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.brand-title {
+  font-size: 40px;
+  font-weight: 700;
+  color: #1d1d1d;
+  margin: 0;
+}
+
+.brand-tagline {
+  margin-bottom: 1.8px;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: black;
+}
+
+.logo {
+  background: linear-gradient(to right, #8ec5fc, #7a5bbf);
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 7rem;
+  font-weight: bold;
+  border-radius: 8px;
+  padding: 8px 14px;
+  height: 100px;
+  width: 100px;
+}
+
+.register-form input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 14px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+  background: #fdfdfd;
+  color: #333;
+}
+
+.register-form input::placeholder {
+  color: #999;
+}
+
+.register-btn {
+  width: 106%;
+  padding: 12px;
+  background: linear-gradient(to right, #86bbf0, #562fac);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 16px;
+  margin-bottom: 14px;
+  cursor: pointer;
+}
+
+.have-account {
+  font-size: 14px;
+  text-align: left;
+}
+
+.have-account a {
+  color: #4e7fff;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.register-info-section {
+  flex: 1;
+  background: #f9fbff;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.register-info-section h1 {
+  font-size: 28px;
+  margin-bottom: 12px;
+  color: #1d1d1d;
+}
+
+.register-info-section p {
+  font-size: 16px;
+  color: #444;
+  margin-bottom: 20px;
+}
+
+.illustration img {
+  max-width: 280px;
+}
