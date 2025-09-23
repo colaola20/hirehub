@@ -105,7 +105,7 @@ def login_user():
                 'message': 'No data provided'
             }), 400
 
-        required_fields = ['username', 'password']
+        required_fields = ['email', 'password']
         for field in required_fields:
             if field not in data:
                 return jsonify({
@@ -113,12 +113,12 @@ def login_user():
                     'message': f'Missing required field: {field}'
                 }), 400
 
-        # Find user by username
-        users = DatabaseService.filter_by(User, username=data['username'])
+        # Find user by Email
+        users = DatabaseService.filter_by(User, email=data['email'])
         if not users:
             return jsonify({
                 'status': 'error',
-                'message': 'Invalid username or password'
+                'message': 'Invalid username '
             }), 401
 
         user = users[0]
@@ -127,7 +127,7 @@ def login_user():
         if not user.check_password(data['password']):
             return jsonify({
                 'status': 'error',
-                'message': 'Invalid username or password'
+                'message': 'Invalid password'
             }), 401
 
         # Check if user is active
