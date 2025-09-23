@@ -33,7 +33,7 @@
   align-items:center;
   height:clamp(60px,10vw,100px);
   width:clamp(60px,10vw,100px);
-  font-size:clamp(40px,8vw,8rem);
+  font-size:clamp(40px,8vw,9rem);
   font-weight:700;
   border-radius:8px;
   margin-top: -30px;
@@ -63,6 +63,7 @@
   font-size:clamp(12px,2.2vw,18px);
   font-weight:600;
   color:#111;
+  
 }
 
 

@@ -1,0 +1,32 @@
+@import "./login_Page.css";
+
+/* Reuse login styles, only add new ones for Home */
+
+.job-input {
+  width: 100%;
+  height: 150px;
+  padding: 12px;
+  margin-bottom: 14px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: clamp(14px, 2vw, 18px);
+  background: #fdfdfd;
+  color: #333;
+  resize: vertical;
+}
+
+.resume-output {
+  margin-top: 20px;
+  padding: 16px;
+  background: #f9f9ff;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: clamp(14px, 2vw, 16px);
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.resume-output h3 {
+  margin-bottom: 10px;
+  color: #2b155a;
+}

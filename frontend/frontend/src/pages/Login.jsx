@@ -46,8 +46,8 @@ const Login = () => {
         <div className="login-form-section">
           {/* Branding */}
           <div className="brand">
-    <div className="logo">H</div>
-    <div className="brand-text">
+          <div className="logo">H</div>
+          <div className="brand-text">
       <h2 className="brand-title">ireHub</h2>
       <p className="brand-tagline">Your AI Career Companion</p>
     </div>
