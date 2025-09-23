@@ -95,9 +95,9 @@ const Login = () => {
           </form>
 
           {/* Options below form */}
-          <div className="login-options">
-            <a href="#">Forgot Password?</a>
-          </div>
+            <div className="login-options">
+              <Link to="/forgot_password">Forgot Password?</Link>
+            </div>
 
           {/* Proper paragraph for register */}
           <p className="no-account">
