@@ -1,43 +1,42 @@
 // LoginPage.jsx
 // This component renders the login page for HireHub, including branding, login form, and info section.
-import React from "react";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom"; // ⬅ import useNavigate
 import "./login_Page.css";
-import { Link } from 'react-router-dom';
 import jwt_decode from "jwt-decode";
 import githubLogo from "../assets/github.png";
 import linkedinLogo from "../assets/linkedin.png";
 import googleLogo from "../assets/google.png";
-import {useState} from 'react';
 import placeholderImg from "../assets/login_reg_Place_holder1.png";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate(); // ⬅ initialize navigate
 
   const handleSubmit = async (event) => {
-    event.preventDefault();
-    try {
-      const response = await fetch('/api/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type' : 'application/json',
-        },
-        body: JSON.stringify({email, password}),
-      });
+  event.preventDefault();
+  try {
+    const response = await fetch("/api/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
+
+    if (response.ok) {
       const data = await response.json();
-      if (response.ok) {
-        localStorage.setItem('token', data.token);
-        console.log('Login successful:', data)
-        // Redirect to home page
-      } else {
-        console.error('Login failed:', data.message);
-      }
-
-    } catch (error) {
-      console.error('Login error:', error);
+      localStorage.setItem("token", data.token);
+      console.log("Login successful:", data);
+    } else {
+      console.warn("Backend not ready, skipping login check...");
     }
-  };
+  } catch (error) {
+    console.warn("Backend not available, skipping login check...");
+  }
 
+  // Always go to Home for now
+  navigate("/home");
+};
 
   return (
     <div className="container">
@@ -46,62 +45,94 @@ const Login = () => {
         <div className="login-form-section">
           {/* Branding */}
           <div className="brand">
-          <div className="logo">H</div>
-          <div className="brand-text">
-      <h2 className="brand-title">ireHub</h2>
-      <p className="brand-tagline">Your AI Career Companion</p>
-    </div>
-  </div>
-
-         
+            <div className="logo">H</div>
+            <div className="brand-text">
+              <h2 className="brand-title">ireHub</h2>
+              <p className="brand-tagline">Your AI Career Companion</p>
+            </div>
+          </div>
 
           {/* Login form */}
           <form className="login-form" onSubmit={handleSubmit}>
-            <input 
-              type="email" 
-              placeholder="Email" 
+            <input
+              type="email"
+              placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              required 
+              required
             />
-            <input 
-              type="password" 
-              placeholder="Password" 
+            <input
+              type="password"
+              placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              required 
+              required
             />
 
-            <button type="submit" className="login-btn">Login</button>
+            <button type="submit" className="login-btn">
+              Login
+            </button>
 
-            <div style={{color:"black", padding: "0 0 0 20px "}}>or login with </div>
-            <div className={ "buttons-wrapper"}>
-                {/* Google login button */}
-              <button className={"google-btn"} onClick={() => window.location.href = "http://127.0.0.1:5000/login/google"}>
-                <img src={googleLogo} alt="Google logo" className="Buttonlogo" />
-              </button>
-              {/*/!* GitHub login button *!/*/}
-              <button className="github-btn" onClick={() => window.location.href = "http://127.0.0.1:5000/login/github"} >
-                <img src={githubLogo} alt="GitHub logo" className="Buttonlogo"/>
-              </button>
-            {/* Linkedin login button */}
-              <button className="linkedIn-btn" onClick={() => window.location.href = "http://127.0.0.1:5000/login/linkedin"} >
-                <img src={linkedinLogo} alt="LinkedIn logo" className="Buttonlogo"/>
-              </button>
-
+            <div style={{ color: "black", padding: "0 0 0 20px " }}>
+              or login with
             </div>
+            <div className={"buttons-wrapper"}>
+              {/* Google login button */}
+              <button
+                type="button"
+                className={"google-btn"}
+                onClick={() =>
+                  (window.location.href = "http://127.0.0.1:5000/login/google")
+                }
+              >
+                <img
+                  src={googleLogo}
+                  alt="Google logo"
+                  className="Buttonlogo"
+                />
+              </button>
 
+              {/* GitHub login button */}
+              <button
+                type="button"
+                className="github-btn"
+                onClick={() =>
+                  (window.location.href = "http://127.0.0.1:5000/login/github")
+                }
+              >
+                <img
+                  src={githubLogo}
+                  alt="GitHub logo"
+                  className="Buttonlogo"
+                />
+              </button>
 
+              {/* Linkedin login button */}
+              <button
+                type="button"
+                className="linkedIn-btn"
+                onClick={() =>
+                  (window.location.href = "http://127.0.0.1:5000/login/linkedin")
+                }
+              >
+                <img
+                  src={linkedinLogo}
+                  alt="LinkedIn logo"
+                  className="Buttonlogo"
+                />
+              </button>
+            </div>
           </form>
 
           {/* Options below form */}
-            <div className="login-options">
-              <Link to="/forgot_password">Forgot Password?</Link>
-            </div>
+          <div className="login-options">
+            <Link to="/forgot_password">Forgot Password?</Link>
+          </div>
 
           {/* Proper paragraph for register */}
           <p className="no-account">
-            <span style={{color:"black"}}>Don’t have an account?</span> <Link to="/registration">Sign up</Link>
+            <span style={{ color: "black" }}>Don’t have an account?</span>{" "}
+            <Link to="/registration">Sign up</Link>
           </p>
         </div>
 
@@ -112,9 +143,9 @@ const Login = () => {
             Tailor your resume & cover letter instantly with AI to land your
             dream job faster.
           </p>
-            <div className="illustration">
+          <div className="illustration">
             <img src={placeholderImg} alt="AI Assistant" />
-            </div>
+          </div>
         </div>
       </div>
     </div>

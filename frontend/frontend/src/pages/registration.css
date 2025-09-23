@@ -50,7 +50,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: clamp(2rem, 6vw, 4rem); /* responsive scaling */
+  font-size: clamp(2rem, 6vw, 6rem); /* responsive scaling */
   font-weight: bold;
   border-radius: 8px;
   height: clamp(60px, 10vw, 120px);
