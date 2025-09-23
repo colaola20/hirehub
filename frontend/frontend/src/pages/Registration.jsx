@@ -38,6 +38,7 @@ const RegistrationPage = () => {
 
       const data = await response.json();
       if (response.ok) {
+        console.error("Backend error:", data.error);
         alert("Account created! You can now login.");
         window.location.href = "/login";
       } else {

@@ -14,29 +14,38 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const navigate = useNavigate(); // ⬅ initialize navigate
 
-  const handleSubmit = async (event) => {
-  event.preventDefault();
-  try {
-    const response = await fetch("/api/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
+ const handleSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      const response = await fetch("/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }), // 🔹 match backend
+      });
 
-    if (response.ok) {
       const data = await response.json();
-      localStorage.setItem("token", data.token);
-      console.log("Login successful:", data);
-    } else {
-      console.warn("Backend not ready, skipping login check...");
-    }
-  } catch (error) {
-    console.warn("Backend not available, skipping login check...");
-  }
 
-  // Always go to Home for now
-  navigate("/home");
-};
+      if (response.ok) {
+        // Flask sends "access_token", not "token"
+        localStorage.setItem("token", data.access_token);
+
+        try {
+          const decoded = jwt_decode(data.access_token);
+          console.log("Decoded JWT:", decoded);
+        } catch (err) {
+          console.warn("Failed to decode token:", err);
+        }
+
+        console.log("Login successful:", data);
+        navigate("/home");
+      } else {
+        alert(data.message || "Login failed");
+      }
+    } catch (error) {
+      console.error("Backend not available:", error);
+      navigate("/home"); // fallback while backend isn’t ready
+    }
+  };
 
   return (
     <div className="container">
