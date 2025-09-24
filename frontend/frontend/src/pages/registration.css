@@ -1,9 +1,162 @@
-.registration-box {
-    display: flex;
-    width: 900px;
-    background: #fff;
-    border-radius: 16px;
-    box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-    color: black;
+.register-box {
+  display: flex;
+  width: 100%;
+  max-width: 1200px; /* grows nicely on larger screens */
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  margin: auto;
+}
+
+.register-form-section {
+  flex: 1;
+  padding: clamp(20px, 4vw, 60px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap; /* wraps logo and text on small screens */
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.brand-title {
+  font-size: clamp(28px, 4vw, 60px); /* responsive font */
+  font-weight: 700;
+  color: #1d1d1d;
+  margin: 0;
+}
+
+.brand-tagline {
+  margin-top: 4px;
+  font-size: clamp(14px, 2vw, 20px);
+  font-weight: 600;
+  color: black;
+}
+
+.logo {
+  background: linear-gradient(to right, #8ec5fc, #7a5bbf);
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: clamp(2rem, 6vw, 6rem); /* responsive scaling */
+  font-weight: bold;
+  border-radius: 8px;
+  height: clamp(60px, 10vw, 120px);
+  width: clamp(60px, 10vw, 120px);
+}
+
+/* Input Fields */
+.register-form input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 14px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: clamp(14px, 2vw, 18px);
+  background: #fdfdfd;
+  color: #333;
+}
+
+.register-form input::placeholder {
+  color: #999;
+}
+
+.register-btn {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(to right, #86bbf0, #562fac);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: clamp(14px, 2vw, 20px);
+  margin-bottom: 14px;
+  cursor: pointer;
+}
+
+.have-account {
+  font-size: clamp(12px, 2vw, 16px);
+  text-align: left;
+}
+
+.have-account a {
+  color: #4e7fff;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.register-info-section {
+  flex: 1;
+  background: #f9fbff;
+  padding: clamp(20px, 4vw, 60px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  align-items: center;
+}
+
+.register-info-section h1 {
+  font-size: clamp(20px, 4vw, 40px);
+  margin-bottom: 12px;
+  color: #1d1d1d;
+}
+
+.register-info-section p {
+  font-size: clamp(14px, 2vw, 18px);
+  color: #444;
+  margin-bottom: 20px;
+}
+
+.illustration img {
+  max-width: clamp(140px, 30vw, 320px);
+  height: auto;
+}
+
+/* -------- Responsive Layouts -------- */
+
+@media (max-width: 1024px) {
+  .register-box {
+    flex-direction: column; /* stack sections */
+    max-width: 90%;
+  }
+
+  .register-info-section {
+    order: -1; /* move illustration above form */
+  }
+}
+
+@media (max-width: 600px) {
+  .register-box {
+    flex-direction: column;
+    border-radius: 0;
+    box-shadow: none;
+    height: auto;
+    min-height: 100vh;
+  }
+
+  .brand {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .logo {
+    margin-bottom: 10px;
+  }
+
+  .register-form-section {
+    padding: 20px;
+  }
 }

@@ -4,17 +4,21 @@ from flask_jwt_extended import JWTManager
 from flask_migrate import Migrate
 import os
 from dotenv import load_dotenv
-from flask_cors import CORS
-
-load_dotenv()
-
-db = SQLAlchemy()
-jwt = JWTManager()
-migrate = Migrate()
 from app.extensions import db
 from app.routes.github import github_bp, init_oauth
 from app.routes.google import google_bp, init_oauth as init_google_oauth
+from app.routes.linkedin import linkedin_bp, init_linkedin_oauth
 from app.routes.home import home_bp
+from app.routes.home import home_bp
+from app.routes.users import users_bp
+from .config import Config
+
+load_dotenv()
+
+# db = SQLAlchemy()
+jwt = JWTManager()
+migrate = Migrate()
+
 
 def create_app():
     app = Flask(__name__)
@@ -24,7 +28,7 @@ def create_app():
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['JWT_SECRET_KEY'] = os.environ.get('JWT_SECRET_KEY') or 'jwt-secret-string'
 
-    CORS(app)
+    app.config.from_object(Config)
 
     # Initialize extensions
     db.init_app(app)
@@ -32,10 +36,10 @@ def create_app():
     migrate.init_app(app, db)
 
     # Register routes
-    from app.routes.home import home_bp
-    from app.routes.users import users_bp
+
     init_oauth(app)
     init_google_oauth(app)
+    init_linkedin_oauth(app)
 
     # Register blueprints
     app.register_blueprint(home_bp)
@@ -43,5 +47,6 @@ def create_app():
 
     app.register_blueprint(github_bp)
     app.register_blueprint(google_bp)
+    app.register_blueprint(linkedin_bp)
 
     return app

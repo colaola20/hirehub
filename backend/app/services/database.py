@@ -2,7 +2,7 @@ from typing import Optional, List, Dict, Any, Type
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy import text
 from flask import current_app
-from app import db
+from app.extensions import db
 import logging
 
 logger = logging.getLogger(__name__)

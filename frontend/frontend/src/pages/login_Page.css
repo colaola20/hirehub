@@ -13,79 +13,83 @@
 
 .login-box {
   display: flex;
-  max-width: 56rem;
   width: 100%;
-  margin: 0 auto;
+  max-width: 1200px; /* grows nicely on large monitors */
   background: #fff;
   border-radius: 16px;
   box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.1);
   overflow: hidden;
+  margin: auto;
 }
 
 .login-form-section {
   flex: 1;
-  padding: 40px;
+  padding: clamp(20px, 4vw, 60px);
   display: flex;
   flex-direction: column;
   justify-content: center;
+}
 
+.brand{
+  display:flex;
+  align-items:center;     
+  gap:12px;
+  flex-wrap:wrap;         
 }
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 8px; /* space between H box and text block */
+
+.logo{
+  margin:0;            
+  background:linear-gradient(to right,#8ec5fc,#7a5bbf);
+  color:#fff;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:clamp(60px,10vw,100px);
+  width:clamp(60px,10vw,100px);
+  font-size:clamp(40px,8vw,6rem);
+  font-weight:700;
+  border-radius:8px;
+  margin-top: -30px;
 }
+
 
 .brand-text {
   display: flex;
-  flex-direction: column; /* stack h2 and p */
+  flex-direction: column;
   line-height: 1.2;
 }
 
-.brand-title {
-  font-size: 40px;
-  font-weight: 700;
-  color: #1d1d1d;
-  margin: 0;
+.brand-title{
+  margin:0;
+  line-height:1;
+  font-weight:700;
+  font-size:clamp(32px,6vw,72px);
+  background:linear-gradient(to right,#86bbf0,#2b155a);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+  color:transparent;
 }
 
-.brand-tagline {
-  margin-top: 0.5rem;
-  margin-bottom: 0.25rem;
-  font-size: clamp(1rem, 2.5vw, 1.25rem);
-  font-weight: 600;
-  color: black;
+.brand-tagline{
+  margin:6px 0 0;
+  font-size:clamp(12px,2.2vw,18px);
+  font-weight:600;
+  color:#111;
+  
 }
 
-
-.logo { 
-  margin-bottom: 38px;
-  background: linear-gradient(to right, #8ec5fc, #7a5bbf);
-  color: white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: clamp(2rem, 10vw, 5rem);    /* makes the H bigger */
-  font-weight: bold; 
-  border-radius: 8px; /* optional rounded corners */
-  padding: 8px 14px;
-  height: clamp(3rem, 12vw, 6rem);
-  width: clamp(3rem, 12vw, 6rem);  /* spacing around H so box isn’t huge */
-}
 
 .brand h2 {
-  font-size: clamp(2rem, 6vw, 5rem);
+  margin: -5px;
+  font-size: clamp(40px, 8vw, 100px);
   font-weight: 700;
-  line-height: 0.75;
-  margin: 0;
-  background: linear-gradient(to right, #86bbf0, #2b155a); /* gradient */
-  -webkit-background-clip: text; /* for Safari/Chrome */
-  -webkit-text-fill-color: transparent; 
-  background-clip: text; /* fallback */
-  color: transparent; /* ensures only gradient shows */
+  background: linear-gradient(to right, #86bbf0, #2b155a);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
 }
-
-
 
 /* Input Fields */
 .login-form input {
@@ -93,106 +97,65 @@
   padding: 0.75rem 1rem;
   margin-bottom: 14px;
   border: 1px solid #ccc;
-  border-radius: 0.5rem;
-  font-size: 1rem;
+  border-radius: 8px;
+  font-size: clamp(14px, 2vw, 18px);
   background: #fdfdfd;
-  color: #333; /* Softer dark gray instead of black */
+  color: #333;
 }
 
-/* Placeholder styling */
 .login-form input::placeholder {
   color: #999;
 }
 
 .login-btn {
   width: 100%;
-  padding: 0.75rem;
+  padding: 14px;
   background: linear-gradient(to right, #86bbf0, #562fac);
   border: none;
   border-radius: 8px;
   color: white;
-  font-size: 1rem;
+  font-size: clamp(14px, 2vw, 20px);
   margin-bottom: 14px;
   cursor: pointer;
 }
 
-.buttons-wrapper{
+.buttons-wrapper {
   display: flex;
   width: 100%;
-  gap: 0.5rem;
+  padding-top: 20px;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
-.buttons-wrapper button{
-  height: auto;
-  width: 100%;
+.buttons-wrapper button {
+  flex: 1;
+  min-width: 80px;
   border-radius: 8px;
-  max-height: 10%;
   background: #ffffff;
-  border-color: #e60000;
+  border: 1px solid #ccc;
   display: flex;
   justify-content: center;
   align-items: center;
-
 }
-.buttons-wrapper button:hover{
+
+.buttons-wrapper button:hover {
   background: #cfcfcf;
 }
 
 .Buttonlogo {
-  width: 30px;
-  height: 30px;
+  width: clamp(20px, 3vw, 30px);
+  height: clamp(20px, 3vw, 30px);
 }
-
-.google-btn {
-background: #b5b3b3;
-  padding: 12px;
-  /*background: linear-gradient(to right, #86bbf0, #562fac);*/
-  border: none;
-  color: white;
-  font-size: 16px;
-  margin-bottom: 14px;
-  cursor: pointer;
-}
-
-
-.google-wrapper {
-  margin-top: 10px;
-}
-
-.github-btn{
-  /*background: linear-gradient(to right, #86bbf0, #562fac);*/
-  border: none;
-
-  color: white;
-  font-size: 16px;
-  margin-bottom: 14px;
-  cursor: pointer;
-}
-
-.linkedIn-btn{
-  border: none;
-  color: white;
-  font-size: 16px;
-  margin-bottom: 14px;
-
-}
-
-
 
 .login-options {
   display: flex;
   justify-content: space-between;
   margin: 16px 0;
-}
-
-.login-options a {
-  font-size: 14px;
-  color: #4e7fff;
-  text-decoration: none;
+  font-size: clamp(12px, 2vw, 16px);
 }
 
 .no-account {
-  font-size: 14px;
+  font-size: clamp(12px, 2vw, 16px);
   text-align: left;
 }
 
@@ -200,77 +163,69 @@ background: #b5b3b3;
   color: #4e7fff;
   font-weight: 600;
   text-decoration: none;
-
 }
 
 .login-info-section {
   flex: 1;
   background: #f9fbff;
-  padding: 40px;
+  padding: clamp(20px, 4vw, 60px);
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
+  text-align: center;
 }
 
 .login-info-section h1 {
-  font-size: 28px;
+  font-size: clamp(20px, 4vw, 40px);
   margin-bottom: 12px;
   color: #1d1d1d;
 }
 
 .login-info-section p {
-  font-size: 16px;
+  font-size: clamp(14px, 2vw, 18px);
   color: #444;
   margin-bottom: 20px;
 }
 
 .illustration img {
-  max-width: 80%;
+  max-width: clamp(140px, 30vw, 320px);
   height: auto;
 }
 
-/* For tablets */
-@media all and (max-width: 768px) {
+/* ----------- Responsive Layouts ----------- */
+
+@media (max-width: 1024px) {
   .login-box {
     flex-direction: column;
-    max-width: 100%;
-    margin: 0 10px;
+    max-width: 90%;
   }
 
-  .brand h2 {
-    font-size: 48px;
-  }
-
-  .brand-title {
-    font-size: 28px;
-  }
-
-  .logo {
-    width: 70px;
-    height: 70px;
-    font-size: 8rem;
+  .login-info-section {
+    order: -1; /* move image above form */
   }
 }
 
-/* For phones */
-@media all and (max-width: 480px) {
-  .login-form-section, 
-  .login-info-section {
-    padding: 20px;
+@media (max-width: 600px) {
+  .login-box {
+    flex-direction: column;
+    border-radius: 0;
+    box-shadow: none;
+    height: auto;
+    min-height: 100vh;
   }
-  .brand-title {
-    font-size: 24px;
+
+  .brand {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
   }
+
   .logo {
-    width: 60px;
-    height: 60px;
-    font-size: 3rem;
+    margin-bottom: 10px;
   }
-  .login-btn,
-  .buttons-wrapper {
-    width: 100%;
-  }
-  .illustration img {
-    max-width: 200px;
+
+  .login-form-section {
+    padding: 20px;
   }
 }
