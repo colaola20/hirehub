@@ -33,12 +33,20 @@ const Login = () => {
         try {
           const decoded = jwt_decode(data.access_token);
           console.log("Decoded JWT:", decoded);
+
+          const username = data.data?.username;
+          console.log(username)
+          if (username) {
+            navigate(`/${username}`);
+          } else {
+            navigate("/")
+          }
         } catch (err) {
           console.warn("Failed to decode token:", err);
+          navigate("/")
         }
 
         console.log("Login successful:", data);
-        navigate("/home");
       } else {
         alert(data.message || "Login failed");
       }
@@ -93,7 +101,7 @@ const Login = () => {
                 type="button"
                 className={"google-btn"}
                 onClick={() =>
-                  (window.location.href = "http://127.0.0.1:5000/login/google")
+                  (window.location.href = "http://127.0.0.1:5001/api/login/google")
                 }
               >
                 <img
@@ -108,7 +116,7 @@ const Login = () => {
                 type="button"
                 className="github-btn"
                 onClick={() =>
-                  (window.location.href = "http://127.0.0.1:5000/login/github")
+                  (window.location.href = "http://127.0.0.1:5001/api/login/github")
                 }
               >
                 <img
@@ -123,7 +131,7 @@ const Login = () => {
                 type="button"
                 className="linkedIn-btn"
                 onClick={() =>
-                  (window.location.href = "http://127.0.0.1:5000/login/linkedin")
+                  (window.location.href = "http://127.0.0.1:5001/api/login/linkedin")
                 }
               >
                 <img

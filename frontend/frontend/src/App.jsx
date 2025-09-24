@@ -8,6 +8,7 @@ import Login from './pages/Login';
 import Registration from './pages/Registration';
 import Home from './pages/Home'
 import ForgotPassword from './pages/forgot_password';
+import UserDashboard from './pages/UserDashboard';
 
 const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
@@ -21,6 +22,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/registration" element={<Registration />} />
           <Route path="/forgot_password" element={<ForgotPassword />} />
+          <Route path="/:username" element={<UserDashboard/>}/>
         </Routes>
         </Router>
       </GoogleOAuthProvider>
