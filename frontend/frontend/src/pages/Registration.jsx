@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import "./registration.css"; // separate CSS file
 import { Link } from "react-router-dom";
 import placeholderImg from "../assets/login_reg_Place_holder1.png";
+import Navbar from '../components/Navbar'
 
 const RegistrationPage = () => {
   const [username, setUsername] = useState("");
@@ -52,6 +53,7 @@ const RegistrationPage = () => {
 
   return (
     <div className="container">
+      <Navbar/>
       <div className="register-box">
         {/* Left Side: Registration Form */}
         <div className="register-form-section">

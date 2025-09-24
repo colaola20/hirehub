@@ -8,6 +8,7 @@ import githubLogo from "../assets/github.png";
 import linkedinLogo from "../assets/linkedin.png";
 import googleLogo from "../assets/google.png";
 import placeholderImg from "../assets/login_reg_Place_holder1.png";
+import Navbar from '../components/Navbar'
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -49,6 +50,7 @@ const Login = () => {
 
   return (
     <div className="container">
+      <Navbar/>
       <div className="login-box">
         {/* Left Side: Login Form and Branding */}
         <div className="login-form-section">

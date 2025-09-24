@@ -2,10 +2,12 @@
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
+  padding-top: 90px;
 }
 
 body {
   margin: 0;
+  padding: 0;
   font-family: "Inter", sans-serif;
   background: linear-gradient(to right, #8ec5fc, #e0c3fc);
 }
@@ -14,11 +16,13 @@ body {
 @media all and (max-width: 768px) {
   #root {
     padding: 1rem;
+    padding-top: 80px;
   }
 }
 
 @media all and (max-width: 480px) {
   #root {
     padding: 0.5rem;
+    padding-top: 75px;
   }
 }
