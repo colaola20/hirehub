@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request
 from app.services.database import DatabaseService
 from app.models.user import User
-from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, unset_jwt_cookies
 
 users_bp = Blueprint('users', __name__)
 
@@ -153,6 +153,18 @@ def login_user():
             'message': 'Failed to authenticate user',
             'error': str(e)
         }), 500
+    
+@users_bp.route('/api/logout', methods=['POST'])
+@jwt_required()
+def logout():
+    try:
+        response = jsonify({
+            "message" : "Logged out successfully"
+        })
+        unset_jwt_cookies(response)
+        return response, 200
+    except Exception as e:
+        return jsonify({"message": "Logout failed", "error":str(e)}), 500
 
 @users_bp.route('/api/profile', methods=['GET'])
 @jwt_required()
