@@ -1,11 +1,11 @@
 from flask import Blueprint, jsonify, request
 from app.services.database import DatabaseService
 from app.models.user import User
-from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, unset_jwt_cookies
 
 users_bp = Blueprint('users', __name__)
 
-@users_bp.route('/users', methods=['GET'])
+@users_bp.route('/api/users', methods=['GET'])
 @jwt_required(optional=True)
 def get_all_users():
     """Get all users from the database."""
@@ -30,7 +30,7 @@ def get_all_users():
             'error': str(e)
         }), 500
 
-@users_bp.route('/register', methods=['POST'])
+@users_bp.route('/api/register', methods=['POST'])
 def register_user():
     """Register a new user."""
     try:
@@ -93,7 +93,7 @@ def register_user():
             'error': str(e)
         }), 500
 
-@users_bp.route('/login', methods=['POST'])
+@users_bp.route('/api/login', methods=['POST'])
 def login_user():
     """Authenticate user login."""
     try:
@@ -105,7 +105,7 @@ def login_user():
                 'message': 'No data provided'
             }), 400
 
-        required_fields = ['username', 'password']
+        required_fields = ['email', 'password']
         for field in required_fields:
             if field not in data:
                 return jsonify({
@@ -113,12 +113,12 @@ def login_user():
                     'message': f'Missing required field: {field}'
                 }), 400
 
-        # Find user by username
-        users = DatabaseService.filter_by(User, username=data['username'])
+        # Find user by Email
+        users = DatabaseService.filter_by(User, email=data['email'])
         if not users:
             return jsonify({
                 'status': 'error',
-                'message': 'Invalid username or password'
+                'message': 'Invalid username '
             }), 401
 
         user = users[0]
@@ -127,7 +127,7 @@ def login_user():
         if not user.check_password(data['password']):
             return jsonify({
                 'status': 'error',
-                'message': 'Invalid username or password'
+                'message': 'Invalid password'
             }), 401
 
         # Check if user is active
@@ -153,8 +153,20 @@ def login_user():
             'message': 'Failed to authenticate user',
             'error': str(e)
         }), 500
+    
+@users_bp.route('/api/logout', methods=['POST'])
+@jwt_required()
+def logout():
+    try:
+        response = jsonify({
+            "message" : "Logged out successfully"
+        })
+        unset_jwt_cookies(response)
+        return response, 200
+    except Exception as e:
+        return jsonify({"message": "Logout failed", "error":str(e)}), 500
 
-@users_bp.route('/profile', methods=['GET'])
+@users_bp.route('/api/profile', methods=['GET'])
 @jwt_required()
 def get_user_profile():
     """Get current user's profile."""
