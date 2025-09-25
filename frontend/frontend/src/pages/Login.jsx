@@ -1,7 +1,7 @@
 // LoginPage.jsx
 // This component renders the login page for HireHub, including branding, login form, and info section.
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom"; // ⬅ import useNavigate
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom"; // ⬅ import useNavigate
 import "./login_Page.css";
 import jwt_decode from "jwt-decode";
 import githubLogo from "../assets/github.png";
@@ -14,6 +14,24 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate(); // ⬅ initialize navigate
+  const [searchParams] = useSearchParams();
+
+  useEffect(() => {
+    const token = searchParams.get('token');
+    const username = searchParams.get('username')
+    const error = searchParams.get('error')
+
+    if (error) {
+      alert(`OAuth login failed: ${error}`)
+      return
+    }
+
+    if (token && username) {
+      localStorage.setItem("token", token)
+      console.log("OAuth login successful, redirecting to:", `/${username}`)
+      navigate(`/${username}`)
+    }
+  }, [searchParams, navigate])
 
  const handleSubmit = async (event) => {
     event.preventDefault();
