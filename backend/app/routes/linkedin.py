@@ -24,7 +24,7 @@ def init_linkedin_oauth(app):
     )
 
 
-@linkedin_bp.route("/login/linkedin")
+@linkedin_bp.route("/api/login/linkedin")
 def login_linkedin():
     # Generate a unique nonce and store it in the session
     nonce = secrets.token_urlsafe(32)
@@ -36,7 +36,7 @@ def login_linkedin():
     return oauth.linkedin.authorize_redirect(redirect_uri, nonce=nonce)
 
 
-@linkedin_bp.route("/login/linkedin/callback")
+@linkedin_bp.route("/api/login/linkedin/callback")
 def authorize_linkedin():
     try:
         # Pass the stored nonce for validation

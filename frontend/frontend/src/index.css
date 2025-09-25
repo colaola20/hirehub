@@ -3,6 +3,20 @@
   line-height: 1.5;
   font-weight: 400;
 
+  /* HireHub Color Palette */
+  --hirehub-primary-blue: #8ec5fc;
+  --hirehub-primary-purple: #e0c3fc;
+  --hirehub-secondary-blue: #86bbf0;
+  --hirehub-secondary-purple: #7a5bbf;
+  --hirehub-dark-purple: #562fac;
+  --hirehub-darker-purple: #2b155a;
+  --hirehub-light-bg: #f9fbff;
+  --hirehub-white: #ffffff;
+  --hirehub-text-dark: #213547;
+  --hirehub-text-light: rgba(255, 255, 255, 0.87);
+  --hirehub-border: #e0e0e0;
+  --hirehub-shadow: rgba(0, 0, 0, 0.1);
+
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
   background-color: #242424;
