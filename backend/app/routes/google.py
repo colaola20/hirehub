@@ -35,12 +35,13 @@ def authorize_google():
     user_info = oauth.google.parse_id_token(token, nonce=nonce)
 
     email = user_info["email"]
+    username = email.split("@")[0]  # Use first part of email as username
 
     # Check if user exists
     user = User.query.filter_by(email=email).first()
     if not user:
         user = User(
-            username=user_info.get("name", email),
+            username=username,  #uses email prefix
             email=email,
             first_name=user_info.get("given_name", ""),
             last_name=user_info.get("family_name", ""),
