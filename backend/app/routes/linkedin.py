@@ -36,7 +36,7 @@ def login_linkedin():
     return oauth.linkedin.authorize_redirect(redirect_uri, nonce=nonce)
 
 
-@linkedin_bp.route("/log in/linkedin/callback")
+@linkedin_bp.route("/login/linkedin/callback")
 def authorize_linkedin():
     try:
         # Pass the stored nonce for validation
