@@ -1,3 +1,16 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
 .login-box {
   display: flex;
   width: 100%;
@@ -81,7 +94,7 @@
 /* Input Fields */
 .login-form input {
   width: 100%;
-  padding: 12px;
+  padding: 0.75rem 1rem;
   margin-bottom: 14px;
   border: 1px solid #ccc;
   border-radius: 8px;

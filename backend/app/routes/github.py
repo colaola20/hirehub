@@ -3,6 +3,7 @@ import secrets
 from flask import Blueprint, redirect, url_for, session, jsonify
 from app.extensions import db, oauth
 from app.models.user import User
+from flask_jwt_extended import create_access_token 
 
 github_bp = Blueprint("github", __name__)
 
@@ -28,34 +29,39 @@ def login_github():
 
 @github_bp.route("/api/login/github/callback")
 def authorize_github():
-    token = oauth.github.authorize_access_token()
-    user_info = oauth.github.get("user").json()
-    email_info = oauth.github.get("user/emails").json()
+    try:
+        token = oauth.github.authorize_access_token()
+        user_info = oauth.github.get("user").json()
+        email_info = oauth.github.get("user/emails").json()
 
-    primary_email = next((e["email"] for e in email_info if e.get("primary")), None)
-    if not primary_email:
-        return jsonify({"status": "error", "message": "No primary email found"}), 400
-
-
-    user = User.query.filter_by(email=primary_email).first()
-    if not user:
-        user = User(
-            username=user_info["login"],
-            email=primary_email,
-            first_name=user_info.get("name", "").split(" ")[0],
-            last_name=" ".join(user_info.get("name", "").split(" ")[1:]) if user_info.get("name") else "",
-        )
-        # Generates a random password for the Oauth user
-        user.set_password(secrets.token_urlsafe(16))
-
-        try:
-            db.session.add(user)
-            db.session.commit()
-        except Exception as e:
-                db.session.rollback()
-                return jsonify({"status": "error", "message": str(e)}), 500
+        primary_email = next((e["email"] for e in email_info if e.get("primary")), None)
+        if not primary_email:
+            return jsonify({"status": "error", "message": "No primary email found"}), 400
 
 
-    session["user"] = {"username": user.username, "email": user.email}
+        user = User.query.filter_by(email=primary_email).first()
+        if not user:
+            user = User(
+                username=user_info["login"],
+                email=primary_email,
+                first_name=user_info.get("name", "").split(" ")[0],
+                last_name=" ".join(user_info.get("name", "").split(" ")[1:]) if user_info.get("name") else "",
+            )
+            # Generates a random password for the Oauth user
+            user.set_password(secrets.token_urlsafe(16))
 
-    return jsonify({"status": "ok", "user": session["user"]})
+            try:
+                db.session.add(user)
+                db.session.commit()
+            except Exception as e:
+                    db.session.rollback()
+                    return jsonify({"status": "error", "message": str(e)}), 500
+
+        access_token = create_access_token(identity=str(user.id))
+        frontend_url = f"http://localhost:5173/login?token={access_token}&username={user.username}"
+        return redirect(frontend_url)
+
+        # session["user"] = {"username": user.username, "email": user.email}
+        # return jsonify({"status": "ok", "user": session["user"]})
+    except Exception as e:
+         return jsonify({"status": "error", "message": str(e)}), 500

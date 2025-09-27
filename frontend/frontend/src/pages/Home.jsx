@@ -1,6 +1,7 @@
 // Home.jsx
 import React, { useState } from "react";
 import "./Home.css";
+import Navbar from "../components/Navbar";
 
 const Home = () => {
   const [jobDescription, setJobDescription] = useState("");
@@ -27,6 +28,7 @@ const Home = () => {
 
   return (
     <div className="container">
+        <Navbar/>
       <div className="login-box">
         {/* Left Side: Resume Generator */}
         <div className="login-form-section">
