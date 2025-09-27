@@ -5,44 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a45acd5d-0a0e-4479-af20-a5d6039ca1f5" name="Changes" comment="still working in linkedin.py">
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources/2b73150c-f1f5-4155-afea-124d6a6d0211/storage_v2/_src_/database/hirehub.geEqNw.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources/2b73150c-f1f5-4155-afea-124d6a6d0211/storage_v2/_src_/database/hirehub.geEqNw/schema/information_schema.FNRwLQ.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources/2b73150c-f1f5-4155-afea-124d6a6d0211/storage_v2/_src_/database/hirehub.geEqNw/schema/pg_catalog.0S1ZNQ.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources/2b73150c-f1f5-4155-afea-124d6a6d0211/storage_v2/_src_/database/hirehub.geEqNw/schema/public.abK9xQ.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/data_source_mapping.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/sqldialects.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/frontend/src/assets/login_reg_Place_holder1.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/frontend/src/components/Navbar.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/frontend/src/components/Navbar.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/frontend/src/components/PersonalizedNavbar.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/frontend/src/pages/Home.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/frontend/src/pages/Home.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/frontend/src/pages/Login.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/frontend/src/pages/Registration.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/frontend/src/pages/UserDashboard.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/frontend/src/pages/forgot_password.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/frontend/src/pages/login_Page.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/frontend/src/pages/registration.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/hirehub.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/hirehub.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/app/routes/github.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/routes/github.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/app/routes/google.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/routes/google.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/app/routes/linkedin.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/routes/linkedin.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/app/routes/users.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/routes/users.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/backend/requirements.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/frontend/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/frontend/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/frontend/public/vite.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/frontend/src/App.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/frontend/src/App.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/frontend/src/App.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/frontend/src/App.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/frontend/src/Login.jsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/frontend/src/assets/react.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/frontend/src/index.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/frontend/src/index.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/frontend/src/login_Page.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/frontend/vite.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/frontend/vite.config.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_9_17_2025_7_33_PM_[Changes]/shelved.patch" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/frontend/src/pages/Home.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/frontend/src/pages/Home.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/frontend/src/pages/Registration.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/frontend/src/pages/Registration.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -110,7 +75,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "Merging JPR",
+    "git-widget-placeholder": "Haris",
     "ignore.virus.scanning.warn.message": "true",
     "last_opened_file_path": "C:/Users/JPR/Desktop/490/hirehub/frontend/frontend/src/assets",
     "node.js.detected.package.eslint": "true",

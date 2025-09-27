@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import "./Home.css";
 import Navbar from "../components/Navbar";
-import { useNavigate } from "react-router-dom"; // ✅ for redirecting after logout
+import { useNavigate } from "react-router-dom"; 
 
 const Home = () => {
   const [jobDescription, setJobDescription] = useState("");
@@ -19,13 +19,13 @@ const Home = () => {
   useEffect(() => {
     let timer;
 
-    // ✅ reset inactivity timer
+    
     const resetTimer = () => {
       if (timer) clearTimeout(timer);
-      timer = setTimeout(logout, 30000); // 30 seconds
+      timer = setTimeout(logout, 10000); // 30 seconds
     };
 
-    // ✅ listen for user activity
+   
     window.addEventListener("mousemove", resetTimer);
     window.addEventListener("keydown", resetTimer);
     window.addEventListener("click", resetTimer);
