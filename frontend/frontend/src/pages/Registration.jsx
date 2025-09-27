@@ -17,46 +17,10 @@ const RegistrationPage = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
- // Regex patterns
-  const usernameRegex = /^[a-zA-Z0-9_]{3,15}$/;
-  const nameRegex = /^[A-Za-z]{2,30}$/;
-  // const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  const passwordRegex =
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[.@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-
-    // Disallow spaces in username
-  if (/\s/.test(username)) {
-    alert("Username cannot contain spaces!");
-    return;
-  }
-  // Validation checks
-  if (!usernameRegex.test(username)) {
-    alert("Username must be 3-15 characters and only contain letters, numbers, and underscores.");
-    return;
-  }
-  if (!nameRegex.test(firstName)) {
-    alert("First name must be 2-30 alphabetic characters.");
-    return;
-  }
-  if (!nameRegex.test(lastName)) {
-    alert("Last name must be 2-30 alphabetic characters.");
-    return;
-  }
-  // if (!emailRegex.test(email)) {
-  //   alert("Please enter a valid email address.");
-  //   return;
-  // }
-  if (!passwordRegex.test(password)) {
-    alert(
-      "Password must be at least 8 characters, include an uppercase letter, lowercase letter, number, and special character."
-    );
-    return;
-  }
-  if (password !== confirmPassword) {
-    alert("Passwords do not match!");
-    return;
-  }
-
+    if (password !== confirmPassword) {
+      alert("Passwords do not match!");
+      return;
+    }
 
     try {
       const response = await fetch("/api/register", {
