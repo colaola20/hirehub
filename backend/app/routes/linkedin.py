@@ -47,6 +47,7 @@ from flask import current_app
 @linkedin_bp.route("/api/login/linkedin/callback")
 def authorize_linkedin():
     try:
+        # Step 1: Get the authorization code from LinkedIn callback
         code = request.args.get('code')
         error = request.args.get('error')
         
@@ -59,42 +60,45 @@ def authorize_linkedin():
         if not code:
             return jsonify({"status": "error", "message": "No authorization code"}), 400
 
-        # Manual token exchange (bypasses Authlib's nonce validation)
+        # Step 2: MANUAL TOKEN EXCHANGE
         token_url = 'https://www.linkedin.com/oauth/v2/accessToken'
         redirect_uri = url_for("linkedin.authorize_linkedin", _external=True)
         
+        # Prepare the token request data
         token_data = {
-            'grant_type': 'authorization_code',
-            'code': code,
-            'redirect_uri': redirect_uri,
-            'client_id': current_app.config['LINKEDIN_CLIENT_ID'],
-            'client_secret': current_app.config['LINKEDIN_CLIENT_SECRET']
+            'grant_type': 'authorization_code',  # Standard OAuth parameter
+            'code': code,  # The temporary code from LinkedIn
+            'redirect_uri': redirect_uri,  # Must match your app settings
+            'client_id': current_app.config['LINKEDIN_CLIENT_ID'],  # Your app ID
+            'client_secret': current_app.config['LINKEDIN_CLIENT_SECRET']  # Your app secret
         }
         
-        # Get access token
+        # Make the HTTP request to exchange code for token
         token_response = requests.post(
             token_url, 
-            data=token_data,
-            headers={'Content-Type': 'application/x-www-form-urlencoded'}
+            data=token_data,  # Send as form data
+            headers={'Content-Type': 'application/x-www-form-urlencoded'}  # Important header
         )
         
+        # Check if token request was successful
         if token_response.status_code != 200:
             return jsonify({
                 "status": "error", 
                 "message": "Token exchange failed",
-                "details": token_response.text
+                "details": token_response.text  # LinkedIn's error message
             }), 400
             
+        # Parse the token response
         token_json = token_response.json()
-        access_token = token_json.get('access_token')
+        access_token = token_json.get('access_token')  # The valuable access token
         
         if not access_token:
             return jsonify({"status": "error", "message": "No access token received"}), 400
 
-        # Get user info using the access token
+        # Step 3: MANUAL USER INFO FETCH
         userinfo_response = requests.get(
-            'https://api.linkedin.com/v2/userinfo',
-            headers={'Authorization': f'Bearer {access_token}'}
+            'https://api.linkedin.com/v2/userinfo',  # LinkedIn's user info endpoint
+            headers={'Authorization': f'Bearer {access_token}'}  # Include token in header
         )
         
         if userinfo_response.status_code != 200:
@@ -104,28 +108,31 @@ def authorize_linkedin():
                 "details": userinfo_response.text
             }), 400
             
+        # Parse user information
         userinfo = userinfo_response.json()
         
-        # Extract user data
+        # Step 4: Extract user data from the response
         email = userinfo.get("email")
         if not email:
-            # Try alternative email fields
+            # LinkedIn sometimes puts email in different fields
             email = userinfo.get("emailAddress")
         
         if not email:
             return jsonify({
                 "status": "error", 
                 "message": "Email not provided by LinkedIn",
-                "userinfo": userinfo  # For debugging
+                "userinfo": userinfo  # For debugging what LinkedIn actually returned
             }), 400
 
+        # Extract other user information
         first_name = userinfo.get("given_name", "")
         last_name = userinfo.get("family_name", "")
-        linkedin_id = userinfo.get("sub", "")
+        linkedin_id = userinfo.get("sub", "")  # LinkedIn's unique user ID
         
-        # Your user creation/login logic
+        # Step 5: Your existing user creation/login logic
         username = f"{first_name}{last_name}".lower() or email.split('@')[0]
 
+        # Find existing user or create new one
         user = User.query.filter_by(email=email).first()
         if not user:
             user = User(
@@ -135,14 +142,15 @@ def authorize_linkedin():
                 last_name=last_name,
                 linkedin_id=linkedin_id
             )
+            # Set a random password for OAuth users
             user.set_password(secrets.token_urlsafe(32))
             db.session.add(user)
             db.session.commit()
 
-        # Set session
+        # Step 6: Create user session
         session["user_id"] = user.id
         session["user_email"] = user.email
-        session.pop('linkedin_nonce', None)  # Clean up
+        session.pop('linkedin_nonce', None)  # Clean up session
 
         return jsonify({
             "status": "success", 
