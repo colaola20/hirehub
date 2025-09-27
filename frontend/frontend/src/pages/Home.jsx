@@ -1,11 +1,46 @@
 // Home.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import "./Home.css";
 import Navbar from "../components/Navbar";
+import { useNavigate } from "react-router-dom"; // ✅ for redirecting after logout
 
 const Home = () => {
   const [jobDescription, setJobDescription] = useState("");
   const [resume, setResume] = useState("");
+  const navigate = useNavigate();
+
+  // ✅ logout function
+  const logout = useCallback(() => {
+    localStorage.removeItem("token"); // clear token/session
+    alert("You have been logged out due to inactivity.");
+    navigate("/login"); // redirect to login page
+  }, [navigate]);
+
+  useEffect(() => {
+    let timer;
+
+    // ✅ reset inactivity timer
+    const resetTimer = () => {
+      if (timer) clearTimeout(timer);
+      timer = setTimeout(logout, 30000); // 30 seconds
+    };
+
+    // ✅ listen for user activity
+    window.addEventListener("mousemove", resetTimer);
+    window.addEventListener("keydown", resetTimer);
+    window.addEventListener("click", resetTimer);
+
+    // start timer when component mounts
+    resetTimer();
+
+    // cleanup
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener("mousemove", resetTimer);
+      window.removeEventListener("keydown", resetTimer);
+      window.removeEventListener("click", resetTimer);
+    };
+  }, [logout]);
 
   const handleGenerateResume = async () => {
     try {
@@ -28,11 +63,10 @@ const Home = () => {
 
   return (
     <div className="container">
-        <Navbar/>
+      <Navbar />
       <div className="login-box">
         {/* Left Side: Resume Generator */}
         <div className="login-form-section">
-          {/* Branding */}
           <div className="brand">
             <div className="logo">H</div>
             <div className="brand-text">
@@ -41,7 +75,6 @@ const Home = () => {
             </div>
           </div>
 
-          {/* Resume Generator Form */}
           <form className="login-form" onSubmit={(e) => e.preventDefault()}>
             <textarea
               className="job-input"
