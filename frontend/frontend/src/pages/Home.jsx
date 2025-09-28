@@ -1,46 +1,11 @@
 // Home.jsx
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState } from "react";
 import "./Home.css";
 import Navbar from "../components/Navbar";
-import { useNavigate } from "react-router-dom"; 
 
 const Home = () => {
   const [jobDescription, setJobDescription] = useState("");
   const [resume, setResume] = useState("");
-  const navigate = useNavigate();
-
-  // ✅ logout function
-  const logout = useCallback(() => {
-    localStorage.removeItem("token"); // clear token/session
-    alert("You have been logged out due to inactivity.");
-    navigate("/login"); // redirect to login page
-  }, [navigate]);
-
-  useEffect(() => {
-    let timer;
-
-    
-    const resetTimer = () => {
-      if (timer) clearTimeout(timer);
-      timer = setTimeout(logout, 10000); // 30 seconds
-    };
-
-   
-    window.addEventListener("mousemove", resetTimer);
-    window.addEventListener("keydown", resetTimer);
-    window.addEventListener("click", resetTimer);
-
-    // start timer when component mounts
-    resetTimer();
-
-    // cleanup
-    return () => {
-      clearTimeout(timer);
-      window.removeEventListener("mousemove", resetTimer);
-      window.removeEventListener("keydown", resetTimer);
-      window.removeEventListener("click", resetTimer);
-    };
-  }, [logout]);
 
   const handleGenerateResume = async () => {
     try {
