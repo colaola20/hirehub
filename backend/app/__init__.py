@@ -37,7 +37,7 @@ def create_app():
     app.config["MAIL_DEFAULT_SENDER"] = os.getenv("MAIL_DEFAULT_SENDER", "harisakber21@gmail.com")
     # ✅ Suppress sending in dev mode if placeholder password is used
     if app.config["MAIL_PASSWORD"] == "xqzw mvej cyxb pkuw":
-        app.config["MAIL_SUPPRESS_SEND"] = True
+        app.config["MAIL_SUPPRESS_SEND"] = False
 
     # Initialize extensions
     db.init_app(app)
