@@ -2,7 +2,7 @@ import React from "react";
 import { Navigate } from "react-router-dom";
 
 const ProtectedRoute = ({ children }) => {
-  const token = localStorage.getItem("token");
+    const token = localStorage.getItem('jwt_token');
     console.log("ProtectedRoute running...");
     console.log("Token in ProtectedRoute:", !!token);
 
