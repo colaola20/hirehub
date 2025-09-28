@@ -27,7 +27,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/registration" element={<Registration />} />
           <Route path="/forgot_password" element={<ForgotPassword />} />
-
+        
           {/* Protected dashboard route */}
           <Route
             path="/:username"
