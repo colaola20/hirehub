@@ -1,27 +1,44 @@
 // LoginPage.jsx
 // This component renders the login page for HireHub, including branding, login form, and info section.
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom"; // ⬅ import useNavigate
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import "./login_Page.css";
 import jwt_decode from "jwt-decode";
 import githubLogo from "../assets/github.png";
 import linkedinLogo from "../assets/linkedin.png";
 import googleLogo from "../assets/google.png";
 import placeholderImg from "../assets/login_reg_Place_holder1.png";
-import Navbar from '../components/Navbar'
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate(); // ⬅ initialize navigate
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
- const handleSubmit = async (event) => {
+  useEffect(() => {
+    const token = searchParams.get("token");
+    const username = searchParams.get("username");
+    const error = searchParams.get("error");
+
+    if (error) {
+      alert(`OAuth login failed: ${error}`);
+      return;
+    }
+
+    if (token && username) {
+      localStorage.setItem("token", token);
+      console.log("OAuth login successful, redirecting to:", `/${username}`);
+      navigate(`/${username}`);
+    }
+  }, [searchParams, navigate]);
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
     try {
       const response = await fetch("/api/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }), // 🔹 match backend
+        body: JSON.stringify({ email, password }),
       });
 
       const data = await response.json();
@@ -35,15 +52,14 @@ const Login = () => {
           console.log("Decoded JWT:", decoded);
 
           const username = data.data?.username;
-          console.log(username)
           if (username) {
             navigate(`/${username}`);
           } else {
-            navigate("/")
+            navigate("/");
           }
         } catch (err) {
           console.warn("Failed to decode token:", err);
-          navigate("/")
+          navigate("/");
         }
 
         console.log("Login successful:", data);
@@ -58,7 +74,6 @@ const Login = () => {
 
   return (
     <div className="container">
-      <Navbar/>
       <div className="login-box">
         {/* Left Side: Login Form and Branding */}
         <div className="login-form-section">
@@ -101,14 +116,11 @@ const Login = () => {
                 type="button"
                 className={"google-btn"}
                 onClick={() =>
-                  (window.location.href = "http://127.0.0.1:5001/api/login/google")
+                  (window.location.href =
+                    "http://127.0.0.1:5001/api/login/google")
                 }
               >
-                <img
-                  src={googleLogo}
-                  alt="Google logo"
-                  className="Buttonlogo"
-                />
+                <img src={googleLogo} alt="Google logo" className="Buttonlogo" />
               </button>
 
               {/* GitHub login button */}
@@ -116,14 +128,11 @@ const Login = () => {
                 type="button"
                 className="github-btn"
                 onClick={() =>
-                  (window.location.href = "http://127.0.0.1:5001/api/login/github")
+                  (window.location.href =
+                    "http://127.0.0.1:5001/api/login/github")
                 }
               >
-                <img
-                  src={githubLogo}
-                  alt="GitHub logo"
-                  className="Buttonlogo"
-                />
+                <img src={githubLogo} alt="GitHub logo" className="Buttonlogo" />
               </button>
 
               {/* Linkedin login button */}
@@ -131,7 +140,8 @@ const Login = () => {
                 type="button"
                 className="linkedIn-btn"
                 onClick={() =>
-                  (window.location.href = "http://127.0.0.1:5001/api/login/linkedin")
+                  (window.location.href =
+                    "http://127.0.0.1:5001/api/login/linkedin")
                 }
               >
                 <img

@@ -28,11 +28,10 @@ const Home = () => {
 
   return (
     <div className="container">
-        <Navbar/>
+      <Navbar />
       <div className="login-box">
         {/* Left Side: Resume Generator */}
         <div className="login-form-section">
-          {/* Branding */}
           <div className="brand">
             <div className="logo">H</div>
             <div className="brand-text">
@@ -41,7 +40,6 @@ const Home = () => {
             </div>
           </div>
 
-          {/* Resume Generator Form */}
           <form className="login-form" onSubmit={(e) => e.preventDefault()}>
             <textarea
               className="job-input"

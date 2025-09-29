@@ -6,9 +6,11 @@ import placeholderImg from "../assets/login_reg_Place_holder1.png";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setLoading(true);
     try {
       const response = await fetch("/api/forgot-password", {
         method: "POST",
@@ -17,12 +19,16 @@ const ForgotPassword = () => {
       });
       const data = await response.json();
       if (response.ok) {
-        alert("Password reset link sent to your email.");
+        alert("✅ Password reset link sent to your email. Please check your inbox.");
+        setEmail("");
       } else {
-        alert(`Error: ${data.message}`);
+        alert(`❌ Error: ${data.message}`);
       }
     } catch (error) {
       console.error("Error sending reset request:", error);
+      alert("Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -48,9 +54,10 @@ const ForgotPassword = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              disabled={loading}
             />
-            <button type="submit" className="register-btn">
-              Send Reset Link
+            <button type="submit" className="register-btn" disabled={loading}>
+              {loading ? "Sending..." : "Send Reset Link"}
             </button>
           </form>
 
@@ -65,7 +72,7 @@ const ForgotPassword = () => {
           <h1>Forgot Your Password?</h1>
           <p>
             Don’t worry! Enter your email and we’ll send you a secure link to
-            reset your password.
+            reset your password. The link will expire for your safety.
           </p>
           <div className="illustration">
             <img src={placeholderImg} alt="Password Reset" />
