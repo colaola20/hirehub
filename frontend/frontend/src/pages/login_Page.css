@@ -1,3 +1,19 @@
+<<<<<<< HEAD
+=======
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+>>>>>>> origin/JPR
 .login-box {
   display: flex;
   width: 100%;
@@ -19,6 +35,7 @@
 
 .brand{
   display:flex;
+<<<<<<< HEAD
   align-items:center;     /* vertical align */
   gap:12px;
   flex-wrap:wrap;         /* wraps on small screens */
@@ -36,6 +53,26 @@
   font-weight:700;
   border-radius:8px;
   padding:8px 14px;
+=======
+  align-items:center;     
+  gap:12px;
+  flex-wrap:wrap;         
+}
+
+.logo{
+  margin:0;            
+  background:linear-gradient(to right,#8ec5fc,#7a5bbf);
+  color:#fff;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:clamp(60px,10vw,100px);
+  width:clamp(60px,10vw,100px);
+  font-size:clamp(40px,8vw,6rem);
+  font-weight:700;
+  border-radius:8px;
+  margin-top: -30px;
+>>>>>>> origin/JPR
 }
 
 
@@ -45,6 +82,7 @@
   line-height: 1.2;
 }
 
+<<<<<<< HEAD
 /* DELETE or comment out your old block:
 .brand h2 {
   margin: -5px;
@@ -55,6 +93,8 @@
 */
 
 /* Use the class you already have */
+=======
+>>>>>>> origin/JPR
 .brand-title{
   margin:0;
   line-height:1;
@@ -72,6 +112,10 @@
   font-size:clamp(12px,2.2vw,18px);
   font-weight:600;
   color:#111;
+<<<<<<< HEAD
+=======
+  
+>>>>>>> origin/JPR
 }
 
 
@@ -89,7 +133,11 @@
 /* Input Fields */
 .login-form input {
   width: 100%;
+<<<<<<< HEAD
   padding: 12px;
+=======
+  padding: 0.75rem 1rem;
+>>>>>>> origin/JPR
   margin-bottom: 14px;
   border: 1px solid #ccc;
   border-radius: 8px;
