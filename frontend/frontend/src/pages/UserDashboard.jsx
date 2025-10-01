@@ -1,4 +1,3 @@
-// UserDashboard.jsx
 import React, { useEffect, useCallback } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import PersonalizedNavbar from "../components/PersonalizedNavbar";
@@ -7,6 +6,14 @@ const UserDashboard = () => {
   const navigate = useNavigate();
   const { username } = useParams();
   const [searchParams] = useSearchParams();
+
+  // ✅ Block access if token is missing
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/login");
+    }
+  }, [navigate]);
 
   // ✅ logout function
   const logout = useCallback(() => {
@@ -19,7 +26,7 @@ const UserDashboard = () => {
     let timer;
     const resetTimer = () => {
       if (timer) clearTimeout(timer);
-      timer = setTimeout(logout, 30000); // 30s inactivity
+      timer = setTimeout(logout, 30000);
     };
 
     window.addEventListener("mousemove", resetTimer);
@@ -45,7 +52,7 @@ const UserDashboard = () => {
       localStorage.setItem("token", token);
     }
 
-    // 🚀 Clean URL: remove ?token=...&username=...
+    // ✅ Clean the URL
     if (queryUsername) {
       navigate(`/${queryUsername}`, { replace: true });
     }
