@@ -1,133 +1,159 @@
+/* Base & reset */
 .landing-container {
-  background: #fff;
-  color: #111;
+  overflow-x: hidden;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: #222;
+  background: #fff;
 }
 
-/* Hero Section */
+/* Hero / Banner */
 .hero {
-  text-align: center;
-  padding: 100px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 80px 10%;
   background: linear-gradient(135deg, #8ec5fc, #e0c3fc);
+  border-radius: 20px;
+  margin: 40px auto;
+  max-width: 1200px;
 }
 
-.hero-title {
-  font-size: clamp(40px, 6vw, 72px);
+.hero-content {
+  max-width: 50%;
+}
+
+.hero-heading {
+  font-size: clamp(36px, 6vw, 64px);
   font-weight: 700;
   margin-bottom: 20px;
   color: #111;
 }
 
-.hero-subtitle {
+.hero-subheading {
   font-size: clamp(18px, 2vw, 24px);
+  margin-bottom: 30px;
   color: #333;
-  margin-bottom: 40px;
 }
 
-.cta-btn {
-  background: #111;
+.cta-button {
+  padding: 14px 28px;
+  font-size: 18px;
+  background: #2b155a;
   color: #fff;
   border: none;
-  padding: 14px 28px;
   border-radius: 50px;
-  font-size: 16px;
   cursor: pointer;
-  transition: 0.3s;
+  transition: background 0.3s;
 }
 
-.cta-btn:hover {
-  background: #444;
+.cta-button:hover {
+  background: #4a0f99;
 }
 
-.cta-btn.disabled {
-  background: #ccc;
-  cursor: not-allowed;
+.cta-button.disabled {
+  background: #aaa;
+  cursor: default;
 }
 
-/* Showcase Section */
-.showcase {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 80px 10%;
-  gap: 40px;
-}
-
-.showcase.reverse {
-  flex-direction: row-reverse;
-}
-
-.showcase-text {
-  flex: 1;
-}
-
-.showcase-text h2 {
-  font-size: 36px;
-  margin-bottom: 20px;
-  color: #111;
-}
-
-.showcase-text p {
-  font-size: 18px;
-  color: #555;
-}
-
-.showcase-image img {
-  width: 350px;
+.hero-image img {
+  width: 320px;
   max-width: 100%;
 }
 
-/* Pricing Section */
-.tiers {
-  text-align: center;
-  padding: 80px 20px;
-  background: #f9f9f9;
-}
-
-.tiers h2 {
-  font-size: 32px;
-  margin-bottom: 40px;
-  color: #111;
-}
-
-.tiers-grid {
+/* Features */
+.features {
   display: flex;
   justify-content: center;
   gap: 40px;
-  flex-wrap: wrap;
+  padding: 60px 10%;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-.tier-card {
-  background: #fff;
+.feature-card {
+  background: #f9f9ff;
+  padding: 30px;
   border-radius: 16px;
+  text-align: center;
+  flex: 1;
+  transition: transform 0.3s;
+}
+
+.feature-card:hover {
+  transform: translateY(-8px);
+}
+
+.feature-card .icon {
+  font-size: 40px;
+  margin-bottom: 16px;
+}
+
+.feature-card h3 {
+  margin: 16px 0 8px;
+  font-size: 22px;
+}
+
+.feature-card p {
+  font-size: 16px;
+  color: #555;
+}
+
+/* Plans / Pricing */
+.plans {
+  text-align: center;
+  padding: 80px 10%;
+  background: #f4f4fa;
+}
+
+.plans h2 {
+  font-size: 32px;
+  margin-bottom: 40px;
+}
+
+.plans-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 30px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.plan-card {
+  background: #fff;
   padding: 40px 30px;
-  width: 300px;
-  text-align: left;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  border-radius: 20px;
+  border: 1px solid #ddd;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+  transition: transform 0.3s;
 }
 
-.tier-card h3 {
+.plan-card:hover {
+  transform: translateY(-10px);
+}
+
+.plan-card h3 {
   font-size: 24px;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 }
 
-.tier-card ul {
+.plan-card ul {
   list-style: none;
   padding: 0;
   margin: 0 0 30px 0;
 }
 
-.tier-card li {
-  margin: 10px 0;
+.plan-card li {
+  margin: 12px 0;
   font-size: 16px;
   color: #333;
 }
 
 /* Footer */
 .footer {
+  padding: 40px 10%;
   text-align: center;
-  padding: 30px;
   font-size: 14px;
-  color: #555;
-  border-top: 1px solid #ddd;
+  background: #fff;
+  color: #666;
+  margin-top: 60px;
 }
