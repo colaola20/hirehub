@@ -826,83 +826,55 @@ false Zulu
       <ObjectId>16384</ObjectId>
       <OwnerName>rdsadmin</OwnerName>
     </database>
-    <role id="5" parent="1" name="pg_checkpoint">
-      <ObjectId>4544</ObjectId>
-    </role>
-    <role id="6" parent="1" name="pg_create_subscription">
-      <ObjectId>6304</ObjectId>
-    </role>
-    <role id="7" parent="1" name="pg_database_owner">
+    <role id="5" parent="1" name="pg_database_owner">
       <ObjectId>6171</ObjectId>
     </role>
-    <role id="8" parent="1" name="pg_execute_server_program">
-      <ObjectId>4571</ObjectId>
+    <role id="6" parent="1" name="pg_read_all_data">
+      <ObjectId>6181</ObjectId>
     </role>
-    <role id="9" parent="1" name="pg_maintain">
-      <ObjectId>6337</ObjectId>
+    <role id="7" parent="1" name="pg_write_all_data">
+      <ObjectId>6182</ObjectId>
     </role>
-    <role id="10" parent="1" name="pg_monitor">
+    <role id="8" parent="1" name="pg_monitor">
       <ObjectId>3373</ObjectId>
       <RoleGrants>3374
 3375
 3377</RoleGrants>
     </role>
-    <role id="11" parent="1" name="pg_read_all_data">
-      <ObjectId>6181</ObjectId>
-    </role>
-    <role id="12" parent="1" name="pg_read_all_settings">
+    <role id="9" parent="1" name="pg_read_all_settings">
       <ObjectId>3374</ObjectId>
     </role>
-    <role id="13" parent="1" name="pg_read_all_stats">
+    <role id="10" parent="1" name="pg_read_all_stats">
       <ObjectId>3375</ObjectId>
     </role>
-    <role id="14" parent="1" name="pg_read_server_files">
+    <role id="11" parent="1" name="pg_stat_scan_tables">
+      <ObjectId>3377</ObjectId>
+    </role>
+    <role id="12" parent="1" name="pg_read_server_files">
       <ObjectId>4569</ObjectId>
+    </role>
+    <role id="13" parent="1" name="pg_write_server_files">
+      <ObjectId>4570</ObjectId>
+    </role>
+    <role id="14" parent="1" name="pg_execute_server_program">
+      <ObjectId>4571</ObjectId>
     </role>
     <role id="15" parent="1" name="pg_signal_backend">
       <ObjectId>4200</ObjectId>
     </role>
-    <role id="16" parent="1" name="pg_stat_scan_tables">
-      <ObjectId>3377</ObjectId>
+    <role id="16" parent="1" name="pg_checkpoint">
+      <ObjectId>4544</ObjectId>
     </role>
-    <role id="17" parent="1" name="pg_use_reserved_connections">
+    <role id="17" parent="1" name="pg_maintain">
+      <ObjectId>6337</ObjectId>
+    </role>
+    <role id="18" parent="1" name="pg_use_reserved_connections">
       <ObjectId>4550</ObjectId>
     </role>
-    <role id="18" parent="1" name="pg_write_all_data">
-      <ObjectId>6182</ObjectId>
+    <role id="19" parent="1" name="pg_create_subscription">
+      <ObjectId>6304</ObjectId>
     </role>
-    <role id="19" parent="1" name="pg_write_server_files">
-      <ObjectId>4570</ObjectId>
-    </role>
-    <role id="20" parent="1" name="postgres">
-      <CanLogin>1</CanLogin>
-      <CreateDb>1</CreateDb>
-      <CreateRole>1</CreateRole>
-      <ObjectId>16412</ObjectId>
-      <RoleGrants>16386</RoleGrants>
-      <ValidUntil>infinity</ValidUntil>
-    </role>
-    <role id="21" parent="1" name="rds_ad">
-      <ObjectId>16397</ObjectId>
-    </role>
-    <role id="22" parent="1" name="rds_extension">
-      <Inherit>0</Inherit>
-      <ObjectId>16410</ObjectId>
-    </role>
-    <role id="23" parent="1" name="rds_iam">
-      <ObjectId>16389</ObjectId>
-    </role>
-    <role id="24" parent="1" name="rds_password">
-      <ObjectId>16392</ObjectId>
-    </role>
-    <role id="25" parent="1" name="rds_replication">
-      <ObjectId>16387</ObjectId>
-    </role>
-    <role id="26" parent="1" name="rds_reserved">
-      <Inherit>0</Inherit>
-      <ObjectId>16408</ObjectId>
-    </role>
-    <role id="27" parent="1" name="rds_superuser">
+    <role id="20" parent="1" name="rds_superuser">
       <ObjectId>16386</ObjectId>
       <RoleGrants>16387!
 16392!
@@ -914,6 +886,34 @@ false Zulu
 6182!
 6304!
 6337!</RoleGrants>
+    </role>
+    <role id="21" parent="1" name="rds_replication">
+      <ObjectId>16387</ObjectId>
+    </role>
+    <role id="22" parent="1" name="rds_iam">
+      <ObjectId>16389</ObjectId>
+    </role>
+    <role id="23" parent="1" name="rds_password">
+      <ObjectId>16392</ObjectId>
+    </role>
+    <role id="24" parent="1" name="rds_ad">
+      <ObjectId>16397</ObjectId>
+    </role>
+    <role id="25" parent="1" name="postgres">
+      <CanLogin>1</CanLogin>
+      <CreateDb>1</CreateDb>
+      <CreateRole>1</CreateRole>
+      <ObjectId>16412</ObjectId>
+      <RoleGrants>16386</RoleGrants>
+      <ValidUntil>infinity</ValidUntil>
+    </role>
+    <role id="26" parent="1" name="rds_extension">
+      <Inherit>0</Inherit>
+      <ObjectId>16410</ObjectId>
+    </role>
+    <role id="27" parent="1" name="rds_reserved">
+      <Inherit>0</Inherit>
+      <ObjectId>16408</ObjectId>
     </role>
     <role id="28" parent="1" name="rdsadmin">
       <BypassRls>1</BypassRls>

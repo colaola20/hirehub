@@ -10,7 +10,7 @@ const UserDashboard = () => {
   // ✅ Block access if token is missing
   useEffect(() => {
     const token = localStorage.getItem("token");
-    if (!token) {
+    if (token) {
       navigate("/login");
     }
   }, [navigate]);
