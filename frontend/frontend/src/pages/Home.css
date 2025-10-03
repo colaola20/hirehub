@@ -1,125 +1,133 @@
-@import "./login_Page.css";
+.landing-container {
+  background: #fff;
+  color: #111;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
 
 /* Hero Section */
-.landing-hero {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 60px 40px;
+.hero {
+  text-align: center;
+  padding: 100px 20px;
   background: linear-gradient(135deg, #8ec5fc, #e0c3fc);
-  border-radius: 12px;
-  margin: 30px auto;
-  max-width: 1200px;
 }
 
-.hero-text {
-  max-width: 50%;
+.hero-title {
+  font-size: clamp(40px, 6vw, 72px);
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: #111;
 }
 
-.hero-text h1 {
-  font-size: clamp(32px, 4vw, 48px);
-  color: #2b155a;
-}
-
-.hero-text .highlight {
-  color: #6a11cb;
-}
-
-.hero-text p {
-  margin: 20px 0;
-  font-size: 18px;
+.hero-subtitle {
+  font-size: clamp(18px, 2vw, 24px);
   color: #333;
-}
-
-.hero-image img {
-  width: 280px;
-  max-width: 100%;
+  margin-bottom: 40px;
 }
 
 .cta-btn {
-  background: #6a11cb;
+  background: #111;
   color: #fff;
   border: none;
-  padding: 12px 22px;
-  border-radius: 8px;
+  padding: 14px 28px;
+  border-radius: 50px;
   font-size: 16px;
   cursor: pointer;
   transition: 0.3s;
 }
 
 .cta-btn:hover {
-  background: #4a0f99;
+  background: #444;
 }
 
-/* Features */
-.features-section {
-  text-align: center;
-  margin: 60px auto;
-  max-width: 1000px;
+.cta-btn.disabled {
+  background: #ccc;
+  cursor: not-allowed;
 }
 
-.features-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 24px;
-  margin-top: 30px;
+/* Showcase Section */
+.showcase {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 80px 10%;
+  gap: 40px;
 }
 
-.feature-card {
-  padding: 20px;
-  border-radius: 12px;
-  background: #f9f9ff;
-  border: 1px solid #ddd;
-  text-align: left;
+.showcase.reverse {
+  flex-direction: row-reverse;
 }
 
-/* Pricing/Tiers */
-.tiers-section {
-  margin: 60px auto;
-  text-align: center;
-  max-width: 1100px;
+.showcase-text {
+  flex: 1;
 }
 
-.tiers-subtitle {
+.showcase-text h2 {
+  font-size: 36px;
+  margin-bottom: 20px;
+  color: #111;
+}
+
+.showcase-text p {
+  font-size: 18px;
   color: #555;
+}
+
+.showcase-image img {
+  width: 350px;
+  max-width: 100%;
+}
+
+/* Pricing Section */
+.tiers {
+  text-align: center;
+  padding: 80px 20px;
+  background: #f9f9f9;
+}
+
+.tiers h2 {
+  font-size: 32px;
   margin-bottom: 40px;
+  color: #111;
 }
 
 .tiers-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 30px;
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  flex-wrap: wrap;
 }
 
 .tier-card {
   background: #fff;
-  padding: 24px;
-  border-radius: 12px;
-  border: 1px solid #ddd;
+  border-radius: 16px;
+  padding: 40px 30px;
+  width: 300px;
   text-align: left;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
 }
 
-.tier-card.free {
-  background: #f1faff;
-  border: 1px solid #6a11cb;
+.tier-card h3 {
+  font-size: 24px;
+  margin-bottom: 20px;
 }
 
-.tier-card.pro {
-  background: #fdf9ff;
-  border: 1px solid #a349a4;
+.tier-card ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 30px 0;
 }
 
-.tier-card.enterprise {
-  background: #fff9f2;
-  border: 1px solid #ff9800;
+.tier-card li {
+  margin: 10px 0;
+  font-size: 16px;
+  color: #333;
 }
 
 /* Footer */
 .footer {
-  margin-top: 60px;
-  padding: 20px;
   text-align: center;
+  padding: 30px;
   font-size: 14px;
-  color: #666;
+  color: #555;
   border-top: 1px solid #ddd;
 }
