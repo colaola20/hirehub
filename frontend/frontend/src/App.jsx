@@ -29,6 +29,8 @@ function App() {
         {/* OAuth handler route: reads token & redirects */}
         <Route path="/oauth" element={<OAuthHandler />} />
 
+          <Route path="/dev-dashboard" element={<UserDashboard />} />
+
         {/* Protected dashboard route */}
         <Route
           path="/:username"
