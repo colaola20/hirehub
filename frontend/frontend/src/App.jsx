@@ -36,7 +36,7 @@ function App() {
                 {/* Handles ?token=...&username=... from LinkedIn/Google/GitHub */}
                 <OAuthHandler />
                 <ProtectedRoute>
-                  <UserDashboard />
+                <UserDashboard />
                 </ProtectedRoute>
               </>
             }

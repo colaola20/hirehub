@@ -1,32 +1,55 @@
-@import "./login_Page.css";
+.hero {
+  height: 100vh;             /* full screen height */
+  width: 100%;               /* full width */
+  background: url("/path-to-your-image.jpg") no-repeat center center;
+  background-size: cover;    /* make image cover the whole screen */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  color: #fff;
+}
 
-/* Reuse login styles, only add new ones for Home */
-
-.job-input {
+/* Dark overlay for text readability */
+.hero::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
-  height: 150px;
-  padding: 12px;
-  margin-bottom: 14px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: clamp(14px, 2vw, 18px);
-  background: #fdfdfd;
-  color: #333;
-  resize: vertical;
+  height: 100%;
+  background: rgba(0,0,0,0.4);  /* darker overlay */
 }
 
-.resume-output {
-  margin-top: 20px;
-  padding: 16px;
-  background: #f9f9ff;
-  border-radius: 8px;
-  border: 1px solid #ddd;
-  font-size: clamp(14px, 2vw, 16px);
-  max-height: 300px;
-  overflow-y: auto;
+.hero .overlay {
+  position: relative;   /* sits on top of overlay */
+  text-align: center;
+  max-width: 700px;
+  padding: 20px;
 }
 
-.resume-output h3 {
-  margin-bottom: 10px;
-  color: #2b155a;
+.hero h1 {
+  font-size: clamp(32px, 6vw, 64px);
+  margin-bottom: 20px;
+}
+
+.hero p {
+  font-size: clamp(16px, 2vw, 22px);
+  margin-bottom: 30px;
+}
+
+.cta {
+  background: #6a11cb;
+  border: none;
+  padding: 14px 28px;
+  border-radius: 30px;
+  font-size: 18px;
+  cursor: pointer;
+  transition: 0.3s;
+  color: #fff;
+  font-weight: 600;
+}
+
+.cta:hover {
+  background: #4a0f99;
 }
