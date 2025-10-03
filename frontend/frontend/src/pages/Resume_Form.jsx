@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Navbar from '../components/Navbar'
+import './form_style.css';
 
 const ResumeForm = () => {
     const [formData, setFormData] = useState({
@@ -43,3 +44,5 @@ const ResumeForm = () => {
     )
     
 }
+
+export default ResumeForm;
