@@ -4,96 +4,102 @@ import Navbar from "../components/Navbar";
 
 const Landing = () => {
   return (
-    <div className="landing-container">
+    <div className="landing">
       <Navbar />
 
-      {/* Hero / Intro Section */}
+      {/* Hero Section */}
       <section className="hero">
-        <div className="hero-content">
-          <h1 className="hero-heading">
-            HireHub: Your AI Career Partner
-          </h1>
-          <p className="hero-subheading">
-            Tailor your resume, craft cover letters, and land your dream job — all for free.
-          </p>
+        <div className="overlay">
+          <h1>HireHub</h1>
+          <p>Smarter Job Applications. Tailored Resumes. Free for Students.</p>
           <button
-            className="cta-button"
+            className="cta"
             onClick={() => (window.location.href = "/registration")}
           >
-            Get Started — Free
+            Get Started Free
           </button>
         </div>
-        <div className="hero-image">
+      </section>
+
+
+      {/* Company Profile */}
+      <section className="profile">
+        <div className="profile-text">
+          <h2>Company Profile</h2>
+          <p>
+            HireHub is an AI-powered career companion that helps students and
+            professionals create tailored resumes, generate compelling cover
+            letters, and track job applications — all in one platform.
+          </p>
+          <button className="cta">Learn More</button>
+        </div>
+        <div className="profile-image">
           <img
-            src="https://cdn-icons-png.flaticon.com/512/1995/1995574.png"
-            alt="AI / Career graphic"
+            src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png"
+            alt="Company illustration"
           />
         </div>
       </section>
 
-      {/* Feature Highlights */}
-      <section className="features">
-        <div className="feature-card">
-          <div className="icon">📝</div>
-          <h3>Resume Tailoring</h3>
-          <p>
-            Paste your job description and let HireHub generate a tailored resume in seconds.
-          </p>
-        </div>
-        <div className="feature-card">
-          <div className="icon">✍️</div>
-          <h3>Cover Letters</h3>
-          <p>
-            Generate customized, professional cover letters with AI — no writer’s block.
-          </p>
-        </div>
-        <div className="feature-card">
-          <div className="icon">🎓</div>
-          <h3>Free for Students</h3>
-          <p>
-            All core features are 100% free for students — no hidden fees, no trials.
-          </p>
-        </div>
-      </section>
-
-      {/* Pricing / Plans */}
-      <section className="plans">
-        <h2>Plans & Pricing</h2>
-        <div className="plans-grid">
-          <div className="plan-card plan-free">
-            <h3>Free (Student)</h3>
-            <ul>
-              <li>✔ Resume Tailoring</li>
-              <li>✔ Cover Letters</li>
-              <li>✔ Dashboard</li>
-              <li>✔ Unlimited Use</li>
-            </ul>
-            <button className="cta-button">Join Free</button>
+      {/* Services */}
+      <section className="services">
+        <h2>Our Services</h2>
+        <div className="service-list">
+          <div>
+            <h3>01 Resume Tailoring</h3>
+            <p>AI adapts your resume to match any job description.</p>
           </div>
-          <div className="plan-card plan-pro">
-            <h3>Pro (Coming Soon)</h3>
-            <ul>
-              <li>✔ All Free Features</li>
-              <li>✔ Premium Templates</li>
-              <li>✔ LinkedIn / GitHub Integration</li>
-              <li>✔ Priority Support</li>
-            </ul>
-            <button className="cta-button disabled">Coming Soon</button>
+          <div>
+            <h3>02 Cover Letter Generator</h3>
+            <p>Instantly create professional cover letters without stress.</p>
           </div>
-          <div className="plan-card plan-enterprise">
-            <h3>Enterprise</h3>
-            <ul>
-              <li>✔ Team Tools</li>
-              <li>✔ Analytics</li>
-              <li>✔ Custom Branding</li>
-              <li>✔ Dedicated Support</li>
-            </ul>
-            <button className="cta-button">Contact Sales</button>
+          <div>
+            <h3>03 Student Dashboard</h3>
+            <p>Track applications, deadlines, and progress in one place.</p>
           </div>
         </div>
       </section>
 
-      {/* Footer */}
+      {/* Clients / Showcase */}
+      <section className="clients">
+        <h2>Our Client Roster</h2>
+        <p>
+          From students to early professionals, HireHub supports career journeys
+          at every stage.
+        </p>
+        <div className="client-grid">
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/1995/1995574.png"
+            alt="Student"
+          />
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/3135/3135823.png"
+            alt="Graduate"
+          />
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/2202/2202112.png"
+            alt="Professional"
+          />
+        </div>
+      </section>
+
+      {/* Quote Section */}
+      <section className="quote">
+        <blockquote>
+          "HireHub is our expertise. We’ll take care of your career tools, so
+          you can focus on landing your dream job."
+        </blockquote>
+        <cite>- Team HireHub</cite>
+      </section>
+
+      {/* Contact Section */}
+      <section className="contact">
+        <h2>Let’s Work Together</h2>
+        <p>Email: support@hirehub.com</p>
+        <p>Phone: +1 (555) 123-4567</p>
+        <p>Address: 123 Innovation Way, NY, USA</p>
+      </section>
+
       <footer className="footer">
         <p>© {new Date().getFullYear()} HireHub. All rights reserved.</p>
       </footer>
