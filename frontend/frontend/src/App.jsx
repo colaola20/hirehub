@@ -15,35 +15,31 @@ import UserDashboard from './pages/UserDashboard';
 import OAuthHandler from './components/OAuthHandler';
 import ProtectedRoute from './components/ProtectedRoute';
 
-const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
 // Root App component that renders the Login and Registration pages
 function App() {
   return (
-    <GoogleOAuthProvider clientId={clientId}>
-      <Router>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/registration" element={<Registration />} />
-          <Route path="/forgot_password" element={<ForgotPassword />} />
-        
-          {/* Protected dashboard route */}
-          <Route
-            path="/:username"
-            element={
-              <>
-                {/* Handles ?token=...&username=... from LinkedIn/Google/GitHub */}
-                <OAuthHandler />
-                <ProtectedRoute>
-                <UserDashboard />
-                </ProtectedRoute>
-              </>
-            }
-          />
-        </Routes>
-      </Router>
-    </GoogleOAuthProvider>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/registration" element={<Registration />} />
+        <Route path="/forgot_password" element={<ForgotPassword />} />
+
+        {/* OAuth handler route: reads token & redirects */}
+        <Route path="/oauth" element={<OAuthHandler />} />
+
+        {/* Protected dashboard route */}
+        <Route
+          path="/:username"
+          element={
+            <ProtectedRoute>
+              <UserDashboard />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+    </Router>
   );
 }
 
