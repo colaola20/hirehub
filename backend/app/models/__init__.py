@@ -4,5 +4,6 @@ from app.models.application import Application
 from app.models.profile import Profile
 from app.models.notification import Notification
 from app.models.ai_assistant_log import AIAssistantLog
+from app.models.cover_letter import CoverLetter
 
-__all__ = ['User', 'Job', 'Application', 'Profile', 'Notification', 'AIAssistantLog']
+__all__ = ['User', 'Job', 'Application', 'Profile', 'Notification', 'AIAssistantLog', 'CoverLetter']
