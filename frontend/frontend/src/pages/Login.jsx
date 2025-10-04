@@ -52,6 +52,7 @@ const Login = () => {
           console.log("Decoded JWT:", decoded);
 
           const username = data.data?.username;
+          console.log(username)
           if (username) {
             navigate(`/${username}`);
           } else {
