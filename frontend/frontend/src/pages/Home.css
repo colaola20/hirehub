@@ -1,8 +1,14 @@
+.landing {
+  font-family: "Segoe UI", Roboto, sans-serif;
+  color: #fff;
+  background: #111;
+}
+
 .hero {
-  height: 100vh;             /* full screen height */
-  width: 100%;               /* full width */
-  background: url("/path-to-your-image.jpg") no-repeat center center;
-  background-size: cover;    /* make image cover the whole screen */
+  height: 100vh; /* full screen height */
+  width: 100%;   /* full width */
+  background: url("https://images.unsplash.com/photo-1522202176988-66273c2fd55f")
+    no-repeat center center / cover; /* full image */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -10,7 +16,7 @@
   color: #fff;
 }
 
-/* Dark overlay for text readability */
+/* Dark overlay */
 .hero::before {
   content: "";
   position: absolute;
@@ -18,14 +24,16 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0,0,0,0.4);  /* darker overlay */
+  background: rgba(0,0,0,0.5);
+  z-index: 1;
 }
 
 .hero .overlay {
-  position: relative;   /* sits on top of overlay */
+  position: relative; /* sit above overlay */
   text-align: center;
   max-width: 700px;
   padding: 20px;
+  z-index: 2;
 }
 
 .hero h1 {
@@ -52,4 +60,107 @@
 
 .cta:hover {
   background: #4a0f99;
+}
+
+
+/* Profile */
+.profile {
+  display: flex;
+  justify-content: space-between;
+  padding: 80px 10%;
+  gap: 40px;
+  background: #000;
+}
+
+.profile-text {
+  flex: 1;
+}
+
+.profile-text h2 {
+  font-size: 32px;
+  margin-bottom: 20px;
+}
+
+.profile-image img {
+  width: 280px;
+}
+
+/* Services */
+.services {
+  padding: 80px 10%;
+  background: #111;
+}
+
+.services h2 {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.service-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+
+.service-list div {
+  border-bottom: 1px solid #333;
+  padding-bottom: 20px;
+}
+
+/* Clients */
+.clients {
+  padding: 80px 10%;
+  background: #000;
+  text-align: center;
+}
+
+.client-grid {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  margin-top: 30px;
+}
+
+.client-grid img {
+  width: 120px;
+  border-radius: 8px;
+  background: #fff;
+  padding: 10px;
+}
+
+/* Quote */
+.quote {
+  padding: 80px 20px;
+  background: #111;
+  text-align: center;
+  font-style: italic;
+}
+
+.quote blockquote {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+/* Contact */
+.contact {
+  padding: 80px 10%;
+  background: #000;
+  text-align: center;
+}
+
+.contact h2 {
+  margin-bottom: 20px;
+}
+
+.contact p {
+  margin: 5px 0;
+}
+
+/* Footer */
+.footer {
+  padding: 20px;
+  background: #111;
+  text-align: center;
+  font-size: 14px;
+  color: #bbb;
 }
