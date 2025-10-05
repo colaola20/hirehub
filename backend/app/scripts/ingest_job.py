@@ -10,6 +10,9 @@ app = create_app()
 app.app_context().push()
 
 
+# to run the script 
+# python3 -m app.scripts.ingest_job
+
 def normalize_job(api_job):
     return {
         "api_id": api_job["id"],

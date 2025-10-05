@@ -10,3 +10,8 @@ frontend/build/
 # General
 .env
 .DS_Store
+.claude/
+.vscode/
+.idea/
+*.log
+venv/
