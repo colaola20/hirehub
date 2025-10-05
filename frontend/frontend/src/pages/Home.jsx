@@ -11,7 +11,7 @@ const AngleLanding = () => {
         {/* NAVBAR */}
         <header className="angle2-nav">
           <div className="angle2-container">
-            <div className="angle2-logo">ANGLE2</div>
+            <div className="angle2-logo">HireHub</div>
 
             <nav className="angle2-links">
               <a href="#case-studies">Case studies</a>

@@ -170,40 +170,45 @@
 }
 /* === Paste this at the END of angleLanding.css === */
 
-/* keep your orange accent; change if you want */
-:root {
-  --accent: #ff8a3d;
-}
-/* --- Darker blue→purple with preserved highlights --- */
-/* --- Dark blue→purple with a hint of pink glow --- */
+/* --- Blue→Deep Purple base with small pink accents --- */
+/* --- Add a small pink accent at the top-right --- */
+/* --- Pink accents: top-right + top-left --- */
+/* --- Extra pink on LEFT: top + bottom --- */
 .angle2-bg {
   position: fixed;
   inset: 0;
   z-index: -1;
   background:
-    /* crisp highlight flares */
-    radial-gradient(900px 480px at 75% 12%, rgba(255,255,255,0.16), transparent 60%),
-    radial-gradient(760px 420px at 18% 6%,  rgba(255,255,255,0.10), transparent 62%),
+    /* RIGHT pink (unchanged) */
+    radial-gradient(380px 240px at 92% 10%, rgba(255, 120, 170, 0.20), transparent 62%),
+    radial-gradient(180px 120px at 96% 6%,  rgba(255, 155, 195, 0.28), transparent 70%),
 
-    /* NEW pink + magenta glows */
-    radial-gradient(720px 420px at 68% 34%, rgba(255, 105, 180, 0.18), transparent 60%), /* pink burst */
-    radial-gradient(900px 520px at 22% 70%, rgba(166, 66, 255, 0.14), transparent 62%),  /* purple wash */
+    /* LEFT TOP pink (stronger + larger than before) */
+    radial-gradient(460px 300px at 8% 12%,  rgba(255, 120, 170, 0.24), transparent 64%),
+    radial-gradient(220px 150px at 5% 8%,   rgba(255, 155, 195, 0.32), transparent 72%),
 
-    /* warm mid glow (very light) */
-    radial-gradient(820px 480px at 52% 38%, rgba(255,200,140,0.05), transparent 60%),
+    /* LEFT BOTTOM pink (new) */
+    radial-gradient(520px 320px at 10% 86%, rgba(255, 130, 185, 0.18), transparent 66%),
+    radial-gradient(240px 160px at 6% 94%,  rgba(255, 170, 210, 0.22), transparent 74%),
 
-    /* vignette to keep text readable */
-    radial-gradient(120% 120% at 50% 115%, rgba(0,0,0,0.55), transparent 55%),
+    /* neutral highlights */
+    radial-gradient(900px 480px at 75% 12%, rgba(255,255,255,0.14), transparent 60%),
+    radial-gradient(760px 420px at 16% 8%,  rgba(255,255,255,0.08), transparent 62%),
 
-    /* dark veil */
-    linear-gradient(0deg, rgba(0,0,0,0.30), rgba(0,0,0,0.30)),
+    /* purple depth + faint warmth */
+    radial-gradient(900px 520px at 22% 70%, rgba(120, 60, 255, 0.10), transparent 62%),
+    radial-gradient(820px 480px at 52% 38%, rgba(255,200,140,0.04), transparent 60%),
 
-    /* base gradient with a pink stop blended in */
-    linear-gradient(
-      90deg,
-      #5a86c9 0%,
-      #6759d6 45%,
-      #d16ba5 65%,  /* pink */
-      #5a3a9e 100%
-    );
+    /* vignette + veil */
+    radial-gradient(120% 120% at 50% 115%, rgba(0,0,0,0.52), transparent 55%),
+    linear-gradient(0deg, rgba(0,0,0,0.24), rgba(0,0,0,0.24)),
+
+    /* base gradient */
+    linear-gradient(90deg, #86bbf0 0%, #2b155a 100%);
 }
+
+
+/* Optional: make buttons/text accents match the pink hints */
+:root { --accent: #ff7ab6; } /* was #ff8a3d */
+
+
