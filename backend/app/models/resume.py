@@ -1,27 +1,26 @@
 from app.extensions import db
 from datetime import datetime, timezone
+from app.models.document import Document
 
 
-class Resume(db.Model):
-    __tablename__ = 'resume'
+class Resume(Document):
+    __tablename__ = 'resumes'
 
-    resume_id = db.Column(db.Integer, primary_key=True)
-    user_email = db.Column(db.String(120), db.ForeignKey('users.email'), nullable=False)
-    file_path = db.Column(db.String(500), nullable=False)
+    resume_id = db.Column(db.Integer, db.ForeignKey('documents.document_id'), primary_key=True)
     title = db.Column(db.String(255))
-    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
 
-    # Relationship
-    user = db.relationship('User', backref=db.backref('resumes', lazy=True))
+    # Polymorphic discriminator
+    __mapper_args__ = {
+        'polymorphic_identity': 'resume',
+    }
 
     def __repr__(self):
         return f'<Resume {self.resume_id} - {self.title}>'
 
     def to_dict(self):
-        return {
+        data = super().to_dict()
+        data.update({
             'resume_id': self.resume_id,
-            'user_email': self.user_email,
-            'file_path': self.file_path,
-            'title': self.title,
-            'created_at': self.created_at.isoformat() if self.created_at else None
-        }
+            'title': self.title
+        })
+        return data
