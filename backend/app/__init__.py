@@ -10,6 +10,7 @@ from app.routes.google import google_bp, init_oauth as init_google_oauth
 from app.routes.linkedin import linkedin_bp, init_linkedin_oauth
 from app.routes.home import home_bp
 from app.routes.users import users_bp
+from app.routes.jobs import jobs_bp
 from .config import Config
 
 # Import models so Flask-Migrate can detect them
@@ -58,6 +59,7 @@ def create_app():
     # Register blueprints
     app.register_blueprint(home_bp)
     app.register_blueprint(users_bp)
+    app.register_blueprint(jobs_bp)
     app.register_blueprint(github_bp)
     app.register_blueprint(google_bp)
     app.register_blueprint(linkedin_bp)
