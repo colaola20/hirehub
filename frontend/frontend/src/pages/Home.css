@@ -212,3 +212,37 @@
 :root { --accent: #ff7ab6; } /* was #ff8a3d */
 
 
+/* --- Base: #8ec5fc → #7a5bbf with pink accents (L/T/R + bottom-left) --- */
+.angle2-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    /* Pink accents */
+    radial-gradient(380px 240px at 92% 10%, rgba(255, 120, 170, 0.20), transparent 62%), /* top-right */
+    radial-gradient(180px 120px at 96% 6%,  rgba(255, 155, 195, 0.28), transparent 70%), /* top-right core */
+
+    radial-gradient(460px 300px at 8% 12%,  rgba(255, 120, 170, 0.24), transparent 64%), /* top-left */
+    radial-gradient(220px 150px at 5% 8%,   rgba(255, 155, 195, 0.32), transparent 72%), /* top-left core */
+
+    radial-gradient(520px 320px at 10% 86%, rgba(255, 130, 185, 0.18), transparent 66%), /* bottom-left */
+    radial-gradient(240px 160px at 6% 94%,  rgba(255, 170, 210, 0.22), transparent 74%), /* bottom-left core */
+
+    /* Neutral highlights for pop */
+    radial-gradient(900px 480px at 75% 12%, rgba(255,255,255,0.14), transparent 60%),
+    radial-gradient(760px 420px at 16% 8%,  rgba(255,255,255,0.08), transparent 62%),
+
+    /* Gentle purple wash + faint warmth */
+    radial-gradient(900px 520px at 22% 70%, rgba(120, 60, 255, 0.10), transparent 62%),
+    radial-gradient(820px 480px at 52% 38%, rgba(255,200,140,0.04), transparent 60%),
+
+    /* Vignette + veil for readability (tweak 0.18–0.30) */
+    radial-gradient(120% 120% at 50% 115%, rgba(0,0,0,0.52), transparent 55%),
+    linear-gradient(0deg, rgba(0,0,0,0.24), rgba(0,0,0,0.24)),
+
+    /* Your base gradient */
+    linear-gradient(90deg, #8ec5fc 0%, #7a5bbf 100%);
+}
+
+/* Optional: use a pink accent color for buttons/links to match the glows */
+:root { --accent: #ff7ab6; }
