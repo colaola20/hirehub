@@ -1,9 +1,11 @@
 from flask import Blueprint, jsonify, request
 from app.models.job import Job
+from flask_jwt_extended import jwt_required
 
 jobs_bp = Blueprint('jobs', __name__)
 
 @jobs_bp.route("/api/jobs", methods=["GET"])
+@jwt_required()
 def get_jobs():
     q = Job.query.filter_by(is_active=True)
     search = request.args.get("search")
@@ -16,7 +18,7 @@ def get_jobs():
 
     page = int(request.args.get("page", 1))
     per_page = int(request.args.get("per_page", 20))
-    res = q.order_by(Job.date_posted.desc()).paginate(page, per_page, False)
+    res = q.order_by(Job.date_posted.desc()).paginate(page=page, per_page=per_page, error_out=False)
     items = [{
         "id": job.id,
         "title": job.title,

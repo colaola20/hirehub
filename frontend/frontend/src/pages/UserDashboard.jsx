@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback,useState } from "react";
+import React, { useEffect, useCallback, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import PersonalizedNavbar from "../components/PersonalizedNavbar";
 
@@ -46,11 +46,14 @@ const sampleJobs = [
 
 const UserDashboard = () => {
   const navigate = useNavigate();
-  // const { username } = useParams();
+  const { username } = useParams();
   const [searchParams] = useSearchParams();
 
-  const [jobs, setJobs] = useState(sampleJobs);
+  const [jobs, setJobs] = useState([]);
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
   const [page, setPage] = useState(1);
+  const [totalJobs, setTotalJobs] = useState(0)
   const jobsPerPage = 3;
 
   // Handle token + username from query params
@@ -66,13 +69,13 @@ const UserDashboard = () => {
   const totalPages = Math.ceil(jobs.length / jobsPerPage);
   const currentJobs = jobs.slice((page - 1) * jobsPerPage, page * jobsPerPage);
 
-  // // ✅ Block access if token is missing
-  // useEffect(() => {
-  //   const token = localStorage.getItem("token");
-  //   if (token) {
-  //     navigate("/login");
-  //   }
-  // }, [navigate]);
+  // ✅ Block access if token is missing
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/login");
+    }
+  }, [navigate]);
 
   // ✅ logout function
   // const logout = useCallback(() => {
@@ -118,6 +121,38 @@ const UserDashboard = () => {
   }, [searchParams, navigate]);
 
 
+  // Fetch jobs function
+  const fetchJobs = useCallback(async () => {
+    try {
+      setLoading(true)
+      setError(null)
+
+      const token = localStorage.getItem("token")
+      const response = await fetch('/api/jobs', {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      })
+      if (!response.ok) {
+        throw new Error(`HHTP error! Status: ${response.status}`)
+      }
+
+      const data = await response.json()
+      console.log(data)
+      setJobs(data.jobs || [])
+      setTotalJobs(data.total || 0)
+    } catch (error) {
+      console.error('Failed to fetch jobs:', error)
+      setError('Failed to load jobs. Plaese try again.')
+
+    } finally {
+      setLoading(false)
+    }
+  }, [page, jobsPerPage])
+
+
 
 
   return (
@@ -128,6 +163,7 @@ const UserDashboard = () => {
       <>
       <div className="dashboard-container">
             {/* Left Column: Job Cards */}
+            <button onClick={() => fetchJobs()}>Fetch jobs</button>
             <div className="jobs-column">
               {currentJobs.map((job, idx) => (
                 <JobCard key={idx} job={job} />
