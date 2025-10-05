@@ -246,3 +246,77 @@
 
 /* Optional: use a pink accent color for buttons/links to match the glows */
 :root { --accent: #ff7ab6; }
+/* ====== ACCENT as gradient text (keeps your pink vibe) ====== */
+.accent {
+  background: linear-gradient(90deg, #ff7ab6 0%, #f6a0d0 45%, #ffd1e8 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ====== Spotlight behind the headline ====== */
+.angle2-hero__title {
+  position: relative;
+  z-index: 1;
+}
+.angle2-hero__title::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 52%;
+  translate: -50% -50%;
+  width: min(80vw, 980px);
+  height: min(40vw, 360px);
+  border-radius: 999px;
+  background:
+    radial-gradient(60% 60% at 50% 50%, rgba(255,255,255,0.28), transparent 70%);
+  filter: blur(28px);
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* ====== Ambient orbs (gentle movement, very soft) ====== */
+.angle2-ornaments { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
+.angle2-blob {
+  position: absolute; border-radius: 999px; filter: blur(40px);
+  opacity: 0.35; animation: floatSlow 18s ease-in-out infinite alternate;
+}
+.blob-tr { right: 6%; top: 6%; width: 360px; height: 260px;
+  background: radial-gradient(60% 60% at 50% 50%, rgba(255,120,170,0.7), transparent 70%);
+  animation-delay: 0.2s;
+}
+.blob-tl { left: 5%; top: 10%; width: 320px; height: 220px;
+  background: radial-gradient(60% 60% at 50% 50%, rgba(255,155,195,0.6), transparent 70%);
+  animation-delay: 0.6s;
+}
+.blob-bl { left: 7%; bottom: 6%; width: 380px; height: 260px;
+  background: radial-gradient(60% 60% at 50% 50%, rgba(142,197,252,0.55), transparent 70%);
+  animation-delay: 1.2s;
+}
+@keyframes floatSlow {
+  0%   { transform: translate3d(0,0,0) scale(1); }
+  100% { transform: translate3d(12px,-10px,0) scale(1.06); }
+}
+
+/* ====== Subtle film grain + inner vignette (barely there) ====== */
+.angle2-landing::after{
+  content:"";
+  position: fixed; inset:0; pointer-events:none; z-index:0;
+  background:
+    radial-gradient(120% 120% at 50% 115%, rgba(0,0,0,0.32), transparent 55%),
+    /* micro-texture using stripes */
+    repeating-linear-gradient(
+      0deg,
+      rgba(255,255,255,0.02) 0 1px,
+      rgba(0,0,0,0.02) 1px 2px
+    );
+  mix-blend-mode: soft-light;
+}
+
+/* ====== Slightly stronger hero contrast so it pops ====== */
+.angle2-hero__lead { color: rgba(255,255,255,0.96); }
+.angle2-hero__sub  { color: rgba(230,224,244,0.85); }
+.angle2-btn--ghost { border-color: rgba(255,255,255,0.38); }
+
+/* Ensure ornaments sit under content but over the background */
+.angle2-bg { z-index: -2; }

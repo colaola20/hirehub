@@ -7,6 +7,12 @@ const AngleLanding = () => {
       <div className="angle2-landing">
         {/* fixed, full-viewport background */}
         <div className="angle2-bg" aria-hidden="true" />
+        {/* ambient ornaments */}
+        <div className="angle2-ornaments">
+          <span className="angle2-blob blob-tr" />
+          <span className="angle2-blob blob-tl" />
+          <span className="angle2-blob blob-bl" />
+        </div>
 
         {/* NAVBAR */}
         <header className="angle2-nav">
