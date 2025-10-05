@@ -168,3 +168,42 @@
 @media (max-width: 520px) {
   .angle2-btn--small { display: none; }
 }
+/* === Paste this at the END of angleLanding.css === */
+
+/* keep your orange accent; change if you want */
+:root {
+  --accent: #ff8a3d;
+}
+/* --- Darker blue→purple with preserved highlights --- */
+/* --- Dark blue→purple with a hint of pink glow --- */
+.angle2-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    /* crisp highlight flares */
+    radial-gradient(900px 480px at 75% 12%, rgba(255,255,255,0.16), transparent 60%),
+    radial-gradient(760px 420px at 18% 6%,  rgba(255,255,255,0.10), transparent 62%),
+
+    /* NEW pink + magenta glows */
+    radial-gradient(720px 420px at 68% 34%, rgba(255, 105, 180, 0.18), transparent 60%), /* pink burst */
+    radial-gradient(900px 520px at 22% 70%, rgba(166, 66, 255, 0.14), transparent 62%),  /* purple wash */
+
+    /* warm mid glow (very light) */
+    radial-gradient(820px 480px at 52% 38%, rgba(255,200,140,0.05), transparent 60%),
+
+    /* vignette to keep text readable */
+    radial-gradient(120% 120% at 50% 115%, rgba(0,0,0,0.55), transparent 55%),
+
+    /* dark veil */
+    linear-gradient(0deg, rgba(0,0,0,0.30), rgba(0,0,0,0.30)),
+
+    /* base gradient with a pink stop blended in */
+    linear-gradient(
+      90deg,
+      #5a86c9 0%,
+      #6759d6 45%,
+      #d16ba5 65%,  /* pink */
+      #5a3a9e 100%
+    );
+}
