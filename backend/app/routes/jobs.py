@@ -3,7 +3,7 @@ from app.models.job import Job
 
 jobs_bp = Blueprint('jobs', __name__)
 
-@jobs_bp.route("/api/jobs", method=["GET"])
+@jobs_bp.route("/api/jobs", methods=["GET"])
 def get_jobs():
     q = Job.query.filter_by(is_active=True)
     search = request.args.get("search")

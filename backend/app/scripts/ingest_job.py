@@ -6,6 +6,9 @@ from app.models.job import Job
 from app.services.findwork_api import fetch_findwork_jobs
 from app import create_app
 
+import logging
+logger = logging.getLogger(__name__)
+
 app = create_app()
 app.app_context().push()
 
@@ -41,13 +44,23 @@ def upsert_job(session, job_data):
 def run_once():
     page = 1
     while True:
-        results, nxt = fetch_findwork_jobs(page=page)
+        try:
+            results, nxt = fetch_findwork_jobs(page=page)
+        except Exception as e:
+            print(f"Fetch error on page {page}: {e}")
+            break
+        
         if not results:
             break
         with db.session.begin():
             for api_job in results:
-                job_data = normalize_job(api_job)
-                upsert_job(db.session, job_data)
+                try:
+                    with db.session.begin_nested(): #Savepoint
+                        job_data = normalize_job(api_job)
+                        upsert_job(db.session, job_data)
+                except Exception:
+                    logger.exception("Failed upserting job %s - continuing", api_job.get("id"))
+                    # nested transaction rolls back to savepoint; continue to next job
         if not nxt: break
         page +=1
 

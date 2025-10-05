@@ -10,12 +10,16 @@ app.app_context().push()
 # python3 -m app.scripts.expire_jobs
 
 def expire_old_jobs(days=30):
-    cutoff = datetime.now(timezone.utc) - timedelta(days=days)
-    updated = Job.query.filter(Job.fetched_at < cutoff, Job.is_active == True).update(
-        {"is_active": False}, synchronize_session=False
-        )
-    db.session.commit()
-    print(f"Expired {updated} jobs.")
+    try:
+        cutoff = datetime.now(timezone.utc) - timedelta(days=days)
+        updated = Job.query.filter(Job.fetched_at < cutoff, Job.is_active == True).update(
+            {"is_active": False}, synchronize_session=False
+            )
+        db.session.commit()
+        print(f"Expired {updated} jobs.")
+    except Exception:
+        db.session.rollback()
+        raise
 
 if __name__=="__main__":
     expire_old_jobs(30)
