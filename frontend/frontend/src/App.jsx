@@ -9,7 +9,8 @@ import Login from './pages/Login';
 import Registration from './pages/Registration';
 import Home from './pages/Home';
 import ForgotPassword from './pages/forgot_password';
-import UserDashboard from './pages/UserDashboard';
+import UserDashboard from './pages/UserDashboard.jsx';
+
 
 // Import helpers
 import OAuthHandler from './components/OAuthHandler';

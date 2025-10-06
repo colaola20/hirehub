@@ -1,7 +1,5 @@
 import React, { useEffect, useCallback,useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
-import PersonalizedNavbar from "../components/PersonalizedNavbar";
-
 import "./dashBoard.css";
 import JobCard from "../components/JobCard.jsx";
 
@@ -118,37 +116,27 @@ const UserDashboard = () => {
   }, [searchParams, navigate]);
 
 
-
-
   return (
 
-    <div>
-      <PersonalizedNavbar />
+    <div className="dashboard-wrapper">
 
-      <>
+
       <div className="dashboard-container">
-            {/* Left Column: Job Cards */}
-            <div className="jobs-column">
-              {currentJobs.map((job, idx) => (
-                <JobCard key={idx} job={job} />
-              ))}
-
-              <div className="pagination">
-                <button onClick={() => setPage(p => Math.max(p - 1, 1))}>{'<'}</button>
-                <span>Page {page} of {totalPages}</span>
-                <button onClick={() => setPage(p => Math.min(p + 1, totalPages))}>{'>'}</button>
-              </div>
-            </div>
-
-            {/* Right Column: Chatbot */}
-            <div className="chat-column">
-              <h2>Chatbot Coming Soon </h2>
-            </div>
+        {/* Left Column: Job Cards */}
+        <div className="jobs-column">
+          {currentJobs.map((job, idx) => (
+            <JobCard key={idx} job={job} />
+          ))}
+          <div className="pagination">
+            <button onClick={() => setPage(p => Math.max(p - 1, 1))}>{'<'}</button>
+            <span>Page {page} of {totalPages}</span>
+            <button onClick={() => setPage(p => Math.min(p + 1, totalPages))}>{'>'}</button>
           </div>
-        </>
+        </div>
 
+
+      </div>
     </div>
-
   );
 };
 

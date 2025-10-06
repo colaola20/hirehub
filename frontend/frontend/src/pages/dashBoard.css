@@ -1,28 +1,49 @@
 
 
-.dashboard-container {
 
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    align-items: flex-start;
-    padding: 20px;
-    gap: 40px;
-    background: #1a1a1a;
-    width: 100%;
+body, .container {
+  background: none !important;
+
+}
+
+.dashboard-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+
+  min-height: 100vh;
+  width: 100%;
+  background-color: darkgreen;
+  padding-top: 80px; /* adjust to the height of your navbar */
+}
+
+
+.dashboard-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 20px;
+  gap: 40px;
+  background: #ff0000;
+  width: 100%;
+  min-height: calc(100vh - 80px); /* fill screen minus navbar */
+  box-sizing: border-box;
 }
 
 .jobs-column {
-  flex: 0 0 80%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  position: relative;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    background: #ffe100;
+
 }
 
 .chat-column {
-  flex: 0 0 20%;
-  background-color: #000000;
+  flex:  20%;
+  background-color: #3a3535;
   padding: 20px;
   border-radius: 12px;
   height: fit-content;
@@ -30,11 +51,13 @@
 }
 
 .pagination {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 15px;
-  margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-top: 20px;
+    background: #0073a6;
+
 }
 
 .pagination button {
@@ -48,8 +71,10 @@
 
 .pagination button:hover {
   background-color: #4338ca;
+
 }
 
 .pagination span {
   font-weight: bold;
+
 }

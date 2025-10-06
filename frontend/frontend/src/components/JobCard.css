@@ -8,6 +8,7 @@
     padding: 20px;
     transition: transform 0.2s;
     cursor: pointer;
+    margin-bottom: 10px;
 }
 .job-card h3    {
     text-align: center;

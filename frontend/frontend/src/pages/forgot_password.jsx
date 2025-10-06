@@ -1,6 +1,6 @@
 // ForgotPassword.jsx
 import React, { useState } from "react";
-import "./login_Page.css"; // reuse same CSS
+import "./login_Page.module.css"; // reuse same CSS
 import { Link } from "react-router-dom";
 import placeholderImg from "../assets/login_reg_Place_holder1.png";
 
