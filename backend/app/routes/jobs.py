@@ -25,6 +25,7 @@ def get_jobs():
         "company": job.company,
         "location": job.location,
         "url": job.url,
-        "date_posted": job.date_posted.isoformat() if job.date_posted else None
+        "date_posted": job.date_posted.isoformat() if job.date_posted else None,
+        "description": job.description
     } for job in res.items]
     return jsonify({"jobs": items, "total": res.total})
