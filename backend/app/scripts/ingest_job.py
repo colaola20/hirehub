@@ -21,6 +21,18 @@ app.app_context().push()
 # to run the script 
 # python3 -m app.scripts.ingest_job
 
+def _is_remote_flag(value):
+    # return true if remote true
+    if isinstance(value, bool):
+        return value
+    if value is None:
+        return False
+    if isinstance(value, (int, float)):
+        return bool(value)
+    
+    s = str(value).strip().lower()
+    return s in ("true", "1", "yes", "y", "remote", "wfh", "work from home")
+
 def parse_date_to_dt(date_str):
     # return timezone_aware datetime or None
     if not date_str:
@@ -47,12 +59,20 @@ def safe_fetch_with_retries(fetch_fn, *args, max_retries=3, backoff=2, **kwargs)
             time.sleep(backoff**attempt)
 
 def normalize_findwork_job(api_job):
+    remote_val = api_job.get("remote")
+    is_remote = _is_remote_flag(remote_val)
+
+    if is_remote:
+        location_value = "Remote"
+    else:
+        location_value = api_job.get("location")
+
     return {
         "api_id": api_job["id"],
         "source": "findwork",
         "title": api_job.get("role"),
         "company": api_job.get("company_name"),
-        "location": api_job.get("location"),
+        "location": location_value,
         "description": api_job.get("text"),
         "url": api_job.get("url"),
         "date_posted": parse_date_to_dt(api_job.get("date_posted")),
