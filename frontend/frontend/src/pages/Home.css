@@ -320,3 +320,40 @@
 
 /* Ensure ornaments sit under content but over the background */
 .angle2-bg { z-index: -2; }
+/* Make the Vanta layer cover the screen behind everything */
+.angle2-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;           /* keep it behind content */
+}
+
+/* Your page content sits above */
+.angle2-root,
+.angle2-landing {
+  position: relative;
+  min-height: 100vh;
+}
+
+.angle2-hero {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 4rem 1rem;
+  color: #fff;           /* Vanta background is dark */
+}
+
+.accent { color: #ff80b5; }
+
+/* ensure nav content is readable over the bg */
+.angle2-nav {
+  position: sticky;      /* or fixed if you prefer */
+  top: 0;
+  z-index: 10;
+  backdrop-filter: saturate(120%) blur(4px);
+}
+.angle2-bg-container
+{
+  max-width: 15vh;
+  max-height: 2vh;
+};

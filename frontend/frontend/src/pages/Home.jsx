@@ -1,13 +1,60 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
+import * as THREE from "three";
 import "./home.css";
 
 const AngleLanding = () => {
+  const bgRef = useRef(null);
+  const [vanta, setVanta] = useState(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    // lazy-load the effect so your bundle stays small
+    import("vanta/dist/vanta.net.min").then((mod) => {
+      if (cancelled) return;
+      const NET = mod.default;
+
+      const effect = NET({
+        el: bgRef.current,
+        THREE,
+        mouseControls: true,
+        touchControls: true,
+        gyroControls: false,
+        minHeight: 200.0,
+        minWidth: 200.0,
+        scale: 1.0,
+        scaleMobile: 1.0,
+        points: 10.0,
+        maxDistance: 20.0,
+        spacing: 15.0,
+        showDots: false,
+        backgroundAlpha: 0.0,
+        // colors from your Vanta URL (converted to 0xRRGGBB)
+        backgroundColor: 0x192164, // 1646948
+        color:  0xFF80B5,           // 11604372
+      });
+
+      setVanta(effect);
+    });
+
+    return () => {
+      cancelled = true;
+      if (vanta) vanta.destroy();
+    };
+    // we intentionally omit vanta from deps to avoid re-creating on HMR
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <div className="angle2-root">
       <div className="angle2-landing">
-        {/* fixed, full-viewport background */}
-        <div className="angle2-bg" aria-hidden="true" />
-        {/* ambient ornaments */}
+        {/* fixed, full-viewport background (Vanta mounts here) */}
+        <div className="angle2-bg-container" aria-hidden="true">
+          <div ref={bgRef} className="angle2-bg" aria-hidden="true" />
+          </div>
+        
+
+        {/* ambient ornaments (optional, keep if you still want them) */}
         <div className="angle2-ornaments">
           <span className="angle2-blob blob-tr" />
           <span className="angle2-blob blob-tl" />
@@ -36,14 +83,14 @@ const AngleLanding = () => {
         <main className="angle2-hero">
           <div className="angle2-container angle2-hero__inner">
             <h1 className="angle2-hero__title">
-              The web application
+              The application assistant
               <br />
-              agency that <span className="accent">helps you grow</span>
+              that optimizes<span className="accent"> every detail</span>
             </h1>
 
             <p className="angle2-hero__lead">
-              We create <strong>web applications</strong> for small and medium SaaS
-              businesses.
+              Tailor your <strong>resume &amp; cover letter</strong> instantly
+              with AI to land your dream job faster.
             </p>
 
             <p className="angle2-hero__sub">
