@@ -1,47 +1,104 @@
-import React, { useEffect, useCallback } from "react";
+import React, { useEffect, useCallback,useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
-import PersonalizedNavbar from "../components/PersonalizedNavbar";
+import "./dashBoard.css";
+import JobCard from "../components/JobCard.jsx";
+
+const sampleJobs = [
+  {
+    title: "Frontend Developer",
+    company: "TechCorp",
+    location: "New York, NY",
+    salary: "$80,000 - $100,000",
+    description: "Build amazing web apps with React and modern JS."
+  },
+  {
+    title: "Backend Engineer",
+    company: "DataSys",
+    location: "San Francisco, CA",
+    salary: "$90,000 - $120,000",
+    description: "Develop APIs, databases, and server-side logic."
+  },
+  {
+    title: "Fullstack Developer",
+    company: "InnovateX",
+    location: "Remote",
+    salary: "$85,000 - $110,000",
+    description: "Work on both frontend and backend projects."
+  },
+  {
+    title: "UI/UX Designer",
+    company: "DesignHub",
+    location: "Austin, TX",
+    salary: "$70,000 - $95,000",
+    description: "Create intuitive user interfaces and experiences."
+  },
+  {
+    title: "DevOps Engineer",
+    company: "CloudNet",
+    location: "Seattle, WA",
+    salary: "$100,000 - $130,000",
+    description: "Automate deployments and manage cloud infrastructure."
+  }
+];
+
 
 const UserDashboard = () => {
   const navigate = useNavigate();
-  const { username } = useParams();
+  // const { username } = useParams();
   const [searchParams] = useSearchParams();
 
-  // ✅ Block access if token is missing
+  const [jobs, setJobs] = useState(sampleJobs);
+  const [page, setPage] = useState(1);
+  const jobsPerPage = 3;
+
+  // Handle token + username from query params
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      navigate("/login");
-    }
-  }, [navigate]);
+    const token = searchParams.get("token");
+    const username = searchParams.get("username");
+
+    if (token) localStorage.setItem("token", token);
+
+    if (username) navigate(`/${username}`, { replace: true });
+  }, [searchParams, navigate]);
+
+  const totalPages = Math.ceil(jobs.length / jobsPerPage);
+  const currentJobs = jobs.slice((page - 1) * jobsPerPage, page * jobsPerPage);
+
+  // // ✅ Block access if token is missing
+  // useEffect(() => {
+  //   const token = localStorage.getItem("token");
+  //   if (token) {
+  //     navigate("/login");
+  //   }
+  // }, [navigate]);
 
   // ✅ logout function
-  const logout = useCallback(() => {
-    localStorage.removeItem("token");
-    alert("You have been logged out due to inactivity.");
-    navigate("/login");
-  }, [navigate]);
+  // const logout = useCallback(() => {
+  //   localStorage.removeItem("token");
+  //   alert("You have been logged out due to inactivity.");
+  //   navigate("/login");
+  // }, [navigate]);
 
-  useEffect(() => {
-    let timer;
-    const resetTimer = () => {
-      if (timer) clearTimeout(timer);
-      timer = setTimeout(logout, 30000);
-    };
-
-    window.addEventListener("mousemove", resetTimer);
-    window.addEventListener("keydown", resetTimer);
-    window.addEventListener("click", resetTimer);
-
-    resetTimer();
-
-    return () => {
-      clearTimeout(timer);
-      window.removeEventListener("mousemove", resetTimer);
-      window.removeEventListener("keydown", resetTimer);
-      window.removeEventListener("click", resetTimer);
-    };
-  }, [logout]);
+  // useEffect(() => {
+  //   let timer;
+  //   const resetTimer = () => {
+  //     if (timer) clearTimeout(timer);
+  //     timer = setTimeout(logout, 30000);
+  //   };
+  //
+  //   window.addEventListener("mousemove", resetTimer);
+  //   window.addEventListener("keydown", resetTimer);
+  //   window.addEventListener("click", resetTimer);
+  //
+  //   resetTimer();
+  //
+  //   return () => {
+  //     clearTimeout(timer);
+  //     window.removeEventListener("mousemove", resetTimer);
+  //     window.removeEventListener("keydown", resetTimer);
+  //     window.removeEventListener("click", resetTimer);
+  //   };
+  // }, [logout]);
 
   // ✅ Handle token + username from query params
   useEffect(() => {
@@ -58,10 +115,27 @@ const UserDashboard = () => {
     }
   }, [searchParams, navigate]);
 
+
   return (
-    <div>
-      <PersonalizedNavbar />
-      <h1>Welcome to Your Dashboard, {username} 👋</h1>
+
+    <div className="dashboard-wrapper">
+
+
+      <div className="dashboard-container">
+        {/* Left Column: Job Cards */}
+        <div className="jobs-column">
+          {currentJobs.map((job, idx) => (
+            <JobCard key={idx} job={job} />
+          ))}
+          <div className="pagination">
+            <button onClick={() => setPage(p => Math.max(p - 1, 1))}>{'<'}</button>
+            <span>Page {page} of {totalPages}</span>
+            <button onClick={() => setPage(p => Math.min(p + 1, totalPages))}>{'>'}</button>
+          </div>
+        </div>
+
+
+      </div>
     </div>
   );
 };
