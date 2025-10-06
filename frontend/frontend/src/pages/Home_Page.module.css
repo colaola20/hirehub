@@ -20,10 +20,10 @@
   inset: 0;
   z-index: -2;
   background:
-    /* 🔹 overall dark veil (new; tweak 0.30–0.50) */
-    linear-gradient(0deg, rgba(0,0,0,0.42), rgba(0,0,0,0.42)),
+    /* lighter global veil */
+    linear-gradient(0deg, rgba(0,0,0,0.28), rgba(0,0,0,0.28)),
 
-    /* soft pink/purple accents */
+    /* soft pink/purple accents (unchanged) */
     radial-gradient(380px 240px at 92% 10%, rgba(255, 120, 170, 0.20), transparent 62%),
     radial-gradient(180px 120px at 96% 6%,  rgba(255, 155, 195, 0.26), transparent 70%),
 
@@ -33,21 +33,22 @@
     radial-gradient(520px 320px at 10% 86%, rgba(255, 130, 185, 0.16), transparent 66%),
     radial-gradient(240px 160px at 6% 94%,  rgba(255, 170, 210, 0.20), transparent 74%),
 
-    /* toned-down neutral highlights */
-    radial-gradient(900px 480px at 75% 12%, rgba(255,255,255,0.08), transparent 60%),
-    radial-gradient(760px 420px at 16% 8%,  rgba(255,255,255,0.05), transparent 62%),
+    /* slightly stronger neutral highlights */
+    radial-gradient(900px 480px at 75% 12%, rgba(255,255,255,0.12), transparent 60%),
+    radial-gradient(760px 420px at 16% 8%,  rgba(255,255,255,0.08), transparent 62%),
 
-    /* purple wash + faint warmth (slightly stronger purple) */
+    /* purple wash + warmth */
     radial-gradient(900px 520px at 22% 70%, rgba(120, 60, 255, 0.12), transparent 62%),
-    radial-gradient(820px 480px at 52% 38%, rgba(255,200,140,0.03), transparent 60%),
+    radial-gradient(820px 480px at 52% 38%, rgba(255,200,140,0.05), transparent 60%),
 
-    /* stronger vignette for readability */
-    radial-gradient(140% 120% at 50% 115%, rgba(0,0,0,0.68), transparent 55%),
+    /* softer vignette */
+    radial-gradient(140% 120% at 50% 115%, rgba(0,0,0,0.54), transparent 55%),
 
-    /* darker base gradient */
-    linear-gradient(90deg, #6d8bd8 0%, #3a1f6e 100%);
+    /* brighter base gradient */
+    linear-gradient(90deg, #7fa0ee 0%, #4a2a86 100%);
   background-attachment: fixed;
 }
+
 
 /* subtle overall dark veil like the reference */
 .angle2-root::after {
