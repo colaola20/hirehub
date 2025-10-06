@@ -1,0 +1,306 @@
+/* Home_Page.module.css */
+
+/* -------- Reset for full-bleed BG -------- */
+:global(html, body, #root) {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* -------- Page wrapper (we paint the gradient here) -------- */
+.angle2-root {
+  position: relative;
+  min-height: 100vh;
+}
+
+/* Fixed, multi-layer gradient background (stays on scroll) */
+.angle2-root::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background:
+    /* 🔹 overall dark veil (new; tweak 0.30–0.50) */
+    linear-gradient(0deg, rgba(0,0,0,0.42), rgba(0,0,0,0.42)),
+
+    /* soft pink/purple accents */
+    radial-gradient(380px 240px at 92% 10%, rgba(255, 120, 170, 0.20), transparent 62%),
+    radial-gradient(180px 120px at 96% 6%,  rgba(255, 155, 195, 0.26), transparent 70%),
+
+    radial-gradient(460px 300px at 8% 12%,  rgba(255, 120, 170, 0.22), transparent 64%),
+    radial-gradient(220px 150px at 5% 8%,   rgba(255, 155, 195, 0.30), transparent 72%),
+
+    radial-gradient(520px 320px at 10% 86%, rgba(255, 130, 185, 0.16), transparent 66%),
+    radial-gradient(240px 160px at 6% 94%,  rgba(255, 170, 210, 0.20), transparent 74%),
+
+    /* toned-down neutral highlights */
+    radial-gradient(900px 480px at 75% 12%, rgba(255,255,255,0.08), transparent 60%),
+    radial-gradient(760px 420px at 16% 8%,  rgba(255,255,255,0.05), transparent 62%),
+
+    /* purple wash + faint warmth (slightly stronger purple) */
+    radial-gradient(900px 520px at 22% 70%, rgba(120, 60, 255, 0.12), transparent 62%),
+    radial-gradient(820px 480px at 52% 38%, rgba(255,200,140,0.03), transparent 60%),
+
+    /* stronger vignette for readability */
+    radial-gradient(140% 120% at 50% 115%, rgba(0,0,0,0.68), transparent 55%),
+
+    /* darker base gradient */
+    linear-gradient(90deg, #6d8bd8 0%, #3a1f6e 100%);
+  background-attachment: fixed;
+}
+
+/* subtle overall dark veil like the reference */
+.angle2-root::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(1000px 700px at 40% 35%, rgba(0,0,0,0.30), transparent 65%);
+  pointer-events: none;
+}
+
+/* -------- Layout helpers -------- */
+.angle2-container {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* -------- NAV (top, glassy, light text) -------- */
+.angle2-nav {
+  position: fixed;         /* keep it like the screenshot */
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 3;
+  padding: 14px 0;
+  backdrop-filter: saturate(120%) blur(4px);
+}
+
+.angle2-logo {
+  font-weight: 800;
+  letter-spacing: .5px;
+  font-size: 18px;
+  color: #ffffff;
+  opacity: 0.95;
+}
+
+.angle2-links {
+  display: flex;
+  gap: 26px;
+  align-items: center;
+}
+.angle2-links a {
+  color: rgba(255,255,255,0.85);
+  text-decoration: none;
+  font-size: 14.5px;
+  transition: opacity .2s ease;
+}
+.angle2-links a:hover { opacity: 1; }
+
+.angle2-btn {
+  appearance: none;
+  border: 1px solid rgba(255,255,255,0.35);
+  background: rgba(0,0,0,0.28);
+  color: #fff;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-weight: 600;
+  font-size: 13.5px;
+  cursor: pointer;
+}
+.angle2-btn--small { padding: 8px 12px; }
+
+/* -------- HERO (centered like the mock) -------- */
+.angle2-hero {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+  display: grid;
+  grid-template-rows: auto 1fr;   /* nav space + content */
+}
+
+/* Vanta canvas sits behind content */
+.angle2-vanta-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+/* Center the hero content, compensate for fixed nav */
+.angle2-hero__inner {
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  margin-top: 64px;        /* ~nav height spacing */
+  padding: 24px 0 56px;
+  gap: 16px;
+}
+
+/* Big headline like the screenshot */
+.angle2-hero__title {
+  margin: 0;
+  font-weight: 800;
+  line-height: 1.07;
+  letter-spacing: 0;
+  font-size: clamp(40px, 7vw, 80px);   /* scales to large desktop */
+  color: #fff;
+  position: relative;
+}
+
+/* soft glow behind headline */
+.angle2-hero__title::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 54%;
+  transform: translate(-50%, -50%);
+  width: min(90vw, 980px);
+  height: min(42vw, 380px);
+  border-radius: 999px;
+  background: radial-gradient(60% 60% at 50% 50%, rgba(255,255,255,0.22), transparent 70%);
+  filter: blur(28px);
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* orange accent like the reference word “helps you grow” */
+.accent {
+  background: linear-gradient(90deg, #ffb457 0%, #ff8a3d 50%, #ff6a00 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Lead and subcopy */
+.angle2-hero__lead {
+  margin: 8px 0 0;
+  color: rgba(255,255,255,0.96);
+  font-size: clamp(16px, 2vw, 18px);
+}
+.angle2-hero__sub {
+  margin: 2px 0 12px;
+  color: rgba(230,224,244,0.85);
+  font-size: clamp(14px, 1.8vw, 16px);
+}
+
+/* Primary ghost button centered below copy */
+.angle2-btn--ghost {
+  background: rgba(0,0,0,0.20);
+  border: 1px solid rgba(255,255,255,0.38);
+}
+.angle2-btn--ghost:hover {
+  border-color: rgba(255,255,255,0.55);
+}
+
+/* -------- Responsive tweaks -------- */
+@media (max-width: 980px) {
+  .angle2-links { display: none; }
+  .angle2-hero__title::before { filter: blur(22px); }
+}
+
+
+/* ===== Center the hero content ===== */
+:root { --nav-h: 64px; }             /* adjust if your nav is taller */
+
+.angle2-nav {                         /* fixed/glassy nav as you had */
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 3;
+  padding: 14px 0;
+  backdrop-filter: saturate(120%) blur(4px);
+}
+
+/* The hero owns one viewport and leaves space for the fixed nav */
+.angle2-hero {
+  position: relative;
+  min-height: 100vh;
+  padding-top: var(--nav-h);         /* make room for the nav */
+  overflow: hidden;
+}
+
+/* Vanta canvas fills the hero */
+.angle2-vanta-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 0;                        /* behind text */
+}
+
+/* ⬇️ IMPORTANT: override the flex row from .angle2-container */
+.angle2-hero__inner.angle2-container {
+  display: flex !important;          /* stop the inherited grid/flex confusion */
+  flex-direction: column;
+  align-items: center;               /* center horizontally */
+  justify-content: center;           /* center vertically */
+  min-height: calc(100vh - var(--nav-h));
+  max-width: 980px;                  /* nice readable width */
+  margin: 0 auto;                    /* center the block */
+  text-align: center;
+  gap: 16px;
+  z-index: 1;                        /* above Vanta */
+}
+
+/* Big headline stays centered */
+.angle2-hero__title {
+  margin: 0;
+  line-height: 1.07;
+  font-weight: 800;
+  font-size: clamp(40px, 7vw, 80px);
+}
+
+/* optional soft glow behind headline, centered */
+.angle2-hero__title::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 54%;
+  transform: translate(-50%, -50%);
+  width: min(90vw, 980px);
+  height: min(42vw, 380px);
+  border-radius: 999px;
+  background: radial-gradient(60% 60% at 50% 50%, rgba(255,255,255,0.22), transparent 70%);
+  filter: blur(28px);
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* keep links hidden on mobile if you already did that elsewhere */
+@media (max-width: 980px) {
+  .angle2-links { display: none; }
+}
+/* Make the mount node full-bleed (override Vite's default index.css) */
+:global(#root) {
+  max-width: none !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Ensure the page box fills the viewport */
+:global(html, body) {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* Your wrapper should own the full screen */
+.angle2-root {
+  width: 100%;
+  min-height: 100vh;
+  overflow-x: hidden;       /* prevent accidental horiz scroll */
+}
+
+/* Hero + Vanta sizing (restate for safety) */
+.angle2-hero {
+  position: relative;
+  min-height: 100vh;
+  padding-top: var(--nav-h, 64px);
+  overflow: hidden;
+}
+.angle2-vanta-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
