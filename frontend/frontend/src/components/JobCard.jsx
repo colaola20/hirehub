@@ -11,7 +11,7 @@ const JobCard = ({ job }) => {
       <p><strong>Location:</strong> {job.location}</p>
       <p><strong>Salary:</strong> {job.salary}</p>
       <p>{job.description}</p>
-      <button className="apply-btn">Apply Now</button>
+      <button className="apply-btn">See details</button>
     </div>
   );
 };
