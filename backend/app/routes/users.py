@@ -7,6 +7,10 @@ from app.extensions import mail
 import jwt, datetime, os
 import os
 import urllib.parse
+from werkzeug.security import generate_password_hash
+from flask import current_app
+import traceback
+
 users_bp = Blueprint('users', __name__)
 
 SECRET_KEY = os.getenv("JWT_SECRET_KEY", "super-secret")  # should match your app config
@@ -231,33 +235,84 @@ def forgot_password():
 # ------------------------
 @users_bp.route("/api/reset-password", methods=["POST"])
 def reset_password():
-    """Reset password using secure token."""
+    import traceback
     try:
-        data = request.get_json()
-        token = data.get("token")
-        new_password = data.get("password")
+        data = request.get_json(silent=True) or {}
+        token = data.get("token", "")
+        new_password = data.get("password", "")
 
         if not token or not new_password:
-            return jsonify({"status": "error", "message": "Token and new password required"}), 400
+            return jsonify({"status": "error", "where": "input", "message": "Token and new password required"}), 400
+        if len(new_password) < 8:
+            return jsonify({"status": "error", "where": "input", "message": "Password must be at least 8 characters"}), 400
 
+        # --- decode ---
         try:
             decoded = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
             user_id = decoded.get("user_id")
-        except jwt.ExpiredSignatureError:
-            return jsonify({"status": "error", "message": "Reset link expired"}), 400
-        except jwt.InvalidTokenError:
-            return jsonify({"status": "error", "message": "Invalid reset token"}), 400
+            if not user_id:
+                return jsonify({"status": "error", "where": "decode", "message": "Invalid token payload"}), 400
+        except jwt.ExpiredSignatureError as e:
+            return jsonify({"status": "error", "where": "decode", "error": "ExpiredSignatureError", "message": str(e)}), 400
+        except jwt.InvalidTokenError as e:
+            return jsonify({"status": "error", "where": "decode", "error": "InvalidTokenError", "message": str(e)}), 400
+        except Exception as e:
+            current_app.logger.error("Decode crash:\n%s", traceback.format_exc())
+            return jsonify({"status": "error", "where": "decode", "error": type(e).__name__, "message": str(e)}), 400
 
-        # Fetch user
-        user = DatabaseService.get_by_id(User, user_id)
-        if not user:
-            return jsonify({"status": "error", "message": "User not found"}), 404
+        # --- lookup ---
+        try:
+            user = DatabaseService.get_by_id(User, user_id)
+            if not user:
+                return jsonify({"status": "error", "where": "lookup", "message": "User not found"}), 404
+        except Exception as e:
+            current_app.logger.error("Lookup crash:\n%s", traceback.format_exc())
+            return jsonify({"status": "error", "where": "lookup", "error": type(e).__name__, "message": str(e)}), 500
 
-        # Update password
-        user.set_password(new_password)  # make sure User model hashes passwords
-        DatabaseService.update()
+        # --- assign/hash ---
+        try:
+            if hasattr(user, "set_password") and callable(user.set_password):
+                user.set_password(new_password)  # should hash internally
+            elif hasattr(user, "password_hash"):
+                user.password_hash = generate_password_hash(new_password)
+            elif hasattr(user, "password"):
+                user.password = generate_password_hash(new_password)
+            else:
+                return jsonify({"status": "error", "where": "assign", "message": "No password field/method on User"}), 500
+        except Exception as e:
+            current_app.logger.error("Assign crash:\n%s", traceback.format_exc())
+            return jsonify({"status": "error", "where": "assign", "error": type(e).__name__, "message": str(e)}), 500
+
+        # --- commit (try multiple strategies) ---
+        try:
+            committed = False
+            # Try DatabaseService.update() with and without arg
+            if hasattr(DatabaseService, "update"):
+                try:
+                    DatabaseService.update(user)   # some projects expect obj
+                    committed = True
+                except TypeError:
+                    DatabaseService.update()       # others expect none
+                    committed = True
+            if not committed and hasattr(DatabaseService, "commit"):
+                DatabaseService.commit(); committed = True
+
+            if not committed:
+                # fallback to SQLAlchemy session if present
+                try:
+                    from app import db  # adjust if your db lives elsewhere
+                    db.session.add(user)
+                    db.session.commit()
+                    committed = True
+                except Exception as inner:
+                    current_app.logger.error("SQLAlchemy commit crash:\n%s", traceback.format_exc())
+                    return jsonify({"status": "error", "where": "commit(sqlalchemy)", "error": type(inner).__name__, "message": str(inner)}), 500
+        except Exception as e:
+            current_app.logger.error("Commit crash:\n%s", traceback.format_exc())
+            return jsonify({"status": "error", "where": "commit(service)", "error": type(e).__name__, "message": str(e)}), 500
 
         return jsonify({"status": "success", "message": "Password reset successful. You can now login."}), 200
 
     except Exception as e:
-        return jsonify({"status": "error", "message": "Failed to reset password", "error": str(e)}), 500
+        current_app.logger.error("reset-password outer crash:\n%s", traceback.format_exc())
+        return jsonify({"status": "error", "where": "outer", "error": type(e).__name__, "message": str(e)}), 500
