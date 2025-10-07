@@ -10,45 +10,42 @@ body, .container {
     position: absolute;
     top: 0;
     left: 0;
+    width: 100%;
+    min-height: 100vh;
+  /*!*background-color: darkgreen;*!*/
+  /*padding-top: 80px; !* adjust to the height of your navbar *!*/
 
-  min-height: 100vh;
-  width: 100%;
-  background-color: darkgreen;
-  padding-top: 80px; /* adjust to the height of your navbar */
 }
 
 
 .dashboard-container {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: flex-start;
-  padding: 20px;
-  gap: 40px;
-  background: #ff0000;
-  width: 100%;
-  min-height: calc(100vh - 80px); /* fill screen minus navbar */
-  box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-top: 80px;
+    margin-left: 100px;
+    padding: 60px ;
+    gap: 40px;
+    background: transparent;
+    width: 100%;
+    min-height: calc(100vh - 80px); /* fill screen minus navbar */
+    box-sizing: border-box;
 }
 
 .jobs-column {
-
-    display: flex;
+     display: flex;
+    width: 45%;
+    height: auto;
     flex-direction: column;
     align-items: center;
     position: relative;
-    background: #ffe100;
+    background: transparent;
+
 
 }
 
-.chat-column {
-  flex:  20%;
-  background-color: #3a3535;
-  padding: 20px;
-  border-radius: 12px;
-  height: fit-content;
-  min-height: 400px;
-}
+
 
 .pagination {
     display: flex;
@@ -56,7 +53,6 @@ body, .container {
     align-items: center;
     gap: 15px;
     margin-top: 20px;
-    background: #0073a6;
 
 }
 

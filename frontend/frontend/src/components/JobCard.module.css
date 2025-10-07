@@ -17,6 +17,14 @@
     font-weight: bold;
 }
 
+.date{
+    font-size: 12px;
+}
+.source{
+    font-size: 12px;
+    color: #666666;
+}
+
 .job-card:hover {
   transform: translateY(-5px) scale(1.02);
 }

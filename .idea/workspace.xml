@@ -4,17 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5ab065d8-ce19-4b25-a522-e0489771888e" name="Changes" comment="working on UserDashboard.jsx">
-      <change afterPath="$PROJECT_DIR$/frontend/frontend/src/pages/SimpleForm.css" afterDir="false" />
+    <list default="true" id="5ab065d8-ce19-4b25-a522-e0489771888e" name="Changes" comment=" login_Page.css problem">
+      <change afterPath="$PROJECT_DIR$/backend/app/models/job.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/app/routes/jobs.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sqldialects.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/frontend/src/App.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/frontend/src/App.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/frontend/src/components/JobCard.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/frontend/src/components/JobCard.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/frontend/src/pages/Login.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/frontend/src/pages/Login.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/app/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/frontend/src/components/JobCard.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/frontend/src/components/JobCard.module.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/frontend/src/components/JobCard.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/frontend/src/components/JobCard.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/frontend/src/pages/SimpleForm.css" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/frontend/src/pages/UserDashboard.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/frontend/src/pages/UserDashboard.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/frontend/src/pages/dashBoard.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/frontend/src/pages/dashBoard.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/frontend/src/pages/forgot_password.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/frontend/src/pages/forgot_password.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/frontend/src/pages/login_Page.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/frontend/src/pages/login_Page.module.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/frontend/src/pages/reset_password.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/frontend/src/pages/reset_password.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/frontend/src/pages/dashBoard.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/frontend/src/pages/dashBoard.module.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -25,6 +25,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="CSS File" />
+        <option value="Python Script" />
       </list>
     </option>
   </component>
@@ -57,12 +58,14 @@
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;JPR&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
     &quot;list.type.of.created.stylesheet&quot;: &quot;CSS&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Program Files\\JetBrains\\PyCharm 2025.1\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
@@ -84,7 +87,10 @@
       <workItem from="1759499440894" duration="67000" />
       <workItem from="1759499509273" duration="1454000" />
       <workItem from="1759603045926" duration="357000" />
-      <workItem from="1759773768879" duration="6057000" />
+      <workItem from="1759773768879" duration="11721000" />
+      <workItem from="1759792369053" duration="114000" />
+      <workItem from="1759792498754" duration="2972000" />
+      <workItem from="1759795780883" duration="293000" />
     </task>
     <task id="LOCAL-00001" summary="fixing redirect">
       <option name="closed" value="true" />
@@ -102,7 +108,15 @@
       <option name="project" value="LOCAL" />
       <updated>1759507649053</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary=" login_Page.css problem">
+      <option name="closed" value="true" />
+      <created>1759780059722</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1759780059723</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -111,6 +125,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="fixing redirect" />
     <MESSAGE value="working on UserDashboard.jsx" />
-    <option name="LAST_COMMIT_MESSAGE" value="working on UserDashboard.jsx" />
+    <MESSAGE value=" login_Page.css problem" />
+    <option name="LAST_COMMIT_MESSAGE" value=" login_Page.css problem" />
   </component>
 </project>
