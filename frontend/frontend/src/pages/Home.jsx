@@ -1,6 +1,9 @@
-import React, { useEffect, useRef, useState } from "react";
-import * as THREE from "three";
 import "./home.css";
+
+import React, { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
+import * as THREE from "three";
+
 
 const AngleLanding = () => {
   const bgRef = useRef(null);
@@ -75,7 +78,10 @@ const AngleLanding = () => {
               <a href="#contact">Contact Us</a>
             </nav>
 
-            <button className="angle2-btn angle2-btn--small">Free quote</button>
+            <Link to="/login">
+              <button className="angle2-btn angle2-btn--small">Login</button>
+            </Link>
+            
           </div>
         </header>
 
