@@ -20,13 +20,13 @@ const AngleLanding = () => {
         touchControls: true,
         gyroControls: false,
         scale: 1.0,
+        showpoints: false,
         scaleMobile: 1.0,
         size: 1.0,
         points: 8.0,
         color: 0xff3f81,
         backgroundAlpha: 0.0,
         backgroundColor: 0x131a43,
-        
       });
     });
 
@@ -61,23 +61,15 @@ const AngleLanding = () => {
           </div>
         </header>
 
+        {/* ⬇️ Added: headline positioned exactly like Vanta.js demo */}
+        <div className={styles.heroCopy}>
+          <h1 className={styles.heroTitle}>HireHub</h1>
+          <p className={styles.heroSub}>
+            The application assistant that optimizes <span className={styles.accent}>every detail</span>
+          </p>
+        </div>
+
         <div className={`${styles["angle2-hero__inner"]} ${styles["angle2-container"]}`}>
-          <h1 className={styles["angle2-hero__title"]}>
-            The application assistant
-            <br />
-            that optimizes<span className={styles["accent"]}> every detail</span>
-          </h1>
-
-          <p className={styles["angle2-hero__lead"]}>
-            Tailor your <strong>resume &amp; cover letter</strong> instantly with AI to
-            land your dream job faster.
-          </p>
-
-          <p className={styles["angle2-hero__sub"]}>
-            Our <span className={styles["accent"]}>UX design expertise</span> means we prioritize the people who
-            matter most – your users
-          </p>
-
           <button className={`${styles["angle2-btn"]} ${styles["angle2-btn--ghost"]}`}>
             Free quote
           </button>

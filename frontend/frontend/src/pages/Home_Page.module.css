@@ -305,3 +305,44 @@
   inset: 0;
   z-index: 0;
 }
+
+/* ====== NEW: Headline placed like the Vanta.js demo ====== */
+:root {
+  --hero-x: 34%;   /* horizontal position of headline block (tweak 32–36%) */
+  --hero-y: 50%;   /* vertical position (center) */
+}
+
+.heroCopy {
+  position: absolute;
+  left: var(--hero-x);
+  top: var(--hero-y);
+  transform: translate(-50%, -50%);
+  z-index: 1;                 /* above Vanta canvas */
+  text-align: center;
+  width: min(90vw, 900px);
+  padding: 0 16px;
+  pointer-events: none;       /* keep canvas interactions smooth */
+}
+
+.heroTitle {
+  margin: 0 0 12px 0;
+  font-weight: 800;
+  line-height: 1.05;
+  font-size: clamp(42px, 9vw, 96px);
+  color: #fff;
+  text-shadow: 0 2px 22px rgba(0,0,0,0.35);
+}
+
+.heroSub {
+  margin: 0;
+  font-size: clamp(16px, 2.2vw, 22px);
+  color: rgba(255,255,255,0.92);
+}
+
+/* Reuse existing .accent for the orange gradient word */
+
+/* Responsive: center fully on small screens */
+@media (max-width: 900px) {
+  :root { --hero-x: 50%; --hero-y: 50%; }
+  .heroCopy { width: min(92vw, 700px); }
+}
