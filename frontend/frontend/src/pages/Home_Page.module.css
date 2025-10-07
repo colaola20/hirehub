@@ -346,3 +346,26 @@
   :root { --hero-x: 50%; --hero-y: 50%; }
   .heroCopy { width: min(92vw, 700px); }
 }
+
+/* ====== NEW: Center the nav contents and show only needed bits ====== */
+.angle2-nav .angle2-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;   /* center links + buttons */
+  gap: 24px;
+}
+
+/* Hide the left logo in the nav to avoid spreading edge-to-edge */
+.angle2-nav .angle2-logo {
+  display: none;
+}
+
+/* Keep links inline and the small button next to them */
+.angle2-nav .angle2-links {
+  display: flex;
+  gap: 26px;
+  align-items: center;
+}
+.angle2-nav .angle2-btn--small {
+  margin-left: 8px;          /* slight breathing room after links */
+}

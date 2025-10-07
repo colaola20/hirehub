@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import * as THREE from "three";
+import { Link } from "react-router-dom";            // ⬅️ added
 import styles from "./Home_Page.module.css";  // ⬅️ use module import
 
 const AngleLanding = () => {
@@ -45,34 +46,29 @@ const AngleLanding = () => {
         {/* NAV */}
         <header className={styles["angle2-nav"]}>
           <div className={styles["angle2-container"]}>
-            <div className={styles["angle2-logo"]}>HireHub</div>
 
             <nav className={styles["angle2-links"]}>
-              <a href="#case-studies">Case studies</a>
-              <a href="#process">Process</a>
               <a href="#services">Services</a>
               <a href="#about">About</a>
               <a href="#contact">Contact Us</a>
             </nav>
 
-            <button className={`${styles["angle2-btn"]} ${styles["angle2-btn--small"]}`}>
-              Free quote
-            </button>
+            {/* linked buttons */}
+            <Link to="/login" className={`${styles["angle2-btn"]} ${styles["angle2-btn--small"]}`}>
+              Sign In
+            </Link>
+            <Link to="/Registration" className={`${styles["angle2-btn"]} ${styles["angle2-btn--small"]}`}>
+              Sign Up
+            </Link>
           </div>
         </header>
 
-        {/* ⬇️ Added: headline positioned exactly like Vanta.js demo */}
+        {/* headline */}
         <div className={styles.heroCopy}>
           <h1 className={styles.heroTitle}>HireHub</h1>
           <p className={styles.heroSub}>
             The application assistant that optimizes <span className={styles.accent}>every detail</span>
           </p>
-        </div>
-
-        <div className={`${styles["angle2-hero__inner"]} ${styles["angle2-container"]}`}>
-          <button className={`${styles["angle2-btn"]} ${styles["angle2-btn--ghost"]}`}>
-            Free quote
-          </button>
         </div>
       </section>
 
