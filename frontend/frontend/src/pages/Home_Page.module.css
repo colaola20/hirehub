@@ -369,3 +369,70 @@
 .angle2-nav .angle2-btn--small {
   margin-left: 8px;          /* slight breathing room after links */
 }
+/* ===== Glassy full-width "What is HireHub?" section ===== */
+.angle2-about {
+  position: relative;
+  padding: clamp(48px, 8vw, 96px) 0;        /* space above/below */
+}
+
+/* The inner block already has both classes (.angle2-container + .angle2-about__inner).
+   Override the container's max-width and make it a glass panel that spans the section. */
+.angle2-about__inner {
+  max-width: none;                           /* override .angle2-container */
+  width: 100%;
+  margin: 0;
+  padding: clamp(24px, 4vw, 48px) clamp(16px, 4vw, 64px);
+
+  /* Glassmorphism */
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 20px;
+  backdrop-filter: blur(12px) saturate(120%);
+  -webkit-backdrop-filter: blur(12px) saturate(120%);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+
+  /* Light-on-dark text since it sits over your gradient */
+  color: rgba(255, 255, 255, 0.92);
+}
+
+/* Headline & body copy colors inside the glass card */
+.angle2-about__inner h2 {
+  color: #ffffff;
+  margin: 0 0 12px 0;
+  font-weight: 800;
+}
+.angle2-about__inner p {
+  color: rgba(240, 240, 248, 0.92);
+  margin: 8px 0 18px 0;
+}
+
+/* Make the list read well across the full width */
+.angle2-about__list {
+  display: grid;
+  grid-template-columns: repeat( auto-fit, minmax(260px, 1fr) );
+  gap: 12px 20px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+.angle2-about__list li {
+  color: rgba(240, 240, 248, 0.9);
+  position: relative;
+  padding-left: 18px;
+}
+.angle2-about__list li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  top: 0;
+  line-height: 1;
+  color: rgba(255, 200, 140, 0.95); /* subtle warm bullet */
+}
+
+/* Optional: softly lift the glass card off the edges on very small screens */
+@media (max-width: 640px) {
+  .angle2-about__inner {
+    border-radius: 16px;
+    padding: 20px 16px;
+  }
+}
