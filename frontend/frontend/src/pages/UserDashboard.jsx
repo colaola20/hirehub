@@ -35,7 +35,7 @@ const UserDashboard = () => {
 const fetchJobs = async (limit = 10, offset = 0) => {
   try {
     const response = await fetch(`http://localhost:5001/api/jobs?limit=${limit}&offset=${offset}&preload=10`);
-    const data = await response.json();
+    const data = await  response.json();
     if (data.status === 'success') {
       console.log("Jobs fetched:", data.current); // debug
       return data.current;
@@ -59,27 +59,11 @@ useEffect(() => {
   loadInitialJobs();
 }, []);
 
-  const handlePageChange = async (newPage) => {
-  const totalLoaded = jobs.length + preloadedJobs.length;
-  const requiredIndex = newPage * 10; // jobsPerPage = 10
+const handlePageChange = async (newPage) => {
+  const offset = (newPage - 1) * jobsPerPage;
+  const newJobs = await fetchJobs(jobsPerPage, offset);
 
-  // If we already have preloaded jobs for this page
-  if (requiredIndex <= totalLoaded) {
-    const start = (newPage - 1) * 10;
-    const end = start + 10;
-    setJobs([...jobs, ...preloadedJobs].slice(start, end));
-    // preload next batch if needed
-    if (requiredIndex === totalLoaded) {
-      const nextBatch = await fetchJobs(10, totalLoaded);
-      setPreloadedJobs(nextBatch);
-    }
-  } else {
-    // fetch more if not preloaded
-    const nextBatch = await fetchJobs(10, totalLoaded);
-    setJobs(nextBatch);
-    setPreloadedJobs([]);
-  }
-
+  setJobs(newJobs);
   setPage(newPage);
 };
 
@@ -138,11 +122,7 @@ useEffect(() => {
 
  return (
         <>
-
         <NavBar/>
-
-
-
       <div className={styles["dashboard-wrapper"]}>
         <div className={styles["dashboard-container"]}>
           {/* Left Column: Job Cards */}

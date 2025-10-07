@@ -12,8 +12,8 @@ body, .container {
     left: 0;
     width: 100%;
     min-height: 100vh;
-  /*!*background-color: darkgreen;*!*/
-  /*padding-top: 80px; !* adjust to the height of your navbar *!*/
+    background: linear-gradient(to right,#8ec5fc,#7a5bbf);
+    /*padding-top: 80px; !* adjust to the height of your navbar *!*/
 
 }
 
@@ -42,10 +42,7 @@ body, .container {
     position: relative;
     background: transparent;
 
-
 }
-
-
 
 .pagination {
     display: flex;

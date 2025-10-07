@@ -1,6 +1,7 @@
 # app/routes/jobs.py
 from flask import Blueprint, jsonify, request
 from app.models.job import Job
+from sqlalchemy.sql.expression import func
 
 jobs_bp = Blueprint('jobs', __name__)
 
@@ -12,7 +13,7 @@ def get_jobs():
         preload = int(request.args.get("preload", 10))
 
         total_limit = limit + preload
-        jobs_query = Job.query.order_by(Job.id.asc()).offset(offset).limit(total_limit).all()
+        jobs_query = Job.query.order_by(func.random()).offset(offset).limit(total_limit).all()
         jobs_data = [job.to_dict() for job in jobs_query]
 
         current_jobs = jobs_data[:limit]
