@@ -168,7 +168,7 @@
 
 /* orange accent like the reference word “helps you grow” */
 .accent {
-  background: linear-gradient(90deg, #ffb457 0%, #ff8a3d 50%, #ff6a00 100%);
+  background: linear-gradient(to right, #ffffff, #B11194);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -325,19 +325,22 @@
 }
 
 .heroTitle {
-  margin: 0 0 12px 0;
+  margin: 0 0 14px 0;
   font-weight: 800;
-  line-height: 1.05;
-  font-size: clamp(42px, 9vw, 96px);
+  line-height: 1.03;
+  /* bigger: min 56px, scales faster, caps at 128px */
+  font-size: clamp(56px, 11vw, 128px);
   color: #fff;
   text-shadow: 0 2px 22px rgba(0,0,0,0.35);
 }
 
 .heroSub {
   margin: 0;
-  font-size: clamp(16px, 2.2vw, 22px);
+  /* bigger: min 20px, scales faster, caps at 30px */
+  font-size: clamp(20px, 3vw, 30px);
   color: rgba(255,255,255,0.92);
 }
+
 
 /* Reuse existing .accent for the orange gradient word */
 
