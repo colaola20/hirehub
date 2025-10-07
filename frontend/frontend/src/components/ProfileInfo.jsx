@@ -30,8 +30,20 @@ const ProfileInfo = ({ profileData }) => {
 
 
     return (
-        <div>
-
+        <div className="container">
+            <Navbar />
+            <div className="form-box">
+                <h2>Resume Builder Form</h2>
+                <form className="resume_form">
+                    <input 
+                        type = "text"
+                        placeholder="Full Name"
+                        value = {fullName}
+                        onChange = {(e) => setFullName(e.target.value)}
+                        required
+                    />
+                </form>
+            </div>
         </div>
     )
 
