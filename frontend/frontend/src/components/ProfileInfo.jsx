@@ -6,7 +6,7 @@ const ProfileInfo = ({ profileData }) => {
     const [fullName, setFullName] = useState("");
     const [email, setEmail] = useState("");
     const [phoneNum, setPhoneNum] = useState("");
-    const [location, setLocation] = useState("");
+    const [location, setLocation] = useState(""); // one field for now, add address, city, state, zip later if needed
 
     const [summary, setSummary] = useState(""); // could enter key words to generate summary as well 
 
@@ -47,6 +47,20 @@ const ProfileInfo = ({ profileData }) => {
                         placeholder="Email"
                         value = {email}
                         onChange = {(e) => setEmail(e.target.value)}
+                        required
+                    />
+                    <input 
+                        type = "text"
+                        placeholder="Phone Number"
+                        value = {phoneNum}
+                        onChange = {(e) => setPhoneNum(e.target.value)}
+                        required
+                    />
+                    <input 
+                        type = "text"
+                        placeholder="Location"
+                        value = {location}
+                        onChange = {(e) => setLocation(e.target.value)} // see line 9
                         required
                     />
                 </form>
