@@ -37,45 +37,75 @@ const ResumeForm = () => {
                 <div className="form-box" style={{ backgroundColor: "green" }}>
                     <h2>Resume Builder Form</h2>
                     <form className="resume_form">
-                        <div className='personal_info'>
-                        <input 
-                            type = "text"
-                            placeholder="Full Name"
-                            value = {fullName}
-                            onChange = {(e) => setFullName(e.target.value)}
-                            required
-                        />
-                        <input 
-                            type = "text"
-                            placeholder="Email"
-                            value = {email}
-                            onChange = {(e) => setEmail(e.target.value)}
-                            required
-                        />
-                        <input 
-                            type = "text"
-                            placeholder="Phone Number"
-                            value = {phoneNum}
-                            onChange = {(e) => setPhoneNum(e.target.value)}
-                            required
-                        />
-                        <input 
-                            type = "text"
-                            placeholder="Location"
-                            value = {location}
-                            onChange = {(e) => setLocation(e.target.value)} // see line 9
-                            required
-                        />
-    
-                        <input 
-                            type = "text"
-                            placeholder="Summary Generation (separate keywordsby commas)"
-                            value = {summary}
-                            onChange = {(e) => setSummary(e.target.value)} // see line 9
-                            required
-                        />
+                        <div className='personal_info' style= {{backgroundColor: "blue"}}>
+                            <p> Name</p>
+                                <input 
+                                    type = "text"
+                                    placeholder="Full Name"
+                                    value = {fullName}
+                                    onChange = {(e) => setFullName(e.target.value)}
+                                    required
+                                />
+                            <p>Email</p>
+                                <input 
+                                    type = "text"
+                                    placeholder="Email"
+                                    value = {email}
+                                    onChange = {(e) => setEmail(e.target.value)}
+                                    required
+                                />
+                            <p>Phone Number</p>
+                                <input 
+                                    type = "text"
+                                    placeholder="Phone Number"
+                                    value = {phoneNum}
+                                    onChange = {(e) => setPhoneNum(e.target.value)}
+                                    required
+                                />
+                            <p>Location</p>
+                                <input 
+                                    type = "text"
+                                    placeholder="City Name"
+                                    value = {location}
+                                    onChange = {(e) => setLocation(e.target.value)} // see line 9
+                                    required
+                                />
+
+                            <p>Summary</p>
+                                <input 
+                                    type = "text"
+                                    placeholder="Summary Generation (separate keywordsby commas)"
+                                    value = {summary}
+                                    onChange = {(e) => setSummary(e.target.value)} // see line 9
+                                    required
+                                />
                         </div>
-                        <div className="social_info"> </div>
+
+                        <div className="social_info" style= {{backgroundColor: "red"}}> 
+                        
+                            <p>LinkedIn</p>
+                                <input 
+                                    type = "text"
+                                    placeholder="LinkedIn URL"
+                                    value = {linkedIn}
+                                    onChange = {(e) => setLinkedIn(e.target.value)}
+                                />
+                            <p>GitHub</p>
+                                <input 
+                                    type = "text"
+                                    placeholder="GitHub URL"
+                                    value = {github}
+                                    onChange = {(e) => setGithub(e.target.value)}
+                                />
+                            <p>Portfolio</p>
+                                <input 
+                                    type = "text"
+                                    placeholder="Portfolio URL"
+                                    value = {portfolio}
+                                    onChange = {(e) => setPortfolio(e.target.value)}
+                                />
+
+                        </div>
                         <div className="misc_section"> </div>
                         <div className="main_sections"> </div>
                     </form>
