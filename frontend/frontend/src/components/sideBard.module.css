@@ -1,0 +1,57 @@
+
+
+.sidebar {
+  position: fixed;
+  left: 0;
+  top: 80px;
+  height: 100vh;
+  width: 240px;
+  /*background-color: #1e1e2f;*/
+  /*  background: transparent;*/
+     background-color: var(--hirehub-darker-purple);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 20px 15px;
+}
+
+/*.logo {*/
+/*  font-size: 1.5rem;*/
+/*  font-weight: bold;*/
+/*  margin-bottom: 30px;*/
+/*  text-align: center;*/
+/*}*/
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #cfcfcf;
+  text-decoration: none;
+  font-size: 1rem;
+  padding: 8px 10px;
+  border-radius: 8px;
+  transition: background 0.2s ease;
+}
+
+.navItem:hover {
+  background-color: #2d2d42;
+  color: #fff;
+}
+
+.bottomSection {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  /*border-top: 1px solid #333;*/
+  /*padding-top: 20px;*/
+  /*  background-color: #0000ff;*/
+    padding-bottom: 40%;
+}

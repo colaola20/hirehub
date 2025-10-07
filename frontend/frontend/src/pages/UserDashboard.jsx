@@ -3,7 +3,8 @@ import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import styles from "./dashBoard.module.css";
 import NavBar from "../components/PersonalizedNavbar.jsx";
 import JobCard from "../components/JobCard.jsx";
-
+import SideBard  from "../components/sideBar.jsx";
+import ChatBot from "../components/ChatBot.jsx";
 
 
 
@@ -14,11 +15,8 @@ const UserDashboard = () => {
 
     const [jobs, setJobs] = useState([]);
     const [preloadedJobs, setPreloadedJobs] = useState([]);
-    const [page, setPage] = useState(1);
 
-    const jobsPerPage = 10;
-    const totalJobs = jobs.length + preloadedJobs.length;
-    const totalPages = Math.ceil(totalJobs / jobsPerPage);
+
     
 
 
@@ -32,12 +30,11 @@ const UserDashboard = () => {
     if (username) navigate(`/${username}`, { replace: true });
   }, [searchParams, navigate]);
 
-const fetchJobs = async (limit = 10, offset = 0) => {
+const fetchJobs = async (limit = 20, offset = 0) => {
   try {
     const response = await fetch(`http://localhost:5001/api/jobs?limit=${limit}&offset=${offset}&preload=10`);
     const data = await  response.json();
     if (data.status === 'success') {
-      console.log("Jobs fetched:", data.current); // debug
       return data.current;
     } else {
       console.error("Failed to fetch jobs:", data.message);
@@ -52,20 +49,29 @@ const fetchJobs = async (limit = 10, offset = 0) => {
 useEffect(() => {
   const loadInitialJobs = async () => {
     const initialJobs = await fetchJobs(20, 0);
-    console.log("Jobs to render:", initialJobs);
-    setJobs(initialJobs.slice(0, 10));
-    setPreloadedJobs(initialJobs.slice(10, 20));
+    setJobs(initialJobs);
   };
   loadInitialJobs();
 }, []);
 
-const handlePageChange = async (newPage) => {
-  const offset = (newPage - 1) * jobsPerPage;
-  const newJobs = await fetchJobs(jobsPerPage, offset);
+useEffect(() => {
+  const handleScroll = async () => {
+    const scrollable = document.documentElement;
+    const scrolledToBottom =
+      scrollable.scrollHeight - scrollable.scrollTop <= scrollable.clientHeight + 100; // 100px buffer
 
-  setJobs(newJobs);
-  setPage(newPage);
-};
+    if (scrolledToBottom) {
+      // fetch more jobs if available
+      const newJobs = await fetchJobs(20, jobs.length);
+      if (newJobs.length > 0) {
+        setJobs((prev) => [...prev, ...newJobs]);
+      }
+    }
+  };
+
+  window.addEventListener("scroll", handleScroll);
+  return () => window.removeEventListener("scroll", handleScroll);
+}, [jobs]);
 
 
   // // ✅ Block access if token is missing
@@ -121,8 +127,11 @@ const handlePageChange = async (newPage) => {
 
 
  return (
-        <>
+     <>
+     <div className={styles["dashboard-screen-wrapper"]}>
+        <SideBard/>
         <NavBar/>
+        <input type="text"  placeholder="Search jobs..." className={styles.searchInput}/>
       <div className={styles["dashboard-wrapper"]}>
         <div className={styles["dashboard-container"]}>
           {/* Left Column: Job Cards */}
@@ -134,15 +143,17 @@ const handlePageChange = async (newPage) => {
 
 
             {/* Buttons at the bottom to change pages */}
-            <div className={styles.pagination}>
-              <button onClick={() => handlePageChange(Math.max(page - 1, 1))}>{'<'}</button>
-              <span>Page {page} of {totalPages}</span>
-              <button onClick={() => handlePageChange(Math.min(page + 1, totalPages))}>{'>'}</button>
-            </div>
+            {/*<div className={styles.pagination}>*/}
+            {/*  <button onClick={() => handlePageChange(Math.max(page - 1, 1))}>{'<'}</button>*/}
+            {/*  <span>Page {page} of {totalPages}</span>*/}
+            {/*  <button onClick={() => handlePageChange(Math.min(page + 1, totalPages))}>{'>'}</button>*/}
+            {/*</div>*/}
           </div>
         </div>
       </div>
-        </>
+         <ChatBot />
+    </div>
+     </>
 );
 };
 

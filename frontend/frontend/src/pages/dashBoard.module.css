@@ -6,17 +6,18 @@ body, .container {
 
 }
 
+
 .dashboard-wrapper {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     min-height: 100vh;
+     margin-left: 240px;
     background: linear-gradient(to right,#8ec5fc,#7a5bbf);
     /*padding-top: 80px; !* adjust to the height of your navbar *!*/
 
 }
-
 
 .dashboard-container {
     display: flex;
@@ -31,6 +32,10 @@ body, .container {
     width: 100%;
     min-height: calc(100vh - 80px); /* fill screen minus navbar */
     box-sizing: border-box;
+}
+.searchInput{
+    width: 45%;
+
 }
 
 .jobs-column {
