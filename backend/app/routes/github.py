@@ -41,21 +41,24 @@ def authorize_github():
 
         user = User.query.filter_by(email=primary_email).first()
         if not user:
+            name = user_info.get("name") or ""
+            name_parts = name.split(" ", 1)
+
             user = User(
                 username=user_info["login"],
                 email=primary_email,
-                first_name=user_info.get("name", "").split(" ")[0],
-                last_name=" ".join(user_info.get("name", "").split(" ")[1:]) if user_info.get("name") else "",
+                first_name=name_parts[0] if len(name_parts) > 0 else "",
+                last_name=name_parts[1] if len(name_parts) > 1 else "",
             )
-            # Generates a random password for the Oauth user
+
             user.set_password(secrets.token_urlsafe(16))
 
             try:
                 db.session.add(user)
                 db.session.commit()
             except Exception as e:
-                    db.session.rollback()
-                    return jsonify({"status": "error", "message": str(e)}), 500
+                db.session.rollback()
+                return jsonify({"status": "error", "message": str(e)}), 500
 
         access_token = create_access_token(identity=str(user.id))
         frontend_url = f"http://localhost:5173/login?token={access_token}&username={user.username}"

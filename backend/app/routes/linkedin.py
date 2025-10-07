@@ -1,21 +1,23 @@
 import secrets
-
-from flask import Blueprint, redirect, url_for, session, jsonify, request
+import requests
+from flask import Blueprint, redirect, url_for, session, jsonify, request, current_app
 from app.extensions import db, oauth
 from app.models.user import User
+from flask_jwt_extended import create_access_token
 
 linkedin_bp = Blueprint("linkedin", __name__)
 
 
 def init_linkedin_oauth(app):
     oauth.init_app(app)
-    app.config['LINKEDIN_CLIENT_ID'] = app.config.get("LINKEDIN_CLIENT_ID")
-    app.config['LINKEDIN_CLIENT_SECRET'] = app.config.get("LINKEDIN_CLIENT_SECRET")
 
     oauth.register(
         name="linkedin",
         client_id=app.config['LINKEDIN_CLIENT_ID'],
         client_secret=app.config['LINKEDIN_CLIENT_SECRET'],
+        authorize_url='https://www.linkedin.com/oauth/v2/authorization',
+        access_token_url='https://www.linkedin.com/oauth/v2/accessToken',
+        userinfo_endpoint='https://api.linkedin.com/v2/userinfo',
         client_kwargs={
             'scope': 'openid profile email',
             'token_endpoint_auth_method': 'client_secret_post'
@@ -26,50 +28,91 @@ def init_linkedin_oauth(app):
 
 @linkedin_bp.route("/api/login/linkedin")
 def login_linkedin():
-    # Generate a unique nonce and store it in the session
     nonce = secrets.token_urlsafe(32)
     session['nonce'] = nonce
 
     redirect_uri = url_for("linkedin.authorize_linkedin", _external=True)
-
-    # Pass the nonce in the authorization request
     return oauth.linkedin.authorize_redirect(redirect_uri, nonce=nonce)
 
 
 @linkedin_bp.route("/api/login/linkedin/callback")
 def authorize_linkedin():
     try:
-        # Pass the stored nonce for validation
-        token = oauth.linkedin.authorize_access_token(nonce=session.get('nonce'))
+        code = request.args.get('code')
+        error = request.args.get('error')
 
-        # Fetch user info using OpenID Connect
-        userinfo = oauth.linkedin.get("userinfo").json()
+        if error:
+            return jsonify({"status": "error", "message": f"LinkedIn OAuth error: {error}"}), 400
+        if not code:
+            return jsonify({"status": "error", "message": "No authorization code"}), 400
 
-        email = userinfo.get("email")
+        # --- Token exchange ---
+        token_url = 'https://www.linkedin.com/oauth/v2/accessToken'
+        redirect_uri = url_for("linkedin.authorize_linkedin", _external=True)
+        token_data = {
+            'grant_type': 'authorization_code',
+            'code': code,
+            'redirect_uri': redirect_uri,
+            'client_id': current_app.config['LINKEDIN_CLIENT_ID'],
+            'client_secret': current_app.config['LINKEDIN_CLIENT_SECRET']
+        }
+        token_response = requests.post(token_url, data=token_data,
+                                       headers={'Content-Type': 'application/x-www-form-urlencoded'})
+        if token_response.status_code != 200:
+            return jsonify({"status": "error", "message": "Token exchange failed",
+                            "details": token_response.text}), 400
+
+        token_json = token_response.json()
+        access_token = token_json.get('access_token')
+        if not access_token:
+            return jsonify({"status": "error", "message": "No access token received"}), 400
+
+        # --- Fetch user info ---
+        userinfo_response = requests.get(
+            'https://api.linkedin.com/v2/userinfo',
+            headers={'Authorization': f'Bearer {access_token}'}
+        )
+        if userinfo_response.status_code != 200:
+            return jsonify({"status": "error", "message": "Failed to fetch user info",
+                            "details": userinfo_response.text}), 400
+
+        userinfo = userinfo_response.json()
+        email = userinfo.get("email") or userinfo.get("emailAddress")
         if not email:
-            return jsonify({"status": "error", "message": "Email not found"}), 400
+            return jsonify({"status": "error", "message": "Email not provided by LinkedIn",
+                            "userinfo": userinfo}), 400
 
         first_name = userinfo.get("given_name", "")
         last_name = userinfo.get("family_name", "")
-        username = f"{first_name}{last_name}".lower() or email
+        linkedin_id = userinfo.get("sub", "")
+        username = f"{first_name}{last_name}".lower() or email.split('@')[0]
 
-        # Check or create user in DB
+        # --- Create/find user ---
         user = User.query.filter_by(email=email).first()
         if not user:
             user = User(
                 username=username,
                 email=email,
                 first_name=first_name,
-                last_name=last_name
+                last_name=last_name,
+                linkedin_id=linkedin_id
             )
-            user.set_password(secrets.token_urlsafe(16))
+            user.set_password(secrets.token_urlsafe(32))
             db.session.add(user)
             db.session.commit()
 
-        session["user"] = {"username": user.username, "email": user.email}
-        session.pop('nonce', None)  # Don't forget to remove the nonce from the session
+        # --- Create JWT + redirect frontend ---
+        jwt_token = create_access_token(identity=str(user.id))
+        session["user_id"] = user.id
+        session["user_email"] = user.email
+        session.pop('linkedin_nonce', None)
 
-        return jsonify({"status": "ok", "user": session["user"]})
+
+        frontend_url = f"http://localhost:5173/login?token={jwt_token}&username={user.username}"
+        return redirect(frontend_url)
+
+        # frontend_url = f"http://localhost:5173/{user.username}?token={jwt_token}&username={user.username}"
+        # return redirect(frontend_url)
 
     except Exception as e:
         db.session.rollback()

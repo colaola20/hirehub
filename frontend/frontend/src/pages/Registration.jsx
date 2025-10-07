@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import "./registration.css"; // separate CSS file
 import { Link } from "react-router-dom";
 import placeholderImg from "../assets/login_reg_Place_holder1.png";
-import Navbar from '../components/Navbar'
 
 const RegistrationPage = () => {
   const [username, setUsername] = useState("");
@@ -17,12 +16,11 @@ const RegistrationPage = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
- // Regex patterns
+// Regex patterns
   const usernameRegex = /^[a-zA-Z0-9_]{3,15}$/;
   const nameRegex = /^[A-Za-z]{2,30}$/;
   // const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  const passwordRegex =
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[.@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\w\s]).{8,}$/;
 
     // Disallow spaces in username
   if (/\s/.test(username)) {
@@ -56,8 +54,6 @@ const RegistrationPage = () => {
     alert("Passwords do not match!");
     return;
   }
-
-
     try {
       const response = await fetch("/api/register", {
         method: "POST",
@@ -89,7 +85,6 @@ const RegistrationPage = () => {
 
   return (
     <div className="container">
-      <Navbar/>
       <div className="register-box">
         {/* Left Side: Registration Form */}
         <div className="register-form-section">
@@ -164,8 +159,8 @@ const RegistrationPage = () => {
             smarter job applications.
           </p>
           <div className="illustration">
-                <img src={placeholderImg} alt="AI Assistant" />
-            </div>
+            <img src={placeholderImg} alt="AI Assistant" />
+          </div>
         </div>
       </div>
     </div>
