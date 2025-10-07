@@ -27,7 +27,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/registration" element={<Registration />} />
         <Route path="/forgot_password" element={<ForgotPassword />} />
-        <Route path="/ResetPassword" element={<ResetPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         {/* OAuth handler route: reads token & redirects */}
         <Route path="/oauth" element={<OAuthHandler />} />
 
