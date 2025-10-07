@@ -106,7 +106,26 @@ const ResumeForm = () => {
                                 />
 
                         </div>
-                        <div className="misc_section"> </div>
+                        <div className="misc_section"> 
+
+                            <p>Languages</p>
+                            <input 
+                                    type = "text"
+                                    placeholder="Languages (separate by commas)"
+                                    value = {languages}
+                                    onChange = {(e) => setLanguages(e.target.value)}
+                            />
+
+                            <p>Interests and Hobbies</p>
+                            <input 
+                                    type = "text"
+                                    placeholder="Interests and Hobbies (separate by commas)"
+                                    value = {interests}
+                                    onChange = {(e) => setInterests(e.target.value)}
+                            />
+
+
+                        </div>
                         <div className="main_sections"> </div>
                     </form>
                 </div>
