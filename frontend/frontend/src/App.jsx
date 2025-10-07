@@ -15,6 +15,7 @@ import UserDashboard from './pages/UserDashboard.jsx';
 // Import helpers
 import OAuthHandler from './components/OAuthHandler';
 import ProtectedRoute from './components/ProtectedRoute';
+import ResetPassword from './pages/reset_password.jsx';
 
 
 // Root App component that renders the Login and Registration pages
@@ -26,7 +27,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/registration" element={<Registration />} />
         <Route path="/forgot_password" element={<ForgotPassword />} />
-
+        <Route path="/ResetPassword" element={<ResetPassword />} />
         {/* OAuth handler route: reads token & redirects */}
         <Route path="/oauth" element={<OAuthHandler />} />
 

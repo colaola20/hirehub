@@ -5,7 +5,8 @@ from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identi
 from flask_mail import Message
 from app.extensions import mail
 import jwt, datetime, os
-
+import os
+import urllib.parse
 users_bp = Blueprint('users', __name__)
 
 SECRET_KEY = os.getenv("JWT_SECRET_KEY", "super-secret")  # should match your app config
@@ -194,7 +195,6 @@ def forgot_password():
     try:
         data = request.get_json()
         email = data.get("email")
-
         if not email:
             return jsonify({"status": "error", "message": "Email is required"}), 400
 
@@ -204,21 +204,21 @@ def forgot_password():
 
         user = users[0]
 
-        # Generate reset token
         token = jwt.encode(
             {"user_id": user.id, "exp": datetime.datetime.utcnow() + datetime.timedelta(minutes=15)},
             SECRET_KEY,
             algorithm="HS256"
         )
 
-        reset_link = f"http://localhost:3000/reset-password?token={token}"
+        # ✅ derive the frontend origin and encode the token
+        FRONTEND_URL = os.environ.get("FRONTEND_URL", "http://localhost:5173")
+        reset_link = f"{FRONTEND_URL}/reset-password?token={urllib.parse.quote(token)}"
 
         try:
             msg = Message("HireHub Password Reset", recipients=[email])
             msg.body = f"Hello {user.username}, reset link: {reset_link}"
             mail.send(msg)
         except Exception as e:
-            # 👇 This ensures you can still test without real email
             print(f"[DEBUG] Could not send email. Reset link: {reset_link}")
             print(f"[DEBUG] Error: {e}")
 
@@ -226,7 +226,6 @@ def forgot_password():
 
     except Exception as e:
         return jsonify({"status": "error", "message": "Failed to process request", "error": str(e)}), 500
-
 # ------------------------
 # Reset Password
 # ------------------------
