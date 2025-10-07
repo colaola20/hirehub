@@ -35,6 +35,7 @@ const ProfileInfo = ({ profileData }) => {
             <div className="form-box" style={{ backgroundColor: "green" }}>
                 <h2>Resume Builder Form</h2>
                 <form className="resume_form">
+                    <div className='personal_info'>
                     <input 
                         type = "text"
                         placeholder="Full Name"
@@ -63,6 +64,10 @@ const ProfileInfo = ({ profileData }) => {
                         onChange = {(e) => setLocation(e.target.value)} // see line 9
                         required
                     />
+                    </div>
+                    <div className="social_info"> </div>
+                    <div className="misc_section"> </div>
+                    <div className="main_sections"> </div>"
                 </form>
             </div>
         </div>
