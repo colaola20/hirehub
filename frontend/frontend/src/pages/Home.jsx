@@ -91,13 +91,74 @@ const AngleLanding = () => {
         </div>
       </section>
 
-      {/* MORE */}
-      <section className={styles["angle2-more"]}>
-        <div className={styles["angle2-container"]}>
-          <h3>More sections here…</h3>
-          <p>Services, case studies, pricing, etc.</p>
+           {/* SERVICES */}
+      <section className={styles["angle2-services"]} id="services">
+        <div className={`${styles["angle2-container"]} ${styles["angle2-services__inner"]}`}>
+          <h2 className={styles["angle2-section-heading"]}>Services</h2>
+
+          <div className={styles["svcGrid"]}>
+            <article className={styles["svcCard"]}>
+              <h3>Resume Tailoring</h3>
+              <p>
+                Instant ATS-friendly optimization for each job description. We highlight keywords,
+                quantify your impact, and export cleanly to PDF/DOCX.
+              </p>
+            </article>
+
+            <article className={styles["svcCard"]}>
+              <h3>Cover Letters</h3>
+              <p>
+                Role-specific letters that stay human-readable while mirroring the company’s tone
+                and requirements. No fluff—just clear value.
+              </p>
+            </article>
+
+            <article className={styles["svcCard"]}>
+              <h3>Profile & Portfolio</h3>
+              <p>
+                polish your LinkedIn, GitHub, and personal site with concise, consistent messaging
+                and examples that recruiters notice.
+              </p>
+            </article>
+          </div>
         </div>
       </section>
+
+      {/* CONTACT */}
+      <section className={styles["angle2-contact"]} id="contact">
+        <div className={`${styles["angle2-container"]} ${styles["angle2-contact__inner"]}`}>
+          <div className={styles["contactCopy"]}>
+            <h2 className={styles["angle2-section-heading"]}>Contact Us</h2>
+            <p>
+              Have a question or want a quick demo? Drop a note and we’ll get back to you.
+            </p>
+
+            <ul className={styles["contactList"]}>
+              <li><strong>Email:</strong> hello@hirehub.app</li>
+              <li><strong>Hours:</strong> Mon–Fri, 9am–6pm</li>
+              <li><strong>Response time:</strong> usually within 1 business day</li>
+            </ul>
+          </div>
+
+          <form
+            className={styles["contactForm"]}
+            onSubmit={(e) => {
+              e.preventDefault();
+              alert("Thanks! We’ll reach out shortly.");
+            }}
+          >
+            <div className={styles["formRow"]}>
+              <input type="text" name="name" placeholder="Your name" required />
+              <input type="email" name="email" placeholder="Your email" required />
+            </div>
+            <textarea name="message" rows="5" placeholder="Your message" required />
+            <button type="submit" className={`${styles["angle2-btn"]} ${styles["angle2-btn--ghost"]}`}>
+              Send message
+            </button>
+          </form>
+        </div>
+      </section>
+
     </div>
   );
 };

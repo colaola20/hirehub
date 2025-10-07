@@ -436,3 +436,128 @@
     padding: 20px 16px;
   }
 }
+/* ---------- Shared section heading ---------- */
+.angle2-section-heading {
+  margin: 0 0 14px 0;
+  font-weight: 800;
+  color: #fff;
+}
+
+/* ---------- SERVICES (glassy cards) ---------- */
+.angle2-services {
+  position: relative;
+  padding: clamp(48px, 8vh, 96px) 0;
+  scroll-margin-top: 72px; /* anchor offset for fixed nav */
+}
+
+.angle2-services__inner {
+  max-width: none;
+  width: 100%;
+  margin: 0;
+  padding: clamp(24px, 4vw, 48px);
+  background: rgba(12, 16, 38, 0.30);
+  border: 1px solid rgba(255,255,255,0.12);
+  backdrop-filter: blur(10px) saturate(115%);
+  -webkit-backdrop-filter: blur(10px) saturate(115%);
+  border-radius: clamp(8px, 1.2vw, 14px);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 10px 28px rgba(0,0,0,0.18);
+  color: rgba(248,249,255,0.94);
+}
+
+.svcGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: clamp(14px, 2vw, 24px);
+  margin-top: clamp(12px, 2vh, 20px);
+}
+
+.svcCard {
+  padding: clamp(16px, 2.2vw, 22px);
+  border-radius: 12px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.10);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+}
+
+.svcCard h3 {
+  margin: 0 0 8px;
+  color: #fff;
+  font-weight: 700;
+}
+.svcCard p {
+  margin: 0;
+  color: rgba(235,237,255,0.92);
+}
+
+/* ---------- CONTACT (copy + form) ---------- */
+.angle2-contact {
+  position: relative;
+  padding: clamp(48px, 8vh, 96px) 0;
+  scroll-margin-top: 72px; /* anchor offset */
+}
+
+.angle2-contact__inner {
+  max-width: none;
+  width: 100%;
+  margin: 0;
+  padding: clamp(24px, 4vw, 56px);
+  background: rgba(12, 16, 38, 0.30);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: clamp(8px, 1.2vw, 14px);
+  backdrop-filter: blur(10px) saturate(115%);
+  -webkit-backdrop-filter: blur(10px) saturate(115%);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 10px 28px rgba(0,0,0,0.18);
+  color: rgba(248,249,255,0.94);
+
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;            /* copy | form */
+  gap: clamp(16px, 3vw, 36px);
+}
+
+.contactCopy p { color: rgba(235,237,255,0.92); }
+
+.contactList {
+  list-style: none;
+  padding: 0;
+  margin: 12px 0 0 0;
+  display: grid;
+  gap: 6px;
+}
+.contactList li { color: rgba(235,237,255,0.9); }
+
+.contactForm { display: grid; gap: 12px; }
+.formRow { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+.contactForm input,
+.contactForm textarea {
+  width: 100%;
+  border: 1px solid rgba(255,255,255,0.20);
+  background: rgba(255,255,255,0.06);
+  color: #fff;
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-size: 14px;
+  outline: none;
+}
+.contactForm input::placeholder,
+.contactForm textarea::placeholder {
+  color: rgba(255,255,255,0.65);
+}
+
+/* Make <Link> buttons styled like buttons */
+.angle2-btn,
+.angle2-btn:link,
+.angle2-btn:visited {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
+/* responsive */
+@media (max-width: 900px) {
+  .angle2-contact__inner {
+    grid-template-columns: 1fr;      /* stack */
+  }
+  .formRow { grid-template-columns: 1fr; }
+}
