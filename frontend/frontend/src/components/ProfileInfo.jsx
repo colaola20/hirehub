@@ -42,6 +42,13 @@ const ProfileInfo = ({ profileData }) => {
                         onChange = {(e) => setFullName(e.target.value)}
                         required
                     />
+                    <input 
+                        type = "text"
+                        placeholder="Email"
+                        value = {email}
+                        onChange = {(e) => setEmail(e.target.value)}
+                        required
+                    />
                 </form>
             </div>
         </div>
