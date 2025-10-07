@@ -1,0 +1,78 @@
+
+
+
+body, .container {
+  background: none !important;
+
+}
+
+
+.dashboard-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    min-height: 100vh;
+     margin-left: 240px;
+    background: linear-gradient(to right,#8ec5fc,#7a5bbf);
+    /*padding-top: 80px; !* adjust to the height of your navbar *!*/
+
+}
+
+.dashboard-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-top: 80px;
+    margin-left: 100px;
+    padding: 60px ;
+    gap: 40px;
+    background: transparent;
+    width: 100%;
+    min-height: calc(100vh - 80px); /* fill screen minus navbar */
+    box-sizing: border-box;
+}
+.searchInput{
+    width: 45%;
+
+}
+
+.jobs-column {
+     display: flex;
+    width: 45%;
+    height: auto;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    background: transparent;
+
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-top: 20px;
+
+}
+
+.pagination button {
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: none;
+  background-color: #4f46e5;
+  color: white;
+  cursor: pointer;
+}
+
+.pagination button:hover {
+  background-color: #4338ca;
+
+}
+
+.pagination span {
+  font-weight: bold;
+
+}

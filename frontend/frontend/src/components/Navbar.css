@@ -13,6 +13,7 @@
     cursor: pointer;
     padding: 0.5rem;
     gap: 4px;
+
 }
 
 .hamburger span {
@@ -44,16 +45,18 @@
     width: 100%;
     max-width: 1200px;
     margin: 0 auto;
+
 }
 
 .navbar-brand {
-  display:flex;
-  align-items:center;     
-  gap:12px;
-  flex-wrap: nowrap; 
-  background-color: var(--hirehub-white);
-  padding: 0.5rem;
-  border-radius: 8px;
+    display:flex;
+    align-items:flex-start;
+    gap:12px;
+    flex-wrap: nowrap;
+    background-color: var(--hirehub-white);
+    padding: 0.5rem;
+    border-radius: 8px;
+
 }
 
 .navbar-brand a {

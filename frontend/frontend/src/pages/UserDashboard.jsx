@@ -1,55 +1,24 @@
 import React, { useEffect, useCallback,useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
-import "./dashBoard.css";
+import styles from "./dashBoard.module.css";
+import NavBar from "../components/PersonalizedNavbar.jsx";
 import JobCard from "../components/JobCard.jsx";
+import SideBard  from "../components/sideBar.jsx";
+import ChatBot from "../components/ChatBot.jsx";
 
-const sampleJobs = [
-  {
-    title: "Frontend Developer",
-    company: "TechCorp",
-    location: "New York, NY",
-    salary: "$80,000 - $100,000",
-    description: "Build amazing web apps with React and modern JS."
-  },
-  {
-    title: "Backend Engineer",
-    company: "DataSys",
-    location: "San Francisco, CA",
-    salary: "$90,000 - $120,000",
-    description: "Develop APIs, databases, and server-side logic."
-  },
-  {
-    title: "Fullstack Developer",
-    company: "InnovateX",
-    location: "Remote",
-    salary: "$85,000 - $110,000",
-    description: "Work on both frontend and backend projects."
-  },
-  {
-    title: "UI/UX Designer",
-    company: "DesignHub",
-    location: "Austin, TX",
-    salary: "$70,000 - $95,000",
-    description: "Create intuitive user interfaces and experiences."
-  },
-  {
-    title: "DevOps Engineer",
-    company: "CloudNet",
-    location: "Seattle, WA",
-    salary: "$100,000 - $130,000",
-    description: "Automate deployments and manage cloud infrastructure."
-  }
-];
 
 
 const UserDashboard = () => {
-  const navigate = useNavigate();
-  // const { username } = useParams();
-  const [searchParams] = useSearchParams();
+    const navigate = useNavigate();
+    // const { username } = useParams();
+    const [searchParams] = useSearchParams();
 
-  const [jobs, setJobs] = useState(sampleJobs);
-  const [page, setPage] = useState(1);
-  const jobsPerPage = 3;
+    const [jobs, setJobs] = useState([]);
+    const [preloadedJobs, setPreloadedJobs] = useState([]);
+
+
+    
+
 
   // Handle token + username from query params
   useEffect(() => {
@@ -61,8 +30,49 @@ const UserDashboard = () => {
     if (username) navigate(`/${username}`, { replace: true });
   }, [searchParams, navigate]);
 
-  const totalPages = Math.ceil(jobs.length / jobsPerPage);
-  const currentJobs = jobs.slice((page - 1) * jobsPerPage, page * jobsPerPage);
+const fetchJobs = async (limit = 20, offset = 0) => {
+  try {
+    const response = await fetch(`http://localhost:5001/api/jobs?limit=${limit}&offset=${offset}&preload=10`);
+    const data = await  response.json();
+    if (data.status === 'success') {
+      return data.current;
+    } else {
+      console.error("Failed to fetch jobs:", data.message);
+      return [];
+    }
+  } catch (err) {
+    console.error("Error fetching jobs:", err);
+    return [];
+  }
+};
+
+useEffect(() => {
+  const loadInitialJobs = async () => {
+    const initialJobs = await fetchJobs(20, 0);
+    setJobs(initialJobs);
+  };
+  loadInitialJobs();
+}, []);
+
+useEffect(() => {
+  const handleScroll = async () => {
+    const scrollable = document.documentElement;
+    const scrolledToBottom =
+      scrollable.scrollHeight - scrollable.scrollTop <= scrollable.clientHeight + 100; // 100px buffer
+
+    if (scrolledToBottom) {
+      // fetch more jobs if available
+      const newJobs = await fetchJobs(20, jobs.length);
+      if (newJobs.length > 0) {
+        setJobs((prev) => [...prev, ...newJobs]);
+      }
+    }
+  };
+
+  window.addEventListener("scroll", handleScroll);
+  return () => window.removeEventListener("scroll", handleScroll);
+}, [jobs]);
+
 
   // // ✅ Block access if token is missing
   // useEffect(() => {
@@ -116,28 +126,35 @@ const UserDashboard = () => {
   }, [searchParams, navigate]);
 
 
-  return (
+ return (
+     <>
+     <div className={styles["dashboard-screen-wrapper"]}>
+        <SideBard/>
+        <NavBar/>
+        <input type="text"  placeholder="Search jobs..." className={styles.searchInput}/>
+      <div className={styles["dashboard-wrapper"]}>
+        <div className={styles["dashboard-container"]}>
+          {/* Left Column: Job Cards */}
+          <div className={styles["jobs-column"]}>
+             {console.log("Jobs to render:", jobs)}
+            {jobs.map((job, idx) => (
+              <JobCard key={idx} job={job} />
+            ))}
 
-    <div className="dashboard-wrapper">
 
-
-      <div className="dashboard-container">
-        {/* Left Column: Job Cards */}
-        <div className="jobs-column">
-          {currentJobs.map((job, idx) => (
-            <JobCard key={idx} job={job} />
-          ))}
-          <div className="pagination">
-            <button onClick={() => setPage(p => Math.max(p - 1, 1))}>{'<'}</button>
-            <span>Page {page} of {totalPages}</span>
-            <button onClick={() => setPage(p => Math.min(p + 1, totalPages))}>{'>'}</button>
+            {/* Buttons at the bottom to change pages */}
+            {/*<div className={styles.pagination}>*/}
+            {/*  <button onClick={() => handlePageChange(Math.max(page - 1, 1))}>{'<'}</button>*/}
+            {/*  <span>Page {page} of {totalPages}</span>*/}
+            {/*  <button onClick={() => handlePageChange(Math.min(page + 1, totalPages))}>{'>'}</button>*/}
+            {/*</div>*/}
           </div>
         </div>
-
-
       </div>
+         <ChatBot />
     </div>
-  );
+     </>
+);
 };
 
 export default UserDashboard;
