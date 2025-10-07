@@ -5,7 +5,7 @@ const ProfileInfo = ({ profileData }) => {
     // personal info, could be pulled from account info
     const [fullName, setFullName] = useState("");
     const [email, setEmail] = useState("");
-    const [phone, setPhone] = useState("");
+    const [phoneNum, setPhoneNum] = useState("");
     const [location, setLocation] = useState("");
 
     const [summary, setSummary] = useState(""); // could enter key words to generate summary as well 
@@ -21,9 +21,9 @@ const ProfileInfo = ({ profileData }) => {
 
     // main sections
     const [skills, setSkills] = useState("");
-    const [experience, setExperience] = useState("");
-    const [education, setEducation] = useState("");
-    const [projects, setProjects] = useState("");
+    const [experience, setExperience] = useState(""); // add company, role, time
+    const [education, setEducation] = useState(""); // add school, degree, year
+    const [projects, setProjects] = useState(""); // add title, description, link
     const [certs, setCerts] = useState(""); // certifications
 
     //add more fields as needed
@@ -32,7 +32,7 @@ const ProfileInfo = ({ profileData }) => {
     return (
         <div className="container">
             <Navbar />
-            <div className="form-box">
+            <div className="form-box" style={{ backgroundColor: "green" }}>
                 <h2>Resume Builder Form</h2>
                 <form className="resume_form">
                     <input 
