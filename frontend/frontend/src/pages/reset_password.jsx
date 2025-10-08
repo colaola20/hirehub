@@ -1,7 +1,8 @@
 // ResetPassword.jsx
 import React, { useState } from "react";
-import { useSearchParams, useNavigate } from "react-router-dom";
-import "./login_Page.module.css";
+import { useSearchParams, useNavigate, Link } from "react-router-dom";
+import styles from "./reset_password.module.css";
+import placeholderImg from "../assets/login_reg_Place_holder1.png";
 
 const ResetPassword = () => {
   const [searchParams] = useSearchParams();
@@ -44,24 +45,28 @@ const ResetPassword = () => {
   };
 
   return (
-    <div className="container">
-      <div className="register-box">
-        <div className="register-form-section">
-          <div className="brand">
-            <div className="logo">H</div>
-            <div className="brand-text">
-              <h2 className="brand-title">ireHub</h2>
-              <p className="brand-tagline">Reset Your Password</p>
+    <div className={styles.container}>
+      <div className={styles["register-box"]}>
+        {/* Left Side: Form */}
+        <div className={styles["register-form-section"]}>
+          {/* Branding */}
+          <div className={styles.brand}>
+            <div className={styles.logo}>H</div>
+            <div className={styles["brand-text"]}>
+              <h2 className={styles["brand-title"]}>ireHub</h2>
+              <p className={styles["brand-tagline"]}>Reset Your Password</p>
             </div>
           </div>
 
-          <form className="register-form" onSubmit={handleSubmit}>
+          {/* Reset Password Form */}
+          <form className={styles["register-form"]} onSubmit={handleSubmit}>
             <input
               type="password"
               placeholder="New Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              disabled={loading}
             />
             <input
               type="password"
@@ -69,11 +74,29 @@ const ResetPassword = () => {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
+              disabled={loading}
             />
-            <button type="submit" className="register-btn" disabled={loading}>
+            <button type="submit" className={styles["register-btn"]} disabled={loading}>
               {loading ? "Resetting..." : "Reset Password"}
             </button>
           </form>
+
+          <p className={styles["have-account"]}>
+            <span style={{ color: "black" }}>Remembered your password?</span>{" "}
+            <Link to="/login">Login</Link>
+          </p>
+        </div>
+
+        {/* Right Side */}
+        <div className={styles["register-info-section"]}>
+          <h1>Set a New Password</h1>
+          <p>
+            Enter a strong, unique password and confirm it. Once saved, you’ll
+            be able to sign in to your account with your new credentials.
+          </p>
+          <div className={styles.illustration}>
+            <img src={placeholderImg} alt="Reset Password" />
+          </div>
         </div>
       </div>
     </div>
