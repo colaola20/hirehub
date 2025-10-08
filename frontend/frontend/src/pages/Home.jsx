@@ -6,6 +6,16 @@ import { SpaceIcon } from "lucide-react";
 
 const AngleLanding = () => {
   const bgRef = useRef(null);
+  // put inside your page component (AngleLanding) after imports
+useEffect(() => {
+  const els = document.querySelectorAll("[data-reveal]");
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => e.isIntersecting && e.target.classList.add(styles["is-visible"]));
+  }, { threshold: 0.2 });
+  els.forEach(el => io.observe(el));
+  return () => io.disconnect();
+}, []);
+
 
   useEffect(() => {
     let effect;
@@ -75,6 +85,58 @@ const AngleLanding = () => {
           </p>
         </div>
       </section>
+      {/* FEATURE: Resume AI */}
+<section id="resume-ai" className={styles["angle2-feature"]}>
+  <div className={`${styles["angle2-container"]} ${styles["feature-grid"]}`}>
+    {/* Left: copy */}
+    <div className={`${styles["feature-copy"]} ${styles["reveal"]}`} data-reveal>
+      <p className={styles["eyebrow"]}>📎 Resume AI</p>
+
+      <h2 className={styles["feature-title"]}>
+        <span className={styles["title-strong"]}>Resume AI</span>
+        <span className={styles["slash"]}> / </span>
+        <span className={styles["title-rest"]}>Stand out with a top-notch resume</span>
+      </h2>
+
+      <ul className={styles["feature-list"]}>
+        <li><span>Get a professional quality resume in minutes, not hours</span></li>
+        <li><span>Keep tailoring your resume with AI and catch HR’s eyes in seconds</span></li>
+        <li><span>Rest easy knowing your resume will be ATS-compatible</span></li>
+      </ul>
+
+      <a href="/resume" className={`${styles["angle2-btn"]} ${styles["btn-large"]}`}>
+        Improve My Resume
+      </a>
+    </div>
+
+    {/* Right: visual/mockup */}
+    <div className={`${styles["feature-visual"]} ${styles["reveal"]}`} data-reveal>
+      <div className={styles["mockup-card"]}>
+        <div className={styles["mockup-header"]}>
+          <div className={styles["mockup-name"]}>Jamie Parker</div>
+          <div className={styles["score-badge"]}>
+            <span className={styles["score"]}>9.0</span>
+            <small>Excellent</small>
+          </div>
+        </div>
+
+        <div className={styles["mockup-body"]}>
+          <div className={styles["bar"]} />
+          <div className={styles["bar small"]} />
+          <div className={styles["bar small"]} />
+          <div className={styles["bar mid"]} />
+          <div className={styles["bar"]} />
+        </div>
+
+        <div className={styles["chips"]}>
+          <span>Summary Enhanced</span>
+          <span>Relevant Skills Highlighted</span>
+          <span>Recent Experience Enhanced</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
       {/* ABOUT */}
       <section className={styles["angle2-about"]} id="about">
