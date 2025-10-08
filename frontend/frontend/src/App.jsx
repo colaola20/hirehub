@@ -9,11 +9,13 @@ import Login from './pages/Login';
 import Registration from './pages/Registration';
 import Home from './pages/Home';
 import ForgotPassword from './pages/forgot_password';
-import UserDashboard from './pages/UserDashboard';
+import UserDashboard from './pages/UserDashboard.jsx';
+
 
 // Import helpers
 import OAuthHandler from './components/OAuthHandler';
 import ProtectedRoute from './components/ProtectedRoute';
+import ResetPassword from './pages/reset_password.jsx';
 
 
 // Root App component that renders the Login and Registration pages
@@ -25,7 +27,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/registration" element={<Registration />} />
         <Route path="/forgot_password" element={<ForgotPassword />} />
-
+        <Route path="/reset-password" element={<ResetPassword />} />
         {/* OAuth handler route: reads token & redirects */}
         <Route path="/oauth" element={<OAuthHandler />} />
 
