@@ -9,7 +9,7 @@ export default function VantaNetBackground() {
     let cancelled = false;
 
     // dynamic import keeps your bundle small & avoids SSR issues
-    import("vanta/dist/vanta.net.min").then((module) => {
+    import("vanta/dist/vanta.Net.min").then((module) => {
       if (cancelled) return;
       const NET = module.default;
 
@@ -21,9 +21,9 @@ export default function VantaNetBackground() {
         gyroControls: false,
         minHeight: 200.0,
         minWidth: 200.0,
-        scale: 1.0,
+        scale: 2.0,
         scaleMobile: 1.0,
-        points: 10.0,
+        points: 8.0,
         maxDistance: 20.0,
         spacing: 15.0,
         showDots: false,

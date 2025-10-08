@@ -130,7 +130,7 @@ useEffect(() => {
      <>
      <div className={styles["dashboard-screen-wrapper"]}>
         <SideBard/>
-        <NavBar/>
+        
         <input type="text"  placeholder="Search jobs..." className={styles.searchInput}/>
       <div className={styles["dashboard-wrapper"]}>
         <div className={styles["dashboard-container"]}>
