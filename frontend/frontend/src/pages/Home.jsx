@@ -10,7 +10,7 @@ const AngleLanding = () => {
     let effect;
     let cancelled = false;
 
-    import("vanta/dist/vanta.Globe.min").then((mod) => {
+    import("vanta/dist/vanta.Net.min").then((mod) => {
       if (cancelled) return;
       const Globe = mod.default;
 
@@ -25,6 +25,7 @@ const AngleLanding = () => {
         scaleMobile: 1.0,
         size: 1.0,
         points: 8.0,
+        showDots: false,
         color: 0xff3f81,
         backgroundAlpha: 0.0,
         backgroundColor: 0x131a43,
