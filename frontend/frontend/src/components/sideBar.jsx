@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import styles from "./sideBard.module.css"
 import { Home, Briefcase, MessageSquare, Settings, LogOut } from "lucide-react";
 
-const sideBard = () => {
+const sideBar = () => {
 
     return (
    <div className={styles.sidebar}>
@@ -24,4 +24,4 @@ const sideBard = () => {
     </div>
   );
 }
-export default sideBard;
+export default sideBar;
