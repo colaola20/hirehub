@@ -17,17 +17,17 @@ const OAuthHandler = () => {
 
         if (token) {
             // Store the token
-            localStorage.setItem('jwt_token', token);
+            localStorage.setItem('token', token);
             
             // --- STEP 2: Check if local storage worked ---
-            console.log("Token stored in localStorage:", localStorage.getItem('jwt_token')); 
+            console.log("Token stored in localStorage:", localStorage.getItem('token')); 
 
             // Clean up the URL (replace history state)
             if (username) {
                 // IMPORTANT: The path must only contain the route parameter, not query strings
-                navigate(`/${username}`, { replace: true }); 
+                navigate(`/${username}`); 
             } else {
-                navigate('/', { replace: true });
+                navigate('/');
             }
         }
     }, [location, navigate]);

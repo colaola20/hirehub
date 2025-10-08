@@ -107,8 +107,12 @@ def authorize_linkedin():
         session["user_email"] = user.email
         session.pop('linkedin_nonce', None)
 
-        frontend_url = f"http://localhost:5173/{user.username}?token={jwt_token}&username={user.username}"
+
+        frontend_url = f"http://localhost:5173/login?token={jwt_token}&username={user.username}"
         return redirect(frontend_url)
+
+        # frontend_url = f"http://localhost:5173/{user.username}?token={jwt_token}&username={user.username}"
+        # return redirect(frontend_url)
 
     except Exception as e:
         db.session.rollback()

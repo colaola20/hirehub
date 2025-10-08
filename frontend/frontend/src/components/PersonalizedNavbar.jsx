@@ -4,7 +4,7 @@ import './Navbar.css'
 
 const PersonalizedNavbar = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const navigate = useNavigate();;
+    const navigate = useNavigate();
 
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
