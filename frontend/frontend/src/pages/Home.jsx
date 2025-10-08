@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { Link } from "react-router-dom";            // ⬅️ added
 import styles from "./Home_Page.module.css";  // ⬅️ use module import
+import { SpaceIcon } from "lucide-react";
 
 const AngleLanding = () => {
   const bgRef = useRef(null);
@@ -24,7 +25,10 @@ const AngleLanding = () => {
         showpoints: false,
         scaleMobile: 1.0,
         size: 1.0,
-        points: 8.0,
+        points: 5.0,
+        spacing: 15.0,
+        speed: 0.2,
+        maxDistance: 20.0,
         showDots: false,
         color: 0xff3f81,
         backgroundAlpha: 0.0,
