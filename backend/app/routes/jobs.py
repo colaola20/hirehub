@@ -22,6 +22,9 @@ def get_jobs():
             q = q.filter(Job.location.ilike(f"%{location}%"))
 
         q = q.order_by(Job.date_posted.desc())
+
+        total_count = q.count()
+
         total_limit = limit + preload
         jobs = q.offset(offset).limit(total_limit).all()
 
@@ -29,13 +32,14 @@ def get_jobs():
         current_jobs = jobs_data[:limit]
         preloaded_jobs = jobs_data[limit:]
 
-        return jsonify({
+        data = jsonify({
             "status": "success",
-            "page": 1,
             "current": current_jobs,
             "preload": preloaded_jobs,
-            "count": 10
+            "count": len(current_jobs),
+            "total": total_count
             }), 200
+        return data
     except Exception as e:
         return jsonify({
             "status": "error",

@@ -67,6 +67,5 @@ def create_app():
     app.register_blueprint(github_bp)
     app.register_blueprint(google_bp)
     app.register_blueprint(linkedin_bp)
-    app.register_blueprint(jobs_bp)
 
     return app
