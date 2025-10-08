@@ -22,7 +22,7 @@ const ResumeForm = () => {
         const [interests, setInterests] = useState("");
     
         // main sections
-        const [skills, setSkills] = useState("");
+        const [skills, setSkills] = useState(""); // maybe add what kinds of skills (hard, soft, languages, etc)
         const [experience, setExperience] = useState(""); // add company, role, time
         const [education, setEducation] = useState(""); // add school, degree, year
         const [projects, setProjects] = useState(""); // add title, description, link
@@ -77,7 +77,7 @@ const ResumeForm = () => {
                                     placeholder="Summary Generation (separate keywordsby commas)"
                                     value = {summary}
                                     onChange = {(e) => setSummary(e.target.value)} // see line 9
-                                    required
+                                    
                                 />
                         </div>
 
@@ -109,24 +109,71 @@ const ResumeForm = () => {
                         <div className="misc_section"> 
 
                             <p>Languages</p>
-                            <input 
+                                <input 
                                     type = "text"
                                     placeholder="Languages (separate by commas)"
                                     value = {languages}
                                     onChange = {(e) => setLanguages(e.target.value)}
-                            />
+                                />
 
                             <p>Interests and Hobbies</p>
-                            <input 
+                                <input 
                                     type = "text"
                                     placeholder="Interests and Hobbies (separate by commas)"
                                     value = {interests}
                                     onChange = {(e) => setInterests(e.target.value)}
-                            />
-
+                                />
 
                         </div>
-                        <div className="main_sections"> </div>
+
+                        <div className="main_sections"> 
+
+                            <p>Skills</p>
+                                <input 
+                                    type = "text"
+                                    placeholder="Skills (separate by commas)"
+                                    value = {skills}
+                                    onChange = {(e) => setSkills(e.target.value)}
+                                    required
+                                />
+
+                            {/* TODO - Add Multiple fields for Experience as listed on line 26 */}
+                            <p>Experience</p>
+                                <input
+                                    type="text"
+                                    placeholder="Experience"
+                                    value = {experience}
+                                    onChange = {(e) => setExperience(e.target.value)}
+                                    required
+                                />
+                                <input type="text" placeholder=""/>
+
+                            <p>Education</p>
+                                <input 
+                                    type = "text"
+                                    placeholder="Education"
+                                    value = {education}
+                                    onChange = {(e) => setEducation(e.target.value)}
+                                    required
+                                />
+
+                            <p>Projects</p>
+                                <input 
+                                    type = "text"
+                                    placeholder="Projects"
+                                    value = {projects}
+                                    onChange = {(e) => setProjects(e.target.value)}
+                                    required
+                                />
+
+                            <p>Certifications</p>
+                                <input 
+                                    type = "text"
+                                    placeholder="Certifications (separate by commas)"
+                                    value = {certs}
+                                    onChange = {(e) => setCerts(e.target.value)}
+                                />
+                        </div>
                     </form>
                 </div>
             </div>
