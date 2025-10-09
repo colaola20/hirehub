@@ -5,7 +5,7 @@ import './resumeform.css';
 
 const ResumeForm = () => {
 
-    /* PERSONAL INFO */
+    /* ---PERSONAL INFO--- */
     const [fullName, setFullName] = useState("");
     const [email, setEmail] = useState("");
     const [phoneNum, setPhoneNum] = useState("");
@@ -18,16 +18,16 @@ const ResumeForm = () => {
 
     const [summary, setSummary] = useState(""); // could enter key words to generate summary as well 
 
-    /* SOCIAL INFO */
+    /* ---SOCIAL INFO--- */
     const [linkedIn, setLinkedIn] = useState("");
     const [github, setGithub] = useState("");
     const [portfolio, setPortfolio] = useState("");
 
-    /* MISC INFO */
+    /* ---MISC INFO--- */
     const [languages, setLanguages] = useState("");
     const [interests, setInterests] = useState("");
 
-    /* MAIN SECTIONS */
+    /* ---MAIN SECTIONS--- */
     const [skills, setSkills] = useState(""); // maybe add what kinds of skills (hard, soft, languages, etc)
     
     // Experience Fields
@@ -59,7 +59,7 @@ const ResumeForm = () => {
                 <h2>Resume Builder Form</h2>
 
                 <form className="resume_form">
-                    <div className='personal_info' style={{ backgroundColor: "blue" }}>
+                    <div className='personal-info'>
                         <h3>Personal Information</h3>
 
                         <p> Name</p>
@@ -130,7 +130,7 @@ const ResumeForm = () => {
                         />
                     </div>
 
-                    <div className="social_info" style={{ backgroundColor: "red" }}>
+                    <div className="social-info" style={{ backgroundColor: "red" }}>
 
                         <h3>Social Information</h3>
 
@@ -157,7 +157,7 @@ const ResumeForm = () => {
                         />
 
                     </div>
-                    <div className="misc_section">
+                    <div className="misc-section">
 
                         <h3>Miscellaneous Information</h3>
 
@@ -179,7 +179,7 @@ const ResumeForm = () => {
 
                     </div>
 
-                    <div className="main_sections">
+                    <div className="main-sections">
 
                         <h3>Main Sections</h3>
 
@@ -270,6 +270,10 @@ const ResumeForm = () => {
                         />
                     </div>
                 </form>
+                <br />
+                <button type="submit" className="submit-btn">
+                    Generate Resume
+                </button>
             </div>
         </div>
     )
