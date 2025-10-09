@@ -33,7 +33,7 @@ const ResumeForm = () => {
     // Experience Fields
     const [company, setCompany] = useState("");
     const [role, setRole] = useState("");
-    const [time, setTime] = useState("");
+    const [roleTime, setRoleTime] = useState("");
 
     // Education Fields
     const [school, setSchool] = useState("");
@@ -196,30 +196,70 @@ const ResumeForm = () => {
                         <p>Experience</p>
                         <input
                             type="text"
-                            placeholder="Experience"
-                            value={experience}
-                            onChange={(e) => setExperience(e.target.value)}
+                            placeholder="Compamy Name"
+                            value={company}
+                            onChange={(e) => setCompany(e.target.value)}
                             required
                         />
-                        <input type="text" placeholder="" />
+                        <input type="text"
+                            placeholder="Position Title"
+                            value={role}
+                            onChange={(e) => setRole(e.target.value)}
+                            required
+                        />
+                        <input type="text"
+                            placeholder="Time Period (e.g., June 2020 - August 2021)" // change this to a date picker later
+                            value={roleTime}
+                            onChange={(e) => setRoleTime(e.target.value)}
+                            required
+                        />
 
                         <p>Education</p>
                         <input
                             type="text"
-                            placeholder="Education"
-                            value={education}
-                            onChange={(e) => setEducation(e.target.value)}
+                            placeholder="School Name"
+                            value={school}
+                            onChange={(e) => setSchool(e.target.value)}
                             required
                         />
+                        <input 
+                            type="text"
+                            placeholder="Degree"
+                            value={degree}
+                            onChange={(e) => setDegree(e.target.value)}
+                            required
+                        />
+                        <input 
+                        type="text"
+                            placeholder="Graduation Year (Or Estimated)"
+                            value={gradYear}
+                            onChange={(e) => setGradYear(e.target.value)}
+                            required
+                        />
+                        <input type="checkbox" /> I am currently a student
 
                         <p>Projects</p>
                         <input
                             type="text"
-                            placeholder="Projects"
-                            value={projects}
-                            onChange={(e) => setProjects(e.target.value)}
-                            required
+                            placeholder="Project Title"
+                            value={pTitle}
+                            onChange={(e) => setPTitle(e.target.value)}
+                            
                         />
+                        <input 
+                            type="text"
+                            placeholder="Project Description"
+                            value={pDesc}
+                            onChange={(e) => setPDesc(e.target.value)}
+                            
+                        />
+                        <input 
+                            type="url"
+                            placeholder="Project Link"
+                            value={pLink}
+                            onChange={(e) => setPLink(e.target.value)}
+                        />
+
 
                         <p>Certifications</p>
                         <input
