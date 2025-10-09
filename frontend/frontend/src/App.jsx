@@ -10,6 +10,7 @@ import Registration from './pages/Registration';
 import Home from './pages/Home';
 import ForgotPassword from './pages/forgot_password';
 import UserDashboard from './pages/UserDashboard';
+import ResumeForm from './pages/ResumeForm';
 
 // Import helpers
 import OAuthHandler from './components/OAuthHandler';
@@ -25,6 +26,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/registration" element={<Registration />} />
         <Route path="/forgot_password" element={<ForgotPassword />} />
+        <Route path="/resume_form" element={<ResumeForm />} />
 
         {/* OAuth handler route: reads token & redirects */}
         <Route path="/oauth" element={<OAuthHandler />} />
