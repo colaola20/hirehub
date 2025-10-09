@@ -1,76 +1,124 @@
-/* Glassy bar that stretches full width of its grid area */
-.navbar{
-  background: rgba(12,16,38,0.30);
-  border: 1px solid rgba(255,255,255,0.12);
-  backdrop-filter: saturate(120%) blur(10px);
-  -webkit-backdrop-filter: saturate(120%) blur(10px);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 10px 28px rgba(0,0,0,0.18);
+/* Minimal Navabar */
 
-  padding: 12px 20px;
+/* -------- Reset for full-bleed BG -------- */
+:global(html, body, #root) {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* -------- Layout helpers -------- */
+.angle2-container {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* -------- NAV (top, glassy, light text) -------- */
+.angle2-nav {
+  position: fixed;         /* keep it like the screenshot */
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 3;
+  padding: 14px 0;
+  backdrop-filter: saturate(120%) blur(4px);
+}
+
+.angle2-links {
+  display: flex;
+  gap: 26px;
+  align-items: center;
+}
+.angle2-links a {
+  color: rgba(255,255,255,0.85);
+  text-decoration: none;
+  font-size: 14.5px;
+  transition: opacity .2s ease;
+}
+.angle2-links a:hover { opacity: 1; }
+
+.angle2-btn {
+  appearance: none;
+  border: 1px solid rgba(255,255,255,0.35);
+  background: rgba(0,0,0,0.28);
+  color: #fff;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-weight: 600;
+  font-size: 13.5px;
+  cursor: pointer;
+}
+.angle2-btn--small { padding: 8px 12px; }
+
+/* -------- Responsive tweaks -------- */
+@media (max-width: 980px) {
+  .angle2-links { display: none; }
+  .angle2-hero__title::before { filter: blur(22px); }
+}
+
+
+/* ===== Center the hero content ===== */
+:root { --nav-h: 64px; }             /* adjust if your nav is taller */
+
+.angle2-nav {                         /* fixed/glassy nav as you had */
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 3;
+  padding: 14px 0;
+  backdrop-filter: saturate(120%) blur(4px);
+}
+
+
+/* keep links hidden on mobile if you already did that elsewhere */
+@media (max-width: 980px) {
+  .angle2-links { display: none; }
+}
+/* Make the mount node full-bleed (override Vite's default index.css) */
+:global(#root) {
+  max-width: none !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Ensure the page box fills the viewport */
+:global(html, body) {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* ====== NEW: Center the nav contents and show only needed bits ====== */
+.angle2-nav .angle2-container {
   display: flex;
   align-items: center;
-  z-index: 2;       /* sits above glass panels below */
+  justify-content: center;   /* center links + buttons */
+  gap: 24px;
 }
 
-/* inner container (optional) */
-.navbarInner{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap: 16px;
-  width:100%;
-  max-width: 1200px;
-  margin: 0 auto;
+
+
+/* Keep links inline and the small button next to them */
+.angle2-nav .angle2-links {
+  display: flex;
+  gap: 26px;
+  align-items: center;
+}
+.angle2-nav .angle2-btn--small {
+  margin-left: 8px;          /* slight breathing room after links */
 }
 
-/* brand */
-.brand{
-  display:flex;
-  align-items:center;
-  gap:10px;
 
-  background: rgba(255,255,255,0.10);
-  border: 1px solid rgba(255,255,255,0.18);
-  backdrop-filter: blur(6px) saturate(115%);
-  -webkit-backdrop-filter: blur(6px) saturate(115%);
-  padding: 6px 8px;
-  border-radius: 10px;
-}
-.logo{
-  display:grid; place-items:center;
-  height: 40px; width: 40px; border-radius:8px;
-  background:linear-gradient(to right,#8ec5fc,#7a5bbf);
-  color:#fff; font-weight:700; font-size:20px;
-}
-.brandText{
-  font-weight:700;
-  font-size:20px;
-  background:linear-gradient(to right,#86bbf0,#2b155a);
-  -webkit-background-clip:text; background-clip:text;
-  -webkit-text-fill-color:transparent; color:transparent;
+
+/* Make <Link> buttons styled like buttons */
+.angle2-btn,
+.angle2-btn:link,
+.angle2-btn:visited {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
 }
 
-/* links as glass chips */
-.links{
-  display:flex; gap:12px; flex-wrap:wrap;
-}
-.link{
-  text-decoration:none;
-  color: rgba(255,255,255,0.85);
-  padding: 6px 12px;
-  border-radius: 10px;
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.10);
-  transition: background .2s ease, border-color .2s ease, transform .15s ease;
-}
-.link:hover{
-  background: rgba(255,255,255,0.08);
-  border-color: rgba(255,255,255,0.18);
-  color: #fff;
-  transform: translateY(-1px);
-}
-
-/* mobile tweaks */
-@media (max-width: 600px){
-  .navbar{ padding: 10px 12px; }
-}

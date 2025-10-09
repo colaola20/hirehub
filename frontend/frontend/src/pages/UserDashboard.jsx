@@ -4,7 +4,7 @@ import { toast, ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 
 import styles from "./dashBoard.module.css";
-import NavBar from "../components/PersonalizedNavbar.jsx";
+import PersonalizedNavbar from "../components/PersonalizedNavbar.jsx";
 import JobCard from "../components/JobCard.jsx";
 import SideBar  from "../components/sideBar.jsx";
 import ChatBot from "../components/ChatBot.jsx";
@@ -172,7 +172,7 @@ const UserDashboard = () => {
     <>
     <ToastContainer position="top-right" />
       <div className={styles["dashboard-screen-wrapper"]}>
-        {/* <PersonalizedNavbar /> */}
+        <PersonalizedNavbar />
         <SideBar/>
         <input type="text"  placeholder="Search jobs..." className={styles.searchInput}/>
 
