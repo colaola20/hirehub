@@ -1,31 +1,50 @@
 import React, { useState } from "react";
 import Navbar from '../components/Navbar'
-import './form_style.css';
+
+import './resumeform.css';
 
 const ResumeForm = () => {
 
-    // personal info, could be pulled from account info
+    /* PERSONAL INFO */
     const [fullName, setFullName] = useState("");
     const [email, setEmail] = useState("");
     const [phoneNum, setPhoneNum] = useState("");
-    const [location, setLocation] = useState(""); // one field for now, add address, city, state, zip later if needed
+
+    // Location fields
+    const [address, setAddress] = useState("");
+    const [city, setCity] = useState("");
+    const [state, setState] = useState("");
+    const [zip, setZip] = useState("");
 
     const [summary, setSummary] = useState(""); // could enter key words to generate summary as well 
 
-    // socials
+    /* SOCIAL INFO */
     const [linkedIn, setLinkedIn] = useState("");
     const [github, setGithub] = useState("");
     const [portfolio, setPortfolio] = useState("");
 
-    // misc info (optional)
+    /* MISC INFO */
     const [languages, setLanguages] = useState("");
     const [interests, setInterests] = useState("");
 
-    // main sections
+    /* MAIN SECTIONS */
     const [skills, setSkills] = useState(""); // maybe add what kinds of skills (hard, soft, languages, etc)
-    const [experience, setExperience] = useState(""); // add company, role, time
-    const [education, setEducation] = useState(""); // add school, degree, year
-    const [projects, setProjects] = useState(""); // add title, description, link
+    
+    // Experience Fields
+    const [company, setCompany] = useState("");
+    const [role, setRole] = useState("");
+    const [time, setTime] = useState("");
+
+    // Education Fields
+    const [school, setSchool] = useState("");
+    const [degree, setDegree] = useState("");
+    const [gradYear, setGradYear] = useState("");
+
+    // project fields
+    const [pTitle, setPTitle] = useState("");
+    const [pDesc, setPDesc] = useState("");
+    const [pLink, setPLink] = useState("");
+
     const [certs, setCerts] = useState(""); // certifications
 
     //add more fields as needed
@@ -34,9 +53,9 @@ const ResumeForm = () => {
     //  Change the style of the form later, this is just a basic layout for now
     return (
         <div className="container">
-            <Navbar />
+            {/* <Navbar /> */}
 
-            <div className="form-box" style={{ backgroundColor: "green" }}>
+            <div className="form-box">
                 <h2>Resume Builder Form</h2>
 
                 <form className="resume_form">
@@ -68,11 +87,36 @@ const ResumeForm = () => {
                             required
                         />
                         <p>Location</p>
+
+                        <input
+                            type="text"
+                            placeholder="Address"
+                            value={address}
+                            onChange={(e) => setAddress(e.target.value)}
+                            required
+                        />
+                        {/* <p>City</p> */}
                         <input
                             type="text"
                             placeholder="City Name"
-                            value={location}
-                            onChange={(e) => setLocation(e.target.value)} // see line 9
+                            value={city}
+                            onChange={(e) => setCity(e.target.value)} // see line 9
+                            required
+                        />
+                        {/* <p>State</p> */}
+                        <input
+                            type="text"
+                            placeholder="State Name"
+                            value={state}
+                            onChange={(e) => setState(e.target.value)} // see line 9
+                            required
+                        />
+                        {/* <p>Zip</p> */}
+                        <input
+                            type="text"
+                            placeholder="Zip Code"
+                            value={zip}
+                            onChange={(e) => setZip(e.target.value)} // see line 9
                             required
                         />
 
