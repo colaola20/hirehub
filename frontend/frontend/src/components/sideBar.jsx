@@ -50,6 +50,16 @@ const sideBar = () => {
       <div className={styles.topSection}>
         {/*<div className={styles.logo}>HireHub</div>*/}
         <nav className={styles.nav}>
+          <div className={styles.navbarBrand}>
+            <div className={styles.brandLink}>
+                <Link to='/'>
+                  <div className={styles.logo}>H</div>
+                  <div className={styles.brandText}>
+                    <h2 className={styles.brandTitle}>ireHub</h2>
+                  </div>
+                </Link>
+            </div>
+          </div>
           <Link to='/'>
           <div className={styles.navItem}><Home size={20}/>Dashboard</div>
           </Link>

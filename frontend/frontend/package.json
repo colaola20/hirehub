@@ -18,6 +18,7 @@
     "react-dom": "^18.3.1",
     "react-router": "^7.9.1",
     "react-router-dom": "^7.9.1",
+    "react-toastify": "^11.0.5",
     "router": "^2.2.0",
     "three": "^0.180.0",
     "vanta": "^0.5.24"
