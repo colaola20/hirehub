@@ -1,7 +1,3 @@
-<<<<<<< Updated upstream
-import React from 'react'
-import PersonalizedNavbar from '../components/PersonalizedNavbar'
-=======
 import { useEffect, useCallback, useState, useRef } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify"
@@ -14,18 +10,9 @@ import SideBar  from "../components/sideBar.jsx";
 import ChatBot from "../components/ChatBot.jsx";
 
 
->>>>>>> Stashed changes
 
 
 const UserDashboard = () => {
-<<<<<<< Updated upstream
-    return(
-        <div>
-            <PersonalizedNavbar/>
-        </div>
-    )
-}
-=======
   const navigate = useNavigate();
   const { username } = useParams();
   const [searchParams] = useSearchParams();
@@ -237,5 +224,4 @@ const UserDashboard = () => {
 };
 
 
->>>>>>> Stashed changes
 export default UserDashboard
