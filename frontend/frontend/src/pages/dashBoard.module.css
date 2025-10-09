@@ -1,0 +1,183 @@
+/* === DASHBOARD THEME TO MATCH HOME === */
+
+/* keep global backgrounds off (as you had) */
+body, .container {
+  background: none !important;
+}
+
+/* 1) Wrapper: use the same fixed, multi-layer gradient + soft veil */
+.dashboard-wrapper {
+  position: relative;
+  top: 0;
+  left: 0;
+  width: 100%;
+  min-height: 100vh;
+
+  /* if you keep a left sidebar, keep this; otherwise remove it */
+  margin-left: 240px;
+
+  /* remove solid fill; use layered gradient like home */
+  background: none;
+  overflow-x: hidden;
+}
+
+/* gradient (like .angle2-root::before) */
+.dashboard-wrapper::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background:
+    linear-gradient(0deg, rgba(0,0,0,0.28), rgba(0,0,0,0.28)),
+    radial-gradient(380px 240px at 92% 10%, rgba(255, 120, 170, 0.20), transparent 62%),
+    radial-gradient(180px 120px at 96% 6%,  rgba(255, 155, 195, 0.26), transparent 70%),
+    radial-gradient(460px 300px at 8% 12%,  rgba(255, 120, 170, 0.22), transparent 64%),
+    radial-gradient(220px 150px at 5% 8%,   rgba(255, 155, 195, 0.30), transparent 72%),
+    radial-gradient(520px 320px at 10% 86%, rgba(255, 130, 185, 0.16), transparent 66%),
+    radial-gradient(240px 160px at 6% 94%,  rgba(255, 170, 210, 0.20), transparent 74%),
+    radial-gradient(900px 480px at 75% 12%, rgba(255,255,255,0.12), transparent 60%),
+    radial-gradient(760px 420px at 16% 8%,  rgba(255,255,255,0.08), transparent 62%),
+    radial-gradient(900px 520px at 22% 70%, rgba(120, 60, 255, 0.12), transparent 62%),
+    radial-gradient(820px 480px at 52% 38%, rgba(255,200,140,0.05), transparent 60%),
+    radial-gradient(140% 120% at 50% 115%, rgba(0,0,0,0.54), transparent 55%),
+    linear-gradient(90deg, #7fa0ee 0%, #4a2a86 100%);
+  background-attachment: fixed;
+}
+
+/* subtle dark veil (like .angle2-root::after) */
+.dashboard-wrapper::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(1000px 700px at 40% 35%, rgba(0,0,0,0.30), transparent 65%);
+  pointer-events: none;
+}
+
+/* 2) Main container: glass panel instead of plain transparent box */
+.dashboard-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+
+  /* spacing relative to any top navbar you have */
+  margin-top: 80px;
+  margin-left: 100px;
+  padding: clamp(24px, 4vw, 56px);
+  gap: clamp(20px, 3vw, 40px);
+
+  width: calc(100% - 100px);
+  min-height: calc(100vh - 80px);
+  box-sizing: border-box;
+
+  /* GLASSMORPHISM CARD (matches sections on home) */
+  background: rgba(12, 16, 38, 0.30);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: clamp(10px, 1.2vw, 16px);
+  backdrop-filter: blur(10px) saturate(115%);
+  -webkit-backdrop-filter: blur(10px) saturate(115%);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 10px 28px rgba(0,0,0,0.18);
+
+  color: rgba(248,249,255,0.94);
+}
+
+/* 3) Columns — keep widths but ensure content reads well on the glass */
+.searchInput {
+  width: 45%;
+}
+
+.jobs-column {
+  display: flex;
+  width: 45%;
+  flex-direction: column;
+  align-items: stretch; /* let child cards fill width */
+  gap: 14px;
+  position: relative;
+  background: transparent;
+}
+
+/* Optional: style individual job cards inside .jobs-column */
+.jobs-column > .job-card,
+.jobs-column > article,
+.jobs-column > div.card {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 12px;
+  padding: clamp(14px, 2vw, 20px);
+  color: rgba(235,237,255,0.95);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.16);
+}
+
+/* Inputs inside the dashboard: match contact form style */
+.dashboard-container input,
+.dashboard-container select,
+.dashboard-container textarea {
+  width: 100%;
+  border: 1px solid rgba(255,255,255,0.20);
+  background: rgba(255,255,255,0.06);
+  color: #fff;
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-size: 14px;
+  outline: none;
+}
+.dashboard-container input::placeholder,
+.dashboard-container textarea::placeholder {
+  color: rgba(255,255,255,0.65);
+}
+
+/* 4) Pagination: unify button styling with home ghost buttons */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.pagination button {
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.35);
+  background: rgba(0,0,0,0.28);
+  color: #fff;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 13.5px;
+  transition: border-color .2s ease, background .2s ease;
+}
+
+.pagination button:hover {
+  background: rgba(0,0,0,0.36);
+  border-color: rgba(255,255,255,0.55);
+}
+
+.pagination span {
+  font-weight: 700;
+  color: rgba(248,249,255,0.94);
+}
+
+/* 5) Responsive tweaks */
+@media (max-width: 1200px) {
+  .dashboard-container {
+    margin-left: 40px;
+    width: calc(100% - 40px);
+  }
+}
+
+@media (max-width: 900px) {
+  .dashboard-wrapper {
+    margin-left: 0; /* collapse sidebar space on mobile if sidebar overlays */
+  }
+  .dashboard-container {
+    margin: 80px 16px 24px 16px;
+    width: auto;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .searchInput,
+  .jobs-column {
+    width: 100%;
+  }
+}

@@ -1,10 +1,9 @@
 // RegistrationPage.jsx
 // Registration page for HireHub
 import React, { useState } from "react";
-import "./registration.css"; // separate CSS file
+import styles from "./Registration_Page.module.css"; // ⬅️ CSS Module
 import { Link } from "react-router-dom";
 import placeholderImg from "../assets/login_reg_Place_holder1.png";
-import Navbar from '../components/Navbar'
 
 const RegistrationPage = () => {
   const [username, setUsername] = useState("");
@@ -17,11 +16,47 @@ const RegistrationPage = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
+    // Regex patterns
+    const usernameRegex = /^[a-zA-Z0-9_]{3,15}$/;
+    const nameRegex = /^[A-Za-z]{2,30}$/;
+    // const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const passwordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\w\s]).{8,}$/;
+
+    // Disallow spaces in username
+    if (/\s/.test(username)) {
+      alert("Username cannot contain spaces!");
+      return;
+    }
+    // Validation checks
+    if (!usernameRegex.test(username)) {
+      alert(
+        "Username must be 3-15 characters and only contain letters, numbers, and underscores."
+      );
+      return;
+    }
+    if (!nameRegex.test(firstName)) {
+      alert("First name must be 2-30 alphabetic characters.");
+      return;
+    }
+    if (!nameRegex.test(lastName)) {
+      alert("Last name must be 2-30 alphabetic characters.");
+      return;
+    }
+    // if (!emailRegex.test(email)) {
+    //   alert("Please enter a valid email address.");
+    //   return;
+    // }
+    if (!passwordRegex.test(password)) {
+      alert(
+        "Password must be at least 8 characters, include an uppercase letter, lowercase letter, number, and special character."
+      );
+      return;
+    }
     if (password !== confirmPassword) {
       alert("Passwords do not match!");
       return;
     }
-
     try {
       const response = await fetch("/api/register", {
         method: "POST",
@@ -52,20 +87,19 @@ const RegistrationPage = () => {
   };
 
   return (
-    <div className="container">
-      <Navbar/>
-      <div className="register-box">
+    <div className={styles.container}>
+      <div className={styles["register-box"]}>
         {/* Left Side: Registration Form */}
-        <div className="register-form-section">
-          <div className="brand">
-            <div className="logo">H</div>
-            <div className="brand-text">
-              <h2 className="brand-title">ireHub</h2>
-              <p className="brand-tagline">Create Your Account</p>
+        <div className={styles["register-form-section"]}>
+          <div className={styles.brand}>
+            <div className={styles.logo}>H</div>
+            <div className={styles["brand-text"]}>
+              <h2 className={styles["brand-title"]}>ireHub</h2>
+              <p className={styles["brand-tagline"]}>Create Your Account</p>
             </div>
           </div>
 
-          <form className="register-form" onSubmit={handleSubmit}>
+          <form className={styles["register-form"]} onSubmit={handleSubmit}>
             <input
               type="text"
               placeholder="Username"
@@ -109,27 +143,27 @@ const RegistrationPage = () => {
               required
             />
 
-            <button type="submit" className="register-btn">
+            <button type="submit" className={styles["register-btn"]}>
               Register
             </button>
           </form>
 
-          <p className="have-account">
+          <p className={styles["have-account"]}>
             <span style={{ color: "black" }}>Already have an account?</span>{" "}
             <Link to="/login">Login</Link>
           </p>
         </div>
 
         {/* Right Side Info */}
-        <div className="register-info-section">
+        <div className={styles["register-info-section"]}>
           <h1>Join HireHub</h1>
           <p>
             Sign up to access our AI-powered career tools, resume tailoring, and
             smarter job applications.
           </p>
-          <div className="illustration">
-                <img src={placeholderImg} alt="AI Assistant" />
-            </div>
+          <div className={styles.illustration}>
+            <img src={placeholderImg} alt="AI Assistant" />
+          </div>
         </div>
       </div>
     </div>
