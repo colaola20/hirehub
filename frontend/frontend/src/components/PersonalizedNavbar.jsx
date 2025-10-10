@@ -65,38 +65,24 @@ const PersonalizedNavbar = () => {
                     </Link>
 
                 </nav>
+                {/* right side actions (buttons etc) */}
+                <div className={styles.navActions || styles["nav-actions"]}>
+                    {/* show hamburger on small screens */}
+                    <button
+                    className={styles.menuToggle || styles["menu-toggle"]}
+                    aria-label="Toggle menu"
+                    onClick={toggleMenu}
+                    >
+                    {/* simple 3-line icon */}
+                    <svg width="20" height="12" viewBox="0 0 20 12" fill="none" aria-hidden>
+                        <rect y="0" width="20" height="2" rx="1" fill="currentColor"/>
+                        <rect y="5" width="20" height="2" rx="1" fill="currentColor"/>
+                        <rect y="10" width="20" height="2" rx="1" fill="currentColor"/>
+                    </svg>
+                    </button>
+                </div>
             </div>
         </header>
-        // <nav className='navbar'>
-        //     <div className='navbar-container'>
-        //         <button 
-        //             className={`hamburger ${isMenuOpen ? 'active' : ''}`}
-        //             onClick={toggleMenu}
-        //             aria-label='Toggle navigation'
-        //         >
-        //             <span></span>
-        //             <span></span>
-        //             <span></span>
-        //         </button>
-        //         <ul className={`nav-links ${isMenuOpen ? 'active' : ''}`}>
-        //             <li>
-        //                 <Link to='/'>Jobs</Link>
-        //             </li>
-        //             <li>
-        //                 <Link to='/'>Recommended</Link>
-        //             </li>
-        //             <li>
-        //                 <Link to='/'>Resume</Link>
-        //             </li>
-        //             <li>
-        //                 <Link to='/'>Profile</Link>
-        //             </li>
-        //             <li>
-        //                 <Link to='/' onClick={handleLogout}>Sign Out</Link>
-        //             </li>
-        //         </ul>
-        //     </div>
-        // </nav>
     )
 }
 export default PersonalizedNavbar
