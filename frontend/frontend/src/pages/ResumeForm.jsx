@@ -130,7 +130,7 @@ const ResumeForm = () => {
                         />
                     </div>
 
-                    <div className="social-info" style={{ backgroundColor: "red" }}>
+                    <div className="social-info">
 
                         <h3>Social Information</h3>
 
