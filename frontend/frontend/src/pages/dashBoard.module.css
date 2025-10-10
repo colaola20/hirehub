@@ -158,6 +158,14 @@ body, .container {
   color: rgba(248,249,255,0.94);
 }
 
+.error-state{
+  margin-top: 400px;
+  text-align: center;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 400px;
+}
+
 /* 5) Responsive tweaks */
 @media (max-width: 1200px) {
   .dashboard-container {

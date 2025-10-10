@@ -9,7 +9,9 @@ import Login from './pages/Login';
 import Registration from './pages/Registration';
 import Home from './pages/Home';
 import ForgotPassword from './pages/forgot_password';
+
 import UserDashboard from './pages/UserDashboard.jsx';
+import JobDetails from './pages/JobDetailsModal.jsx';
 
 
 // Import helpers
@@ -32,6 +34,7 @@ function App() {
         <Route path="/oauth" element={<OAuthHandler />} />
 
           <Route path="/dev-dashboard" element={<UserDashboard />} />
+          <Route path="/JobModal" element={<JobDetails />} />
 
         {/* Protected dashboard route */}
         <Route
@@ -39,6 +42,7 @@ function App() {
           element={
             <ProtectedRoute>
               <UserDashboard />
+              <JobDetails />
             </ProtectedRoute>
           }
         />
