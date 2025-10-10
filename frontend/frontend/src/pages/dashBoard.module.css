@@ -1,5 +1,7 @@
 /* === DASHBOARD THEME TO MATCH HOME === */
-
+:global(html, body, #root) {
+  height: 100%;
+}
 
 /* keep global backgrounds off (as you had) */
 body, .container {
@@ -12,16 +14,33 @@ body, .container {
 }
 
 .dashboard-screen-wrapper{
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
   padding-top: calc(var(--nav-h) + 16px)
 }
 
 /* 1) Wrapper: use the same fixed, multi-layer gradient + soft veil */
 .dashboard-wrapper {
+  flex: 1 1 auto;
   display: grid;
   grid-template-columns: 240px minmax(0, 1fr);
   gap: var(--gap);
+  max-width: 1440px;
   width: 100%;
-  margin: 0;
+  margin: 0 auto;
+  align-items: start;
+  box-sizing: border-box;
+}
+
+.dashboard-container {
+  grid-column: 2/3;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
 }
 
 /* gradient (like .angle2-root::before) */
@@ -59,8 +78,9 @@ body, .container {
 
 /* 2) Main container: glass panel instead of plain transparent box */
 .dashboard-container .main-content {
-  max-width: 1200px;
-  margin: 0 auto;
+  flex: 2/3;
+  display: flex;
+  flex-direction: column;
   width: 100%;
   box-sizing: border-box;
 }
