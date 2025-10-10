@@ -87,10 +87,14 @@ const UserDashboard = () => {
       <div className={styles["dashboard-screen-wrapper"]}>
         <PersonalizedNavbar />
         <div className={styles["dashboard-wrapper"]}>
-          <SideBar/>
+          <div>
+            <SideBar/>
+          </div>
 
-          <main className="dashboard-container">
-            <Outlet />
+          <main className={styles["dashboard-container"]} role="main">
+            <div className = {styles["main-content"]}>
+              <Outlet />
+            </div>
           </main>
         </div>
       </div>
