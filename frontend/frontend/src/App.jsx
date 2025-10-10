@@ -10,12 +10,14 @@ import Registration from './pages/Registration';
 import Home from './pages/Home';
 import ForgotPassword from './pages/forgot_password';
 import UserDashboard from './pages/UserDashboard.jsx';
+import JobsList from './pages/JobsList.jsx'
 
 
 // Import helpers
 import OAuthHandler from './components/OAuthHandler';
 import ProtectedRoute from './components/ProtectedRoute';
 import ResetPassword from './pages/reset_password.jsx';
+
 
 
 // Root App component that renders the Login and Registration pages
@@ -41,7 +43,9 @@ function App() {
               <UserDashboard />
             </ProtectedRoute>
           }
-        />
+        >
+          <Route index element = {<JobsList/>}/>
+        </Route>
       </Routes>
     </Router>
   );
