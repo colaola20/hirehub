@@ -1,11 +1,10 @@
 import { useEffect, useCallback, useState, useRef } from "react";
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { Outlet, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 
 import styles from "./dashBoard.module.css";
 import PersonalizedNavbar from "../components/PersonalizedNavbar.jsx";
-import JobCard from "../components/JobCard.jsx";
 import SideBar  from "../components/sideBar.jsx";
 import ChatBot from "../components/ChatBot.jsx";
 import JobDetailsModal from "../components/JobDetailsModal.jsx";
@@ -45,85 +44,6 @@ const UserDashboard = () => {
       navigate("/login");
     }
   }, [navigate]);
-
-  // fetchJobs accepts limit & offset and returns the items
-  const fetchJobs = useCallback(async (limit = 20, offset = 0) => {
-    try {
-      if (offset === 0) {
-        setLoading(true);
-        setError(null);
-      }
-
-      const token = localStorage.getItem("token")
-      const response = await fetch(`/api/jobs?limit=${limit}&offset=${offset}&preload=10`, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      })
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`)
-      }
-
-      const data = await response.json()
-      console.log(data)
-      return {
-        items: data.current || [],
-        total: data.total || 0
-      }
-    } catch (error) {
-      console.error('Failed to fetch jobs:', error)
-      setError('Failed to load jobs. Please try again.')
-      return {items:[], total:0}
-    } finally {
-      if (offset === 0) setLoading(false);
-    }
-  }, [])
-
-  // helper used by retry button and explicit reload
-  const reloadInitialJobs = useCallback(async () => {
-    const {items, total} = await fetchJobs(20, 0)
-    setJobs(items)
-    setTotalJobs(total)
-  }, [fetchJobs])
-
-  // initial load
-  useEffect(() => {
-    let mount = true;
-    const loadInitialJobs = async () => {
-      const {items, total} = await fetchJobs(20, 0);
-      if (!mount) return
-      setJobs(items);
-      setTotalJobs(total);
-      setLoading(false);
-    };
-    const token = localStorage.getItem("token")
-    if (token) loadInitialJobs();
-    return () => {mount = false}
-  }, [fetchJobs]);
-  // initial scroll appending
-  useEffect(() => {
-    const handleScroll = async () => {
-      const scrollable = document.documentElement;
-      const scrolledToBottom =
-        scrollable.scrollHeight - scrollable.scrollTop <= scrollable.clientHeight + 100; // 100px buffer
-
-      if (scrolledToBottom && !loadingMore.current && jobs.length < totalJobs) {
-        loadingMore.current = true;
-        // fetch more jobs if available
-        const {items} = await fetchJobs(20, jobs.length);
-        if (items.length > 0) {
-          setJobs((prev) => [...prev, ...items]);
-        }
-        loadingMore.current = false;
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [jobs.length, totalJobs, fetchJobs]);
-
 
   // Logout due to users inactivity
 
