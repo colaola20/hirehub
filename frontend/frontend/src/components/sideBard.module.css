@@ -1,6 +1,6 @@
 .sidebar {
   position: fixed;
-  top: var(--nav-h);                 /* start under the navbar */
+  top: var(--nav-h) + 16px;                 /* start under the navbar */
   left: 0;
   width: var(--sb-w);
   height: calc(100vh - var(--nav-h));
@@ -20,6 +20,7 @@
 
   /* soften the edge that meets the page */
   border-radius: 0 14px 14px 0;
+  box-sizing: border-box;
 }
 
 /* Nav stack */

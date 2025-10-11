@@ -1,24 +1,46 @@
 /* === DASHBOARD THEME TO MATCH HOME === */
+:global(html, body, #root) {
+  height: 100%;
+}
 
 /* keep global backgrounds off (as you had) */
 body, .container {
   background: none !important;
 }
 
-/* 1) Wrapper: use the same fixed, multi-layer gradient + soft veil */
-.dashboard-wrapper {
-  position: relative;
-  top: 0;
-  left: 0;
+:root {
+  --nav-h : 64px;
+  --gap: 20px;
+}
+
+.dashboard-screen-wrapper{
+  box-sizing: border-box;
   width: 100%;
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  padding-top: calc(var(--nav-h) + 16px)
+}
 
-  /* if you keep a left sidebar, keep this; otherwise remove it */
-  margin-left: 240px;
+/* 1) Wrapper: use the same fixed, multi-layer gradient + soft veil */
+.dashboard-wrapper {
+  flex: 1 1 auto;
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);
+  gap: var(--gap);
+  max-width: 1440px;
+  width: 100%;
+  margin: 0 auto;
+  align-items: start;
+  box-sizing: border-box;
+}
 
-  /* remove solid fill; use layered gradient like home */
-  background: none;
-  overflow-x: hidden;
+.dashboard-container {
+  grid-column: 2/3;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
 }
 
 /* gradient (like .angle2-root::before) */
@@ -55,59 +77,22 @@ body, .container {
 }
 
 /* 2) Main container: glass panel instead of plain transparent box */
-.dashboard-container {
+.dashboard-container .main-content {
+  flex: 2/3;
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: flex-start;
-
-  /* spacing relative to any top navbar you have */
-  margin-top: 80px;
-  margin-left: 100px;
-  padding: clamp(24px, 4vw, 56px);
-  gap: clamp(20px, 3vw, 40px);
-
-  width: calc(100% - 100px);
-  min-height: calc(100vh - 80px);
+  flex-direction: column;
+  width: 100%;
   box-sizing: border-box;
-
-  /* GLASSMORPHISM CARD (matches sections on home) */
-  background: rgba(12, 16, 38, 0.30);
-  border: 1px solid rgba(255,255,255,0.12);
-  border-radius: clamp(10px, 1.2vw, 16px);
-  backdrop-filter: blur(10px) saturate(115%);
-  -webkit-backdrop-filter: blur(10px) saturate(115%);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 10px 28px rgba(0,0,0,0.18);
-
-  color: rgba(248,249,255,0.94);
 }
 
 /* 3) Columns — keep widths but ensure content reads well on the glass */
 .searchInput {
   width: 45%;
+  max-width: 680px;
+  min-width: 220px;
 }
 
-.jobs-column {
-  display: flex;
-  width: 45%;
-  flex-direction: column;
-  align-items: stretch; /* let child cards fill width */
-  gap: 14px;
-  position: relative;
-  background: transparent;
-}
 
-/* Optional: style individual job cards inside .jobs-column */
-.jobs-column > .job-card,
-.jobs-column > article,
-.jobs-column > div.card {
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.10);
-  border-radius: 12px;
-  padding: clamp(14px, 2vw, 20px);
-  color: rgba(235,237,255,0.95);
-  box-shadow: 0 6px 18px rgba(0,0,0,0.16);
-}
 
 /* Inputs inside the dashboard: match contact form style */
 .dashboard-container input,
@@ -127,65 +112,21 @@ body, .container {
   color: rgba(255,255,255,0.65);
 }
 
-/* 4) Pagination: unify button styling with home ghost buttons */
-.pagination {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 12px;
-  margin-top: 20px;
+.dashboard-container .main-content {
+  background: rgba(255,255,255,0.02);
+  border-radius: 12px;
+  padding: 20px;
+  width: 100%;
+  min-height: calc(100vh - var(--nav-h) - 120px);
+  box-shadow: 0 8px 30px rgba(2,6,23,0.45);
+  box-sizing: border-box;
+  display: block;
 }
 
-.pagination button {
-  padding: 10px 14px;
-  border-radius: 10px;
-  border: 1px solid rgba(255,255,255,0.35);
-  background: rgba(0,0,0,0.28);
-  color: #fff;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 13.5px;
-  transition: border-color .2s ease, background .2s ease;
-}
-
-.pagination button:hover {
-  background: rgba(0,0,0,0.36);
-  border-color: rgba(255,255,255,0.55);
-}
-
-.pagination span {
-  font-weight: 700;
-  color: rgba(248,249,255,0.94);
-}
-
-.error-state{
-  margin-top: 400px;
-  text-align: center;
-  font-size: 20px;
-  font-weight: bold;
-  padding: 400px;
-}
-
-/* 5) Responsive tweaks */
-@media (max-width: 1200px) {
-  .dashboard-container {
-    margin-left: 40px;
-    width: calc(100% - 40px);
-  }
-}
-
-@media (max-width: 900px) {
+@media (max-width: 980px) {
   .dashboard-wrapper {
-    margin-left: 0; /* collapse sidebar space on mobile if sidebar overlays */
+    grid-template-columns: 1fr;
+    padding: 0 12px; /* collapse sidebar space on mobile if sidebar overlays */
   }
-  .dashboard-container {
-    margin: 80px 16px 24px 16px;
-    width: auto;
-    flex-direction: column;
-    gap: 20px;
-  }
-  .searchInput,
-  .jobs-column {
-    width: 100%;
-  }
+  .main-content { padding: 14px; }
 }

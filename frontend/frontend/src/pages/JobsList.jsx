@@ -1,5 +1,5 @@
 import { useEffect, useCallback, useState, useRef } from "react";
-import styles from "./dashBoard.module.css";
+import styles from "./JobsList.module.css";
 import JobCard from "../components/JobCard.jsx";
 
 const JobsList = () => {
@@ -90,44 +90,44 @@ const JobsList = () => {
   }, [jobs.length, totalJobs, fetchJobs]);
 
   return (
-    <section>
+    <section className={styles.jobSection}>
       <input 
         type="text"  
         placeholder="Search jobs..." 
         className={styles.searchInput}
       />
       {/* Left Column: Job Cards */}
-      <div className="jobs-column">
+      <div className={styles.cardList}>
          {/* Loading state */}
           {loading && (
-            <div className="loading-state">
+            <div className={styles.loadingState}>
               <p>Loading jobs for you</p>
             </div>
           )}
 
           {/* Error state */}
           {error && !loading && (
-            <div className="error-state">
+            <div className={styles.errorState}>
               <p>{error}</p>
-              <button onClick={reloadInitialJobs} className="retry-btn">Try Again</button>
+              <button onClick={reloadInitialJobs} className={styles.retryBtn}>Try Again</button>
             </div>
           )}
 
           {/* Empty state */}
           {!loading && !error && jobs.length === 0 && (
-            <div className="empty-state">
+            <div className={styles.emptyState}>
               <p>No jobs found. Check back later!</p>
             </div>
           )}
 
           {/* Job display */}
           {!loading && jobs.length >0 && (
-            <>
+            <div className={styles.jobCard}>
               {jobs.map((job, idx) => (
                 <JobCard key={job.id || idx} job={job} />
               ))}
 
-            </>
+            </div>
           )}
       </div>
       {/* Right Column: Chatbot */}

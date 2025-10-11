@@ -7,8 +7,6 @@ import styles from "./dashBoard.module.css";
 import PersonalizedNavbar from "../components/PersonalizedNavbar.jsx";
 import SideBar  from "../components/sideBar.jsx";
 import ChatBot from "../components/ChatBot.jsx";
-import JobDetailsModal from "../components/JobDetailsModal.jsx";
-
 
 
 
@@ -17,15 +15,6 @@ const UserDashboard = () => {
   const navigate = useNavigate();
   const { username } = useParams();
   const [searchParams] = useSearchParams();
-
-  const [selectedJob, setSelectedJob] = useState(null);
-
-  const [jobs, setJobs] = useState([]);
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
-  const [totalJobs, setTotalJobs] = useState(0)
-
-  const loadingMore = useRef(false)
 
   // Handle token + username from query params
   useEffect(() => {
@@ -92,75 +81,26 @@ const UserDashboard = () => {
 
 
 
- return (
+  return (
     <>
-      <ToastContainer position="top-right" />
+    <ToastContainer position="top-right" />
       <div className={styles["dashboard-screen-wrapper"]}>
         <PersonalizedNavbar />
-        <SideBar />
-        <input
-          type="text"
-          placeholder="Search jobs..."
-          className={styles.searchInput}
-        />
-
         <div className={styles["dashboard-wrapper"]}>
-          <div className="dashboard-container">
-            {/* Left Column: Job Cards */}
-            <div className="jobs-column">
-              {/* Loading state */}
-              {loading && (
-                <div className="loading-state">
-                  <p>Loading jobs for you</p>
-                </div>
-              )}
-
-              {/* Error state */}
-              {error && !loading && (
-                <div className={styles["error-state"]}>
-                  <p>{error}</p>
-                  <button onClick={reloadInitialJobs} className="retry-btn">
-                    Try Again
-                  </button>
-                </div>
-              )}
-
-              {/* Empty state */}
-              {!loading && !error && jobs.length === 0 && (
-                <div className="empty-state">
-                  <p>No jobs found. Check back later!</p>
-                </div>
-              )}
-
-              {/* Job display */}
-              {!loading && jobs.length > 0 &&
-                jobs.map((job, idx) => (
-                  <div
-                    key={job.id || idx}
-                    onClick={() => setSelectedJob(job)}
-                    style={{ cursor: "pointer" }}
-                  >
-                    <JobCard job={job} />
-                  </div>
-                ))}
-            </div>
-            {/* Right Column: Chatbot (optional) */}
-            {/* <div className="chat-column">
-              <h2>Chatbot Coming Soon</h2>
-            </div> */}
+          <div>
+            <SideBar/>
           </div>
-        </div>
 
-        {/* Job details modal (render outside of columns) */}
-        {selectedJob && (
-          <JobDetailsModal
-            job={selectedJob}
-            onClose={() => setSelectedJob(null)}
-          />
-        )}
+          <main className={styles["dashboard-container"]} role="main">
+            <div className = {styles["main-content"]}>
+              <Outlet />
+            </div>
+          </main>
+        </div>
       </div>
     </>
-  );
+  )
 };
 
-export default UserDashboard;
+
+export default UserDashboard
