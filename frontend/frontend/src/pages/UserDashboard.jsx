@@ -7,6 +7,7 @@ import styles from "./dashBoard.module.css";
 import PersonalizedNavbar from "../components/PersonalizedNavbar.jsx";
 import SideBar  from "../components/sideBar.jsx";
 import ChatBot from "../components/ChatBot.jsx";
+import JobDetailsModal from "../components/JobDetailsModal.jsx"; 
 
 
 
@@ -15,6 +16,21 @@ const UserDashboard = () => {
   const navigate = useNavigate();
   const { username } = useParams();
   const [searchParams] = useSearchParams();
+
+   const [selectedJob, setSelectedJob] = useState(null);
+
+   const handleJobClick = (job) => {
+    // console.log("Job ID clicked:", job.id);
+    // console.log(job.description);        // use `job` instead of `selectedJob`
+    // console.log(job.description.length);
+    setSelectedJob(job); // open modal
+  
+
+  }
+
+    const closeModal = () => {
+    setSelectedJob(null); // close modal
+  }
 
   // Handle token + username from query params
   useEffect(() => {
@@ -83,21 +99,21 @@ const UserDashboard = () => {
 
   return (
     <>
-    <ToastContainer position="top-right" />
+      <ToastContainer position="top-right" />
       <div className={styles["dashboard-screen-wrapper"]}>
         <PersonalizedNavbar />
         <div className={styles["dashboard-wrapper"]}>
-          <div>
-            <SideBar/>
-          </div>
-
+          <SideBar/>
           <main className={styles["dashboard-container"]} role="main">
-            <div className = {styles["main-content"]}>
-              <Outlet />
+            <div className={styles["main-content"]}>
+              <Outlet context={{ onJobClick: handleJobClick }} />
             </div>
           </main>
         </div>
       </div>
+
+      {/* Modal */}
+      {selectedJob && <JobDetailsModal job={selectedJob} onClose={closeModal} />}
     </>
   )
 };

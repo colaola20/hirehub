@@ -14,25 +14,70 @@
 }
 
 .modal {
-  background: white;
-  width: 70%;
-  max-height: 80vh;
+  background: rgba(255, 255, 255, 0.02);
+  -webkit-backdrop-filter: blur(10px); 
+  backdrop-filter: blur(10px);          
+  width: 55%;
+  max-height: 90vh;      
+  overflow-y: auto;  
   border-radius: 16px;
   padding: 2rem;
-  overflow: hidden;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+  overflow: visible;
+  box-shadow: 0 8px 30px rgba(2,6,23,0.45);
   position: relative;
   animation: fadeIn 0.3s ease;
   position: relative;
   z-index: 10000;
+  max-height: none;
+ 
+
+}
+.closeBtn{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color:white;
+  width: 2rem;
+  height: 2rem;
+
+}
+.closeBtn:hover{
+
+  background-color: #868686;
 
 }
 
+.modal h2 {
+  margin-top: 0;
+  color:white;
+  text-align: center;
+  text-transform: uppercase;
+
+}
+
+.company, .location, .datePosted {
+  font-size: 16px;
+  /* color: #000000; */
+  margin: 5px;
+  color:white;
+}
+
+
 .scrollArea {
+  max-height: none; 
   overflow-y: auto;
-  max-height: 50vh;
   padding-right: 1rem;
   margin-top: 1rem;
+  
+ 
+
+}
+
+.scrollArea p {
+color: #000000;
+  color:white;
+  
+
 }
 
 .closeBtn {
@@ -44,6 +89,14 @@
   font-size: 1.5rem;
   cursor: pointer;
 }
+
+.source  {
+  font-size: 12px;
+  color:gray;
+
+
+}
+
 
 .applyBtn {
   margin-top: 1.5rem;

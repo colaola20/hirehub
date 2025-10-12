@@ -3,27 +3,39 @@
     --muted: #9aa4b2;
     --accent-grad: linear-gradient(90deg,#667eea,#764ba2);
     --radius: 10px;
-    --gap: 14px;
+    --gap: 16px;
 }
 
 .jobSection {
     width: 100%;
     box-sizing: border-box;
     padding: 8px 0;
+
+    width: 100%;
+    box-sizing: border-box;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+  
+
+
 }
+
 
 .searchInput {
     display: block;
-    width: 100%;
-    max-width: 680px;
+    /* width: 70%; */
+    max-width: 93%;
     padding: 10px 14px;
     border-radius: 999px;
     background: var(--bg-surface);
     border: 1px solid rgba(255,255,255,0.06);
     color: #fff;
     margin-bottom: 18px;
+    margin-left: 30px;
     box-shadow: 0 6px 18px rgba(2,6,23,0.25);
     outline: none;
+    
 }
 
 .loadingState,
@@ -50,13 +62,26 @@
     display: grid;
     grid-template-columns: 1fr;
     gap: var(--gap);
-    margin-top: 8px;
+    margin-top: 30px;
+    overflow: auto;
+    padding: 20px 0 0 30px ;
+    /* background-color: red; */
+    height: 1000px;
+
+     /* Hide scrollbar for IE, Edge */
+    -ms-overflow-style: none;  
+    /* Hide scrollbar for Firefox */
+    scrollbar-width: none;  
+}
+
+.cardList::-webkit-scrollbar {
+    display: none;
 }
 
 /* Use two columns on wider screens */
-/* Not sure if we gonna use it */
-@media (min-width: 980px) {
+/* Not sure if we gonna use it  */
+/* @media (min-width: 980px) {
     .cardList {
         grid-template-columns: 1fr 360px;
     }
-}
+} */

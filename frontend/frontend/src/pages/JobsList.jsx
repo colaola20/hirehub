@@ -1,12 +1,18 @@
 import { useEffect, useCallback, useState, useRef } from "react";
+import { useOutletContext } from "react-router-dom";
+
 import styles from "./JobsList.module.css";
 import JobCard from "../components/JobCard.jsx";
 
-const JobsList = () => {
-  const [jobs, setJobs] = useState([]);
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
-  const [totalJobs, setTotalJobs] = useState(0)
+const JobsList = ({ jobs: initialJobs }) => {
+
+  const { onJobClick } = useOutletContext();
+
+  const [jobs, setJobs] = useState(initialJobs || []);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [totalJobs, setTotalJobs] = useState(0);
+
   
   const loadingMore = useRef(false)
   
@@ -20,6 +26,7 @@ const JobsList = () => {
       }
 
       const token = localStorage.getItem("token")
+      
       const response = await fetch(`/api/jobs?limit=${limit}&offset=${offset}&preload=10`, {
         method: 'GET',
         headers: {
@@ -32,7 +39,7 @@ const JobsList = () => {
       }
 
       const data = await response.json()
-      console.log(data)
+      // console.log(data)
       return {
         items: data.current || [],
         total: data.total || 0
@@ -89,12 +96,16 @@ const JobsList = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [jobs.length, totalJobs, fetchJobs]);
 
+
+
   return (
+
     <section className={styles.jobSection}>
-      <input 
+      <input
+        className={styles.searchInput} 
         type="text"  
         placeholder="Search jobs..." 
-        className={styles.searchInput}
+        
       />
       {/* Left Column: Job Cards */}
       <div className={styles.cardList}>
@@ -124,7 +135,8 @@ const JobsList = () => {
           {!loading && jobs.length >0 && (
             <div className={styles.jobCard}>
               {jobs.map((job, idx) => (
-                <JobCard key={job.id || idx} job={job} />
+                <JobCard key={job.id || idx} job={job}  onClick={() => onJobClick(job)}
+                />
               ))}
 
             </div>
@@ -135,6 +147,7 @@ const JobsList = () => {
         <h2>Chatbot Coming Soon </h2>
       </div> */}
     </section>
+
   )
 }
 

@@ -3,7 +3,7 @@ import React from "react";
 import truncate from "html-truncate";
 import styles from "./JobCard.module.css";
 
-const JobCard = ({ job }) => {
+const JobCard = ({ job, onClick }) => {
 
 const cleanJobDescription = (html) => {
   if (!html) return "No description provided.";
@@ -31,20 +31,21 @@ const cleanJobDescription = (html) => {
 };
 
 return (
-    <div className={styles["job-card"]}>
+    <div className={styles["job-card"]}
+     onClick={() => onClick && onClick(job)}>
         <h3>{job.title || "Untitled Position"}</h3>
         <p className={styles.date}><strong>Date:</strong>{" "}{job.date_posted ? new Date(job.date_posted).toLocaleDateString() : "No date"}</p>
         <p><strong>Company:</strong> {job.company || "Unknown"}</p>
         <p><strong>Location:</strong> {job.location || "Unspecified"}</p>
-        {/*<p><strong>Salary:</strong> Not listed</p> /!* DB has no salary *!/*/}
-        {/*<p className={styles.description} dangerouslySetInnerHTML={{ __html: cleanJobDescription(job.description) }}></p>*/}
-        {/*<p className={styles.source}><strong>Source:</strong> {job.source || "Unknown"}</p>*/}
-        <button
+      
+        {/* <button
         className={styles["apply-btn"]}
-        onClick={() => window.open(job.url, "_blank")}
+        onClick={(e) => { 
+          e.stopPropagation(); // prevent opening modal
+          window.open(job.url, "_blank");}}
         >
         Apply Now
-        </button>
+        </button> */}
         </div>
   );
 };

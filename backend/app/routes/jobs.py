@@ -7,6 +7,7 @@ jobs_bp = Blueprint('jobs', __name__)
 @jobs_bp.route("/api/jobs", methods=["GET"])
 @jwt_required()
 def get_jobs():
+
     try:
         q = Job.query.filter_by(is_active=True)
         search = request.args.get("search")

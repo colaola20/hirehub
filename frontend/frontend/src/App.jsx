@@ -2,7 +2,7 @@
 import './App.css';
 // Import necessary components from react-router-dom
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { GoogleOAuthProvider } from "@react-oauth/google";
+
 
 // Import the page components
 import Login from './pages/Login';
@@ -10,8 +10,9 @@ import Registration from './pages/Registration';
 import Home from './pages/Home';
 import ForgotPassword from './pages/forgot_password';
 
+import JobDetails from "./components/JobDetailsModal.jsx";
+
 import UserDashboard from './pages/UserDashboard.jsx';
-import JobDetails from './pages/JobDetailsModal.jsx';
 import JobsList from './pages/JobsList.jsx'
 
 
@@ -36,7 +37,7 @@ function App() {
         <Route path="/oauth" element={<OAuthHandler />} />
 
           <Route path="/dev-dashboard" element={<UserDashboard />} />
-          <Route path="/JobModal" element={<JobDetails />} />
+       
 
         {/* Protected dashboard route */}
         <Route
