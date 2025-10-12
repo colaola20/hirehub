@@ -10,7 +10,6 @@
     width: 100%;
     box-sizing: border-box;
     padding: 8px 0;
-
     width: 100%;
     box-sizing: border-box;
     padding: 8px;
@@ -21,12 +20,19 @@
 
 }
 
+.searchContainer {
+  position: relative;
+  width: 100%;
+ 
+}
+
 
 .searchInput {
     display: block;
     /* width: 70%; */
     max-width: 93%;
-    padding: 10px 14px;
+    /* padding: 10px 14px; */
+    padding: 10px 0 10px 12px;
     border-radius: 999px;
     background: var(--bg-surface);
     border: 1px solid rgba(255,255,255,0.06);
@@ -37,6 +43,32 @@
     outline: none;
     
 }
+
+.searchBtn {
+    
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 2.5rem;
+    height: 2.8rem;
+    right: 1px; /* distance from right edge */
+    top: 34%;
+    transform: translateY(-50%);
+    border-radius: 20%;
+
+    border: 2px solid rgba(255,255,255,0.06);
+    cursor: pointer;
+    font-size: 1.2rem;
+    background: rgba(255,255,255,0.1);
+    
+}
+
+.searchBtn:hover {
+    background: rgba(124, 123, 123, 0.2);
+    transform: translateY(-50%) scale(1.1); /* subtle hover scale */
+}
+
 
 .loadingState,
 .errorState,
