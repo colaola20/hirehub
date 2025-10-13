@@ -87,27 +87,32 @@ const JobsList = ({ jobs: initialJobs }) => {
     return () => { mount = false; };
   }, [fetchJobs]);
 
-  // infinite scroll
-  useEffect(() => {
-    const handleScroll = async () => {
-      const scrollable = document.documentElement;
-      const scrolledToBottom =
-        scrollable.scrollHeight - scrollable.scrollTop <= scrollable.clientHeight + 100;
+  
+// infinite scroll
+useEffect(() => {
+  const scrollable = document.querySelector(`.${styles.cardList}`);
+  if (!scrollable) return;
 
-      if (scrolledToBottom && !loadingMore.current && jobs.length < totalJobs) {
-        loadingMore.current = true;
-        try {
-          const { items } = await fetchJobs(20, jobs.length, lastQueryRef.current);
-          if (items.length > 0) setJobs(prev => [...prev, ...items]);
-        } finally {
-          loadingMore.current = false;
-        }
+  const handleScroll = async () => {
+    const scrolledToBottom =
+      scrollable.scrollHeight - scrollable.scrollTop <= scrollable.clientHeight + 100;
+
+    if (scrolledToBottom && !loadingMore.current && jobs.length < totalJobs) {
+      loadingMore.current = true;
+      try {
+        const { items } = await fetchJobs(20, jobs.length, lastQueryRef.current);
+        if (items.length > 0) setJobs(prev => [...prev, ...items]);
+      } finally {
+        loadingMore.current = false;
       }
-    };
+    }
+  };
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [jobs.length, totalJobs, fetchJobs]);
+  scrollable.addEventListener("scroll", handleScroll);
+  return () => scrollable.removeEventListener("scroll", handleScroll);
+}, [jobs.length, totalJobs, fetchJobs]);
+
+
 
   const performSearch = useCallback(async (searchQuery) => {
     lastQueryRef.current = searchQuery
@@ -126,16 +131,10 @@ const JobsList = ({ jobs: initialJobs }) => {
   }
 
   const clearSearch = async () => {
-    setSearchQuery("''")
+    setSearchQuery("")
     await performSearch("")
-  }
+  };
 
-  useEffect(() => {
-    const id = setTimeout(() => {
-      if (searchQuery !== lastQueryRef.current) performSearch(searchQuery.trim())
-    }, 500)
-    return () => clearTimeout(id)
-  }, [searchQuery, performSearch])
 
 
   return (

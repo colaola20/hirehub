@@ -15,22 +15,25 @@
     padding: 8px;
     display: flex;
     flex-direction: column;
-  
 
 
 }
 
+
 .searchContainer {
+  position: sticky;
+  top: 0;
+  z-index: 10;
   width: 100%;
   max-width: 820px;
-  margin: 0 0 18px 0;
+  margin: 0 auto;
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 6px; 
-  box-sizing: border-box;
-}
+  padding: 8px 12px;
+  border-radius: 12px;
 
+}
 
 .searchInput {
     flex: 1 1 auto;
@@ -107,6 +110,7 @@
 
 .cardList {
     display: grid;
+    height: 1000px;
     grid-template-columns: 1fr;
     gap: var(--gap);
     margin-top: 8px;
@@ -116,6 +120,7 @@
     -ms-overflow-style: none;  
     /* Hide scrollbar for Firefox */
     scrollbar-width: none;  
+    
 }
 
 .cardList::-webkit-scrollbar {
