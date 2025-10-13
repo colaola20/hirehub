@@ -706,90 +706,7 @@
   .feature-visual { order: -1; }  /* image first on mobile, like Jobright */
   .mockup-card { width: 100%; }
 }
-/* ===== Caeli-style Interactive Services ===== */
-.caeliServices {
-  background: #f8f7f3;
-  color: #004225;
-  padding: clamp(80px, 10vh, 120px) 0;
-}
 
-.caeliContainer {
-  display: grid;
-  grid-template-columns: 1fr 1.4fr;
-  align-items: center;
-  gap: clamp(40px, 5vw, 90px);
-  max-width: 1300px;
-  margin: 0 auto;
-  padding: 0 24px;
-}
-
-/* LEFT SIDE */
-.caeliLeft {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  font-family: "Inter", sans-serif;
-}
-
-.caeliOption {
-  font-size: clamp(28px, 3vw, 40px);
-  font-weight: 800;
-  letter-spacing: 1px;
-  color: rgba(0, 66, 37, 0.4);
-  cursor: pointer;
-  transition: all 0.4s ease;
-  border-bottom: 1px solid rgba(0, 66, 37, 0.1);
-  width: fit-content;
-}
-
-.caeliOption:hover {
-  color: rgba(0, 66, 37, 0.8);
-  transform: translateX(8px);
-}
-
-.active {
-  color: #004225;
-  opacity: 1;
-  border-color: #004225;
-}
-
-/* RIGHT SIDE */
-.caeliRight {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.caeliImageWrap {
-  position: relative;
-  width: 100%;
-  border-radius: 14px;
-  overflow: hidden;
-}
-
-.caeliImage {
-  width: 100%;
-  height: auto;
-  border-radius: 14px;
-  object-fit: cover;
-  transition: opacity 0.6s ease-in-out;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-}
-
-/* Floating text card */
-.caeliCard {
-  position: absolute;
-  bottom: 30px;
-  right: 30px;
-  background: #ffffffee;
-  backdrop-filter: blur(8px);
-  padding: 20px 26px;
-  border-radius: 16px;
-  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.15);
-  width: clamp(280px, 40%, 420px);
-  animation: fadeIn 0.5s ease-in-out;
-}
 
 .caeliCard p {
   margin: 0;
@@ -809,34 +726,28 @@
   }
 }
 
-/* RESPONSIVE */
-@media (max-width: 960px) {
+/* Responsive adjustments */
+@media (max-width: 1024px) {
   .caeliContainer {
     grid-template-columns: 1fr;
-    text-align: center;
+    padding: 24px;
   }
 
-  .caeliLeft {
-    flex-direction: row;
-    justify-content: center;
-    gap: 12px;
-  }
-
-  .caeliOption {
-    font-size: 22px;
-    border: none;
+  .caeliRight {
+    height: auto;
+    margin-top: 40px;
   }
 
   .caeliImageWrap {
-    margin-top: 30px;
+    height: 65vh;
   }
 
   .caeliCard {
     position: relative;
     bottom: auto;
     right: auto;
-    width: 90%;
     margin: 20px auto 0;
+    width: 90%;
   }
 }
 /* ===== Resume AI Section ===== */
@@ -1039,163 +950,34 @@
     margin: 0 auto;
   }
 }
-/* ===== Caeli-Style Interactive Services (HireHub Theme) ===== */
+/* === FULL-SCALE Services Section === */
 .caeliServices {
-  background: #f8f7f3;
-  padding: clamp(80px, 10vh, 120px) 0;
-  color: #003822;
-}
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  padding: 0;
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  color: #ffffff;
 
 .caeliContainer {
-  display: grid;
-  grid-template-columns: 1fr 1.4fr;
+  display: flex;
+  grid-template-columns: 0.5fr 2.5fr; /* even wider right side */
   align-items: center;
-  gap: clamp(40px, 5vw, 100px);
-  max-width: 1300px;
+  gap: clamp(30px, 5vw, 80px);
+  width: 98%; /* take up more screen width */
   margin: 0 auto;
   padding: 0 24px;
 }
 
-/* LEFT SIDE OPTIONS */
-.caeliLeft {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
-
-.caeliOption {
-  font-weight: 800;
-  font-size: clamp(26px, 3vw, 40px);
-  letter-spacing: 0.6px;
-  color: rgba(0, 56, 34, 0.35);
-  cursor: pointer;
-  transition: all 0.35s ease;
-  border-bottom: 1px solid rgba(0, 56, 34, 0.15);
-  width: fit-content;
-  padding-bottom: 4px;
-}
-
-.caeliOption:hover {
-  color: rgba(0, 56, 34, 0.7);
-  transform: translateX(8px);
-}
-
-.active {
-  color: #003822;
-  border-color: #003822;
-  transform: translateX(10px);
-}
-
-/* RIGHT SIDE VISUALS */
-.caeliRight {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.caeliImageWrap {
-  position: relative;
-  width: 100%;
-  border-radius: 14px;
-  overflow: hidden;
-}
-
-.caeliImage {
-  width: 100%;
-  height: auto;
-  border-radius: 14px;
-  object-fit: cover;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
-  transition: opacity 0.5s ease-in-out;
-  animation: fadeIn 0.5s ease;
-}
-
-.caeliCard {
-  position: absolute;
-  bottom: 30px;
-  right: 30px;
-  background: #ffffffee;
-  border-radius: 16px;
-  padding: 20px 26px;
-  width: clamp(260px, 40%, 420px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-  backdrop-filter: blur(8px);
-  animation: fadeIn 0.6s ease-in-out;
-}
-
-.caeliCard p {
-  margin: 0;
-  font-size: 15px;
-  color: #2f5744;
-  line-height: 1.6;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* RESPONSIVE */
-@media (max-width: 960px) {
-  .caeliContainer {
-    grid-template-columns: 1fr;
-    text-align: center;
-  }
-
-  .caeliLeft {
-    flex-direction: row;
-    justify-content: center;
-    gap: 14px;
-  }
-
-  .caeliOption {
-    font-size: 20px;
-    border: none;
-  }
-
-  .caeliImageWrap {
-    margin-top: 30px;
-  }
-
-  .caeliCard {
-    position: relative;
-    bottom: auto;
-    right: auto;
-    margin: 20px auto 0;
-    width: 90%;
-  }
-}
-/* === Enhanced Caeli-style Services (Gradient Background + Larger Layout) === */
-.caeliServices {
-  background: transparent; /* keep your gradient background visible */
-  padding: clamp(100px, 12vh, 160px) 0;
-  color: #ffffff; /* light text for dark background */
-  position: relative;
-  z-index: 1;
-}
-
-.caeliContainer {
-  display: grid;
-  grid-template-columns: 1fr 1.6fr;
-  align-items: center;
-  gap: clamp(50px, 6vw, 120px);
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 0 40px;
-}
-
-/* LEFT SIDE - Interactive text */
+/* LEFT SIDE */
 .caeliLeft {
   display: flex;
   flex-direction: column;
   gap: 28px;
+  font-family: "Inter", sans-serif;
+  margin-left: 24px;
 }
 
 .caeliOption {
@@ -1219,6 +1001,249 @@
   color: #ffffff;
   border-color: #ffffff;
   transform: translateX(10px);
+}
+
+/* RIGHT SIDE - Much Larger */
+.caeliRight {
+  height: 80vh; /* even taller than viewport */
+  width: 50%;
+  display: block;
+  align-items: center;
+  justify-content: flex-end;
+  margin-right: -48px; /* extend past container edge */
+}
+
+.caeliImageWrap {
+  width: 100%;
+  height: 100vh; /* full viewport height */
+  border-radius: 28px 0 0 28px; /* rounded only on left side */
+  overflow: hidden;
+  box-shadow: 0 30px 100px rgba(0, 0, 0, 0.6);
+  transition: transform 0.4s ease;
+}
+
+.caeliImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity 0.6s ease-in-out;
+  transform: scale(1.02); /* slightly larger to prevent edge gaps */
+}
+
+/* Floating text card */
+.caeliCard {
+  position: absolute;
+  bottom: 80px;
+  right: 80px;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(14px) saturate(130%);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 24px;
+  padding: 32px 40px;
+  width: clamp(380px, 45%, 560px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+}
+
+.caeliCard p {
+  margin: 0;
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.6;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 1400px) {
+  .caeliContainer {
+    grid-template-columns: 0.6fr 2.4fr;
+    max-width: 2000px;
+  }
+  
+  .caeliRight {
+    height: 100vh;
+    margin-right: -24px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .caeliContainer {
+    grid-template-columns: 1fr;
+    padding: 24px;
+  }
+
+  .caeliRight {
+    height: auto;
+    margin: 40px -24px 0;
+  }
+
+  .caeliImageWrap {
+    height: 75vh;
+    border-radius: 0;
+  }
+
+  .caeliCard {
+    position: relative;
+    bottom: auto;
+    right: auto;
+    margin: 20px auto 0;
+    width: 90%;
+    max-width: 500px;
+  }
+}
+  z-index: 1;
+  overflow: hidden;
+  color: #ffffff;
+}
+
+.caeliContainer {
+  display: grid;
+  grid-template-columns: 0.5fr 2.5fr; /* even wider right side */
+  align-items: center;
+  gap: clamp(30px, 5vw, 80px);
+  max-width: 2400px; /* much larger max-width */
+  width: 98%; /* take up more screen width */
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* LEFT SIDE */
+.caeliLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  font-family: "Inter", sans-serif;
+  margin-left: 24px;
+}
+
+.caeliOption {
+  font-weight: 800;
+  font-size: clamp(34px, 4vw, 52px);
+  letter-spacing: 0.6px;
+  color: rgba(255, 255, 255, 0.45);
+  cursor: pointer;
+  transition: all 0.4s ease;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+  width: fit-content;
+  padding-bottom: 6px;
+}
+
+.caeliOption:hover {
+  color: rgba(255, 255, 255, 0.8);
+  transform: translateX(8px);
+}
+
+.active {
+  color: #ffffff;
+  border-color: #ffffff;
+  transform: translateX(10px);
+}
+
+/* RIGHT SIDE - Much Larger */
+.caeliRight {
+  height: 110vh; /* even taller than viewport */
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-right: -48px; /* extend past container edge */
+}
+
+.caeliImageWrap {
+  width: 100%;
+  height: 100vh; /* full viewport height */
+  border-radius: 28px 0 0 28px; /* rounded only on left side */
+  overflow: hidden;
+  box-shadow: 0 30px 100px rgba(0, 0, 0, 0.6);
+  transition: transform 0.4s ease;
+}
+
+.caeliImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity 0.6s ease-in-out;
+  transform: scale(1.02); /* slightly larger to prevent edge gaps */
+}
+
+/* Floating text card */
+.caeliCard {
+  position: absolute;
+  bottom: 80px;
+  right: 80px;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(14px) saturate(130%);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 24px;
+  padding: 32px 40px;
+  width: clamp(380px, 45%, 560px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+}
+
+.caeliCard p {
+  margin: 0;
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.6;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 1400px) {
+  .caeliContainer {
+    grid-template-columns: 0.6fr 2.4fr;
+    max-width: 2000px;
+  }
+  
+  .caeliRight {
+    height: 100vh;
+    margin-right: -24px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .caeliContainer {
+    grid-template-columns: 1fr;
+    padding: 24px;
+  }
+
+  .caeliRight {
+    height: auto;
+    margin: 40px -24px 0;
+  }
+
+  .caeliImageWrap {
+    height: 75vh;
+    border-radius: 0;
+  }
+
+  .caeliCard {
+    position: relative;
+    bottom: auto;
+    right: auto;
+    margin: 20px auto 0;
+    width: 90%;
+    max-width: 500px;
+  }
 }
 
 /* RIGHT SIDE - Larger image */
@@ -1314,22 +1339,21 @@
     width: 90%;
     background: rgba(255, 255, 255, 0.15);
   }
-}/* === FULL-SCALE Caeli Energie Style Services (Immersive) === */
+}
+/* === FULL-SCALE Services Section === */
 .caeliServices {
-  background: transparent;
-  color: #ffffff;
-  padding: 0;
-  min-height: 100vh; /* full viewport height */
+  min-height: 100vh;
   display: flex;
   align-items: center;
-  justify-content: center;
+  padding: 0;
   position: relative;
   z-index: 1;
+  overflow: hidden;
 }
 
 .caeliContainer {
   display: grid;
-  grid-template-columns: 0.7fr 2.3fr; /* wider right side */
+  grid-template-columns: 0.7fr 2.3fr; /* wider right side like the reference */
   align-items: center;
   gap: clamp(30px, 5vw, 80px);
   max-width: 2000px; /* expanded container */
@@ -1338,59 +1362,22 @@
   padding: 0 48px;
 }
 
-/* LEFT SIDE */
-.caeliLeft {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 28px;
-}
-
-.caeliOption {
-  font-weight: 800;
-  font-size: clamp(36px, 4vw, 56px);
-  letter-spacing: 0.6px;
-  color: rgba(255, 255, 255, 0.35);
-  cursor: pointer;
-  transition: all 0.35s ease;
-  border-bottom: 2px solid rgba(255, 255, 255, 0.2);
-  width: fit-content;
-  padding-bottom: 6px;
-}
-
-.caeliOption:hover {
-  color: rgba(255, 255, 255, 0.85);
-  transform: translateX(8px);
-}
-
-.active {
-  color: #fff;
-  border-color: #fff;
-  transform: translateX(10px);
-}
-
-/* RIGHT SIDE - huge immersive image */
+/* RIGHT SIDE - immersive image */
 .caeliRight {
-  position: relative;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  height: 100vh; /* full viewport */
+  height: 100vh;
   width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
 }
 
 .caeliImageWrap {
-  position: relative;
   width: 100%;
-  height: 90vh; /* very tall image */
+  height: 90vh; /* tall like the reference */
   border-radius: 28px;
   overflow: hidden;
   box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
-  transition: transform 0.4s ease, width 0.4s ease, height 0.4s ease;
-}
-
-.caeliImageWrap:hover {
-  transform: scale(1.015);
+  transition: transform 0.4s ease;
 }
 
 .caeliImage {
@@ -1398,11 +1385,10 @@
   height: 100%;
   object-fit: cover;
   border-radius: 28px;
-  transition: opacity 0.6s ease-in-out, transform 0.5s ease;
-  animation: fadeIn 0.5s ease;
+  transition: opacity 0.6s ease-in-out;
 }
 
-/* Floating text card */
+/* Floating text card (adjusted position) */
 .caeliCard {
   position: absolute;
   bottom: 60px;
@@ -1414,43 +1400,18 @@
   padding: 28px 36px;
   width: clamp(350px, 40%, 520px);
   box-shadow: 0 8px 28px rgba(0, 0, 0, 0.45);
-  animation: fadeIn 0.6s ease-in-out;
 }
 
-.caeliCard p {
-  margin: 0;
-  font-size: 17px;
-  color: rgba(255, 255, 255, 0.92);
-  line-height: 1.6;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(15px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* RESPONSIVE */
+/* Responsive adjustments */
 @media (max-width: 1024px) {
   .caeliContainer {
     grid-template-columns: 1fr;
-    text-align: center;
-    padding: 0 24px;
-  }
-
-  .caeliLeft {
-    flex-direction: row;
-    justify-content: center;
-    gap: 16px;
-  }
-
-  .caeliOption {
-    font-size: 22px;
-    border: none;
+    padding: 24px;
   }
 
   .caeliRight {
-    margin-top: 40px;
     height: auto;
+    margin-top: 40px;
   }
 
   .caeliImageWrap {
