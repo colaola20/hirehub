@@ -5,6 +5,8 @@ import styles from "./Home_Page.module.css";  // ⬅️ use module import
 import { SpaceIcon } from "lucide-react";
 
 const AngleLanding = () => {
+  const [active, setActive] = React.useState("resume");
+
   const bgRef = useRef(null);
   // put inside your page component (AngleLanding) after imports
 useEffect(() => {
@@ -171,38 +173,68 @@ useEffect(() => {
         </div>
       </section>
 
-           {/* SERVICES */}
-      <section className={styles["angle2-services"]} id="services">
-        <div className={`${styles["angle2-container"]} ${styles["angle2-services__inner"]}`}>
-          <h2 className={styles["angle2-section-heading"]}>Services</h2>
-
-          <div className={styles["svcGrid"]}>
-            <article className={styles["svcCard"]}>
-              <h3>Resume Tailoring</h3>
-              <p>
-                Instant ATS-friendly optimization for each job description. We highlight keywords,
-                quantify your impact, and export cleanly to PDF/DOCX.
-              </p>
-            </article>
-
-            <article className={styles["svcCard"]}>
-              <h3>Cover Letters</h3>
-              <p>
-                Role-specific letters that stay human-readable while mirroring the company’s tone
-                and requirements. No fluff—just clear value.
-              </p>
-            </article>
-
-            <article className={styles["svcCard"]}>
-              <h3>Profile & Portfolio</h3>
-              <p>
-                polish your LinkedIn, GitHub, and personal site with concise, consistent messaging
-                and examples that recruiters notice.
-              </p>
-            </article>
-          </div>
+      {/* ===== INTERACTIVE SERVICES (Caeli Style for HireHub) ===== */}
+<section className={styles.caeliServices} id="services">
+  <div className={styles.caeliContainer}>
+    {/* LEFT SIDE - SERVICE OPTIONS */}
+    <div className={styles.caeliLeft}>
+      {[
+        { id: "resume", label: "Resume Tailoring" },
+        { id: "letters", label: "Cover Letters" },
+        { id: "portfolio", label: "Profile & Portfolio" },
+      ].map((item) => (
+        <div
+          key={item.id}
+          className={`${styles.caeliOption} ${
+            active === item.id ? styles.active : ""
+          }`}
+          onClick={() => setActive(item.id)}
+          onMouseEnter={() => setActive(item.id)}
+        >
+          {item.label}
         </div>
-      </section>
+      ))}
+    </div>
+
+    {/* RIGHT SIDE - IMAGE + DESCRIPTION CARD */}
+    <div className={styles.caeliRight}>
+      <div className={styles.caeliImageWrap}>
+        <img
+          src={
+            active === "resume"
+              ? "/src/assets/resume.png"
+              : active === "letters"
+              ? "/src/assets/letters.png"
+              : "/src/assets/portfolio.png"
+          }
+          alt={active}
+          className={styles.caeliImage}
+        />
+        <div className={styles.caeliCard}>
+          {active === "resume" && (
+            <p>
+              Optimize your resume with AI precision. We analyze job descriptions, 
+              highlight relevant skills, and format your experience for maximum recruiter impact.
+            </p>
+          )}
+          {active === "letters" && (
+            <p>
+              Create tailored cover letters that match tone, intent, and key values. 
+              Impress hiring managers with clarity and confidence — every word counts.
+            </p>
+          )}
+          {active === "portfolio" && (
+            <p>
+              Present your personal brand beautifully. Refine your LinkedIn, GitHub, 
+              and project showcases for consistent, professional storytelling.
+            </p>
+          )}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 
       {/* CONTACT */}
       <section className={styles["angle2-contact"]} id="contact">
