@@ -1147,14 +1147,14 @@
   backdrop-filter: blur(14px) saturate(130%);
   border: 1px solid rgba(255, 255, 255, 0.25);
   border-radius: 24px;
-  padding: 32px 40px;
-  width: clamp(380px, 45%, 560px);
+  padding: 40px 50px;
+  width: clamp(800px, 50%, 600px);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
 }
 
 .caeliCard p {
   margin: 0;
-  font-size: 16px;
+  font-size: 26px;
   color: rgba(255, 255, 255, 0.9);
   line-height: 1.6;
 }
