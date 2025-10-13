@@ -3,6 +3,8 @@ import { useOutletContext } from "react-router-dom";
 
 import styles from "./JobsList.module.css";
 import JobCard from "../components/JobCard.jsx";
+import { MdClose } from "react-icons/md";
+import { MdSearch } from 'react-icons/md';
 
 const JobsList = ({ jobs: initialJobs }) => {
 
@@ -21,124 +23,148 @@ const JobsList = ({ jobs: initialJobs }) => {
   const lastQueryRef = useRef("");
   
 
-// fetchJobs accepts limit, offset, and search query
-const fetchJobs = useCallback(async (limit = 20, offset = 0, query = "") => {
-  try {
-    if (offset === 0) {
-      setLoading(true);
-      setError(null);
-    }
+  // fetchJobs accepts limit, offset, and search query
+  const fetchJobs = useCallback(async (limit = 20, offset = 0, query = "") => {
+    try {
+      if (offset === 0) {
+        setLoading(true);
+        setError(null);
+      }
 
+      const token = localStorage.getItem("token");
+      
+      const response = await fetch(
+        `/api/jobs?limit=${limit}&offset=${offset}&preload=10&search=${encodeURIComponent(query)}`, 
+        {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      return {
+        items: data.current || [],
+        total: data.total || 0
+      };
+    } catch (error) {
+      console.error('Failed to fetch jobs:', error);
+      setError('Failed to load jobs. Please try again.');
+      return { items: [], total: 0 };
+    } finally {
+      if (offset === 0) setLoading(false);
+    }
+  }, []);
+
+
+
+    // helper used by retry button and explicit reload
+  const reloadInitialJobs = useCallback(async (query) => {
+    const { items, total } = await fetchJobs(20, 0, query);
+    setJobs(items);
+    setTotalJobs(total);
+  }, [fetchJobs]);
+
+  // initial load
+  useEffect(() => {
+    let mount = true;
+    const loadInitialJobs = async () => {
+      const { items, total } = await fetchJobs(20, 0, "");
+      if (!mount) return;
+      setJobs(items);
+      setTotalJobs(total);
+      setLoading(false);
+    };
     const token = localStorage.getItem("token");
-    
-    const response = await fetch(
-      `/api/jobs?limit=${limit}&offset=${offset}&preload=10&search=${encodeURIComponent(query)}`, 
-      {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
+    if (token) loadInitialJobs();
+    return () => { mount = false; };
+  }, [fetchJobs]);
+
+  // infinite scroll
+  useEffect(() => {
+    const handleScroll = async () => {
+      const scrollable = document.documentElement;
+      const scrolledToBottom =
+        scrollable.scrollHeight - scrollable.scrollTop <= scrollable.clientHeight + 100;
+
+      if (scrolledToBottom && !loadingMore.current && jobs.length < totalJobs) {
+        loadingMore.current = true;
+        try {
+          const { items } = await fetchJobs(20, jobs.length, lastQueryRef.current);
+          if (items.length > 0) setJobs(prev => [...prev, ...items]);
+        } finally {
+          loadingMore.current = false;
         }
       }
-    );
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
-
-    const data = await response.json();
-
-    return {
-      items: data.current || [],
-      total: data.total || 0
     };
-  } catch (error) {
-    console.error('Failed to fetch jobs:', error);
-    setError('Failed to load jobs. Please try again.');
-    return { items: [], total: 0 };
-  } finally {
-    if (offset === 0) setLoading(false);
-  }
-}, []);
 
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [jobs.length, totalJobs, fetchJobs]);
 
-
-  // helper used by retry button and explicit reload
-const reloadInitialJobs = useCallback(async (query) => {
-  const { items, total } = await fetchJobs(20, 0, query);
-  setJobs(items);
-  setTotalJobs(total);
-}, [fetchJobs]);
-
-// initial load
-useEffect(() => {
-  let mount = true;
-  const loadInitialJobs = async () => {
-    const { items, total } = await fetchJobs(20, 0, "");
-    if (!mount) return;
+  const performSearch = useCallback(async (searchQuery) => {
+    lastQueryRef.current = searchQuery
+    setLoading(true)
+    setJobs([])
+    setTotalJobs(0)
+    const {items, total} = await fetchJobs(20, 0, searchQuery)
     setJobs(items);
     setTotalJobs(total);
     setLoading(false);
-  };
-  const token = localStorage.getItem("token");
-  if (token) loadInitialJobs();
-  return () => { mount = false; };
-}, [fetchJobs]);
+  }, [fetchJobs])
 
-// infinite scroll
-useEffect(() => {
-  const handleScroll = async () => {
-    const scrollable = document.documentElement;
-    const scrolledToBottom =
-      scrollable.scrollHeight - scrollable.scrollTop <= scrollable.clientHeight + 100;
+  const handleSearchClick = async (e) => {
+    if (e && e.preventDefault) e.preventDefault()
+      await performSearch(searchQuery.trim())
+  }
 
-    if (scrolledToBottom && !loadingMore.current && jobs.length < totalJobs) {
-      loadingMore.current = true;
-      try {
-        const { items } = await fetchJobs(20, jobs.length, lastQueryRef.current);
-        if (items.length > 0) setJobs(prev => [...prev, ...items]);
-      } finally {
-        loadingMore.current = false;
-      }
-    }
-  };
+  const clearSearch = async () => {
+    setSearchQuery("''")
+    await performSearch("")
+  }
 
-  window.addEventListener("scroll", handleScroll);
-  return () => window.removeEventListener("scroll", handleScroll);
-}, [jobs.length, totalJobs, fetchJobs]);
-
-
-const handleSearchClick = async () => {
-  lastQueryRef.current = searchQuery;
-  setLoading(true);
-  setJobs([]); 
-  setTotalJobs(0); 
-  const { items, total } = await fetchJobs(20, 0, searchQuery);
-  setJobs(items);
-  setTotalJobs(total);
-  setLoading(false);
-};
+  useEffect(() => {
+    const id = setTimeout(() => {
+      if (searchQuery !== lastQueryRef.current) performSearch(searchQuery.trim())
+    }, 500)
+    return () => clearTimeout(id)
+  }, [searchQuery, performSearch])
 
 
   return (
 
     <section className={styles.jobSection}>
 
-        <div className={styles.searchContainer}>
+        <form className={styles.searchContainer} onSubmit={handleSearchClick} role="search" aria-label="Search jobs">
           <input
             className={styles.searchInput}
             type="text"
             placeholder="Search jobs..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
+            aria-label="Search jobs"
           />
-          <button 
-            className={styles.searchBtn} 
+          {searchQuery && (
+            <button type="button" className={styles.clearBtn} onClick={clearSearch} aria-label="Clear search" >
+              <MdClose/>
+            </button>
+          )}
+          <button
+            type="submit"
+            className={styles.searchBtn}
+            aria-label="Submit search"
             onClick={handleSearchClick}
           >
-            🔍
+            <MdSearch/>
           </button>
-        </div>
+        </form>
 
       {/* Left Column: Job Cards */}
       <div className={styles.cardList}>

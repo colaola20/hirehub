@@ -68,10 +68,10 @@ const SideBar = () => {
           </svg>
         ) : (
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true" preserveAspectRatio="xMidYMid meet">
-+            <path d="M4 7h16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-+            <path d="M4 12h16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-+            <path d="M4 17h16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-+          </svg>
+            <path d="M4 7h16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+            <path d="M4 12h16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+            <path d="M4 17h16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+          </svg>
         )}
       </button>
       {isOpen && <div className={styles.sidebarBackdrop} onClick={close} aria-hidden/>}
