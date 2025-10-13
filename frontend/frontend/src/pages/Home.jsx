@@ -3,6 +3,8 @@ import * as THREE from "three";
 import { Link } from "react-router-dom";            // ⬅️ added
 import styles from "./Home_Page.module.css";  // ⬅️ use module import
 import { SpaceIcon } from "lucide-react";
+import Contact from "../components/Contact";
+import Footer from "../components/Footer";
 
 const AngleLanding = () => {
   const [active, setActive] = React.useState("resume");
@@ -236,40 +238,7 @@ useEffect(() => {
 </section>
 
 
-      {/* CONTACT */}
-      <section className={styles["angle2-contact"]} id="contact">
-        <div className={`${styles["angle2-container"]} ${styles["angle2-contact__inner"]}`}>
-          <div className={styles["contactCopy"]}>
-            <h2 className={styles["angle2-section-heading"]}>Contact Us</h2>
-            <p>
-              Have a question or want a quick demo? Drop a note and we’ll get back to you.
-            </p>
-
-            <ul className={styles["contactList"]}>
-              <li><strong>Email:</strong> hello@hirehub.app</li>
-              <li><strong>Hours:</strong> Mon–Fri, 9am–6pm</li>
-              <li><strong>Response time:</strong> usually within 1 business day</li>
-            </ul>
-          </div>
-
-          <form
-            className={styles["contactForm"]}
-            onSubmit={(e) => {
-              e.preventDefault();
-              alert("Thanks! We’ll reach out shortly.");
-            }}
-          >
-            <div className={styles["formRow"]}>
-              <input type="text" name="name" placeholder="Your name" required />
-              <input type="email" name="email" placeholder="Your email" required />
-            </div>
-            <textarea name="message" rows="5" placeholder="Your message" required />
-            <button type="submit" className={`${styles["angle2-btn"]} ${styles["angle2-btn--ghost"]}`}>
-              Send message
-            </button>
-          </form>
-        </div>
-      </section>
+      <Contact />
 
     </div>
   );
