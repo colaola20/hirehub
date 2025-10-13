@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styles from '../pages/Home_Page.module.css';
 import { Link } from 'react-router-dom';
-import backgroundImage from '../assets/b4.jpg';
+import backgroundImage from '../assets/b1.png';
 
 const Contact = () => {
   const [scroll, setScroll] = useState(0);
@@ -51,18 +51,7 @@ const Contact = () => {
         </div>
       </div>
       <div className={styles.heroContactContent}>
-        <h1 className={styles.heroContactText}>ENTER THE NEW<br />ERA</h1>
-        <Link to="/contact" className={styles.contactButton}>Contact Us</Link>
-        <h1 
-          className={styles.heroContactTitle}
-          style={{
-            transform: `translateY(${scroll * -100}px)`,
-          }}
-        >
-          ENTER THE NEW
-          <br />
-          ERA
-        </h1>
+        <h1 className={styles.heroContactText}>HireHub</h1>
         <Link to="/contact" className={styles.contactButton}>
           Contact us →
         </Link>
