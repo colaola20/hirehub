@@ -63,43 +63,82 @@ def main(dry_run: bool = True, batch: int = 200, limit_pages: int | None = None)
         # Check for broken URLs
         # Iterates over jobs with a non-empty url, validate format first, then HTTP
         print("Scanning jobs with non-empty URLs for broken links. This may take some time...")
-        qs = db.session.query(Job).filter((Job.url != None) & (func.trim(Job.url) != "")).yield_per(200)
-        to_delete = []
+        last_id = 0
         checked = 0
         page = 0
+        while True:
+            batch_rows = (
+                db.session.query(Job.id, Job.url)
+                .filter((Job.id > last_id) & (Job.url != None) & (func.trim(Job.url) != ""))
+                .order_by(Job.id)
+                .limit(batch)
+                .all()
+            )
+            if not batch_rows:
+                break
 
-        for job in qs:
-            checked += 1
-            url = job.url
-            if not is_valid_url(url):
-                to_delete.append(job.id)
-            else:
-                alive = check_url_alive(url)
-                if not alive:
-                    to_delete.append(job.id)
+            to_delete = []
+
+            for job_id, url in batch_rows:
+                checked += 1
+                last_id = job_id
+                if not is_valid_url(url):
+                    to_delete.append(job_id)
+                    continue
+                if not check_url_alive(url):
+                    to_delete.append(job_id)
             
-            if len(to_delete) >= batch:
+            if to_delete:
                 page += 1
                 print(f"Batch {page}: checked {checked}, candidates to delete {len(to_delete)}")
                 if not dry_run:
-                    db.session.query(Job).filter(Job.id.in_(to_delete)).delete(synchronize_session = False)
+                    db.session.query(Job).filter(Job.id.in_(to_delete)).delete(synchronize_session=False)
                     db.session.commit()
                     print(f"Batch {page} deleted {len(to_delete)} jobs.")
-                
-                to_delete = []
                 time.sleep(SLEEP_BETWEEN_BATCHES)
-                if limit_pages and page >= limit_pages:
-                    print("Limit pages reaached, atopping early.")
-                    break
 
-        if to_delete:
-            print(f"Final batch: checked {checked}, final candidates {len(to_delete)}")
-            if not dry_run:
-                db.session.query(Job).filter(Job.id.in_(to_delete)).delete(synchronize_session = False)
-                db.session.commit()
-                print("Final batch deleted")
-            
+            if limit_pages and page >= limit_pages:
+                print("Limit pages reached, stopping early.")
+                break
         print("Scan complete. Total checked:", checked)
+
+        # qs = db.session.query(Job).filter((Job.url != None) & ((func.trim(Job.url) != ""))).yield_per(200)
+        # to_delete = []
+        # checked = 0
+        # page = 0
+
+        # for job in qs:
+        #     checked += 1
+        #     url = job.url
+        #     if not is_valid_url(url):
+        #         to_delete.append(job.id)
+        #     else:
+        #         alive = check_url_alive(url)
+        #         if not alive:
+        #             to_delete.append(job.id)
+            
+        #     if len(to_delete) >= batch:
+        #         page += 1
+        #         print(f"Batch {page}: checked {checked}, candidates to delete {len(to_delete)}")
+        #         if not dry_run:
+        #             db.session.query(Job).filter(Job.id.in_(to_delete)).delete(synchronize_session = False)
+        #             db.session.commit()
+        #             print(f"Batch {page} deleted {len(to_delete)} jobs.")
+                
+        #         to_delete = []
+        #         time.sleep(SLEEP_BETWEEN_BATCHES)
+        #         if limit_pages and page >= limit_pages:
+        #             print("Limit pages reaached, atopping early.")
+        #             break
+
+        # if to_delete:
+        #     print(f"Final batch: checked {checked}, final candidates {len(to_delete)}")
+        #     if not dry_run:
+        #         db.session.query(Job).filter(Job.id.in_(to_delete)).delete(synchronize_session = False)
+        #         db.session.commit()
+        #         print("Final batch deleted")
+            
+        # print("Scan complete. Total checked:", checked)
 
 if __name__=="__main__":
     p = argparse.ArgumentParser()
