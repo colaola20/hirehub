@@ -11,6 +11,7 @@ body, .container {
 :root {
   --nav-h : 64px;
   --gap: 20px;
+  --sb-w: 250px; 
 }
 
 .dashboard-screen-wrapper{
@@ -29,15 +30,14 @@ body, .container {
 .dashboard-wrapper {
   flex: 1 1 auto;
   display: grid;
-  grid-template-columns: 240px minmax(0, 1fr);
+  grid-template-columns: 250px 1fr;
   gap: var(--gap);
-
-  /* max-width: 1440px; */
-  
-  width: 75%;
+  max-width: 1600px;
+  width: 100%;
   margin: 0 auto;
   align-items: start;
   box-sizing: border-box;
+  padding: 0 var(--gap)
   /* background-color: red; */
   
   
@@ -48,6 +48,7 @@ body, .container {
   display: flex;
   flex-direction: column;
   min-height: 0;
+  /* background-color: green; */
 }
 
 /* gradient (like .angle2-root::before) */
@@ -130,10 +131,13 @@ body, .container {
   display: block;
 }
 
-@media (max-width: 980px) {
+@media (max-width: 900px) {
   .dashboard-wrapper {
     grid-template-columns: 1fr;
     padding: 0 12px; /* collapse sidebar space on mobile if sidebar overlays */
   }
   .main-content { padding: 14px; }
+  .dashboard-container {
+    grid-column: 1 / 2; /* take full width */
+  }
 }
