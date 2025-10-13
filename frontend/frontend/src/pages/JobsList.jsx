@@ -126,7 +126,7 @@ const JobsList = ({ jobs: initialJobs }) => {
   }
 
   const clearSearch = async () => {
-    setSearchQuery("''")
+    setSearchQuery("")
     await performSearch("")
   }
 
@@ -137,12 +137,74 @@ const JobsList = ({ jobs: initialJobs }) => {
     return () => clearTimeout(id)
   }, [searchQuery, performSearch])
 
+  // Making search sticky but also callapsing when scolling
+  const [isCollapsed, setIsCollapsed] = useState(false)
+  const [isExpend, setIsExpend] = useState(false)
+  const containerRef = useRef(null)
+  const scrollTrick = useRef(false)
+
+  useEffect(() => {
+    const onScroll = () => {
+      if (scrollTrick.current) return
+      scrollTrick.current = true
+      window.requestAnimationFrame(()=> {
+        const shouldCollapse = window.scrollY > 160 && window.innerWidth > 720
+        // only auto-collapse if user has not manually expanded
+        if (!isExpend) setIsCollapsed(shouldCollapse)
+          scrollTrick.current = false
+      })
+    }
+    window.addEventListener("scroll", onScroll, {passive: true})
+    return () => window.removeEventListener("scroll", onScroll)
+  }, [isExpend])
+
+  useEffect(() => {
+    if (!isExpend) return
+    const onKey = (e) => { if (e.key === "Escape") setIsExpend(false)}
+    const onDocClick = (e) => {
+      if (!containerRef.current) return
+      if (!containerRef.current.contains(e.target)) setIsExpend(false)
+    }
+    document.addEventListener("keydown", onKey)
+    document.addEventListener("mousedown", onDocClick)
+    return () => {
+      document.removeEventListener("keydown", onKey)
+      document.removeEventListener("mousedown", onDocClick)
+    }
+  }, [isExpend])
+
+  const handleToggle = (e) => {
+    e?.preventDefault()
+    //if currently collapsed, open the expended view
+    if (isCollapsed && !isExpend) {
+      setIsExpend(true)
+      window.requestAnimationFrame(() => {
+        const el = containerRef.current?.querySelector("input")
+        if (el) el.focus()
+      })
+    return
+    }
+    // otherwise submit or toggle normally
+    // if already expanded, closing will keep it collapsed on scroll
+    setIsExpend((v) => !v)
+  }
+
+  const containerClass = [
+    styles.searchContainer,
+    isCollapsed ? styles.collapsed : "",
+    isExpend ? styles.expanded: "",
+  ].join(" ").trim()
 
   return (
 
     <section className={styles.jobSection}>
 
-        <form className={styles.searchContainer} onSubmit={handleSearchClick} role="search" aria-label="Search jobs">
+        <form 
+          ref = {containerRef}
+          className={containerClass} 
+          onSubmit={handleSearchClick} 
+          role="search" 
+          aria-label="Search jobs">
           <input
             className={styles.searchInput}
             type="text"
@@ -157,10 +219,11 @@ const JobsList = ({ jobs: initialJobs }) => {
             </button>
           )}
           <button
-            type="submit"
+            type={isCollapsed ? "button" : "submit"}
             className={styles.searchBtn}
-            aria-label="Submit search"
-            onClick={handleSearchClick}
+            aria-label={isCollapsed ? (isExpend ? "Close search": "Open search") : "Submit search"}
+            aria-expanded={isExpend}
+            onClick={handleToggle}
           >
             <MdSearch/>
           </button>

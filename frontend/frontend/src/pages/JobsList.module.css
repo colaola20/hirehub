@@ -21,6 +21,91 @@
 }
 
 .searchContainer {
+    transition: width 220ms ease, padding 220ms ease, background 220ms ease;
+    align-items: center;
+}
+
+.searchContainer.collapsed {
+    width: 48px;
+    padding: 6px;
+    border-radius: 999px;
+    justify-content: center;
+    background: transparent;
+    overflow: visible;
+}
+
+.searchContainer.collapsed.expanded {
+  width: 100%;
+  max-width: 820px;
+  padding: 6px;
+  border-radius: 999px;
+  /* background: var(--bg-surface); */
+  /* border: 1px solid rgba(255,255,255,0.06);
+  box-shadow: 0 6px 18px rgba(2,6,23,0.12); */
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: flex-start;
+  box-sizing: border-box;
+  transition: width 220ms ease, padding 220ms ease, background 220ms ease;
+  z-index: 60;
+  position: sticky;
+  top: calc(var(--nav-h, 64px) + 16px);
+}
+
+.searchContainer.collapsed .searchInput {
+    opacity: 0;
+    width: 0;
+    min-width: 0;
+    padding: 0;
+    pointer-events: none;
+    transition: opasity 200ms ease, width 200ms ease;
+}
+
+.searchContainer.expanded .searchInput,
+.searchContainer:not(.collapsed) .searchInput {
+    opacity: 1;
+    width: 100%;
+    pointer-events: auto;
+    transition: opacity 200ms ease, width 200ms ease;
+    flex: 1 1 auto;
+    max-width: 93%;
+    padding: 10px 12px;
+    border-radius: 999px;
+    /* background: var(--bg-surface);
+    border: 1px solid rgba(255,255,255,0.06); */
+    color: #fff;
+    margin-left: 30px;
+    /* box-shadow: 0 6px 18px rgba(2,6,23,0.25); */
+    outline: none;
+}
+
+/* ensure buttons remain visible in collapsed state */
+.searchContainer .searchBtn {
+  z-index: 5;
+}
+
+/* when expanded from collapsed, show clear button too */
+.searchContainer.collapsed.expanded .clearBtn {
+  display: inline-flex;
+}
+
+/* ensure hover border behaviour still applies */
+.searchBtn, .clearBtn {
+  transition: border-color 160ms ease;
+}
+
+/* small screens: never auto-collapse */
+@media (max-width: 720px) {
+  .searchContainer.collapsed { width: 100%; padding: 6px; }
+  .searchContainer.collapsed .searchInput { opacity: 1; width: 100%; pointer-events: auto; }
+}
+
+.searchContainer {
+  position: -webkit-sticky;
+  position: sticky;
+  top: calc(var(--nav-h, 64px) + 16px);
+  z-index: 60;
   width: 100%;
   max-width: 820px;
   margin: 0 0 18px 0;
