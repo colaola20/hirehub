@@ -99,6 +99,91 @@
 }
 .angle2-links a:hover { opacity: 1; }
 
+/* Contact Section Styles */
+.heroContact {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background-color: transparent;
+  margin-top: 100px;
+}
+
+.heroContactBackground {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.heroContactOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.heroContactImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.heroContactContent {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  width: 100%;
+  padding: 0 80px;
+}
+
+.heroContactText {
+  font-size: 7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #FFFFFF;
+  margin: 0;
+  line-height: 1.1;
+  text-align: right;
+  max-width: 800px;
+}
+
+.contactButton {
+  background: transparent;
+  border: 2px solid #FFFFFF;
+  color: #FFFFFF;
+  padding: 12px 32px;
+  font-size: 1.125rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-top: 40px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.contactButton:hover {
+  background: #FFFFFF;
+  color: #000000;
+}
+
 .angle2-btn {
   appearance: none;
   border: 1px solid rgba(255,255,255,0.35);
@@ -1033,7 +1118,7 @@
 /* Floating text card */
 .caeliCard {
   position: absolute;
-  bottom: 80px;
+  bottom: 180px;
   right: 80px;
   background: rgba(255, 255, 255, 0.12);
   backdrop-filter: blur(14px) saturate(130%);
@@ -1178,7 +1263,7 @@
 /* Floating text card */
 .caeliCard {
   position: absolute;
-  bottom: 80px;
+  bottom: 180px;
   right: 80px;
   background: rgba(255, 255, 255, 0.12);
   backdrop-filter: blur(14px) saturate(130%);
@@ -1423,180 +1508,4 @@
     margin: 20px auto 0;
     width: 90%;
   }
-}
-
-/* ====== Hero Contact Section ====== */
-.heroContact {
-  position: relative;
-  min-height: 100vh;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  background-color: #000; /* Dark background */
-}
-
-.heroContactOverlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
-  transition: width 0.5s ease, margin-left 0.5s ease;
-  background-image: url('/src/assets/b2.jpg');
-  background-size: cover;
-  background-position: center;
-  will-change: width, margin-left;
-}
-
-.heroContactOverlay::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0.4));
-  pointer-events: none;
-}
-
-.heroContactOverlay::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0.4));
-}
-
-.heroContactContent {
-  position: relative;
-  z-index: 2;
-  width: 100%;
-  max-width: 1800px;
-  margin: 0 auto;
-  padding: 0 24px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: space-between;
-  min-height: 80vh;
-}
-
-.heroContactTitle {
-  font-size: clamp(48px, 10vw, 140px);
-  font-weight: 600;
-  color: #fff;
-  line-height: 1;
-  margin: 0;
-  padding-top: 20vh;
-  letter-spacing: -0.02em;
-}
-
-.contactButton {
-  display: inline-flex;
-  align-items: center;
-  padding: 16px 32px;
-  background: #fff;
-  color: #000;
-  text-decoration: none;
-  font-weight: 500;
-  font-size: 18px;
-  border-radius: 4px;
-  margin-bottom: 10vh;
-  transition: transform 0.3s ease;
-  align-self: flex-end;
-}
-
-.contactButton:hover {
-  transform: translateY(-2px);
-}
-
-@media (max-width: 768px) {
-  .heroContactTitle {
-    font-size: clamp(36px, 8vw, 72px);
-  }
-  
-  .contactButton {
-    padding: 14px 28px;
-    font-size: 16px;
-  }
-}
-
-/* Updated Contact Section with Parallax */
-.heroContact {
-  position: relative;
-  min-height: 100vh;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  perspective: 1000px;
-  transform-style: preserve-3d;
-}
-
-.heroContactOverlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image: url('/src/assets/b3.webpg');
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
-  transition: all 0.3s ease-out;
-  will-change: width, margin-left;
-}
-
-.heroContactContent {
-  position: relative;
-  z-index: 2;
-  width: 100%;
-  max-width: 1800px;
-  margin: 0 auto;
-  padding: 0 24px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: space-between;
-  min-height: 80vh;
-}
-
-.heroContactTitle {
-  font-size: clamp(48px, 10vw, 140px);
-  font-weight: 600;
-  color: #fff;
-  line-height: 1;
-  margin: 0;
-  padding-top: 20vh;
-  letter-spacing: -0.02em;
-  transition: transform 0.3s ease-out;
-  will-change: transform;
-  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
-}
-
-.contactButton {
-  display: inline-flex;
-  align-items: center;
-  padding: 16px 32px;
-  background: #fff;
-  color: #000;
-  text-decoration: none;
-  font-weight: 500;
-  font-size: 18px;
-  border-radius: 4px;
-  margin-bottom: 10vh;
-  transition: transform 0.3s ease;
-  align-self: flex-end;
-  z-index: 3;
-  backdrop-filter: blur(8px);
-}
-
-.contactButton:hover {
-  transform: translateY(-2px);
 }

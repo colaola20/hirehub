@@ -6,36 +6,33 @@
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  background: transparent;
 }
 
-.heroContactOverlay {
+.heroContactBackground {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: -1;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.heroContactOverlay {
+  position: relative;
+  width: 100%;
+  height: 100%;
   transition: width 0.3s ease, margin-left 0.3s ease;
   overflow: hidden;
 }
 
 .heroContactImage {
-  position: absolute;
-  top: 0;
-  left: 0;
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
-}
-
-.heroContactGradient {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.7));
-  z-index: 1;
+  object-position: center;
 }
 
 .heroContactContent {

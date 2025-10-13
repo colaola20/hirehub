@@ -206,7 +206,7 @@ useEffect(() => {
             active === "resume"
               ? "/src/assets/resume.png"
               : active === "letters"
-              ? "/src/assets/letters.png"
+              ? "/src/assets/letter.png"
               : "/src/assets/portfolio.png"
           }
           alt={active}
