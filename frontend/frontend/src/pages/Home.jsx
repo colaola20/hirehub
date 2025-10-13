@@ -84,59 +84,73 @@ useEffect(() => {
             The application assistant that optimizes <span className={styles.accent}>every detail</span>
           </p>
         </div>
-      </section>
-      {/* FEATURE: Resume AI */}
-<section id="resume-ai" className={styles["angle2-feature"]}>
-  <div className={`${styles["angle2-container"]} ${styles["feature-grid"]}`}>
-    {/* Left: copy */}
-    <div className={`${styles["feature-copy"]} ${styles["reveal"]}`} data-reveal>
-      <p className={styles["eyebrow"]}>📎 Resume AI</p>
-
-      <h2 className={styles["feature-title"]}>
-        <span className={styles["title-strong"]}>Resume AI</span>
-        <span className={styles["slash"]}> / </span>
-        <span className={styles["title-rest"]}>Stand out with a top-notch resume</span>
+      </section>{/* ===== Resume AI Section ===== */}
+<section id="resume-ai" className={styles.resumeSection}>
+  <div className={styles.resumeContainer}>
+    {/* LEFT SIDE - TEXT CONTENT */}
+    <div className={styles.resumeLeft}>
+      <h2 className={styles.resumeHeading}>
+        <span role="img" aria-label="clip">📎</span>
+        <strong> Resume AI</strong> / Stand out from the crowd with a<br />
+        <span>top notch resume</span>
       </h2>
 
-      <ul className={styles["feature-list"]}>
-        <li><span>Get a professional quality resume in minutes, not hours</span></li>
-        <li><span>Keep tailoring your resume with AI and catch HR’s eyes in seconds</span></li>
-        <li><span>Rest easy knowing your resume will be ATS-compatible</span></li>
+      <ul className={styles.resumeList}>
+        <li>Get a professional quality resume in minutes, not hours</li>
+        <li>Keep tailoring your resume with AI and catch HR’s eyes in 6 seconds</li>
+        <li>Rest easy knowing your resume will be ATS compatible</li>
       </ul>
 
-      <a href="/resume" className={`${styles["angle2-btn"]} ${styles["btn-large"]}`}>
-        Improve My Resume
-      </a>
+      <button className={styles.resumeBtn}>Improve My Resume</button>
     </div>
 
-    {/* Right: visual/mockup */}
-    <div className={`${styles["feature-visual"]} ${styles["reveal"]}`} data-reveal>
-      <div className={styles["mockup-card"]}>
-        <div className={styles["mockup-header"]}>
-          <div className={styles["mockup-name"]}>Jamie Parker</div>
-          <div className={styles["score-badge"]}>
-            <span className={styles["score"]}>9.0</span>
-            <small>Excellent</small>
+    {/* RIGHT SIDE - MOCKUP CARD */}
+    <div className={styles.resumeRight}>
+      <div className={styles.sparkle}>✨</div>
+
+      <div className={styles.resumeCard}>
+        <div className={styles.resumeScore}>
+          <div className={styles.scoreValue}>9.0</div>
+          <div className={styles.scoreLabel}>EXCELLENT</div>
+        </div>
+
+        <div className={styles.cardContent}>
+          <h3 className={styles.cardName}>Jamie Parker</h3>
+
+          <div className={styles.cardBlock}>
+            <h4>PROFESSIONAL SUMMARY</h4>
+            <p className={styles.highlight}>
+              Senior Software Engineer with over five years of experience specializing
+              in backend development and distributed systems. Successfully led the development
+              of HA messaging system with 10,000/s throughput.
+            </p>
+          </div>
+
+          <div className={styles.cardBlock}>
+            <h4>SKILL</h4>
+            <p>Java, Python, Go, Apache Kafka, Kubernetes, Typescript, CI/CD, HLS</p>
+          </div>
+
+          <div className={styles.cardBlock}>
+            <h4>EXPERIENCE</h4>
+            <p>
+              Designed and implemented microservices architecture using Java and Kubernetes,
+              which improved system scalability and integration of video streaming services.
+            </p>
           </div>
         </div>
+      </div>
 
-        <div className={styles["mockup-body"]}>
-          <div className={styles["bar"]} />
-          <div className={styles["bar small"]} />
-          <div className={styles["bar small"]} />
-          <div className={styles["bar mid"]} />
-          <div className={styles["bar"]} />
-        </div>
-
-        <div className={styles["chips"]}>
-          <span>Summary Enhanced</span>
-          <span>Relevant Skills Highlighted</span>
-          <span>Recent Experience Enhanced</span>
-        </div>
+      {/* GREEN TAGS BELOW CARD */}
+      <div className={styles.resumeChips}>
+        <span>Summary Enhanced</span>
+        <span>Relevant Skills Highlighted</span>
+        <span>Recent Work Experience Enhanced</span>
       </div>
     </div>
   </div>
 </section>
+
 
       {/* ABOUT */}
       <section className={styles["angle2-about"]} id="about">
