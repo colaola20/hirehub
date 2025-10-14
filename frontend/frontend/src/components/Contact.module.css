@@ -1,0 +1,67 @@
+.heroContact {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: transparent;
+}
+
+.heroContactBackground {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  overflow: hidden;
+  background: linear-gradient(
+    to bottom,
+    rgba(74, 42, 134, 0.1),
+    rgba(127, 160, 238, 0.15)
+  );
+}
+
+.heroContactOverlay {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: width 0.3s ease, margin-left 0.3s ease;
+  overflow: hidden;
+  background: linear-gradient(
+    135deg,
+    rgba(74, 42, 134, 0.05) 0%,
+    rgba(127, 160, 238, 0.1) 100%
+  );
+}
+
+.heroContactImage {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.heroContactContent {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  color: white;
+}
+
+.heroContactText {
+  font-size: 7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin: 0;
+  white-space: pre-wrap;
+  text-shadow: none;
+  line-height: 1;
+  color: #FFFFFF;
+  max-width: 80%;
+  text-align: center;
+}

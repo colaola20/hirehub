@@ -99,6 +99,114 @@
 }
 .angle2-links a:hover { opacity: 1; }
 
+/* Contact Section Styles */
+.heroContact {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background-color: transparent;
+  margin-top: 100px;
+  position: relative;
+  isolation: isolate;
+}
+
+.heroContact::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at center,
+    rgba(127, 160, 238, 0.3) 0%,
+    rgba(74, 42, 134, 0.4) 70%
+  );
+  z-index: 1;
+  pointer-events: none;
+}
+
+.heroContactBackground {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.heroContactOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(
+    to bottom,
+    rgba(127, 160, 238, 0.2),
+    rgba(74, 42, 134, 0.4)
+  );
+}
+
+.heroContactImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.heroContactContent {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 0 20px;
+  text-align: center;
+  mix-blend-mode: screen;
+}
+
+.heroContactText {
+  font-size: 7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #FFFFFF;
+  margin: 0;
+  line-height: 1.1;
+  text-align: center;
+  max-width: 1200px;
+}
+
+.contactButton {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  color: #FFFFFF;
+  padding: 12px 32px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  margin-top: 2rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.contactButton:hover {
+  background: #FFFFFF;
+  color: #000000;
+}
+
 .angle2-btn {
   appearance: none;
   border: 1px solid rgba(255,255,255,0.35);
@@ -705,4 +813,754 @@
   .feature-grid { grid-template-columns: 1fr; }
   .feature-visual { order: -1; }  /* image first on mobile, like Jobright */
   .mockup-card { width: 100%; }
+}
+
+
+.caeliCard p {
+  margin: 0;
+  font-size: 15px;
+  color: #33695a;
+  line-height: 1.6;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .caeliContainer {
+    grid-template-columns: 1fr;
+    padding: 24px;
+  }
+
+  .caeliRight {
+    height: auto;
+    margin-top: 40px;
+  }
+
+  .caeliImageWrap {
+    height: 65vh;
+  }
+
+  .caeliCard {
+    position: relative;
+    bottom: auto;
+    right: auto;
+    margin: 20px auto 0;
+    width: 90%;
+  }
+}
+/* ===== Resume AI Section ===== */
+.resumeSection {
+  position: relative;
+  padding: clamp(80px, 10vh, 120px) 0;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.resumeContainer {
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+  align-items: center;
+  gap: clamp(30px, 5vw, 80px);
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* LEFT SIDE */
+.resumeLeft {
+  color: #fff;
+}
+
+.resumeHeading {
+  font-weight: 800;
+  font-size: clamp(28px, 3.5vw, 42px);
+  line-height: 1.2;
+  color: #fff;
+}
+
+.resumeHeading strong {
+  background: linear-gradient(90deg, #8ec5fc 0%, #7a5bbf 60%, #f6a0d0 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.resumeList {
+  margin: 20px 0 30px;
+  padding-left: 0;
+  list-style: none;
+  display: grid;
+  gap: 10px;
+}
+
+.resumeList li {
+  position: relative;
+  padding-left: 22px;
+  color: rgba(240, 240, 248, 0.95);
+  font-size: 16px;
+}
+
+.resumeList li::before {
+  content: "•";
+  position: absolute;
+  left: 4px;
+  top: 0;
+  color: #90fba4;
+  font-size: 22px;
+}
+
+.resumeBtn {
+  background: #0f0f0f;
+  color: #fff;
+  font-weight: 700;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 999px;
+  padding: 14px 28px;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.resumeBtn:hover {
+  border-color: rgba(255, 255, 255, 0.6);
+  background: #141414;
+}
+
+/* RIGHT SIDE */
+.resumeRight {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.sparkle {
+  position: absolute;
+  top: -25px;
+  left: 40px;
+  font-size: 24px;
+  filter: drop-shadow(0 0 6px #6fffd8);
+}
+
+.resumeCard {
+  position: relative;
+  background: #fff;
+  color: #0f1220;
+  border-radius: 18px;
+  box-shadow: 0 16px 45px rgba(0, 0, 0, 0.28);
+  width: min(520px, 95%);
+  overflow: hidden;
+  padding: 28px 30px;
+}
+
+.resumeScore {
+  position: absolute;
+  top: 18px;
+  right: 22px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 8px 14px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  text-align: center;
+}
+
+.scoreValue {
+  font-weight: 900;
+  font-size: 22px;
+  color: #0f1220;
+}
+
+.scoreLabel {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: #0f1220;
+  opacity: 0.8;
+}
+
+.cardName {
+  font-weight: 800;
+  font-size: 20px;
+  margin-bottom: 12px;
+}
+
+.cardBlock {
+  margin-bottom: 14px;
+}
+
+.cardBlock h4 {
+  font-weight: 700;
+  font-size: 13px;
+  margin: 0 0 4px;
+  color: #111;
+}
+
+.cardBlock p {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: #2d2d2d;
+}
+
+.highlight {
+  background: #c8f7d0;
+  padding: 2px 4px;
+  border-radius: 3px;
+}
+
+/* GREEN CHIPS */
+.resumeChips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.resumeChips span {
+  background: #00c853;
+  color: #0f1220;
+  border-radius: 999px;
+  padding: 8px 12px;
+  font-weight: 700;
+  font-size: 12px;
+  box-shadow: 0 6px 16px rgba(0, 200, 83, 0.25);
+}
+
+/* Responsive */
+@media (max-width: 960px) {
+  .resumeContainer {
+    grid-template-columns: 1fr;
+  }
+
+  .resumeRight {
+    order: -1;
+  }
+
+  .resumeCard {
+    width: 100%;
+  }
+
+  .resumeLeft {
+    text-align: center;
+  }
+
+  .resumeBtn {
+    margin: 0 auto;
+  }
+}
+/* === FULL-SCALE Services Section === */
+.caeliServices {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  padding: 0;
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  color: #ffffff;
+
+.caeliContainer {
+  display: flex;
+  grid-template-columns: 0.5fr 2.5fr; /* even wider right side */
+  align-items: center;
+  gap: clamp(30px, 5vw, 80px);
+  width: 98%; /* take up more screen width */
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* LEFT SIDE */
+.caeliLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  font-family: "Inter", sans-serif;
+  margin-left: 24px;
+}
+.caeliOption {
+  font-weight: 800;
+  font-size: clamp(34px, 4vw, 52px);
+  letter-spacing: 0.6px;
+  color: rgba(255, 255, 255, 0.45);
+  cursor: pointer;
+  transition: all 0.4s ease;
+  width: fit-content;
+  padding-bottom: 6px;
+  position: relative;
+}
+
+.caeliOption::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0.2),
+    rgba(255, 255, 255, 1)
+  );
+  transition: width 2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.caeliOption:hover {
+  color: rgba(255, 255, 255, 0.8);
+  transform: translateX(8px);
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
+  animation: glowPulse 2s infinite;
+}
+
+.caeliOption:hover::after {
+  width: 100%;
+}
+/* RIGHT SIDE - Much Larger */
+.caeliRight {
+  height: 80vh; /* even taller than viewport */
+  width: 50%;
+  display: block;
+  align-items: center;
+  justify-content: flex-end;
+  margin-right: 48px; /* extend past container edge */
+}
+
+.caeliImageWrap {
+  width: 100%;
+  height: 100vh; /* full viewport height */
+  border-radius: 28px 0 0 28px; /* rounded only on left side */
+  overflow: hidden;
+  box-shadow: 0 30px 100px rgba(0, 0, 0, 0.6);
+  transition: transform 0.4s ease;
+}
+
+.caeliImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity 0.6s ease-in-out;
+  transform: scale(1.02); /* slightly larger to prevent edge gaps */
+}
+
+/* Floating text card */
+.caeliCard {
+  position: absolute;
+  bottom: 180px;
+  right: 80px;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(14px) saturate(130%);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 24px;
+  padding: 60px 50px;
+  width: clamp(800px, 50%, 600px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+}
+
+.caeliCard p {
+  margin: 0;
+  font-size: 26px;
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.6;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 1400px) {
+  .caeliContainer {
+    grid-template-columns: 0.6fr 2.4fr;
+    max-width: 2000px;
+  }
+  
+  .caeliRight {
+    height: 100vh;
+    margin-right: -24px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .caeliContainer {
+    grid-template-columns: 1fr;
+    padding: 24px;
+  }
+
+  .caeliRight {
+    height: auto;
+    margin: 40px -24px 0;
+  }
+
+  .caeliImageWrap {
+    height: 75vh;
+    border-radius: 0;
+  }
+
+  .caeliCard {
+    position: relative;
+    bottom: auto;
+    right: auto;
+    margin: 20px auto 0;
+    width: 90%;
+    max-width: 500px;
+  }
+}
+  z-index: 1;
+  overflow: hidden;
+  color: #ffffff;
+}
+
+.caeliContainer {
+  display: grid;
+  grid-template-columns: 0.5fr 2.5fr; /* even wider right side */
+  align-items: center;
+  gap: clamp(30px, 5vw, 80px);
+  justify-content: space-between;
+  width: 98%; /* take up more screen width */
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* LEFT SIDE */
+.caeliLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  font-family: "Inter", sans-serif;
+  margin-left: 24px;
+}
+
+.caeliOption {
+  font-weight: 800;
+  font-size: clamp(34px, 4vw, 52px);
+  letter-spacing: 0.6px;
+  color: rgba(255, 255, 255, 0.45);
+  cursor: pointer;
+  transition: all 0.4s ease;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+  width: fit-content;
+  padding-bottom: 6px;
+}
+
+.caeliOption:hover {
+  color: rgba(255, 255, 255, 0.8);
+  transform: translateX(8px);
+}
+
+.active {
+  color: #ffffff;
+  transform: translateX(10px);
+}
+
+.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: #ffffff;
+}
+/* RIGHT SIDE - Much Larger */
+.caeliRight {
+  height: 110vh; /* even taller than viewport */
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-right: auto; /* extend past container edge */
+}
+
+.caeliImageWrap {
+  width: 100%;
+  height: 100vh; /* full viewport height */
+  border-radius: 28px 0 0 28px; /* rounded only on left side */
+  overflow: hidden;
+  box-shadow: 0 30px 100px rgba(0, 0, 0, 0.6);
+  transition: transform 0.4s ease;
+}
+
+.caeliImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity 0.6s ease-in-out;
+  transform: scale(1.02); /* slightly larger to prevent edge gaps */
+}
+
+/* Floating text card */
+.caeliCard {
+  position: absolute;
+  bottom: 180px;
+  right: 80px;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(14px) saturate(130%);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 24px;
+  padding: 32px 40px;
+  width: clamp(380px, 45%, 560px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+}
+
+.caeliCard p {
+  margin: 0;
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.6;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 1400px) {
+  .caeliContainer {
+    grid-template-columns: 0.6fr 2.4fr;
+    max-width: 2000px;
+  }
+  
+  .caeliRight {
+    height: 100vh;
+    margin-right: -24px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .caeliContainer {
+    grid-template-columns: 1fr;
+    padding: 24px;
+  }
+
+  .caeliRight {
+    height: auto;
+    margin: 40px -24px 0;
+  }
+
+  .caeliImageWrap {
+    height: 75vh;
+    border-radius: 0;
+  }
+
+  .caeliCard {
+    position: relative;
+    bottom: auto;
+    right: auto;
+    margin: 20px auto 0;
+    width: 90%;
+    max-width: 500px;
+  }
+}
+
+/* RIGHT SIDE - Larger image */
+.caeliRight {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.caeliImageWrap {
+  position: relative;
+  width: 100%;
+  border-radius: 20px;
+  overflow: hidden;
+  transition: transform 0.4s ease;
+}
+
+.caeliImageWrap:hover {
+  transform: scale(1.02);
+}
+
+.caeliImage {
+  width: 100%;
+  height: 600px; /* taller image */
+  object-fit: cover;
+  border-radius: 20px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+  transition: opacity 0.6s ease-in-out;
+  animation: fadeIn 0.5s ease;
+}
+
+/* Floating text card */
+.caeliCard {
+  position: absolute;
+  bottom: 40px;
+  right: 40px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(14px) saturate(130%);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 16px;
+  padding: 24px 30px;
+  width: clamp(300px, 40%, 460px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+.caeliCard p {
+  margin: 0;
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.6;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive tweaks */
+@media (max-width: 960px) {
+  .caeliContainer {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .caeliLeft {
+    flex-direction: row;
+    justify-content: center;
+    gap: 14px;
+  }
+
+  .caeliOption {
+    font-size: 22px;
+    border: none;
+  }
+
+  .caeliImageWrap {
+    margin-top: 30px;
+    max-width: 100%;
+  }
+
+  .caeliImage {
+    height: 400px;
+  }
+
+  .caeliCard {
+    position: relative;
+    bottom: auto;
+    right: auto;
+    margin: 20px auto 0;
+    width: 90%;
+    background: rgba(255, 255, 255, 0.15);
+  }
+}
+/* === FULL-SCALE Services Section === */
+.caeliServices {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  padding: 0;
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.caeliContainer {
+  display: grid;
+  grid-template-columns: 0.7fr 2.3fr; /* wider right side like the reference */
+  align-items: center;
+  gap: clamp(30px, 5vw, 80px);
+  width: 95%;
+  margin: 0 auto;
+  padding: 0 48px;
+}
+
+/* RIGHT SIDE - immersive image */
+.caeliRight {
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.caeliImageWrap {
+  width: 100%;
+  height: 90vh; /* tall like the reference */
+  border-radius: 28px;
+  overflow: hidden;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+  transition: transform 0.4s ease;
+}
+
+.caeliImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 28px;
+  transition: opacity 0.6s ease-in-out;
+}
+
+/* Floating text card (adjusted position) */
+.caeliCard {
+  position: absolute;
+  bottom: 60px;
+  right: 60px;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(14px) saturate(130%);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 20px;
+  padding: 28px 36px;
+  width: clamp(350px, 40%, 520px);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.45);
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .caeliContainer {
+    grid-template-columns: 1fr;
+    padding: 24px;
+  }
+
+  .caeliRight {
+    height: auto;
+    margin-top: 40px;
+  }
+
+  .caeliImageWrap {
+    height: 65vh;
+  }
+
+  .caeliCard {
+    position: relative;
+    bottom: auto;
+    right: auto;
+    margin: 20px auto 0;
+    width: 90%;
+  }
+}
+@keyframes glowPulse {
+  0% {
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
+  }
+  50% {
+    text-shadow: 0 0 16px rgba(255, 255, 255, 0.6);
+  }
+  100% {
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
+  }
 }
