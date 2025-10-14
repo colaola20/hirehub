@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import styles from "./JobDetailsModal.module.css";
 import { FaBuilding, FaMapMarkerAlt, FaCalendarAlt } from "react-icons/fa";
+import FavoriteButton from "./FavoriteButton";
 
 const JobDetailsModal = ({ job, onClose }) => {
 
@@ -24,9 +25,11 @@ const JobDetailsModal = ({ job, onClose }) => {
     <div className={styles.overlay}>
       <div className={styles.modal}>
         <button className={styles.closeBtn} onClick={onClose}>✕</button>
-        <h2>{job.title || "Untitled Position"}</h2>
+        <div className={styles.modalHeader}>
+          <h2>{job.title || "Untitled Position"}</h2>
+          <FavoriteButton jobId={job.id} />
+        </div>
         <p className={styles.company}> <FaBuilding style={{ marginRight: "10px", color: "#a3bffa",fontSize: "20px" }} /><strong>Company:</strong> {job.company || "Unknown"}</p>
-        <button className={styles.closeBtn} onClick={onClose}>✕</button>
         <p className={styles.location}> <FaMapMarkerAlt style={{ marginRight: "10px", color: "#a3bffa",fontSize: "20px" }} /> <strong>Location:</strong> {job.location || "Unspecified"}</p>
         <p className={styles.datePosted}> <FaCalendarAlt style={{ marginRight: "10px", color: "#a3bffa",fontSize: "20px" }} /><strong>Date Posted:</strong>{" "}
           {job.date_posted ? new Date(job.date_posted).toLocaleDateString() : "No date"}

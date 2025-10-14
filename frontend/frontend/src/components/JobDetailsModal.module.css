@@ -47,6 +47,22 @@
 
 }
 
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.modalHeader h2 {
+  margin: 0;
+  color: white;
+  text-align: left;
+  text-transform: uppercase;
+  flex: 1;
+}
+
 .modal h2 {
   margin-top: 0;
   color:white;
