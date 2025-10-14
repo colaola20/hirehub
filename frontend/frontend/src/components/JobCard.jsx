@@ -3,6 +3,7 @@ import React from "react";
 import truncate from "html-truncate";
 import { FaBuilding, FaMapMarkerAlt, FaCalendarAlt } from "react-icons/fa";
 import styles from "./JobCard.module.css";
+import FavoriteButton from "./FavoriteButton";
 
 const JobCard = ({ job, onClick }) => {
 
@@ -34,8 +35,10 @@ const cleanJobDescription = (html) => {
 return (
     <div className={styles["job-card"]}
      onClick={() => onClick && onClick(job)}>
-
-        <h3>{job.title || "Untitled Position"}</h3>
+        <div className={styles["card-header"]}>
+          <h3>{job.title || "Untitled Position"}</h3>
+          <FavoriteButton jobId={job.id} />
+        </div>
 
         <p className={styles.date}> <FaCalendarAlt style={{ marginRight: "10px", color: "#a3bffa",fontSize: "20px" }} /><strong>Date:</strong>{" "}{
         job.date_posted ? new Date(job.date_posted).toLocaleDateString() : "No date"}</p>
