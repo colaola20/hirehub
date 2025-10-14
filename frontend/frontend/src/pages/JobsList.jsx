@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useState, useRef } from "react";
+import { useEffect, useCallback, useState, useRef, useMemo } from "react";
 import { useOutletContext } from "react-router-dom";
 
 import styles from "./JobsList.module.css";
@@ -194,6 +194,60 @@ const JobsList = ({ jobs: initialJobs }) => {
     isCollapsed ? styles.collapsed : "",
     isExpend ? styles.expanded: "",
   ].join(" ").trim()
+
+  //------------------------------------
+  // new filter state
+  const [filters, setFilters] = useState({
+    company: "any",
+    location: "",
+    remote: "any",
+    datePosted: "newest",
+  })
+
+  const handleFilterChange = (key, value) => {
+    setFilters((f) => ({...f, [key]: value}))
+  }
+
+  const clearFilters = () => setFilters({company: "any", location: "", remote: "any", datePosted: "newest"})
+
+  const companyOptions = useMemo(() => {
+        const setC = new Set((jobs || {}).map((j) => (j.company ||"").trim()).filter(Boolean))
+    return ["any", ...Array.from(setC)]
+  }, [jobs])
+
+  // derived filterJobs from fetched jobs
+  const filteredJobs = useMemo(() => {
+    if (!jobs || jobs.length) return []
+    let list = jobs.slice()
+
+    //company filter
+    if (filters.company && filters.company !== "any") {
+      list = list.filter((j) => (j.company || "").toLowerCase() === filters.company.toLowerCase())
+    }
+
+    // location substring match
+    if (filters.location && filters.location.trim() !== "") {
+      const loc = filters.location.trim().toLowerCase()
+      list = list.filter((j) => (j.location || "").toLowerCase().include(loc))
+    }
+
+    // remote (expects job.remote to be "remote", "onside", "hybrid")
+    // we don't have this info save in the db !!!
+    if (filters.remote && filters.remote !== "any") {
+      list = list.filter((j) => (j.remote || "").toLowerCase() === filters.remote.toLowerCase())
+    }
+
+    //sort by date posted
+    const getTime = (job) => {
+      const d = job.date_posted || null
+      const t = d? new Date(d).getTime() : 0
+      return Number.isFinite(t) ? t: 0
+    }
+    list.sort((a, b) => 
+      filters.datePosted === "newest" ? getTime(b) - getTime(a) : getTime(a) - getTime(b)
+    )
+    return list
+  }, [jobs, filters])
 
   return (
 
