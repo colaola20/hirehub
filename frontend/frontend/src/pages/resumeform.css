@@ -1,5 +1,3 @@
-
-
 .form-box{
     background-color: #fff;
     display: flex;
@@ -20,7 +18,7 @@
 }
 
 .personal-info, .social-info, .misc-section, .main-sections{
-    background: linear-gradient(to left, #b0d3f5, #ae89ff);
+    background: linear-gradient(to left, #b0d3f5, #ae89ff); /* prob change this color at some point*/
     padding: 15px;
     display: flex;
     flex-direction: column;
@@ -56,4 +54,14 @@
     background: linear-gradient(to right, #86bbf0, #562fac);
     color: white;
     border: 1px solid black;
+    margin: 10px;
+}
+
+.resume-generation{
+    width: 100%;
+    text-align: center;
+}
+
+.resume-text{
+    background-color: antiquewhite;
 }

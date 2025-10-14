@@ -47,6 +47,7 @@ const ResumeForm = () => {
 
     const [certs, setCerts] = useState(""); // certifications
 
+    const [resumeText, setResumeText] = useState("");
     //add more fields as needed
 
 
@@ -57,6 +58,7 @@ const ResumeForm = () => {
 
             <div className="form-box">
                 <h2>Resume Builder Form</h2>
+                {/* <p>We'll Help You Create a Professional Resume!</p> */}
 
                 <form className="resume_form">
                     <div className='personal-info'>
@@ -271,8 +273,20 @@ const ResumeForm = () => {
                     </div>
                 </form>
                 <br />
-                <button type="submit" className="submit-btn">
+                <button onClick="generateResume" type="submit" className="submit-btn">
                     Generate Resume
+                </button>
+
+                <div className="resume-generation">
+                    <textarea 
+                        value={resumeText}
+                        id=""
+                        readOnly
+                        className="resume-text"
+                    />
+                </div>
+                <button type="submit" className="submit-btn">
+                    Export Resume
                 </button>
             </div>
         </div>
