@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styles from '../pages/Home_Page.module.css';
 import { Link } from 'react-router-dom';
-import backgroundImage from '../assets/b1.png';
+import backgroundImage from '../assets/robot.jpg';
 
 const Contact = () => {
   const [scroll, setScroll] = useState(0);
@@ -40,7 +40,7 @@ const Contact = () => {
           className={styles.heroContactOverlay}
           style={{
             transform: `scale(${1 - (scroll * 0.08)})`,
-            opacity: 1 - (scroll * 0.2)
+            opacity: 1 - (scroll * 0.1)
           }}
         >
           <img 

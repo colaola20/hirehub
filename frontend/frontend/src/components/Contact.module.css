@@ -17,6 +17,11 @@
   height: 100%;
   z-index: 0;
   overflow: hidden;
+  background: linear-gradient(
+    to bottom,
+    rgba(74, 42, 134, 0.1),
+    rgba(127, 160, 238, 0.15)
+  );
 }
 
 .heroContactOverlay {
@@ -25,6 +30,11 @@
   height: 100%;
   transition: width 0.3s ease, margin-left 0.3s ease;
   overflow: hidden;
+  background: linear-gradient(
+    135deg,
+    rgba(74, 42, 134, 0.05) 0%,
+    rgba(127, 160, 238, 0.1) 100%
+  );
 }
 
 .heroContactImage {
