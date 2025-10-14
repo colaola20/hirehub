@@ -1,0 +1,67 @@
+.form-box{
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 1200px;
+    min-width: 100vh;
+    box-shadow: 0px 8px 24px rgba(0,0,0,0.1);
+    color: black;
+}
+
+.form-box h2{
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.personal-info, .social-info, .misc-section, .main-sections{
+    background: linear-gradient(to left, #b0d3f5, #ae89ff); /* prob change this color at some point*/
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    min-width: 100vh;
+    box-sizing: border-box;
+    border-radius: 8px;
+    margin: 15px 0;
+    padding-bottom: 30px;
+}
+
+.personal-info, .social-info, .misc-section, .main-sections, input{
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 5px 7.5px;
+    border: 1px solid #eee;
+}
+
+.personal-info input[placeholder="Summary Generation (separate keywords by commas)"]{
+    background-color: white;
+    border-radius: 8px;
+    padding: 30px 100px;
+    border: 1px solid #eee;
+}
+
+.main-sections input[type="checkbox"]{
+    accent-color: #562fac;
+}
+
+.submit-btn{
+    background: linear-gradient(to right, #86bbf0, #562fac);
+    color: white;
+    border: 1px solid black;
+    margin: 10px;
+}
+
+.resume-generation{
+    width: 100%;
+    text-align: center;
+}
+
+.resume-text{
+    background-color: antiquewhite;
+}
