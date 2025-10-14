@@ -1,0 +1,189 @@
+/* Minimal Navabar */
+
+/* Make the mount node full-bleed (override Vite's default index.css) */
+:global(#root) {
+  max-width: none !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Ensure the page box fills the viewport */
+:global(html, body) {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  box-sizing: border-box;
+}
+
+
+:root { --nav-h: 64px; } 
+
+/* -------- NAV (top, glassy, light text) -------- */
+.angle2-nav {
+  position: fixed;         /* keep it like the screenshot */
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 3;
+  height: var(--nav-h);
+  padding: 0;
+  backdrop-filter: saturate(120%) blur(4px);
+  box-sizing: border-box;
+}
+
+/* -------- Layout helpers -------- */
+.angle2-nav .angle2-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 1120px;
+  height: 100%;
+  gap: 16px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+/* hamburger button (hidden on desktop) */
+.menu-toggle {
+  display: none;
+  background: transparent;
+  border: none;
+  color: inherit;
+  padding: 8px;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+}
+
+/* mobile menu (hidden by default) */
+.mobileMenu {
+  display: none;
+  position: absolute;
+  top: var(--nav-h);
+  left: 0;
+  right: 0;
+  background: rgba(3,6,23,0.94);
+  padding: 12px 16px;
+  box-shadow: 0 12px 30px rgba(2,6,23,0.6);
+  z-index: 60;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* open state */
+.mobileMenuOpen {
+  display: flex;
+}
+
+.angle2-nav .angle2-btn--small {
+  margin-left: 8px;          /* slight breathing room after links */
+}
+
+
+
+/* Make <Link> buttons styled like buttons */
+.angle2-btn,
+.angle2-btn:link,
+.angle2-btn:visited {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
+.angle2-links {
+  display: flex;
+  align-items: center;
+  gap: 16px
+}
+
+.angle2-links a {
+  color: rgba(255,255,255,0.85);
+  text-decoration: none;
+  font-size: 14.5px;
+  transition: color .18s ease, transform .12s ease;
+  position: relative;
+  padding: 6px 4px;
+  outline: none;
+}
+
+/* animated underline */
+.angle2-links a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background: linear-gradient(90deg,#667eea,#764ba2);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform .18s ease;
+  border-radius: 2px;
+  opacity: 0.95;
+}
+
+.angle2-links a:hover,
+.angle2-links a:focus {
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.angle2-links a:hover::after,
+.angle2-links a:focus::after {
+  transform: scaleX(1);
+}
+
+.angle2-links a:active {
+  transform: translateY(0);
+  opacity: .95;
+}
+
+/* keyboard-focus visible for accessibility */
+.angle2-links a:focus-visible {
+  box-shadow: 0 0 0 4px rgba(102,126,234,0.16);
+  border-radius: 6px;
+}
+
+
+.angle2-btn {
+  appearance: none;
+  border: 1px solid rgba(255,255,255,0.35);
+  background: rgba(0,0,0,0.28);
+  color: #fff;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-weight: 600;
+  font-size: 13.5px;
+  cursor: pointer;
+}
+.angle2-btn--small { padding: 8px 12px; }
+
+/* -------- Responsive tweaks -------- */
+@media (max-width: 980px) {
+  .angle2-links { display: none; }
+  .angle2-hero__title::before { filter: blur(22px); }
+  .menu-toggle {
+    display: inline-flex; /* show hamburger */
+  }
+  .nav-actions {
+    margin-left: 8px;
+  }
+}
+
+/* extra tightening for very small screens */
+@media (max-width: 480px) {
+  :root { --nav-h: 56px; }
+  .mobileMenu { padding: 10px; }
+  .angle2-btn { padding: 6px 10px; }
+}
+
+
+
+
+

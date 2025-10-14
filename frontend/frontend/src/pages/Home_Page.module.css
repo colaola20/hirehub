@@ -1,0 +1,1566 @@
+/* Home_Page.module.css */
+
+/* -------- Reset for full-bleed BG -------- */
+:global(html, body, #root) {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* -------- Page wrapper (we paint the gradient here) -------- */
+.angle2-root {
+  position: relative;
+  min-height: 100vh;
+}
+
+/* Fixed, multi-layer gradient background (stays on scroll) */
+.angle2-root::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background:
+    /* lighter global veil */
+    linear-gradient(0deg, rgba(0,0,0,0.28), rgba(0,0,0,0.28)),
+
+    /* soft pink/purple accents (unchanged) */
+    radial-gradient(380px 240px at 92% 10%, rgba(255, 120, 170, 0.20), transparent 62%),
+    radial-gradient(180px 120px at 96% 6%,  rgba(255, 155, 195, 0.26), transparent 70%),
+
+    radial-gradient(460px 300px at 8% 12%,  rgba(255, 120, 170, 0.22), transparent 64%),
+    radial-gradient(220px 150px at 5% 8%,   rgba(255, 155, 195, 0.30), transparent 72%),
+
+    radial-gradient(520px 320px at 10% 86%, rgba(255, 130, 185, 0.16), transparent 66%),
+    radial-gradient(240px 160px at 6% 94%,  rgba(255, 170, 210, 0.20), transparent 74%),
+
+    /* slightly stronger neutral highlights */
+    radial-gradient(900px 480px at 75% 12%, rgba(255,255,255,0.12), transparent 60%),
+    radial-gradient(760px 420px at 16% 8%,  rgba(255,255,255,0.08), transparent 62%),
+
+    /* purple wash + warmth */
+    radial-gradient(900px 520px at 22% 70%, rgba(120, 60, 255, 0.12), transparent 62%),
+    radial-gradient(820px 480px at 52% 38%, rgba(255,200,140,0.05), transparent 60%),
+
+    /* softer vignette */
+    radial-gradient(140% 120% at 50% 115%, rgba(0,0,0,0.54), transparent 55%),
+
+    /* brighter base gradient */
+    linear-gradient(90deg, #7fa0ee 0%, #4a2a86 100%);
+  background-attachment: fixed;
+}
+
+
+/* subtle overall dark veil like the reference */
+.angle2-root::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(1000px 700px at 40% 35%, rgba(0,0,0,0.30), transparent 65%);
+  pointer-events: none;
+}
+
+/* -------- Layout helpers -------- */
+.angle2-container {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* -------- NAV (top, glassy, light text) -------- */
+.angle2-nav {
+  position: fixed;         /* keep it like the screenshot */
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 3;
+  padding: 14px 0;
+  backdrop-filter: saturate(120%) blur(4px);
+}
+
+.angle2-logo {
+  font-weight: 800;
+  letter-spacing: .5px;
+  font-size: 18px;
+  color: #ffffff;
+  opacity: 0.95;
+}
+
+.angle2-links {
+  display: flex;
+  gap: 26px;
+  align-items: center;
+}
+.angle2-links a {
+  color: rgba(255,255,255,0.85);
+  text-decoration: none;
+  font-size: 14.5px;
+  transition: opacity .2s ease;
+}
+.angle2-links a:hover { opacity: 1; }
+
+/* Contact Section Styles */
+.heroContact {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background-color: transparent;
+  margin-top: 100px;
+  position: relative;
+  isolation: isolate;
+}
+
+.heroContact::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at center,
+    rgba(127, 160, 238, 0.3) 0%,
+    rgba(74, 42, 134, 0.4) 70%
+  );
+  z-index: 1;
+  pointer-events: none;
+}
+
+.heroContactBackground {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.heroContactOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(
+    to bottom,
+    rgba(127, 160, 238, 0.2),
+    rgba(74, 42, 134, 0.4)
+  );
+}
+
+.heroContactImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.heroContactContent {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 0 20px;
+  text-align: center;
+  mix-blend-mode: screen;
+}
+
+.heroContactText {
+  font-size: 7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #FFFFFF;
+  margin: 0;
+  line-height: 1.1;
+  text-align: center;
+  max-width: 1200px;
+}
+
+.contactButton {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  color: #FFFFFF;
+  padding: 12px 32px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  margin-top: 2rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.contactButton:hover {
+  background: #FFFFFF;
+  color: #000000;
+}
+
+.angle2-btn {
+  appearance: none;
+  border: 1px solid rgba(255,255,255,0.35);
+  background: rgba(0,0,0,0.28);
+  color: #fff;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-weight: 600;
+  font-size: 13.5px;
+  cursor: pointer;
+}
+.angle2-btn--small { padding: 8px 12px; }
+
+/* -------- HERO (centered like the mock) -------- */
+.angle2-hero {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+  display: grid;
+  grid-template-rows: auto 1fr;   /* nav space + content */
+}
+
+/* Vanta canvas sits behind content */
+.angle2-vanta-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+/* Center the hero content, compensate for fixed nav */
+.angle2-hero__inner {
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  margin-top: 64px;        /* ~nav height spacing */
+  padding: 24px 0 56px;
+  gap: 16px;
+}
+
+/* Big headline like the screenshot */
+.angle2-hero__title {
+  margin: 0;
+  font-weight: 800;
+  line-height: 1.07;
+  letter-spacing: 0;
+  font-size: clamp(40px, 7vw, 80px);   /* scales to large desktop */
+  color: #fff;
+  position: relative;
+}
+
+/* soft glow behind headline */
+.angle2-hero__title::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 54%;
+  transform: translate(-50%, -50%);
+  width: min(90vw, 980px);
+  height: min(42vw, 380px);
+  border-radius: 999px;
+  background: radial-gradient(60% 60% at 50% 50%, rgba(255,255,255,0.22), transparent 70%);
+  filter: blur(28px);
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* orange accent like the reference word “helps you grow” */
+.accent {
+  background: linear-gradient(to right, #ffffff, #B11194);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Lead and subcopy */
+.angle2-hero__lead {
+  margin: 8px 0 0;
+  color: rgba(255,255,255,0.96);
+  font-size: clamp(16px, 2vw, 18px);
+}
+.angle2-hero__sub {
+  margin: 2px 0 12px;
+  color: rgba(230,224,244,0.85);
+  font-size: clamp(14px, 1.8vw, 16px);
+}
+
+/* Primary ghost button centered below copy */
+.angle2-btn--ghost {
+  background: rgba(0,0,0,0.20);
+  border: 1px solid rgba(255,255,255,0.38);
+}
+.angle2-btn--ghost:hover {
+  border-color: rgba(255,255,255,0.55);
+}
+
+/* -------- Responsive tweaks -------- */
+@media (max-width: 980px) {
+  .angle2-links { display: none; }
+  .angle2-hero__title::before { filter: blur(22px); }
+}
+
+
+/* ===== Center the hero content ===== */
+:root { --nav-h: 64px; }             /* adjust if your nav is taller */
+
+.angle2-nav {                         /* fixed/glassy nav as you had */
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 3;
+  padding: 14px 0;
+  backdrop-filter: saturate(120%) blur(4px);
+}
+
+/* The hero owns one viewport and leaves space for the fixed nav */
+.angle2-hero {
+  position: relative;
+  min-height: 100vh;
+  padding-top: var(--nav-h);         /* make room for the nav */
+  overflow: hidden;
+}
+
+/* Vanta canvas fills the hero */
+.angle2-vanta-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 0;                        /* behind text */
+}
+
+/* ⬇️ IMPORTANT: override the flex row from .angle2-container */
+.angle2-hero__inner.angle2-container {
+  display: flex !important;          /* stop the inherited grid/flex confusion */
+  flex-direction: column;
+  align-items: center;               /* center horizontally */
+  justify-content: center;           /* center vertically */
+  min-height: calc(100vh - var(--nav-h));
+  max-width: 980px;                  /* nice readable width */
+  margin: 0 auto;                    /* center the block */
+  text-align: center;
+  gap: 16px;
+  z-index: 1;                        /* above Vanta */
+}
+
+/* Big headline stays centered */
+.angle2-hero__title {
+  margin: 0;
+  line-height: 1.07;
+  font-weight: 800;
+  font-size: clamp(40px, 7vw, 80px);
+}
+
+/* optional soft glow behind headline, centered */
+.angle2-hero__title::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 54%;
+  transform: translate(-50%, -50%);
+  width: min(90vw, 980px);
+  height: min(42vw, 380px);
+  border-radius: 999px;
+  background: radial-gradient(60% 60% at 50% 50%, rgba(255,255,255,0.22), transparent 70%);
+  filter: blur(28px);
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* keep links hidden on mobile if you already did that elsewhere */
+@media (max-width: 980px) {
+  .angle2-links { display: none; }
+}
+/* Make the mount node full-bleed (override Vite's default index.css) */
+:global(#root) {
+  max-width: none !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Ensure the page box fills the viewport */
+:global(html, body) {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* Your wrapper should own the full screen */
+.angle2-root {
+  width: 100%;
+  min-height: 100vh;
+  overflow-x: hidden;       /* prevent accidental horiz scroll */
+}
+
+/* Hero + Vanta sizing (restate for safety) */
+.angle2-hero {
+  position: relative;
+  min-height: 100vh;
+  padding-top: var(--nav-h, 64px);
+  overflow: hidden;
+}
+.angle2-vanta-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+/* ====== NEW: Headline placed like the Vanta.js demo ====== */
+:root {
+  --hero-x: 34%;   /* horizontal position of headline block (tweak 32–36%) */
+  --hero-y: 50%;   /* vertical position (center) */
+}
+
+.heroCopy {
+  position: absolute;
+  left: var(--hero-x);
+  top: var(--hero-y);
+  transform: translate(-50%, -50%);
+  z-index: 1;                 /* above Vanta canvas */
+  text-align: center;
+  width: min(90vw, 900px);
+  padding: 0 16px;
+  pointer-events: none;       /* keep canvas interactions smooth */
+}
+
+.heroTitle {
+  margin: 0 0 14px 0;
+  font-weight: 800;
+  line-height: 1.03;
+  /* bigger: min 56px, scales faster, caps at 128px */
+  font-size: clamp(56px, 11vw, 128px);
+  color: #fff;
+  text-shadow: 0 2px 22px rgba(0,0,0,0.35);
+}
+
+.heroSub {
+  margin: 0;
+  /* bigger: min 20px, scales faster, caps at 30px */
+  font-size: clamp(20px, 3vw, 30px);
+  color: rgba(255,255,255,0.92);
+}
+
+
+/* Reuse existing .accent for the orange gradient word */
+
+/* Responsive: center fully on small screens */
+@media (max-width: 900px) {
+  :root { --hero-x: 50%; --hero-y: 50%; }
+  .heroCopy { width: min(92vw, 700px); }
+}
+
+/* ====== NEW: Center the nav contents and show only needed bits ====== */
+.angle2-nav .angle2-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;   /* center links + buttons */
+  gap: 24px;
+}
+
+/* Hide the left logo in the nav to avoid spreading edge-to-edge */
+.angle2-nav .angle2-logo {
+  display: none;
+}
+
+/* Keep links inline and the small button next to them */
+.angle2-nav .angle2-links {
+  display: flex;
+  gap: 26px;
+  align-items: center;
+}
+.angle2-nav .angle2-btn--small {
+  margin-left: 8px;          /* slight breathing room after links */
+}
+/* ===== Glassy full-width "What is HireHub?" section ===== */
+.angle2-about {
+  position: relative;
+  padding: clamp(48px, 8vw, 96px) 0;        /* space above/below */
+}
+
+/* The inner block already has both classes (.angle2-container + .angle2-about__inner).
+   Override the container's max-width and make it a glass panel that spans the section. */
+.angle2-about__inner {
+  max-width: none;                           /* override .angle2-container */
+  width: 100%;
+  margin: 0;
+  padding: clamp(24px, 4vw, 48px) clamp(16px, 4vw, 64px);
+
+  /* Glassmorphism */
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 20px;
+  backdrop-filter: blur(12px) saturate(120%);
+  -webkit-backdrop-filter: blur(12px) saturate(120%);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+
+  /* Light-on-dark text since it sits over your gradient */
+  color: rgba(255, 255, 255, 0.92);
+}
+
+/* Headline & body copy colors inside the glass card */
+.angle2-about__inner h2 {
+  color: #ffffff;
+  margin: 0 0 12px 0;
+  font-weight: 800;
+}
+.angle2-about__inner p {
+  color: rgba(240, 240, 248, 0.92);
+  margin: 8px 0 18px 0;
+}
+
+/* Make the list read well across the full width */
+.angle2-about__list {
+  display: grid;
+  grid-template-columns: repeat( auto-fit, minmax(260px, 1fr) );
+  gap: 12px 20px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+.angle2-about__list li {
+  color: rgba(240, 240, 248, 0.9);
+  position: relative;
+  padding-left: 18px;
+}
+.angle2-about__list li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  top: 0;
+  line-height: 1;
+  color: rgba(255, 200, 140, 0.95); /* subtle warm bullet */
+}
+
+/* Optional: softly lift the glass card off the edges on very small screens */
+@media (max-width: 640px) {
+  .angle2-about__inner {
+    border-radius: 16px;
+    padding: 20px 16px;
+  }
+}
+/* ---------- Shared section heading ---------- */
+.angle2-section-heading {
+  margin: 0 0 14px 0;
+  font-weight: 800;
+  color: #fff;
+}
+
+/* ---------- SERVICES (glassy cards) ---------- */
+.angle2-services {
+  position: relative;
+  padding: clamp(48px, 8vh, 96px) 0;
+  scroll-margin-top: 72px; /* anchor offset for fixed nav */
+}
+
+.angle2-services__inner {
+  max-width: none;
+  width: 100%;
+  margin: 0;
+  padding: clamp(24px, 4vw, 48px);
+  background: rgba(12, 16, 38, 0.30);
+  border: 1px solid rgba(255,255,255,0.12);
+  backdrop-filter: blur(10px) saturate(115%);
+  -webkit-backdrop-filter: blur(10px) saturate(115%);
+  border-radius: clamp(8px, 1.2vw, 14px);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 10px 28px rgba(0,0,0,0.18);
+  color: rgba(248,249,255,0.94);
+}
+
+.svcGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: clamp(14px, 2vw, 24px);
+  margin-top: clamp(12px, 2vh, 20px);
+}
+
+.svcCard {
+  padding: clamp(16px, 2.2vw, 22px);
+  border-radius: 12px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.10);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+}
+
+.svcCard h3 {
+  margin: 0 0 8px;
+  color: #fff;
+  font-weight: 700;
+}
+.svcCard p {
+  margin: 0;
+  color: rgba(235,237,255,0.92);
+}
+
+/* ---------- CONTACT (copy + form) ---------- */
+.angle2-contact {
+  position: relative;
+  padding: clamp(48px, 8vh, 96px) 0;
+  scroll-margin-top: 72px; /* anchor offset */
+}
+
+.angle2-contact__inner {
+  max-width: none;
+  width: 100%;
+  margin: 0;
+  padding: clamp(24px, 4vw, 56px);
+  background: rgba(12, 16, 38, 0.30);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: clamp(8px, 1.2vw, 14px);
+  backdrop-filter: blur(10px) saturate(115%);
+  -webkit-backdrop-filter: blur(10px) saturate(115%);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 10px 28px rgba(0,0,0,0.18);
+  color: rgba(248,249,255,0.94);
+
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;            /* copy | form */
+  gap: clamp(16px, 3vw, 36px);
+}
+
+.contactCopy p { color: rgba(235,237,255,0.92); }
+
+.contactList {
+  list-style: none;
+  padding: 0;
+  margin: 12px 0 0 0;
+  display: grid;
+  gap: 6px;
+}
+.contactList li { color: rgba(235,237,255,0.9); }
+
+.contactForm { display: grid; gap: 12px; }
+.formRow { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+.contactForm input,
+.contactForm textarea {
+  width: 100%;
+  border: 1px solid rgba(255,255,255,0.20);
+  background: rgba(255,255,255,0.06);
+  color: #fff;
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-size: 14px;
+  outline: none;
+}
+.contactForm input::placeholder,
+.contactForm textarea::placeholder {
+  color: rgba(255,255,255,0.65);
+}
+
+/* Make <Link> buttons styled like buttons */
+.angle2-btn,
+.angle2-btn:link,
+.angle2-btn:visited {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
+/* responsive */
+@media (max-width: 900px) {
+  .angle2-contact__inner {
+    grid-template-columns: 1fr;      /* stack */
+  }
+  .formRow { grid-template-columns: 1fr; }
+}
+/* ===== Feature section (Jobright-like) ===== */
+.angle2-feature {
+  position: relative;
+  padding: clamp(56px, 10vh, 96px) 0;
+}
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr; /* copy | visual */
+  align-items: center;
+  gap: clamp(18px, 3.5vw, 48px);
+}
+
+/* Eyebrow */
+.eyebrow {
+  margin: 0 0 8px;
+  font-weight: 800;
+  letter-spacing: .2px;
+  color: rgba(255,255,255,.92);
+}
+
+/* Title */
+.feature-title {
+  margin: 0 0 14px;
+  font-weight: 800;
+  line-height: 1.15;
+  font-size: clamp(28px, 3.8vw, 44px);
+  color: #fff;
+}
+.title-strong {
+  display: inline-block;
+  background: linear-gradient(90deg, #8ec5fc 0%, #7a5bbf 50%, #f6a0d0 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  background-size: 200% auto;
+  animation: titleShift 6s ease-in-out infinite;
+}
+@keyframes titleShift {
+  0%,100% { background-position: 0% 50%; }
+  50%     { background-position: 100% 50%; }
+}
+.slash { opacity: .5; padding: 0 .25rem; }
+.title-rest { color: rgba(255,255,255,.96); }
+
+/* Bullets */
+.feature-list {
+  margin: 12px 0 18px;
+  padding-left: 0;
+  list-style: none;
+  display: grid;
+  gap: 10px;
+}
+.feature-list li {
+  position: relative;
+  padding-left: 28px;
+  color: rgba(235,237,255,.95);
+}
+.feature-list li::before {
+  content: "•";
+  position: absolute;
+  left: 8px; top: 0;
+  color: #96f2a7;
+  font-size: 22px;
+  line-height: 1;
+}
+
+/* CTA */
+.btn-large {
+  padding: 14px 24px;
+  border-radius: 999px;
+  font-size: 15px;
+  font-weight: 800;
+  background: #0f1220;
+  border: 1px solid rgba(255,255,255,.28);
+}
+.btn-large:hover { border-color: rgba(255,255,255,.5); }
+
+/* Visual mockup */
+.feature-visual { display: grid; place-items: center; }
+.mockup-card {
+  width: min(520px, 92vw);
+  border-radius: 18px;
+  background: rgba(255,255,255,.92);
+  color: #0f1220;
+  box-shadow: 0 20px 50px rgba(0,0,0,.25);
+  overflow: hidden;
+}
+.mockup-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 18px;
+  border-bottom: 1px solid rgba(15,18,32,.08);
+}
+.mockup-name { font-weight: 800; }
+.score-badge {
+  display: grid; place-items: center;
+  width: 72px; height: 72px; border-radius: 50%;
+  background: radial-gradient(circle at 50% 45%, #2bd96b, #00c853);
+  color: #fff;
+  box-shadow: 0 10px 20px rgba(0,200,83,.35);
+}
+.score-badge .score { font-size: 22px; font-weight: 900; line-height: 1; }
+.score-badge small { text-transform: uppercase; font-size: 9px; letter-spacing: .6px; opacity: .9; }
+
+.mockup-body { padding: 16px 18px 6px; }
+.bar {
+  height: 12px; border-radius: 8px; margin-bottom: 10px;
+  background: linear-gradient(90deg, rgba(15,18,32,.10), rgba(15,18,32,.14));
+}
+.bar.small { height: 8px; width: 70%; }
+.bar.mid   { height: 10px; width: 86%; }
+
+/* Green chips */
+.chips {
+  display: flex; flex-wrap: wrap; gap: 10px;
+  padding: 0 16px 16px;
+}
+.chips span {
+  background: #00c853; color: #0f1220;
+  border-radius: 999px; padding: 8px 10px;
+  font-weight: 800; font-size: 12px;
+  box-shadow: 0 8px 18px rgba(0,200,83,.25);
+}
+
+/* Scroll-reveal (applies when JS adds .is-visible) */
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity .6s ease, transform .6s ease;
+  will-change: opacity, transform;
+}
+.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Responsive */
+@media (max-width: 980px) {
+  .feature-grid { grid-template-columns: 1fr; }
+  .feature-visual { order: -1; }  /* image first on mobile, like Jobright */
+  .mockup-card { width: 100%; }
+}
+
+
+.caeliCard p {
+  margin: 0;
+  font-size: 15px;
+  color: #33695a;
+  line-height: 1.6;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .caeliContainer {
+    grid-template-columns: 1fr;
+    padding: 24px;
+  }
+
+  .caeliRight {
+    height: auto;
+    margin-top: 40px;
+  }
+
+  .caeliImageWrap {
+    height: 65vh;
+  }
+
+  .caeliCard {
+    position: relative;
+    bottom: auto;
+    right: auto;
+    margin: 20px auto 0;
+    width: 90%;
+  }
+}
+/* ===== Resume AI Section ===== */
+.resumeSection {
+  position: relative;
+  padding: clamp(80px, 10vh, 120px) 0;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.resumeContainer {
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+  align-items: center;
+  gap: clamp(30px, 5vw, 80px);
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* LEFT SIDE */
+.resumeLeft {
+  color: #fff;
+}
+
+.resumeHeading {
+  font-weight: 800;
+  font-size: clamp(28px, 3.5vw, 42px);
+  line-height: 1.2;
+  color: #fff;
+}
+
+.resumeHeading strong {
+  background: linear-gradient(90deg, #8ec5fc 0%, #7a5bbf 60%, #f6a0d0 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.resumeList {
+  margin: 20px 0 30px;
+  padding-left: 0;
+  list-style: none;
+  display: grid;
+  gap: 10px;
+}
+
+.resumeList li {
+  position: relative;
+  padding-left: 22px;
+  color: rgba(240, 240, 248, 0.95);
+  font-size: 16px;
+}
+
+.resumeList li::before {
+  content: "•";
+  position: absolute;
+  left: 4px;
+  top: 0;
+  color: #90fba4;
+  font-size: 22px;
+}
+
+.resumeBtn {
+  background: #0f0f0f;
+  color: #fff;
+  font-weight: 700;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 999px;
+  padding: 14px 28px;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.resumeBtn:hover {
+  border-color: rgba(255, 255, 255, 0.6);
+  background: #141414;
+}
+
+/* RIGHT SIDE */
+.resumeRight {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.sparkle {
+  position: absolute;
+  top: -25px;
+  left: 40px;
+  font-size: 24px;
+  filter: drop-shadow(0 0 6px #6fffd8);
+}
+
+.resumeCard {
+  position: relative;
+  background: #fff;
+  color: #0f1220;
+  border-radius: 18px;
+  box-shadow: 0 16px 45px rgba(0, 0, 0, 0.28);
+  width: min(520px, 95%);
+  overflow: hidden;
+  padding: 28px 30px;
+}
+
+.resumeScore {
+  position: absolute;
+  top: 18px;
+  right: 22px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 8px 14px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  text-align: center;
+}
+
+.scoreValue {
+  font-weight: 900;
+  font-size: 22px;
+  color: #0f1220;
+}
+
+.scoreLabel {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: #0f1220;
+  opacity: 0.8;
+}
+
+.cardName {
+  font-weight: 800;
+  font-size: 20px;
+  margin-bottom: 12px;
+}
+
+.cardBlock {
+  margin-bottom: 14px;
+}
+
+.cardBlock h4 {
+  font-weight: 700;
+  font-size: 13px;
+  margin: 0 0 4px;
+  color: #111;
+}
+
+.cardBlock p {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: #2d2d2d;
+}
+
+.highlight {
+  background: #c8f7d0;
+  padding: 2px 4px;
+  border-radius: 3px;
+}
+
+/* GREEN CHIPS */
+.resumeChips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.resumeChips span {
+  background: #00c853;
+  color: #0f1220;
+  border-radius: 999px;
+  padding: 8px 12px;
+  font-weight: 700;
+  font-size: 12px;
+  box-shadow: 0 6px 16px rgba(0, 200, 83, 0.25);
+}
+
+/* Responsive */
+@media (max-width: 960px) {
+  .resumeContainer {
+    grid-template-columns: 1fr;
+  }
+
+  .resumeRight {
+    order: -1;
+  }
+
+  .resumeCard {
+    width: 100%;
+  }
+
+  .resumeLeft {
+    text-align: center;
+  }
+
+  .resumeBtn {
+    margin: 0 auto;
+  }
+}
+/* === FULL-SCALE Services Section === */
+.caeliServices {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  padding: 0;
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  color: #ffffff;
+
+.caeliContainer {
+  display: flex;
+  grid-template-columns: 0.5fr 2.5fr; /* even wider right side */
+  align-items: center;
+  gap: clamp(30px, 5vw, 80px);
+  width: 98%; /* take up more screen width */
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* LEFT SIDE */
+.caeliLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  font-family: "Inter", sans-serif;
+  margin-left: 24px;
+}
+.caeliOption {
+  font-weight: 800;
+  font-size: clamp(34px, 4vw, 52px);
+  letter-spacing: 0.6px;
+  color: rgba(255, 255, 255, 0.45);
+  cursor: pointer;
+  transition: all 0.4s ease;
+  width: fit-content;
+  padding-bottom: 6px;
+  position: relative;
+}
+
+.caeliOption::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0.2),
+    rgba(255, 255, 255, 1)
+  );
+  transition: width 2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.caeliOption:hover {
+  color: rgba(255, 255, 255, 0.8);
+  transform: translateX(8px);
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
+  animation: glowPulse 2s infinite;
+}
+
+.caeliOption:hover::after {
+  width: 100%;
+}
+/* RIGHT SIDE - Much Larger */
+.caeliRight {
+  height: 80vh; /* even taller than viewport */
+  width: 50%;
+  display: block;
+  align-items: center;
+  justify-content: flex-end;
+  margin-right: 48px; /* extend past container edge */
+}
+
+.caeliImageWrap {
+  width: 100%;
+  height: 100vh; /* full viewport height */
+  border-radius: 28px 0 0 28px; /* rounded only on left side */
+  overflow: hidden;
+  box-shadow: 0 30px 100px rgba(0, 0, 0, 0.6);
+  transition: transform 0.4s ease;
+}
+
+.caeliImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity 0.6s ease-in-out;
+  transform: scale(1.02); /* slightly larger to prevent edge gaps */
+}
+
+/* Floating text card */
+.caeliCard {
+  position: absolute;
+  bottom: 180px;
+  right: 80px;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(14px) saturate(130%);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 24px;
+  padding: 60px 50px;
+  width: clamp(800px, 50%, 600px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+}
+
+.caeliCard p {
+  margin: 0;
+  font-size: 26px;
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.6;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 1400px) {
+  .caeliContainer {
+    grid-template-columns: 0.6fr 2.4fr;
+    max-width: 2000px;
+  }
+  
+  .caeliRight {
+    height: 100vh;
+    margin-right: -24px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .caeliContainer {
+    grid-template-columns: 1fr;
+    padding: 24px;
+  }
+
+  .caeliRight {
+    height: auto;
+    margin: 40px -24px 0;
+  }
+
+  .caeliImageWrap {
+    height: 75vh;
+    border-radius: 0;
+  }
+
+  .caeliCard {
+    position: relative;
+    bottom: auto;
+    right: auto;
+    margin: 20px auto 0;
+    width: 90%;
+    max-width: 500px;
+  }
+}
+  z-index: 1;
+  overflow: hidden;
+  color: #ffffff;
+}
+
+.caeliContainer {
+  display: grid;
+  grid-template-columns: 0.5fr 2.5fr; /* even wider right side */
+  align-items: center;
+  gap: clamp(30px, 5vw, 80px);
+  justify-content: space-between;
+  width: 98%; /* take up more screen width */
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* LEFT SIDE */
+.caeliLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  font-family: "Inter", sans-serif;
+  margin-left: 24px;
+}
+
+.caeliOption {
+  font-weight: 800;
+  font-size: clamp(34px, 4vw, 52px);
+  letter-spacing: 0.6px;
+  color: rgba(255, 255, 255, 0.45);
+  cursor: pointer;
+  transition: all 0.4s ease;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+  width: fit-content;
+  padding-bottom: 6px;
+}
+
+.caeliOption:hover {
+  color: rgba(255, 255, 255, 0.8);
+  transform: translateX(8px);
+}
+
+.active {
+  color: #ffffff;
+  transform: translateX(10px);
+}
+
+.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: #ffffff;
+}
+/* RIGHT SIDE - Much Larger */
+.caeliRight {
+  height: 110vh; /* even taller than viewport */
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-right: auto; /* extend past container edge */
+}
+
+.caeliImageWrap {
+  width: 100%;
+  height: 100vh; /* full viewport height */
+  border-radius: 28px 0 0 28px; /* rounded only on left side */
+  overflow: hidden;
+  box-shadow: 0 30px 100px rgba(0, 0, 0, 0.6);
+  transition: transform 0.4s ease;
+}
+
+.caeliImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity 0.6s ease-in-out;
+  transform: scale(1.02); /* slightly larger to prevent edge gaps */
+}
+
+/* Floating text card */
+.caeliCard {
+  position: absolute;
+  bottom: 180px;
+  right: 80px;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(14px) saturate(130%);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 24px;
+  padding: 32px 40px;
+  width: clamp(380px, 45%, 560px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+}
+
+.caeliCard p {
+  margin: 0;
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.6;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 1400px) {
+  .caeliContainer {
+    grid-template-columns: 0.6fr 2.4fr;
+    max-width: 2000px;
+  }
+  
+  .caeliRight {
+    height: 100vh;
+    margin-right: -24px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .caeliContainer {
+    grid-template-columns: 1fr;
+    padding: 24px;
+  }
+
+  .caeliRight {
+    height: auto;
+    margin: 40px -24px 0;
+  }
+
+  .caeliImageWrap {
+    height: 75vh;
+    border-radius: 0;
+  }
+
+  .caeliCard {
+    position: relative;
+    bottom: auto;
+    right: auto;
+    margin: 20px auto 0;
+    width: 90%;
+    max-width: 500px;
+  }
+}
+
+/* RIGHT SIDE - Larger image */
+.caeliRight {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.caeliImageWrap {
+  position: relative;
+  width: 100%;
+  border-radius: 20px;
+  overflow: hidden;
+  transition: transform 0.4s ease;
+}
+
+.caeliImageWrap:hover {
+  transform: scale(1.02);
+}
+
+.caeliImage {
+  width: 100%;
+  height: 600px; /* taller image */
+  object-fit: cover;
+  border-radius: 20px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+  transition: opacity 0.6s ease-in-out;
+  animation: fadeIn 0.5s ease;
+}
+
+/* Floating text card */
+.caeliCard {
+  position: absolute;
+  bottom: 40px;
+  right: 40px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(14px) saturate(130%);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 16px;
+  padding: 24px 30px;
+  width: clamp(300px, 40%, 460px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+.caeliCard p {
+  margin: 0;
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.6;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive tweaks */
+@media (max-width: 960px) {
+  .caeliContainer {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .caeliLeft {
+    flex-direction: row;
+    justify-content: center;
+    gap: 14px;
+  }
+
+  .caeliOption {
+    font-size: 22px;
+    border: none;
+  }
+
+  .caeliImageWrap {
+    margin-top: 30px;
+    max-width: 100%;
+  }
+
+  .caeliImage {
+    height: 400px;
+  }
+
+  .caeliCard {
+    position: relative;
+    bottom: auto;
+    right: auto;
+    margin: 20px auto 0;
+    width: 90%;
+    background: rgba(255, 255, 255, 0.15);
+  }
+}
+/* === FULL-SCALE Services Section === */
+.caeliServices {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  padding: 0;
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.caeliContainer {
+  display: grid;
+  grid-template-columns: 0.7fr 2.3fr; /* wider right side like the reference */
+  align-items: center;
+  gap: clamp(30px, 5vw, 80px);
+  width: 95%;
+  margin: 0 auto;
+  padding: 0 48px;
+}
+
+/* RIGHT SIDE - immersive image */
+.caeliRight {
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.caeliImageWrap {
+  width: 100%;
+  height: 90vh; /* tall like the reference */
+  border-radius: 28px;
+  overflow: hidden;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+  transition: transform 0.4s ease;
+}
+
+.caeliImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 28px;
+  transition: opacity 0.6s ease-in-out;
+}
+
+/* Floating text card (adjusted position) */
+.caeliCard {
+  position: absolute;
+  bottom: 60px;
+  right: 60px;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(14px) saturate(130%);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 20px;
+  padding: 28px 36px;
+  width: clamp(350px, 40%, 520px);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.45);
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .caeliContainer {
+    grid-template-columns: 1fr;
+    padding: 24px;
+  }
+
+  .caeliRight {
+    height: auto;
+    margin-top: 40px;
+  }
+
+  .caeliImageWrap {
+    height: 65vh;
+  }
+
+  .caeliCard {
+    position: relative;
+    bottom: auto;
+    right: auto;
+    margin: 20px auto 0;
+    width: 90%;
+  }
+}
+@keyframes glowPulse {
+  0% {
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
+  }
+  50% {
+    text-shadow: 0 0 16px rgba(255, 255, 255, 0.6);
+  }
+  100% {
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
+  }
+}

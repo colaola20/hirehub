@@ -1,10 +1,10 @@
 import React, {useState} from 'react'
 import {Link, useNavigate} from 'react-router-dom'
-import './Navbar.css'
+import styles from './Navbar.module.css'
 
 const PersonalizedNavbar = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const navigate = useNavigate();;
+    const navigate = useNavigate();
 
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
@@ -50,44 +50,39 @@ const PersonalizedNavbar = () => {
     }
 
     return (
-        <nav className='navbar'>
-            <div className='navbar-container'>
-                <div className='navbar-brand'>
-                    <Link to='/'>
-                        <div className="logo">H</div>
-                        <div className="brand-text">
-                            <h2 className="brand-title">ireHub</h2>
-                        </div>
+        <header className={styles["angle2-nav"]}>
+            <div className={styles["angle2-container"]}>
+                <h2>JOBS:</h2>
+                <nav className={styles["angle2-links"]}>
+                    <Link to="/">
+                        Recommended
                     </Link>
-                </div>
-                <button 
-                    className={`hamburger ${isMenuOpen ? 'active' : ''}`}
+                    <Link to="/">
+                        Liked
+                    </Link>
+                    <Link to="/">
+                        Applied
+                    </Link>
+
+                </nav>
+                {/* right side actions (buttons etc) */}
+                <div className={styles.navActions || styles["nav-actions"]}>
+                    {/* show hamburger on small screens */}
+                    <button
+                    className={styles.menuToggle || styles["menu-toggle"]}
+                    aria-label="Toggle menu"
                     onClick={toggleMenu}
-                    aria-label='Toggle navigation'
-                >
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
-                <ul className={`nav-links ${isMenuOpen ? 'active' : ''}`}>
-                    <li>
-                        <Link to='/'>Jobs</Link>
-                    </li>
-                    <li>
-                        <Link to='/'>Recommended</Link>
-                    </li>
-                    <li>
-                        <Link to='/'>Resume</Link>
-                    </li>
-                    <li>
-                        <Link to='/'>Profile</Link>
-                    </li>
-                    <li>
-                        <Link to='/' onClick={handleLogout}>Sign Out</Link>
-                    </li>
-                </ul>
+                    >
+                    {/* simple 3-line icon */}
+                    <svg width="20" height="12" viewBox="0 0 20 12" fill="none" aria-hidden>
+                        <rect y="0" width="20" height="2" rx="1" fill="currentColor"/>
+                        <rect y="5" width="20" height="2" rx="1" fill="currentColor"/>
+                        <rect y="10" width="20" height="2" rx="1" fill="currentColor"/>
+                    </svg>
+                    </button>
+                </div>
             </div>
-        </nav>
+        </header>
     )
 }
 export default PersonalizedNavbar

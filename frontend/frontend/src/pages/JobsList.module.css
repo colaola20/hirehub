@@ -1,0 +1,130 @@
+:root {
+    --bg-surface: rgba(255,255,255,0.03);
+    --muted: #9aa4b2;
+    --accent-grad: linear-gradient(90deg,#667eea,#764ba2);
+    --radius: 10px;
+    --gap: 16px;
+}
+
+.jobSection {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 8px 0;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+  
+
+
+}
+
+.searchContainer {
+  width: 100%;
+  max-width: 820px;
+  margin: 0 0 18px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px; 
+  box-sizing: border-box;
+}
+
+
+.searchInput {
+    flex: 1 1 auto;
+    width: 100%;
+    max-width: 93%;
+    padding: 10px 12px;
+    border-radius: 999px;
+    background: var(--bg-surface);
+    border: 1px solid rgba(255,255,255,0.06);
+    color: #fff;
+    margin-left: 30px;
+    box-shadow: 0 6px 18px rgba(2,6,23,0.25);
+    outline: none;
+}
+
+.searchBtn {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    background: none;
+}
+
+.searchBtn svg {
+  width: 24px;
+  height: 24px;
+  display: block;
+  overflow: visible;
+  fill: currentColor;
+}
+
+.clearBtn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+}
+
+.searchBtn:hover,
+.searchBtn:focus,
+.clearBtn:hover,
+.clearBtn:focus {
+    border-color: rgba(151,167,234,0.18); /* only border appears on hover */
+    outline: none;
+}
+
+.clearBtn svg {
+  width: 24px;
+  height: 24px;
+  display: block;
+  overflow: visible;
+  fill: currentColor;
+}
+
+
+.loadingState,
+.errorState,
+.emptyState {
+    border-radius: var(--radius);
+    padding: 28px;
+    text-align: center;
+    color: var(--muted);
+}
+
+.retryBtn {
+    margin-top: 12px;
+    background: var(--accent-grad);
+    color: #fff;
+    border: none;
+    padding: 10px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.cardList {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--gap);
+    margin-top: 8px;
+    overflow: auto;
+    padding: 20px 0 0 30px ;
+     /* Hide scrollbar for IE, Edge */
+    -ms-overflow-style: none;  
+    /* Hide scrollbar for Firefox */
+    scrollbar-width: none;  
+}
+
+.cardList::-webkit-scrollbar {
+    display: none;
+}
+
+
+.jobCard {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}

@@ -21,3 +21,16 @@ class Job(db.Model):
     __table_args__ = (
         db.UniqueConstraint('api_id', 'source', name='unique_job_per_source'),
     )
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'title': self.title,
+            'company': self.company,
+            'location': self.location,
+            'description': self.description,
+            'url': self.url,
+            'date_posted': self.date_posted.isoformat() if self.date_posted else None,
+            'source': self.source
+        }
+    

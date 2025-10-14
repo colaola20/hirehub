@@ -1,47 +1,15 @@
-import React, { useEffect, useCallback, useState } from "react";
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
-import PersonalizedNavbar from "../components/PersonalizedNavbar";
+import { useEffect, useCallback, useState, useRef } from "react";
+import { Outlet, useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify"
+import "react-toastify/dist/ReactToastify.css"
 
-import "./dashBoard.css";
-import JobCard from "../components/JobCard.jsx";
+import styles from "./dashBoard.module.css";
+import PersonalizedNavbar from "../components/PersonalizedNavbar.jsx";
+import SideBar  from "../components/sideBar.jsx";
+import ChatBot from "../components/ChatBot.jsx";
+import JobDetailsModal from "../components/JobDetailsModal.jsx"; 
 
-const sampleJobs = [
-  {
-    title: "Frontend Developer",
-    company: "TechCorp",
-    location: "New York, NY",
-    salary: "$80,000 - $100,000",
-    description: "Build amazing web apps with React and modern JS."
-  },
-  {
-    title: "Backend Engineer",
-    company: "DataSys",
-    location: "San Francisco, CA",
-    salary: "$90,000 - $120,000",
-    description: "Develop APIs, databases, and server-side logic."
-  },
-  {
-    title: "Fullstack Developer",
-    company: "InnovateX",
-    location: "Remote",
-    salary: "$85,000 - $110,000",
-    description: "Work on both frontend and backend projects."
-  },
-  {
-    title: "UI/UX Designer",
-    company: "DesignHub",
-    location: "Austin, TX",
-    salary: "$70,000 - $95,000",
-    description: "Create intuitive user interfaces and experiences."
-  },
-  {
-    title: "DevOps Engineer",
-    company: "CloudNet",
-    location: "Seattle, WA",
-    salary: "$100,000 - $130,000",
-    description: "Automate deployments and manage cloud infrastructure."
-  }
-];
+
 
 
 const UserDashboard = () => {
@@ -49,12 +17,20 @@ const UserDashboard = () => {
   const { username } = useParams();
   const [searchParams] = useSearchParams();
 
-  const [jobs, setJobs] = useState([]);
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
-  const [page, setPage] = useState(1);
-  const [totalJobs, setTotalJobs] = useState(0)
-  const jobsPerPage = 3;
+   const [selectedJob, setSelectedJob] = useState(null);
+
+   const handleJobClick = (job) => {
+    // console.log("Job ID clicked:", job.id);
+    // console.log(job.description);        // use `job` instead of `selectedJob`
+    // console.log(job.description.length);
+    setSelectedJob(job); // open modal
+  
+
+  }
+
+    const closeModal = () => {
+    setSelectedJob(null); // close modal
+  }
 
   // Handle token + username from query params
   useEffect(() => {
@@ -66,7 +42,6 @@ const UserDashboard = () => {
     if (username) navigate(`/${username}`, { replace: true });
   }, [searchParams, navigate]);
 
-
   // ✅ Block access if token is missing
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -75,173 +50,73 @@ const UserDashboard = () => {
     }
   }, [navigate]);
 
+  // Logout due to users inactivity
+
+  const AUTO_LOGOUT_TIME = 10 * 60 * 1000 // 10 minutes
+  const WARNING_TIME = 60 * 1000 // 1 min before logout
+  // const AUTO_LOGOUT_TIME = 30 * 1000 // 30 sec for testing
+  // const WARNING_TIME = 15 * 1000 // 1 min before logout
+  
+
+  const timerRef = useRef(null);
+  const warningRef = useRef(null)
+
   // ✅ logout function
-  // const logout = useCallback(() => {
-  //   localStorage.removeItem("token");
-  //   alert("You have been logged out due to inactivity.");
-  //   navigate("/login");
-  // }, [navigate]);
+  const logout = useCallback(() => {
+    localStorage.removeItem("token");
+    navigate("/login");
+  }, [navigate]);
 
-  // useEffect(() => {
-  //   let timer;
-  //   const resetTimer = () => {
-  //     if (timer) clearTimeout(timer);
-  //     timer = setTimeout(logout, 30000);
-  //   };
-  //
-  //   window.addEventListener("mousemove", resetTimer);
-  //   window.addEventListener("keydown", resetTimer);
-  //   window.addEventListener("click", resetTimer);
-  //
-  //   resetTimer();
-  //
-  //   return () => {
-  //     clearTimeout(timer);
-  //     window.removeEventListener("mousemove", resetTimer);
-  //     window.removeEventListener("keydown", resetTimer);
-  //     window.removeEventListener("click", resetTimer);
-  //   };
-  // }, [logout]);
+  const resetTimer = useCallback(() => {
+    if (timerRef.current) clearTimeout(timerRef.current)
+    if (warningRef.current) clearTimeout(warningRef.current)
 
-  // ✅ Handle token + username from query params
-  useEffect(() => {
-    const token = searchParams.get("token");
-    const queryUsername = searchParams.get("username");
+    warningRef.current = setTimeout(() => {
+      toast.warn(
+        <div>
+          "You will be logged out in 1 min due to inactivity."
+          <button onClick={resetTimer} style={{marginLeft:"10px"}}>Stay Logged In</button>
+        </div>, {autoClose: 5000})
+    }, AUTO_LOGOUT_TIME - WARNING_TIME)
 
-    if (token) {
-      localStorage.setItem("token", token);
-    }
-
-    // ✅ Clean the URL
-    if (queryUsername) {
-      navigate(`/${queryUsername}`, { replace: true });
-    }
-  }, [searchParams, navigate]);
-
-
-  // Fetch jobs function
-  const fetchJobs = useCallback(async () => {
-    try {
-      setLoading(true)
-      setError(null)
-
-      const token = localStorage.getItem("token")
-      const response = await fetch('/api/jobs', {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      })
-      if (!response.ok) {
-        throw new Error(`HHTP error! Status: ${response.status}`)
-      }
-
-      const data = await response.json()
-      console.log(data)
-      setJobs(data.jobs || [])
-      setTotalJobs(data.total || 0)
-    } catch (error) {
-      console.error('Failed to fetch jobs:', error)
-      setError('Failed to load jobs. Plaese try again.')
-
-    } finally {
-      setLoading(false)
-    }
-  }, [])
+    timerRef.current = setTimeout(logout, AUTO_LOGOUT_TIME)
+  }, [logout])
 
   useEffect(() => {
-    const token = localStorage.getItem("token")
-    if (token) {
-      fetchJobs();
+    const events = ["mousemove", "keydown", "click"]
+    events.forEach((event) => window.addEventListener(event, resetTimer))
+
+    resetTimer()
+    return () => {
+      events.forEach((event) => window.removeEventListener(event, resetTimer))
+      if (timerRef.current) clearTimeout(timerRef.current)
+      if (warningRef.current) clearTimeout(warningRef.current)
     }
-  }, [fetchJobs])
+  }, [resetTimer]);
 
-  // Calculate pagination based on current jobs
-  const totalPages = Math.ceil(jobs.length / jobsPerPage);
-  const currentJobs = jobs.slice((page - 1) * jobsPerPage, page * jobsPerPage);
 
-  //Handle page change
-  const handlePageChange = (newPage) => {
-    if (newPage >= 1 && newPage <= totalPages) {
-      setPage(newPage)
-    } 
-  }
+
 
   return (
-
-    <div>
-      <PersonalizedNavbar />
-
-      <>
-      <div className="dashboard-container">
-            {/* Left Column: Job Cards */}
-            <div className="jobs-column">
-              {/* Loading state */}
-              {loading && (
-                <div className="loading-state">
-                  <p>Loading jobs for you</p>
-                </div>
-              )}
-
-              {/* Error state */}
-              {error && !loading && (
-                <div className="error-state">
-                  <p>{error}</p>
-                  <button onClick={fetchJobs} className="retry-btn">Try Again</button>
-                </div>
-              )}
-
-              {/* Empty state */}
-              {!loading && !error && jobs.length === 0 && (
-                <div className="empty-state">
-                  <p>No jibs found. Check back later!</p>
-                </div>
-              )}
-
-              {/* Job display */}
-              {!loading && jobs.length >0 && (
-                <>
-                  {currentJobs.map((job, idx) => (
-                  <JobCard key={idx} job={job} />
-                  ))}
-
-                  {/* Pagination */}
-                  {totalPages > 1 && (
-                    <div className="pagination">
-                      <button
-                        onClick={() => handlePageChange(page-1)}
-                        disabled={page === 1}
-                        className="pagination-btn"
-                      >
-                        {'<'}
-                      </button>
-                      <span className="page-info">
-                        Page {page} of {totalPages}
-                      </span>
-                      <button
-                        onClick={() => handlePageChange(page+1)}
-                        disabled={page === totalPages}
-                        className="pagination-btn"
-                      >
-                        {'>'}
-                      </button>
-                    </div>
-                  )}
-                </>
-              )}
+    <>
+      <ToastContainer position="top-right" />
+      <div className={styles["dashboard-screen-wrapper"]}>
+        <PersonalizedNavbar />
+        <div className={styles["dashboard-wrapper"]}>
+          <SideBar/>
+          <main className={styles["dashboard-container"]} role="main">
+            <div className={styles["main-content"]}>
+              <Outlet context={{ onJobClick: handleJobClick }} />
             </div>
-
-            {/* Right Column: Chatbot */}
-            {/* <div className="chat-column">
-              <h2>Chatbot Coming Soon </h2>
-            </div> */}
+          </main>
         </div>
-      </>
+      </div>
 
-    </div>
-
-  );
+      {/* Modal */}
+      {selectedJob && <JobDetailsModal job={selectedJob} onClose={closeModal} />}
+    </>
+  )
 };
 
-export default UserDashboard;
+
+export default UserDashboard

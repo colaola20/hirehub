@@ -1,6 +1,7 @@
 # Ignore Python cache directories
 backend-env/
 venv/
+env/
 .env
 __pycache__/
 *.pyc
