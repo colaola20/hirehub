@@ -12,8 +12,8 @@ favorites_bp = Blueprint('favorites', __name__, url_prefix='/api/favorites')
 @jwt_required()
 def add_favorite():
     """Add a job to user's favorites"""
-    current_user_email = get_jwt_identity()
-    user = User.query.filter_by(email=current_user_email).first()
+    current_user_id = int(get_jwt_identity())
+    user = User.query.get(current_user_id)
 
     if not user:
         return jsonify({'error': 'User not found'}), 404
@@ -53,8 +53,8 @@ def add_favorite():
 @jwt_required()
 def remove_favorite(job_id):
     """Remove a job from user's favorites"""
-    current_user_email = get_jwt_identity()
-    user = User.query.filter_by(email=current_user_email).first()
+    current_user_id = int(get_jwt_identity())
+    user = User.query.get(current_user_id)
 
     if not user:
         return jsonify({'error': 'User not found'}), 404
@@ -78,8 +78,8 @@ def remove_favorite(job_id):
 @jwt_required()
 def get_favorites():
     """Get all favorited jobs for the current user"""
-    current_user_email = get_jwt_identity()
-    user = User.query.filter_by(email=current_user_email).first()
+    current_user_id = int(get_jwt_identity())
+    user = User.query.get(current_user_id)
 
     if not user:
         return jsonify({'error': 'User not found'}), 404
@@ -107,8 +107,8 @@ def get_favorites():
 @jwt_required()
 def check_favorite(job_id):
     """Check if a job is favorited by the current user"""
-    current_user_email = get_jwt_identity()
-    user = User.query.filter_by(email=current_user_email).first()
+    current_user_id = int(get_jwt_identity())
+    user = User.query.get(current_user_id)
 
     if not user:
         return jsonify({'error': 'User not found'}), 404
