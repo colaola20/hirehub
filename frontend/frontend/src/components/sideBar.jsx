@@ -92,7 +92,7 @@ const SideBar = () => {
                   </div>
                 </div>
                 <Link to='/'>
-                <div className={styles.navItem}><Home size={20}/>Dashboard</div>
+                <div className={styles.navItem}><Home size={20}/>Home</div>
                 </Link>
                 <Link to='/'>
                 <div className={styles.navItem}><Briefcase size={20}/> Jobs</div>

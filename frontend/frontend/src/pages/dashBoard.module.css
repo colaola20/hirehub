@@ -8,6 +8,10 @@ body, .container {
   background: none !important;
 }
 
+/* body{
+  overflow: hidden;
+} */
+
 :root {
   --nav-h : 64px;
   --gap: 20px;
