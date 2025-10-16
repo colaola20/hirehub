@@ -217,13 +217,13 @@ useEffect(() => {
   const clearFilters = () => setFilters({company: "any", location: "", remote: "any", datePosted: "newest"})
 
   const companyOptions = useMemo(() => {
-        const setC = new Set((jobs || {}).map((j) => (j.company ||"").trim()).filter(Boolean))
+        const setC = new Set((jobs || []).map((j) => (j.company ||"").trim()).filter(Boolean))
     return ["any", ...Array.from(setC)]
   }, [jobs])
 
   // derived filterJobs from fetched jobs
   const filteredJobs = useMemo(() => {
-    if (!jobs || jobs.length) return []
+    if (!jobs || jobs.length === 0) return []
     let list = jobs.slice()
 
     //company filter
@@ -234,7 +234,7 @@ useEffect(() => {
     // location substring match
     if (filters.location && filters.location.trim() !== "") {
       const loc = filters.location.trim().toLowerCase()
-      list = list.filter((j) => (j.location || "").toLowerCase().include(loc))
+      list = list.filter((j) => (j.location || "").toLowerCase().includes(loc))
     }
 
     // remote (expects job.remote to be "remote", "onside", "hybrid")
