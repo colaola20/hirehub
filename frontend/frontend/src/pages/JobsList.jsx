@@ -258,37 +258,7 @@ useEffect(() => {
   return (
 
     <section className={styles.jobSection}>
-
-        <form 
-          ref = {containerRef}
-          className={containerClass} 
-          onSubmit={handleSearchClick} 
-          role="search" 
-          aria-label="Search jobs">
-          <input
-            className={styles.searchInput}
-            type="text"
-            placeholder="Search jobs..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            aria-label="Search jobs"
-          />
-          {searchQuery && (
-            <button type="button" className={styles.clearBtn} onClick={clearSearch} aria-label="Clear search" >
-              <MdClose/>
-            </button>
-          )}
-          <button
-            type={isCollapsed ? "button" : "submit"}
-            className={styles.searchBtn}
-            aria-label={isCollapsed ? (isExpend ? "Close search": "Open search") : "Submit search"}
-            aria-expanded={isExpend}
-            onClick={handleToggle}
-          >
-            <MdSearch/>
-          </button>
-        </form>
-
+      <div className = {styles.searchAndFiltersRow}>
         <div className={styles.filterBar} role="region" aria-label="Job filters">
           <select
             className={styles.filterControl}
@@ -334,6 +304,36 @@ useEffect(() => {
             Clear
           </button>
         </div>
+        <form 
+          ref = {containerRef}
+          className={styles.searchContainer} 
+          onSubmit={handleSearchClick} 
+          role="search" 
+          aria-label="Search jobs">
+          <input
+            className={styles.searchInput}
+            type="text"
+            placeholder="Search jobs..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            aria-label="Search jobs"
+          />
+          {searchQuery && (
+            <button type="button" className={styles.clearBtn} onClick={clearSearch} aria-label="Clear search" >
+              <MdClose/>
+            </button>
+          )}
+          <button
+            type={isCollapsed ? "button" : "submit"}
+            className={styles.searchBtn}
+            aria-label={isCollapsed ? (isExpend ? "Close search": "Open search") : "Submit search"}
+            aria-expanded={isExpend}
+            onClick={handleToggle}
+          >
+            <MdSearch/>
+          </button>
+        </form>
+      </div>
 
       {/* Left Column: Job Cards */}
       <div className={styles.cardList}>
