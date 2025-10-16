@@ -223,7 +223,7 @@ useEffect(() => {
 
   // derived filterJobs from fetched jobs
   const filteredJobs = useMemo(() => {
-    if (!jobs || jobs.length === 0) return []
+    if (!jobs || !jobs.length) return []
     let list = jobs.slice()
 
     //company filter
@@ -289,6 +289,52 @@ useEffect(() => {
           </button>
         </form>
 
+        <div className={styles.filterBar} role="region" aria-label="Job filters">
+          <select
+            className={styles.filterControl}
+            value={filters.company}
+            onChange={(e) => handleFilterChange("company", e.target.value)}
+          >
+            {companyOptions.map((c) => (
+              <option key={c} value={c}>
+                {c=="any"? "All companies" : c}
+              </option>
+            ))}
+          </select>
+          <input
+            className={styles.filterControl}
+            type="text"
+            placeholder="Location"
+            value={filters.location}
+            onChange={(e) => handleFilterChange("location", e.target.value)}
+          />
+          <select
+            className = {styles.filterControl}
+            value={filters.remote}
+            onChange={(e) => handleFilterChange("remote", e.target.value)}
+          >
+            <option value="any">Any</option>
+            <option value="remote">Remote</option>
+            <option value="onsite">On-site</option>
+            <option value="hybrid">Hybrid</option>
+          </select>
+          <select
+            className={styles.filterControl}
+            value={filters.datePosted}
+            onChange={(e) => handleFilterChange("datePosted", e.target.value)}
+          >
+            <option value="newest">Newest</option>
+            <option value="oldest">Oldest</option>
+          </select>
+          <button
+            type="button"
+            className={styles.filterClearBtn}
+            onClick={() => setFilters({company: "any", location: "", remote: "any", datePosted: "newest"})}
+          >
+            Clear
+          </button>
+        </div>
+
       {/* Left Column: Job Cards */}
       <div className={styles.cardList}>
          {/* Loading state */}
@@ -305,22 +351,18 @@ useEffect(() => {
               <button onClick={reloadInitialJobs} className={styles.retryBtn}>Try Again</button>
             </div>
           )}
-
-          {/* Empty state */}
-          {!loading && !error && jobs.length === 0 && (
-            <div className={styles.emptyState}>
-              <p>No jobs found. Check back later!</p>
+          
+          {/* Empty / Job display (use filteredJobs) */}
+          {!loading && filteredJobs.length > 0 && (
+            <div className={styles.jobCard}>
+              {filteredJobs.map((job, idx) => (
+                <JobCard key={job.id || idx} job={job} onClick={() => onJobClick(job)} />
+              ))}
             </div>
           )}
-
-          {/* Job display */}
-          {!loading && jobs.length >0 && (
-            <div className={styles.jobCard}>
-              {jobs.map((job, idx) => (
-                <JobCard key={job.id || idx} job={job}  onClick={() => onJobClick(job)}
-                />
-              ))}
-
+          {!loading && !error && filteredJobs.length === 0 && (
+            <div className={styles.emptyState}>
+              <p>No jobs match the filters.</p>
             </div>
           )}
       </div>

@@ -17,8 +17,6 @@
     padding: 8px;
     display: flex;
     flex-direction: column;
-
-
 }
 
 
@@ -89,6 +87,11 @@
   fill: currentColor;
 }
 
+/* -------Filtering starts --------*/
+.filterBar {
+    
+}
+/* -------Filtering ends --------*/
 
 .loadingState,
 .errorState,

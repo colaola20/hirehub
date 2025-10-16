@@ -7,7 +7,7 @@
     border-radius: 8px;
     width: 100%;
     max-width: 1200px;
-    min-width: 100vh;
+    min-width: 100vw;
     box-shadow: 0px 8px 24px rgba(0,0,0,0.1);
     color: black;
 }
@@ -25,7 +25,7 @@
     align-items: center;
     gap: 10px;
     width: 100%;
-    min-width: 100vh;
+    min-width: 100vw;
     box-sizing: border-box;
     border-radius: 8px;
     margin: 15px 0;
