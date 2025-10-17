@@ -42,6 +42,11 @@ const AngleLanding = () => {
       <a href="#services" className={styles.aboutButton}>Explore Services</a>
     </div>
   ];
+    const rootRef = React.useRef(null);
+
+    React.useEffect(() => {
+      rootRef.current?.classList.add(styles.pageReady);
+    }, []);
 
   // reveal-on-scroll (existing, harmless to keep)
   useEffect(() => {
@@ -196,7 +201,7 @@ const AngleLanding = () => {
     };
 
   return (
-    <div className={styles["angle2-root"]}>
+    <div ref={rootRef} className={styles["angle2-root"]}>
       {/* HERO */}
       <section className={styles["angle2-hero"]}>
         <div className={styles["angle2-vanta-layer"]} aria-hidden="true" ref={bgRef} />

@@ -1829,3 +1829,42 @@
 /* Smooth native scrolling across the whole app */
 :global(html) { scroll-behavior: smooth; }
 :global(body) { scroll-behavior: smooth; }
+/* ---------- Global transition presets ---------- */
+:global(:root) {
+  --ease-standard: cubic-bezier(.4, 0, .2, 1);
+  --t-fast: 180ms;
+  --t-med: 280ms;
+  --t-slow: 420ms;
+}
+
+/* Smooth transitions for common properties on (almost) everything */
+:global(*), :global(*::before), :global(*::after) {
+  transition:
+    background-color var(--t-med) var(--ease-standard),
+    color            var(--t-med) var(--ease-standard),
+    border-color     var(--t-med) var(--ease-standard),
+    box-shadow       var(--t-med) var(--ease-standard),
+    opacity          var(--t-fast) var(--ease-standard),
+    transform        var(--t-fast) var(--ease-standard),
+    filter           var(--t-fast) var(--ease-standard);
+}
+
+/* Respect users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  :global(*), :global(*::before), :global(*::after) {
+    transition: none !important;
+    animation: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Soft page-mount effect */
+.angle2-root {
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 520ms var(--ease-standard), transform 520ms var(--ease-standard);
+}
+.pageReady {             /* toggled by React once mounted */
+  opacity: 1;
+  transform: none;
+}
