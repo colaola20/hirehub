@@ -298,10 +298,10 @@ useEffect(() => {
           </select>
           <button
             type="button"
-            className={styles.filterClearBtn}
+            className={styles.clearBtn}
             onClick={() => setFilters({company: "any", location: "", remote: "any", datePosted: "newest"})}
           >
-            Clear
+            <MdClose/>
           </button>
         </div>
         <form 
