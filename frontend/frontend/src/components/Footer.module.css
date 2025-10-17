@@ -1,45 +1,58 @@
 /* Footer.module.css */
 
-/* Root wrapper */
+/* Root wrapper — remove spacing and add an upward blend */
 .footer {
   position: relative;
-  margin-top: clamp(48px, 8vh, 96px);
+  margin-top: 0;                /* no gap above the footer */
   color: #fff;
   isolation: isolate;
 }
 
-/* FULL-BLEED glass panel */
-.footerContainer {
-  /* make the panel span the whole viewport width */
-  max-width: none;
-  width: 100vw;
-  /* if the footer lives inside a centered page wrapper, this forces true full-bleed */
-  margin-left: calc(50% - 50vw);
-  margin-right: calc(50% - 50vw);
-
-  padding: clamp(28px, 4vw, 44px) clamp(20px, 5vw, 48px);
-  background: rgba(12, 16, 38, 0.30);
-  border: 1px solid rgba(255,255,255,0.12);
-  border-left: 0;
-  border-right: 0;
-  border-radius: 0;
-  backdrop-filter: blur(10px) saturate(115%);
-  -webkit-backdrop-filter: blur(10px) saturate(115%);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 10px 28px rgba(0,0,0,0.18);
-}
-
-/* soft gradient line across entire width */
-.footerContainer::before {
+/* Soft bridge that fades the contact section into the footer */
+.footer::before {
   content: "";
   position: absolute;
   left: 0;
   right: 0;
-  top: -1px;
-  height: 2px;
-  background: linear-gradient(90deg, #8ec5fc 0%, #7a5bbf 50%, #f6a0d0 100%);
-  opacity: 0.7;
+  top: -120px;                  /* reach up into the section above */
+  height: 120px;
   pointer-events: none;
+  /* fade from the contact card’s dark glass into the footer glass */
+  background: linear-gradient(
+    to bottom,
+    rgba(12,16,38,0.28) 0%,
+    rgba(12,16,38,0.26) 35%,
+    rgba(12,16,38,0.24) 55%,
+    rgba(12,16,38,0.22) 75%,
+    rgba(12,16,38,0.30) 100%
+  );
+  filter: blur(6px);
+  z-index: 0;
 }
+
+/* FULL-BLEED glass panel */
+.footerContainer {
+  max-width: none;
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+
+  padding: clamp(28px, 4vw, 44px) clamp(20px, 5vw, 48px);
+  background: rgba(12, 16, 38, 0.30);     /* same glass tone as contact */
+  border: 1px solid rgba(255,255,255,0.12);
+  border-left: 0;
+  border-right: 0;
+  border-top: 0;                           /* no hard top edge */
+  border-radius: 0;
+  backdrop-filter: blur(10px) saturate(115%);
+  -webkit-backdrop-filter: blur(10px) saturate(115%);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.04), 0 10px 28px rgba(0,0,0,0.18);
+  position: relative;
+  z-index: 1;                               /* above the bridge fade */
+}
+
+/* remove the thin gradient stripe we added earlier */
+.footerContainer::before { content: none; }
 
 /* Constrain inner content while the panel stays full-bleed */
 .footerTop,
