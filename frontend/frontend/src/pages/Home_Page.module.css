@@ -1574,7 +1574,9 @@
   display: grid;
   place-items: center;
   color: #fff;
-  background: linear-gradient(135deg, #FF7E5F 0%, #FEB47B 100%);
+ background:
+    linear-gradient(0deg, rgba(0,0,0,.16), rgba(0,0,0,.16)),
+    linear-gradient(135deg, #0A1014 0%, #0E1E2A 50%, #153746 100%);
   /* subtle vignette for depth */
   isolation: isolate;
 }
@@ -1582,8 +1584,9 @@
   content: "";
   position: absolute;
   inset: 0;
-  background: radial-gradient(1200px 700px at 70% 20%, rgba(0,0,0,.22), transparent 60%),
-              radial-gradient(1000px 600px at 20% 80%, rgba(0,0,0,.18), transparent 60%);
+  background:
+    radial-gradient(1200px 700px at 70% 24%, rgba(16,50,68,.32), transparent 58%),
+    radial-gradient(1000px 600px at 22% 80%, rgba(10,28,38,.26), transparent 60%);
   pointer-events: none;
   z-index: 0;
 }

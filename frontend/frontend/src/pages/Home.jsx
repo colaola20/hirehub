@@ -11,6 +11,8 @@ const AngleLanding = () => {
   // === ABOUT slides state/refs ===
   const [aboutStep, setAboutStep] = React.useState(0);
   const aboutRef = React.useRef(null);
+  const lockRef = React.useRef(false); // <-- persistent debounce lock
+
   const aboutSlides = [
     <h2 className={styles.aboutHeroTitle}>What is <span>HireHub?</span></h2>,
     <div className={styles.aboutBlock}>
@@ -92,26 +94,26 @@ const AngleLanding = () => {
     const sec = aboutRef.current;
     if (!sec) return;
 
-    let stepLocked = false;
     let touchStartY = null;
 
     const advance = (dir = 1) => {
-      if (stepLocked) return;
+      if (lockRef.current) return;           // respect lock across renders
+      lockRef.current = true;
       setAboutStep((s) => {
         const next = Math.min(Math.max(s + dir, 0), aboutSlides.length - 1);
-        if (next !== s) {
-          stepLocked = true;
-          setTimeout(() => (stepLocked = false), 450); // debounce between steps
-        }
         return next;
       });
+      setTimeout(() => { lockRef.current = false; }, 600); // ~single step per gesture
     };
 
     // Wheel inside the section
     const onWheel = (e) => {
-      // If we still have slides to show, swallow the scroll and advance
+      const atStart = aboutStep === 0;
       const atEnd = aboutStep === aboutSlides.length - 1;
-      if (!atEnd) {
+
+      // Allow scrolling UP out of the section at first slide.
+      // Otherwise paginate slides; atEnd fall through to normal page scroll.
+      if (!(atStart && e.deltaY < 0) && !atEnd) {
         e.preventDefault();
         advance(e.deltaY > 0 ? 1 : -1);
       }
@@ -123,25 +125,31 @@ const AngleLanding = () => {
       if (touchStartY == null) return;
       const dy = e.touches[0].clientY - touchStartY;
       const atEnd = aboutStep === aboutSlides.length - 1;
-      if (!atEnd && Math.abs(dy) > 24) {
+      const atStart = aboutStep === 0;
+
+      if (!(atStart && dy > 0) && !atEnd && Math.abs(dy) > 24) {
         e.preventDefault();
         advance(dy < 0 ? 1 : -1);
-        touchStartY = e.touches[0].clientY; // reset for next swipe chunk
+        touchStartY = e.touches[0].clientY;
       }
     };
 
     // Keyboard (when section is focused or generally)
     const onKeyDown = (e) => {
       const atEnd = aboutStep === aboutSlides.length - 1;
+      const atStart = aboutStep === 0;
       const down = [" ", "ArrowDown", "PageDown"];
       const up = ["ArrowUp", "PageUp"];
-      if (!atEnd && (down.includes(e.key) || up.includes(e.key))) {
+
+      if (down.includes(e.key) && !atEnd) {
         e.preventDefault();
-        advance(down.includes(e.key) ? 1 : -1);
+        advance(1);
+      } else if (up.includes(e.key) && !atStart) {
+        e.preventDefault();
+        advance(-1);
       }
     };
 
-    // Attach to the section so it always fires while pointer is over it
     sec.addEventListener("wheel", onWheel, { passive: false });
     sec.addEventListener("touchstart", onTouchStart, { passive: true });
     sec.addEventListener("touchmove", onTouchMove, { passive: false });
@@ -155,6 +163,26 @@ const AngleLanding = () => {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [aboutStep, aboutSlides.length]);
+
+  // Reset to slide 0 when viewport center is outside the About section
+  useEffect(() => {
+    const sec = aboutRef.current;
+    if (!sec) return;
+
+    const onScroll = () => {
+      const secTop = sec.offsetTop;
+      const secBottom = secTop + sec.offsetHeight;
+      const y = window.scrollY || window.pageYOffset;
+      const viewCenter = y + window.innerHeight / 2;
+
+      // If the viewport center is above or below the section, reset
+      if ((viewCenter < secTop || viewCenter > secBottom) && aboutStep !== 0) {
+        setAboutStep(0);
+      }
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [aboutStep]);
 
   return (
     <div className={styles["angle2-root"]}>
@@ -188,7 +216,14 @@ const AngleLanding = () => {
       </section>
 
       {/* ===== ABOUT (Full-screen slides; gradient only here) ===== */}
-      <section className={styles.aboutFS} id="about" ref={aboutRef} tabIndex={0}>
+      <section
+        className={styles.aboutFS}
+        id="about"
+        ref={aboutRef}
+        tabIndex={0}
+        /* let scroll chain to the page when at first/last slide */
+        style={{ touchAction: "auto" }}
+      >
         <div className={styles.aboutFSInner}>
           {aboutSlides.map((content, i) => (
             <div
