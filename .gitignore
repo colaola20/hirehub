@@ -16,4 +16,4 @@ frontend/build/
 *.log
 venv/
 /backend/env/
-/backend/migrations/
+
