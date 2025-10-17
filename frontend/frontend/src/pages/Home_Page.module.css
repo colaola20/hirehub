@@ -1727,3 +1727,32 @@
   text-transform: uppercase;
   opacity: .85;
 }
+/* === Make HeroContact use the SAME palette/effects as .aboutFS === */
+
+/* Base fill: identical to .aboutFS background */
+.heroContactBackground {
+  background:
+    linear-gradient(0deg, rgba(0,0,0,.16), rgba(0,0,0,.16)),
+    linear-gradient(135deg, #0A1014 0%, #0E1E2A 50%, #153746 100%) !important;
+}
+
+/* Replace the previous purple veil with the same radial overlays used on .aboutFS */
+.heroContact::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    radial-gradient(1200px 700px at 70% 24%, rgba(16,50,68,.32), transparent 58%),
+    radial-gradient(1000px 600px at 22% 80%, rgba(10,28,38,.26), transparent 60%) !important;
+}
+
+/* Light directional wash (teal-tinted), matching the About vibe */
+.heroContactOverlay {
+  background: linear-gradient(
+    to bottom,
+    rgba(10, 28, 38, 0.18),
+    rgba(21, 55, 70, 0.42)
+  ) !important;
+}
