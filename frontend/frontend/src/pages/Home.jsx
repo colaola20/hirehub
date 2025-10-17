@@ -183,6 +183,17 @@ const AngleLanding = () => {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, [aboutStep]);
+    const smoothTo = (hash) => {
+      const el = document.querySelector(hash);
+      if (!el) return;
+      const navH =
+        parseInt(
+          getComputedStyle(document.documentElement).getPropertyValue("--nav-h")
+        ) || 64;
+
+      const y = el.getBoundingClientRect().top + window.scrollY - navH;
+      window.scrollTo({ top: y, behavior: "smooth" });
+    };
 
   return (
     <div className={styles["angle2-root"]}>
@@ -192,11 +203,18 @@ const AngleLanding = () => {
         {/* NAV */}
         <header className={styles["angle2-nav"]}>
           <div className={styles["angle2-container"]}>
-            <nav className={styles["angle2-links"]}>
-              <a href="#services">Services</a>
-              <a href="#about">About</a>
-              <a href="#contact">Contact Us</a>
-            </nav>
+           <nav className={styles["angle2-links"]}>
+            <a href="#services" onClick={(e) => { e.preventDefault(); smoothTo("#services"); }}>
+              Services
+            </a>
+            <a href="#about" onClick={(e) => { e.preventDefault(); smoothTo("#about"); }}>
+              About
+            </a>
+            <a href="#contact" onClick={(e) => { e.preventDefault(); smoothTo("#contact"); }}>
+              Contact Us
+            </a>
+          </nav>
+
             <Link to="/login" className={`${styles["angle2-btn"]} ${styles["angle2-btn--small"]}`}>
               Sign In
             </Link>

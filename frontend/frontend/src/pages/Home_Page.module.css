@@ -1826,3 +1826,6 @@
 .aboutFS .aboutHint {
   font-size: 15px !important;
 }
+/* Smooth native scrolling across the whole app */
+:global(html) { scroll-behavior: smooth; }
+:global(body) { scroll-behavior: smooth; }
