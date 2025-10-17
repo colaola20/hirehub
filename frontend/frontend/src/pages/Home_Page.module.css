@@ -1792,3 +1792,37 @@
 /* Keep the teal vignettes and overlay stacking above the tint */
 .heroContactOverlay { z-index: 2; }
 .heroContactContent { z-index: 3; }
+/* ===== Bigger typography just for the About slides ===== */
+/* ===== Extra-large typography for About slides ===== */
+.aboutFS .aboutHeroTitle {
+  font-size: clamp(72px, 14vw, 180px) !important;
+}
+
+.aboutFS .aboutBlock h3 {
+  font-size: clamp(40px, 6vw, 58px) !important;
+}
+
+.aboutFS .aboutBlock p {
+  font-size: clamp(20px, 3vw, 24px) !important;
+}
+
+.aboutFS .aboutGrid h4 {
+  font-size: clamp(32px, 3.2vw, 32px) !important;
+}
+
+.aboutFS .aboutGrid p {
+  font-size: clamp(16px, 2.6vw, 22px) !important;
+}
+
+.aboutFS .aboutCTA h3 {
+  font-size: clamp(34px, 5vw, 120px) !important;
+}
+
+.aboutFS .aboutCTA p {
+  font-size: clamp(18px, 2.6vw, 22px) !important;
+}
+
+/* Slightly larger hint */
+.aboutFS .aboutHint {
+  font-size: 15px !important;
+}
