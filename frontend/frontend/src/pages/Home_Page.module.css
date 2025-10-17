@@ -128,6 +128,9 @@
 }
 
 .heroContactBackground {
+  background:
+    linear-gradient(0deg, rgba(0,0,0,.16), rgba(0,0,0,.16)),
+    linear-gradient(135deg, #0A1014 0%, #0E1E2A 50%, #153746 100%);
   position: absolute;
   top: 0;
   left: 0;
