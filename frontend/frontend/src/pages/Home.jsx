@@ -1,34 +1,67 @@
 import React, { useEffect, useRef } from "react";
 import * as THREE from "three";
-import { Link } from "react-router-dom";            // ⬅️ added
-import styles from "./Home_Page.module.css";  // ⬅️ use module import
-import { SpaceIcon } from "lucide-react";
+import { Link } from "react-router-dom";
+import styles from "./Home_Page.module.css";
 import Contact from "../components/Contact";
 import Footer from "../components/Footer";
 
 const AngleLanding = () => {
   const [active, setActive] = React.useState("resume");
 
+  // === ABOUT slides state/refs ===
+  const [aboutStep, setAboutStep] = React.useState(0);
+  const aboutRef = React.useRef(null);
+  const aboutSlides = [
+    <h2 className={styles.aboutHeroTitle}>What is <span>HireHub?</span></h2>,
+    <div className={styles.aboutBlock}>
+      <h3>AI-powered application copilot</h3>
+      <p>
+        Paste any job description and we tailor your resume and cover letter with smart keyword
+        matching, impact-first phrasing, and clean, ATS-ready formatting.
+      </p>
+    </div>,
+    <div className={styles.aboutGrid}>
+      <div>
+        <h4>ATS-friendly</h4>
+        <p>Structure, sections, and wording that pass automated screens.</p>
+      </div>
+      <div>
+        <h4>Faster iterations</h4>
+        <p>Refine bullets, quantify impact, and version for each role—in minutes.</p>
+      </div>
+      <div>
+        <h4>Privacy-first</h4>
+        <p>Your documents and personal data stay yours, always.</p>
+      </div>
+    </div>,
+    <div className={styles.aboutCTA}>
+      <h3>Ready to stand out?</h3>
+      <p>Optimize your application materials with measurable results.</p>
+      <a href="#services" className={styles.aboutButton}>Explore Services</a>
+    </div>
+  ];
+
+  // reveal-on-scroll (existing, harmless to keep)
+  useEffect(() => {
+    const els = document.querySelectorAll("[data-reveal]");
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => e.isIntersecting && e.target.classList.add(styles["is-visible"]));
+      },
+      { threshold: 0.2 }
+    );
+    els.forEach((el) => io.observe(el));
+    return () => io.disconnect();
+  }, []);
+
+  // Vanta background (existing)
   const bgRef = useRef(null);
-  // put inside your page component (AngleLanding) after imports
-useEffect(() => {
-  const els = document.querySelectorAll("[data-reveal]");
-  const io = new IntersectionObserver((entries) => {
-    entries.forEach(e => e.isIntersecting && e.target.classList.add(styles["is-visible"]));
-  }, { threshold: 0.2 });
-  els.forEach(el => io.observe(el));
-  return () => io.disconnect();
-}, []);
-
-
   useEffect(() => {
     let effect;
     let cancelled = false;
-
     import("vanta/dist/vanta.Net.min").then((mod) => {
       if (cancelled) return;
       const Globe = mod.default;
-
       effect = Globe({
         el: bgRef.current,
         THREE,
@@ -48,30 +81,94 @@ useEffect(() => {
         backgroundColor: 0x131a43,
       });
     });
-
     return () => {
       cancelled = true;
       if (effect) effect.destroy();
     };
   }, []);
 
+  // === ABOUT: lock scroll until slides done (bind to section element) ===
+  useEffect(() => {
+    const sec = aboutRef.current;
+    if (!sec) return;
+
+    let stepLocked = false;
+    let touchStartY = null;
+
+    const advance = (dir = 1) => {
+      if (stepLocked) return;
+      setAboutStep((s) => {
+        const next = Math.min(Math.max(s + dir, 0), aboutSlides.length - 1);
+        if (next !== s) {
+          stepLocked = true;
+          setTimeout(() => (stepLocked = false), 450); // debounce between steps
+        }
+        return next;
+      });
+    };
+
+    // Wheel inside the section
+    const onWheel = (e) => {
+      // If we still have slides to show, swallow the scroll and advance
+      const atEnd = aboutStep === aboutSlides.length - 1;
+      if (!atEnd) {
+        e.preventDefault();
+        advance(e.deltaY > 0 ? 1 : -1);
+      }
+    };
+
+    // Touch swipe inside the section
+    const onTouchStart = (e) => { touchStartY = e.touches[0].clientY; };
+    const onTouchMove = (e) => {
+      if (touchStartY == null) return;
+      const dy = e.touches[0].clientY - touchStartY;
+      const atEnd = aboutStep === aboutSlides.length - 1;
+      if (!atEnd && Math.abs(dy) > 24) {
+        e.preventDefault();
+        advance(dy < 0 ? 1 : -1);
+        touchStartY = e.touches[0].clientY; // reset for next swipe chunk
+      }
+    };
+
+    // Keyboard (when section is focused or generally)
+    const onKeyDown = (e) => {
+      const atEnd = aboutStep === aboutSlides.length - 1;
+      const down = [" ", "ArrowDown", "PageDown"];
+      const up = ["ArrowUp", "PageUp"];
+      if (!atEnd && (down.includes(e.key) || up.includes(e.key))) {
+        e.preventDefault();
+        advance(down.includes(e.key) ? 1 : -1);
+      }
+    };
+
+    // Attach to the section so it always fires while pointer is over it
+    sec.addEventListener("wheel", onWheel, { passive: false });
+    sec.addEventListener("touchstart", onTouchStart, { passive: true });
+    sec.addEventListener("touchmove", onTouchMove, { passive: false });
+    window.addEventListener("keydown", onKeyDown, { passive: false });
+
+    return () => {
+      sec.removeEventListener("wheel", onWheel);
+      sec.removeEventListener("touchstart", onTouchStart);
+      sec.removeEventListener("touchmove", onTouchMove);
+      window.removeEventListener("keydown", onKeyDown);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [aboutStep, aboutSlides.length]);
+
   return (
     <div className={styles["angle2-root"]}>
       {/* HERO */}
       <section className={styles["angle2-hero"]}>
         <div className={styles["angle2-vanta-layer"]} aria-hidden="true" ref={bgRef} />
-
         {/* NAV */}
         <header className={styles["angle2-nav"]}>
           <div className={styles["angle2-container"]}>
-
             <nav className={styles["angle2-links"]}>
               <a href="#services">Services</a>
               <a href="#about">About</a>
               <a href="#contact">Contact Us</a>
             </nav>
-
-            {/* linked buttons */}
             <Link to="/login" className={`${styles["angle2-btn"]} ${styles["angle2-btn--small"]}`}>
               Sign In
             </Link>
@@ -88,158 +185,98 @@ useEffect(() => {
             The application assistant that optimizes <span className={styles.accent}>every detail</span>
           </p>
         </div>
-      </section>{/* ===== Resume AI Section ===== */}
-<section id="resume-ai" className={styles.resumeSection}>
-  <div className={styles.resumeContainer}>
-    {/* LEFT SIDE - TEXT CONTENT */}
-    <div className={styles.resumeLeft}>
-      <h2 className={styles.resumeHeading}>
-        <span role="img" aria-label="clip">📎</span>
-        <strong> Resume AI</strong> / Stand out from the crowd with a<br />
-        <span>top notch resume</span>
-      </h2>
+      </section>
 
-      <ul className={styles.resumeList}>
-        <li>Get a professional quality resume in minutes, not hours</li>
-        <li>Keep tailoring your resume with AI and catch HR’s eyes in 6 seconds</li>
-        <li>Rest easy knowing your resume will be ATS compatible</li>
-      </ul>
+      {/* ===== ABOUT (Full-screen slides; gradient only here) ===== */}
+      <section className={styles.aboutFS} id="about" ref={aboutRef} tabIndex={0}>
+        <div className={styles.aboutFSInner}>
+          {aboutSlides.map((content, i) => (
+            <div
+              key={i}
+              className={`${styles.aboutSlide} ${i === aboutStep ? styles.aboutSlideActive : ""}`}
+              aria-hidden={i === aboutStep ? "false" : "true"}
+            >
+              {content}
+            </div>
+          ))}
 
-      <button className={styles.resumeBtn}>Improve My Resume</button>
-    </div>
-
-    {/* RIGHT SIDE - MOCKUP CARD */}
-    <div className={styles.resumeRight}>
-      <div className={styles.sparkle}>✨</div>
-
-      <div className={styles.resumeCard}>
-        <div className={styles.resumeScore}>
-          <div className={styles.scoreValue}>9.0</div>
-          <div className={styles.scoreLabel}>EXCELLENT</div>
-        </div>
-
-        <div className={styles.cardContent}>
-          <h3 className={styles.cardName}>Jamie Parker</h3>
-
-          <div className={styles.cardBlock}>
-            <h4>PROFESSIONAL SUMMARY</h4>
-            <p className={styles.highlight}>
-              Senior Software Engineer with over five years of experience specializing
-              in backend development and distributed systems. Successfully led the development
-              of HA messaging system with 10,000/s throughput.
-            </p>
+          <div className={styles.aboutDots} aria-hidden="true">
+            {aboutSlides.map((_, i) => (
+              <span
+                key={i}
+                className={`${styles.aboutDot} ${i === aboutStep ? styles.aboutDotActive : ""}`}
+              />
+            ))}
           </div>
 
-          <div className={styles.cardBlock}>
-            <h4>SKILL</h4>
-            <p>Java, Python, Go, Apache Kafka, Kubernetes, Typescript, CI/CD, HLS</p>
-          </div>
-
-          <div className={styles.cardBlock}>
-            <h4>EXPERIENCE</h4>
-            <p>
-              Designed and implemented microservices architecture using Java and Kubernetes,
-              which improved system scalability and integration of video streaming services.
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* GREEN TAGS BELOW CARD */}
-      <div className={styles.resumeChips}>
-        <span>Summary Enhanced</span>
-        <span>Relevant Skills Highlighted</span>
-        <span>Recent Work Experience Enhanced</span>
-      </div>
-    </div>
-  </div>
-</section>
-
-
-      {/* ABOUT */}
-      <section className={styles["angle2-about"]} id="about">
-        <div className={`${styles["angle2-container"]} ${styles["angle2-about__inner"]}`}>
-          <h2>What is HireHub?</h2>
-          <p>
-            HireHub is your AI-powered job application copilot. Paste a job description,
-            and we instantly tailor your resume and cover letter using smart keyword
-            extraction, impact-driven phrasing, and clean formatting that passes ATS
-            checks while staying human-readable.
-          </p>
-          <ul className={styles["angle2-about__list"]}>
-            <li>ATS-friendly resume tailoring in seconds</li>
-            <li>Role-specific cover letters with measurable impact</li>
-            <li>One-click export to PDF/Docx</li>
-            <li>Privacy-first — your data stays yours</li>
-          </ul>
+          {aboutStep < aboutSlides.length - 1 && (
+            <div className={styles.aboutHint}>Scroll or swipe to continue</div>
+          )}
         </div>
       </section>
 
-      {/* ===== INTERACTIVE SERVICES (Caeli Style for HireHub) ===== */}
-<section className={styles.caeliServices} id="services">
-  <div className={styles.caeliContainer}>
-    {/* LEFT SIDE - SERVICE OPTIONS */}
-    <div className={styles.caeliLeft}>
-      {[
-        { id: "resume", label: "Resume Tailoring" },
-        { id: "letters", label: "Cover Letters" },
-        { id: "portfolio", label: "Profile & Portfolio" },
-      ].map((item) => (
-        <div
-          key={item.id}
-          className={`${styles.caeliOption} ${
-            active === item.id ? styles.active : ""
-          }`}
-          onClick={() => setActive(item.id)}
-          onMouseEnter={() => setActive(item.id)}
-        >
-          {item.label}
-        </div>
-      ))}
-    </div>
+      {/* ===== INTERACTIVE SERVICES (unchanged) ===== */}
+      <section className={styles.caeliServices} id="services">
+        <div className={styles.caeliContainer}>
+          {/* LEFT OPTIONS */}
+          <div className={styles.caeliLeft}>
+            {[
+              { id: "resume", label: "Resume Tailoring" },
+              { id: "letters", label: "Cover Letters" },
+              { id: "portfolio", label: "Profile & Portfolio" },
+            ].map((item) => (
+              <div
+                key={item.id}
+                className={`${styles.caeliOption} ${active === item.id ? styles.active : ""}`}
+                onClick={() => setActive(item.id)}
+                onMouseEnter={() => setActive(item.id)}
+              >
+                {item.label}
+              </div>
+            ))}
+          </div>
 
-    {/* RIGHT SIDE - IMAGE + DESCRIPTION CARD */}
-    <div className={styles.caeliRight}>
-      <div className={styles.caeliImageWrap}>
-        <img
-          src={
-            active === "resume"
-              ? "/src/assets/resume.png"
-              : active === "letters"
-              ? "/src/assets/letter.png"
-              : "/src/assets/portfolio.png"
-          }
-          alt={active}
-          className={styles.caeliImage}
-        />
-        <div className={styles.caeliCard}>
-          {active === "resume" && (
-            <p>
-              Optimize your resume with AI precision. We analyze job descriptions, 
-              highlight relevant skills, and format your experience for maximum recruiter impact.
-            </p>
-          )}
-          {active === "letters" && (
-            <p>
-              Create tailored cover letters that match tone, intent, and key values. 
-              Impress hiring managers with clarity and confidence — every word counts.
-            </p>
-          )}
-          {active === "portfolio" && (
-            <p>
-              Present your personal brand beautifully. Refine your LinkedIn, GitHub, 
-              and project showcases for consistent, professional storytelling.
-            </p>
-          )}
+          {/* RIGHT VISUAL */}
+          <div className={styles.caeliRight}>
+            <div className={styles.caeliImageWrap}>
+              <img
+                src={
+                  active === "resume"
+                    ? "/src/assets/resume.png"
+                    : active === "letters"
+                    ? "/src/assets/letter.png"
+                    : "/src/assets/portfolio.png"
+                }
+                alt={active}
+                className={styles.caeliImage}
+              />
+              <div className={styles.caeliCard}>
+                {active === "resume" && (
+                  <p>
+                    Optimize your resume with AI precision. We analyze job descriptions,
+                    highlight relevant skills, and format your experience for maximum recruiter impact.
+                  </p>
+                )}
+                {active === "letters" && (
+                  <p>
+                    Create tailored cover letters that match tone, intent, and key values.
+                    Impress hiring managers with clarity and confidence — every word counts.
+                  </p>
+                )}
+                {active === "portfolio" && (
+                  <p>
+                    Present your personal brand beautifully. Refine your LinkedIn, GitHub,
+                    and project showcases for consistent, professional storytelling.
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
-  </div>
-</section>
-
+      </section>
 
       <Contact />
-
+      <Footer />
     </div>
   );
 };
