@@ -8,6 +8,7 @@ body, .container {
   background: none !important;
 }
 
+
 :root {
   --nav-h : 64px;
   --gap: 20px;
@@ -37,7 +38,7 @@ body, .container {
   margin: 0 auto;
   align-items: start;
   box-sizing: border-box;
-  padding: 0 var(--gap)
+  padding: 0 var(--gap);
   /* background-color: red; */
   
   
@@ -47,8 +48,7 @@ body, .container {
   grid-column: 2/3;
   display: flex;
   flex-direction: column;
-  min-height: 0;
-  /* background-color: green; */
+  min-height: 0;;
 }
 
 /* gradient (like .angle2-root::before) */

@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useState, useRef } from "react";
+import { useEffect, useCallback, useState, useRef, useMemo } from "react";
 import { useOutletContext } from "react-router-dom";
 
 import styles from "./JobsList.module.css";
@@ -87,27 +87,32 @@ const JobsList = ({ jobs: initialJobs }) => {
     return () => { mount = false; };
   }, [fetchJobs]);
 
-  // infinite scroll
-  useEffect(() => {
-    const handleScroll = async () => {
-      const scrollable = document.documentElement;
-      const scrolledToBottom =
-        scrollable.scrollHeight - scrollable.scrollTop <= scrollable.clientHeight + 100;
+  
+// infinite scroll
+useEffect(() => {
+  const scrollable = document.querySelector(`.${styles.cardList}`);
+  if (!scrollable) return;
 
-      if (scrolledToBottom && !loadingMore.current && jobs.length < totalJobs) {
-        loadingMore.current = true;
-        try {
-          const { items } = await fetchJobs(20, jobs.length, lastQueryRef.current);
-          if (items.length > 0) setJobs(prev => [...prev, ...items]);
-        } finally {
-          loadingMore.current = false;
-        }
+  const handleScroll = async () => {
+    const scrolledToBottom =
+      scrollable.scrollHeight - scrollable.scrollTop <= scrollable.clientHeight + 100;
+
+    if (scrolledToBottom && !loadingMore.current && jobs.length < totalJobs) {
+      loadingMore.current = true;
+      try {
+        const { items } = await fetchJobs(20, jobs.length, lastQueryRef.current);
+        if (items.length > 0) setJobs(prev => [...prev, ...items]);
+      } finally {
+        loadingMore.current = false;
       }
-    };
+    }
+  };
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [jobs.length, totalJobs, fetchJobs]);
+  scrollable.addEventListener("scroll", handleScroll);
+  return () => scrollable.removeEventListener("scroll", handleScroll);
+}, [jobs.length, totalJobs, fetchJobs]);
+
+
 
   const performSearch = useCallback(async (searchQuery) => {
     lastQueryRef.current = searchQuery
@@ -128,7 +133,7 @@ const JobsList = ({ jobs: initialJobs }) => {
   const clearSearch = async () => {
     setSearchQuery("")
     await performSearch("")
-  }
+  };
 
   useEffect(() => {
     const id = setTimeout(() => {
@@ -136,6 +141,7 @@ const JobsList = ({ jobs: initialJobs }) => {
     }, 500)
     return () => clearTimeout(id)
   }, [searchQuery, performSearch])
+
 
   // Making search sticky but also callapsing when scolling
   const [isCollapsed, setIsCollapsed] = useState(false)
@@ -195,13 +201,112 @@ const JobsList = ({ jobs: initialJobs }) => {
     isExpend ? styles.expanded: "",
   ].join(" ").trim()
 
+  //------------------------------------
+  // new filter state
+  const [filters, setFilters] = useState({
+    company: "any",
+    location: "",
+    remote: "any",
+    datePosted: "newest",
+  })
+
+  const handleFilterChange = (key, value) => {
+    setFilters((f) => ({...f, [key]: value}))
+  }
+
+  const clearFilters = () => setFilters({company: "any", location: "", remote: "any", datePosted: "newest"})
+
+  const companyOptions = useMemo(() => {
+        const setC = new Set((jobs || []).map((j) => (j.company ||"").trim()).filter(Boolean))
+    return ["any", ...Array.from(setC)]
+  }, [jobs])
+
+  // derived filterJobs from fetched jobs
+  const filteredJobs = useMemo(() => {
+    if (!jobs || !jobs.length) return []
+    let list = jobs.slice()
+
+    //company filter
+    if (filters.company && filters.company !== "any") {
+      list = list.filter((j) => (j.company || "").toLowerCase() === filters.company.toLowerCase())
+    }
+
+    // location substring match
+    if (filters.location && filters.location.trim() !== "") {
+      const loc = filters.location.trim().toLowerCase()
+      list = list.filter((j) => (j.location || "").toLowerCase().includes(loc))
+    }
+
+    // remote (expects job.remote to be "remote", "onside", "hybrid")
+    // we don't have this info save in the db !!!
+    if (filters.remote && filters.remote !== "any") {
+      list = list.filter((j) => (j.remote || "").toLowerCase() === filters.remote.toLowerCase())
+    }
+
+    //sort by date posted
+    const getTime = (job) => {
+      const d = job.date_posted || null
+      const t = d? new Date(d).getTime() : 0
+      return Number.isFinite(t) ? t: 0
+    }
+    list.sort((a, b) => 
+      filters.datePosted === "newest" ? getTime(b) - getTime(a) : getTime(a) - getTime(b)
+    )
+    return list
+  }, [jobs, filters])
+
   return (
 
     <section className={styles.jobSection}>
-
+      <div className = {styles.searchAndFiltersRow}>
+        <div className={styles.filterBar} role="region" aria-label="Job filters">
+          <select
+            className={styles.filterControl}
+            value={filters.company}
+            onChange={(e) => handleFilterChange("company", e.target.value)}
+          >
+            {companyOptions.map((c) => (
+              <option key={c} value={c}>
+                {c=="any"? "All companies" : c}
+              </option>
+            ))}
+          </select>
+          <input
+            className={styles.filterControl}
+            type="text"
+            placeholder="Location"
+            value={filters.location}
+            onChange={(e) => handleFilterChange("location", e.target.value)}
+          />
+          <select
+            className = {styles.filterControl}
+            value={filters.remote}
+            onChange={(e) => handleFilterChange("remote", e.target.value)}
+          >
+            <option value="any">Any</option>
+            <option value="remote">Remote</option>
+            <option value="onsite">On-site</option>
+            <option value="hybrid">Hybrid</option>
+          </select>
+          <select
+            className={styles.filterControl}
+            value={filters.datePosted}
+            onChange={(e) => handleFilterChange("datePosted", e.target.value)}
+          >
+            <option value="newest">Newest</option>
+            <option value="oldest">Oldest</option>
+          </select>
+          <button
+            type="button"
+            className={styles.clearBtn}
+            onClick={() => setFilters({company: "any", location: "", remote: "any", datePosted: "newest"})}
+          >
+            <MdClose/>
+          </button>
+        </div>
         <form 
           ref = {containerRef}
-          className={containerClass} 
+          className={styles.searchContainer} 
           onSubmit={handleSearchClick} 
           role="search" 
           aria-label="Search jobs">
@@ -228,6 +333,7 @@ const JobsList = ({ jobs: initialJobs }) => {
             <MdSearch/>
           </button>
         </form>
+      </div>
 
       {/* Left Column: Job Cards */}
       <div className={styles.cardList}>
@@ -245,22 +351,18 @@ const JobsList = ({ jobs: initialJobs }) => {
               <button onClick={reloadInitialJobs} className={styles.retryBtn}>Try Again</button>
             </div>
           )}
-
-          {/* Empty state */}
-          {!loading && !error && jobs.length === 0 && (
-            <div className={styles.emptyState}>
-              <p>No jobs found. Check back later!</p>
+          
+          {/* Empty / Job display (use filteredJobs) */}
+          {!loading && filteredJobs.length > 0 && (
+            <div className={styles.jobCard}>
+              {filteredJobs.map((job, idx) => (
+                <JobCard key={job.id || idx} job={job} onClick={() => onJobClick(job)} />
+              ))}
             </div>
           )}
-
-          {/* Job display */}
-          {!loading && jobs.length >0 && (
-            <div className={styles.jobCard}>
-              {jobs.map((job, idx) => (
-                <JobCard key={job.id || idx} job={job}  onClick={() => onJobClick(job)}
-                />
-              ))}
-
+          {!loading && !error && filteredJobs.length === 0 && (
+            <div className={styles.emptyState}>
+              <p>No jobs match the filters.</p>
             </div>
           )}
       </div>

@@ -58,41 +58,41 @@ const UserDashboard = () => {
   // const WARNING_TIME = 15 * 1000 // 1 min before logout
   
 
-  const timerRef = useRef(null);
-  const warningRef = useRef(null)
+  // const timerRef = useRef(null);
+  // const warningRef = useRef(null)
 
-  // ✅ logout function
-  const logout = useCallback(() => {
-    localStorage.removeItem("token");
-    navigate("/login");
-  }, [navigate]);
+  // // ✅ logout function
+  // const logout = useCallback(() => {
+  //   localStorage.removeItem("token");
+  //   navigate("/login");
+  // }, [navigate]);
 
-  const resetTimer = useCallback(() => {
-    if (timerRef.current) clearTimeout(timerRef.current)
-    if (warningRef.current) clearTimeout(warningRef.current)
+  // const resetTimer = useCallback(() => {
+  //   if (timerRef.current) clearTimeout(timerRef.current)
+  //   if (warningRef.current) clearTimeout(warningRef.current)
 
-    warningRef.current = setTimeout(() => {
-      toast.warn(
-        <div>
-          "You will be logged out in 1 min due to inactivity."
-          <button onClick={resetTimer} style={{marginLeft:"10px"}}>Stay Logged In</button>
-        </div>, {autoClose: 5000})
-    }, AUTO_LOGOUT_TIME - WARNING_TIME)
+  //   warningRef.current = setTimeout(() => {
+  //     toast.warn(
+  //       <div>
+  //         "You will be logged out in 1 min due to inactivity."
+  //         <button onClick={resetTimer} style={{marginLeft:"10px"}}>Stay Logged In</button>
+  //       </div>, {autoClose: 5000})
+  //   }, AUTO_LOGOUT_TIME - WARNING_TIME)
 
-    timerRef.current = setTimeout(logout, AUTO_LOGOUT_TIME)
-  }, [logout])
+  //   timerRef.current = setTimeout(logout, AUTO_LOGOUT_TIME)
+  // }, [logout])
 
-  useEffect(() => {
-    const events = ["mousemove", "keydown", "click"]
-    events.forEach((event) => window.addEventListener(event, resetTimer))
+  // useEffect(() => {
+  //   const events = ["mousemove", "keydown", "click"]
+  //   events.forEach((event) => window.addEventListener(event, resetTimer))
 
-    resetTimer()
-    return () => {
-      events.forEach((event) => window.removeEventListener(event, resetTimer))
-      if (timerRef.current) clearTimeout(timerRef.current)
-      if (warningRef.current) clearTimeout(warningRef.current)
-    }
-  }, [resetTimer]);
+  //   resetTimer()
+  //   return () => {
+  //     events.forEach((event) => window.removeEventListener(event, resetTimer))
+  //     if (timerRef.current) clearTimeout(timerRef.current)
+  //     if (warningRef.current) clearTimeout(warningRef.current)
+  //   }
+  // }, [resetTimer]);
 
 
 
