@@ -17,6 +17,8 @@ import JobsList from './pages/JobsList.jsx'
 import UserDashboard from './pages/UserDashboard';
 import ResumeForm from './pages/ResumeForm';
 
+import Profile from './pages/Profile.jsx';
+
 // Import helpers
 import OAuthHandler from './components/OAuthHandler';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -54,6 +56,17 @@ function App() {
         >
           <Route index element = {<JobsList/>}/>
         </Route>
+
+        {/* Protected Route for profile page /<user>/profile */}
+        <Route
+          path="/:username/profile"
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
+
       </Routes>
     </Router>
   );
