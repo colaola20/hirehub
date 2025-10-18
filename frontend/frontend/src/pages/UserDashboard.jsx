@@ -95,6 +95,52 @@ const UserDashboard = () => {
   }, [resetTimer]);
 
 
+  const fetchJobs = useCallback(async (limit = 20, offset = 0, query = "") => {
+    try {
+      if (offset === 0) {
+        setLoading(true);
+        setError(null);
+      }
+
+      const token = localStorage.getItem("token");
+      const response = await fetch(
+        `/api/jobs?limit=${limit}&offset=${offset}&preload=10&search=${encodeURIComponent(query)}`,
+        {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      let items = data.current || [];
+
+      // 🔀 Randomize array using Fisher-Yates shuffle
+      for (let i = items.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [items[i], items[j]] = [items[j], items[i]];
+      }
+
+      return {
+        items,
+        total: data.total || 0,
+      };
+    } catch (error) {
+      console.error('Failed to fetch jobs:', error);
+      setError('Failed to load jobs. Please try again.');
+      return { items: [], total: 0 };
+    } finally {
+      if (offset === 0) setLoading(false);
+    }
+  }, []);
+
+
   // Fetch liked jobs
 const fetchLikedJobs = async () => {
   try {
@@ -134,12 +180,12 @@ const fetchLikedJobs = async () => {
       <div className={styles["dashboard-screen-wrapper"]}>
         <PersonalizedNavbar  onShowLiked={handleShowLiked} onShowRecommended={handleShowRecommended} />
         <div className={styles["dashboard-wrapper"]}>
-          <SideBar/>
+          <SideBar onClick={fetchJobs}/>
           <main className={styles["dashboard-container"]} role="main">
             <div className={styles["main-content"]}>
               {showLiked && likedJobs.length > 0 ? (
                 likedJobs.map(job => (
-                  <JobCard key={job.id} job={job} cardForLikedJobs={true} />
+                  <JobCard key={job.id} job={job} cardForLikedJobs={true} onClick={handleJobClick} />
                 ))
               ) : showLiked ? (
                 <p>No liked jobs yet.</p>

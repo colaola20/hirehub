@@ -27,13 +27,13 @@ const JobDetailsModal = ({ job, onClose }) => {
         <button className={styles.closeBtn} onClick={onClose}>✕</button>
         <div className={styles.modalHeader}>
           <h2>{job.title || "Untitled Position"}</h2>
-          <FavoriteButton jobId={job.id} />
+          {/* <FavoriteButton jobId={job.id} /> */}
         </div>
+      <div className={styles.modalHeaderContent}>
         <p className={styles.company}> <FaBuilding style={{ marginRight: "10px", color: "#a3bffa",fontSize: "20px" }} /><strong>Company:</strong> {job.company || "Unknown"}</p>
         <p className={styles.location}> <FaMapMarkerAlt style={{ marginRight: "10px", color: "#a3bffa",fontSize: "20px" }} /> <strong>Location:</strong> {job.location || "Unspecified"}</p>
-        <p className={styles.datePosted}> <FaCalendarAlt style={{ marginRight: "10px", color: "#a3bffa",fontSize: "20px" }} /><strong>Date Posted:</strong>{" "}
-          {job.date_posted ? new Date(job.date_posted).toLocaleDateString() : "No date"}
-        </p>
+        <p className={styles.datePosted}> <FaCalendarAlt style={{ marginRight: "10px", color: "#a3bffa",fontSize: "20px" }} /><strong>Date Posted:</strong>{" "}{job.date_posted ? new Date(job.date_posted).toLocaleDateString() : "No date"}</p>
+      </div>
         <hr />
         <div className={styles.scrollArea}>
           <p dangerouslySetInnerHTML={{ __html: job.description || "No description available." }} />
