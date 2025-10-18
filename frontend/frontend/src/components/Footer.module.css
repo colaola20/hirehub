@@ -1,0 +1,164 @@
+/* Footer.module.css */
+
+/* Root wrapper — remove spacing and add an upward blend */
+.footer {
+  position: relative;
+  margin-top: 0;                /* no gap above the footer */
+  color: #fff;
+  isolation: isolate;
+}
+
+/* Soft bridge that fades the contact section into the footer */
+.footer::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -120px;                  /* reach up into the section above */
+  height: 120px;
+  pointer-events: none;
+  /* fade from the contact card’s dark glass into the footer glass */
+  background: linear-gradient(
+    to bottom,
+    rgba(12,16,38,0.28) 0%,
+    rgba(12,16,38,0.26) 35%,
+    rgba(12,16,38,0.24) 55%,
+    rgba(12,16,38,0.22) 75%,
+    rgba(12,16,38,0.30) 100%
+  );
+  filter: blur(6px);
+  z-index: 0;
+}
+
+/* FULL-BLEED glass panel */
+.footerContainer {
+  max-width: none;
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+
+  padding: clamp(28px, 4vw, 44px) clamp(20px, 5vw, 48px);
+  background: rgba(12, 16, 38, 0.30);     /* same glass tone as contact */
+  border: 1px solid rgba(255,255,255,0.12);
+  border-left: 0;
+  border-right: 0;
+  border-top: 0;                           /* no hard top edge */
+  border-radius: 0;
+  backdrop-filter: blur(10px) saturate(115%);
+  -webkit-backdrop-filter: blur(10px) saturate(115%);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.04), 0 10px 28px rgba(0,0,0,0.18);
+  position: relative;
+  z-index: 1;                               /* above the bridge fade */
+}
+
+/* remove the thin gradient stripe we added earlier */
+.footerContainer::before { content: none; }
+
+/* Constrain inner content while the panel stays full-bleed */
+.footerTop,
+.footerBottom {
+  max-width: 1120px;
+  margin: 0 auto;
+}
+
+/* Top grid */
+.footerTop {
+  display: grid;
+  grid-template-columns: 1.2fr repeat(3, 1fr);
+  gap: clamp(16px, 3vw, 28px);
+  align-items: start;
+}
+
+/* Columns */
+.footerColumn { display: flex; flex-direction: column; gap: 10px; }
+
+/* Brand */
+.footerLogo {
+  margin: 0 0 6px 0;
+  font-weight: 900;
+  letter-spacing: .4px;
+  font-size: clamp(22px, 2.6vw, 28px);
+  background: linear-gradient(90deg, #ffffff, #ffe0fb);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.footerAbout {
+  margin: 0;
+  color: rgba(235,237,255,0.92);
+  line-height: 1.6;
+  font-size: 14.5px;
+}
+
+/* Headings */
+.footerColumnTitle {
+  margin: 0 0 4px;
+  font-weight: 800;
+  font-size: 14px;
+  letter-spacing: .3px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.92);
+}
+
+/* Links */
+.footerLink,
+.socialLink {
+  display: inline-block;
+  width: fit-content;
+  color: rgba(235,237,255,0.92);
+  text-decoration: none;
+  font-size: 14.5px;
+  padding: 2px 0;
+  transition: color .2s ease, transform .2s ease;
+  position: relative;
+}
+
+.footerLink::after,
+.socialLink::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: -2px;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(255,255,255,0.0), rgba(255,255,255,0.8), rgba(255,255,255,0.0));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform .25s ease;
+}
+
+.footerLink:hover,
+.socialLink:hover {
+  color: #ffffff;
+  transform: translateX(2px);
+}
+.footerLink:hover::after,
+.socialLink:hover::after { transform: scaleX(1); }
+
+/* Social row */
+.footerSocial { display: flex; gap: 12px; margin-top: 6px; }
+
+/* Bottom row */
+.footerBottom {
+  margin-top: clamp(18px, 3vh, 28px);
+  padding-top: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 18px;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid rgba(255,255,255,0.10);
+  color: rgba(230,234,255,0.85);
+  font-size: 13.5px;
+}
+
+.footerLinks { display: flex; gap: 14px; }
+
+/* Responsive */
+@media (max-width: 980px) {
+  .footerTop { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 640px) {
+  .footerTop { grid-template-columns: 1fr; }
+  .footerBottom { flex-direction: column; align-items: flex-start; gap: 10px; }
+}
