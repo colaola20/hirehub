@@ -1867,3 +1867,151 @@
   opacity: 1;
   transform: none;
 }
+/* ===== MEET THE TEAM ===== */
+.team {
+  position: relative;
+  padding: clamp(56px, 10vh, 100px) 0;
+  /* subtle dark glass base to blend with your site BG */
+ background:
+    linear-gradient(180deg,#171428,#24183a);
+}
+
+.teamInner {
+  /* glassy container echoing .angle2-services__inner */
+  max-width: none;
+  width: 100%;
+  padding: clamp(24px, 4vw, 56px);
+  background: rgba(12, 16, 38, 0.30);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: clamp(10px, 1.2vw, 16px);
+  backdrop-filter: blur(10px) saturate(115%);
+  -webkit-backdrop-filter: blur(10px) saturate(115%);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 10px 28px rgba(0,0,0,0.18);
+  color: rgba(248,249,255,0.94);
+}
+
+.teamHeader {
+  text-align: center;
+  margin-bottom: clamp(18px, 3vh, 28px);
+}
+
+.teamTitle {
+  margin: 6px 0 8px;
+  font-weight: 900;
+  color: #fff;
+  font-size: clamp(28px, 4vw, 48px);
+  letter-spacing: .2px;
+}
+
+.titleStrongAlt {
+  background: linear-gradient(90deg, #8ec5fc 0%, #7a5bbf 50%, #f6a0d0 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  background-size: 180% auto;
+  animation: titleShift 6s ease-in-out infinite;
+}
+
+.teamSubtitle {
+  margin: 0 auto;
+  max-width: 760px;
+  color: rgba(235,237,255,.92);
+  font-size: clamp(14px, 2vw, 18px);
+}
+
+/* Grid of members */
+.teamGrid {
+  display: grid;
+  grid-template-columns: repeat( auto-fit, minmax(220px, 1fr) );
+  gap: clamp(14px, 2vw, 24px);
+  margin-top: clamp(18px, 3vh, 26px);
+}
+
+/* Member card */
+.memberCard {
+  position: relative;
+  padding: clamp(14px, 2vw, 18px);
+  border-radius: 14px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.10);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+  transition: transform .35s ease, box-shadow .35s ease, border-color .35s ease, background .35s ease;
+  will-change: transform, box-shadow;
+}
+
+.memberCard:hover,
+.memberCard:focus-within {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 26px rgba(0,0,0,0.28);
+  border-color: rgba(255,255,255,0.18);
+  background: rgba(255,255,255,0.08);
+}
+
+/* Avatar */
+.memberAvatar {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  height: auto;
+  object-fit: cover;
+  border-radius: 12px;
+  margin-bottom: 10px;
+  filter: saturate(0.96) contrast(1.03);
+  object-position: 50% 0%;
+}
+
+/* Text */
+.memberName {
+  margin: 0 0 2px;
+  color: #fff;
+  font-weight: 800;
+  font-size: clamp(16px, 2.2vw, 18px);
+}
+
+.memberRole {
+  margin: 0 0 8px;
+  color: rgba(180,190,255,0.92);
+  font-weight: 600;
+  font-size: 13.5px;
+  letter-spacing: .2px;
+}
+
+.memberBio {
+  margin: 0 0 12px;
+  color: rgba(235,237,255,0.92);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+/* Socials */
+.memberSocials {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.memberSocials a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 30px;
+  padding: 0 12px;
+  border-radius: 999px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 12px;
+  color: #0f1220;
+  background: rgba(255,255,255,.92);
+  border: 1px solid rgba(255,255,255,.28);
+  transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+}
+
+.memberSocials a:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(0,0,0,.25);
+  border-color: rgba(255,255,255,.5);
+}
+
+/* Small screens */
+@media (max-width: 640px) {
+  .memberBio { font-size: 13.5px; }
+}

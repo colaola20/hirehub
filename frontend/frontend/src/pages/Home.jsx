@@ -332,7 +332,118 @@ const AngleLanding = () => {
           </div>
         </div>
       </section>
+      {/* ===== MEET THE TEAM ===== */}
+      <section className={styles.team} id="team">
+        <div className={`${styles["angle2-container"]} ${styles.teamInner}`}>
+          <header className={styles.teamHeader}>
+            <p className={styles.eyebrow}>Meet the Team</p>
+            <h2 className={styles.teamTitle}>
+              The people behind <span className={styles.titleStrongAlt}>HireHub</span>
+            </h2>
+            <p className={styles.teamSubtitle}>
+              Builders, designers, and career nerds obsessed with helping you land faster.
+            </p>
+          </header>
 
+          <div className={styles.teamGrid}>
+            {/* Card 1 */}
+            <article className={styles.memberCard} data-reveal>
+              <img
+                className={styles.memberAvatar}
+                src="/src/assets/H4.png"
+                alt="Alex Johnson"
+                loading="lazy"
+              />
+              <h3 className={styles.memberName}>Haris Akbar</h3>
+              <p className={styles.memberRole}>Co-founder & CEO</p>
+              <p className={styles.memberBio}>
+                Product & growth. Previously led job-search tools used by 3M+ applicants.
+              </p>
+              <div className={styles.memberSocials}>
+                <a href="#" aria-label="Alex on LinkedIn">LinkedIn</a>
+                <a href="#" aria-label="Alex on Twitter">Twitter</a>
+              </div>
+            </article>
+
+            {/* Card 2 */}
+            <article className={styles.memberCard} data-reveal>
+              <img
+                className={styles.memberAvatar}
+                src="/src/assets/team/samir.jpg"
+                alt="Samir Patel"
+                loading="lazy"
+              />
+              <h3 className={styles.memberName}>Jonatan Paulino</h3>
+              <p className={styles.memberRole}>Co-founder & CTO</p>
+              <p className={styles.memberBio}>
+                ML & systems. Ships ranking models and keeps the pixels fast.
+              </p>
+              <div className={styles.memberSocials}>
+                <a href="#" aria-label="Samir on GitHub">GitHub</a>
+                <a href="#" aria-label="Samir on LinkedIn">LinkedIn</a>
+              </div>
+            </article>
+
+            {/* Card 3 */}
+            <article className={styles.memberCard} data-reveal>
+              <img
+                className={styles.memberAvatar}
+                src="/src/assets/team/maya.jpg"
+                alt="Maya Chen"
+                loading="lazy"
+              />
+              <h3 className={styles.memberName}>Olha Sorych</h3>
+              <p className={styles.memberRole}>Design Lead</p>
+              <p className={styles.memberBio}>
+                Design systems, accessibility, and crisp micro-interactions.
+              </p>
+              <div className={styles.memberSocials}>
+                <a href="#" aria-label="Maya on Dribbble">Dribbble</a>
+                <a href="#" aria-label="Maya on LinkedIn">LinkedIn</a>
+              </div>
+            </article>
+
+            {/* Card 4 */}
+            <article className={styles.memberCard} data-reveal>
+              <img
+                className={styles.memberAvatar}
+                src="/src/assets/team/leo.jpg"
+                alt="Leo Martínez"
+                loading="lazy"
+              />
+              <h3 className={styles.memberName}>Mike</h3>
+              <p className={styles.memberRole}>Head of Career Success</p>
+              <p className={styles.memberBio}>
+                Ex-recruiter. Turns “meh” bullets into measurable wins.
+              </p>
+              <div className={styles.memberSocials}>
+                <a href="#" aria-label="Leo on LinkedIn">LinkedIn</a>
+              </div>
+            </article>
+
+            {/* Card 5 */}
+            <article className={styles.memberCard} data-reveal>
+              <img
+                className={styles.memberAvatar}
+                src="/src/assets/team/amira.jpg"
+                alt="Amira Hassan"
+                loading="lazy"
+              />
+              <h3 className={styles.memberName}>Hashim</h3>
+              <p className={styles.memberRole}>NLP Engineer</p>
+              <p className={styles.memberBio}>
+                Keyword extraction, ATS parsing, and prompt safety.
+              </p>
+              <div className={styles.memberSocials}>
+                <a href="#" aria-label="Amira on GitHub">GitHub</a>
+                <a href="#" aria-label="Amira on LinkedIn">LinkedIn</a>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+              
       <Contact />
       <Footer />
     </div>
