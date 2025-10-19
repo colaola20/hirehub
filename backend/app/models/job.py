@@ -16,6 +16,8 @@ class Job(db.Model):
     fetched_at = db.Column(db.DateTime, default=lambda:datetime.now(timezone.utc)) # when job was inserted in our db
     is_active = db.Column(db.Boolean, default=True) # indicates if a job is still open
     applications = db.relationship("Application", backref='job', lazy=True)
+    favorites = db.relationship('Favorite', backref='job', lazy=True, cascade='all, delete-orphan')
+    employer_type = db.Column(db.String(), nullable=True)
 
 
     __table_args__ = (

@@ -1,25 +1,31 @@
 .sidebar {
   position: fixed;
-  top: var(--nav-h);                 /* start under the navbar */
+  top: calc(var(--nav-h) + 16px);                 /* start under the navbar */
   left: 0;
-  width: var(--sb-w);
-  height: calc(100vh - var(--nav-h));
-  z-index: 960;       
+  width: var(--sb-w, 240px);
+  height: calc(100vh - calc(var(--nav-h) + 16px));
+  z-index: 1000;       
   /* Glassy/translucent like .angle2-nav */
-  background: rgba(12, 16, 38, 0.30);
-  border: 1px solid rgba(255,255,255,0.12);
-  backdrop-filter: saturate(120%) blur(10px);
-  -webkit-backdrop-filter: saturate(120%) blur(10px);
+  background: rgba(20, 15, 40, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  /* -webkit-backdrop-filter: saturate(120%) blur(10px); */
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 10px 28px rgba(0,0,0,0.18);
 
-  color: #fff;
+  color: #f6f7fb;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   padding: 20px 15px;
 
   /* soften the edge that meets the page */
-  border-radius: 0 14px 14px 0;
+  border-radius: 0 14px 0 0;
+  box-sizing: border-box;
+
+  /* ensure smooth open/close on all widths */
+  transform: translateX(0);
+  transition: transform 260ms ease, opacity 180ms ease;
+  will-change: transform;
 }
 
 /* Nav stack */
@@ -68,4 +74,143 @@
   flex-direction: column;
   gap: 12px;
   padding-bottom: 8px; /* keep a bit of breathing room */
+}
+
+
+
+/* ----- LOGO ----- */
+/* Brand keeps its pill but sits nicely on glass */
+.navbarBrand {
+  display:flex;
+  align-items:flex-start;
+  gap:12px;
+  flex-wrap: nowrap;
+  padding: 0.5rem;
+  border-radius: 10px;
+}
+
+.navbarBrand a {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  text-decoration: none;
+}
+
+.navbarBrand .brandText {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  line-height: 1.2;
+  gap: 4px;
+}
+.navbarBrand .brandTitle{
+  margin:0;
+  line-height:1;
+  font-weight:700;
+  font-size:clamp(24px,4vw,36px);
+  background:linear-gradient(to right,#86bbf0,#7a5bbf);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+  color:transparent;
+  white-space: nowrap;
+}
+.navbarBrand .logo {
+  margin:0;
+  background:linear-gradient(to right,#8ec5fc,#7a5bbf);
+  color:#fff;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:clamp(40px, 6vw, 50px);
+  width:clamp(40px, 6vw, 50px);
+  font-size:clamp(24px, 4vw, 32px);
+  font-weight:700;
+  border-radius:8px;
+}
+
+/* hide by translating full width left */
+.sidebar:not(.sidebarOpen) {
+  transform: translateX(calc(-1 * var(--sb-w, 240px)));
+}
+
+/* ensure backdrop dims the page when open */
+.sidebarBackdrop {
+  position: fixed;
+  top: calc(var(--nav-h, 64px) + 16px);
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.45); /* visible dim */
+  z-index: 999;
+  opacity: 0;
+  transition: opacity 200ms ease;
+  pointer-events: none;
+}
+
+/* show backdrop when sidebarOpen is set on the body/parent or render it only when open.
+   when rendered (isOpen) toggle pointer-events and opacity (JS already conditionally renders it) */
+.sidebarBackdrop[aria-hidden="false"],
+.sidebarBackdrop.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* mobile adjustments */
+@media (max-width: 980px) {
+  .sidebar {
+    /* start hidden by default on mobile */
+    transform: translateX(calc(-1 * var(--sb-w, 240px)));
+    width: var(--sb-w, 240px); /* same width when opened */
+    border-radius: 0 14px 14px 0;
+  }
+
+  .sidebar.sidebarOpen {
+    transform: translateX(0);
+  }
+
+  .sidebarToggle {
+    display: inline-flex;
+    position: fixed;
+    left: 12px;
+    top: 16px;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.06); /* not red */
+    border: 1px solid rgba(255,255,255,0.06);
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-sizing: border-box;
+    z-index: 1200;
+    opacity: 1;
+    visibility: visible;
+  }
+  .sidebarToggle svg,
+  .sidebarToggle svg rect,
+  .sidebarToggle svg path {
+    display: block;
+    width: 24px;
+    height: 24px;
+    overflow: visible;
+    color: #fff;
+  }
+}
+
+
+
+@media (min-width: 981px) {
+  .sidebar,
+  .sidebar:not(.sidebarOpen) {
+    transform: translateX(0) !important; /* force visible on desktop */
+    position: sticky;                    /* optional: keep it in flow */
+    top: calc(var(--nav-h, 64px) + 16px);
+  }
+
+  /* hide mobile-only controls on desktop */
+  .sidebarBackdrop,
+  .sidebarToggle {
+    display: none !important;
+  }
 }

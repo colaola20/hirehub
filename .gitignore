@@ -15,3 +15,5 @@ frontend/build/
 .idea/
 *.log
 venv/
+/backend/env/
+

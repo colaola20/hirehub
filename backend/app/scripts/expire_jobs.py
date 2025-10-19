@@ -9,7 +9,7 @@ app.app_context().push()
 # to run the script
 # python3 -m app.scripts.expire_jobs
 
-def expire_old_jobs(days=3):
+def expire_old_jobs(days=14):
     try:
         cutoff = datetime.now(timezone.utc) - timedelta(days=days)
         updated = Job.query.filter(Job.fetched_at < cutoff, Job.is_active == True).update(

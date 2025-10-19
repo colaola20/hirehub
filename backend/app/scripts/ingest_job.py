@@ -79,6 +79,7 @@ def normalize_findwork_job(api_job):
         "date_posted": parse_date_to_dt(api_job.get("date_posted")),
         "fetched_at": datetime.now(timezone.utc),
         "is_active": True,
+        "employer_type": api_job.get("employer_type")
     }
 
 def normalize_adzuna_job(api_job):
@@ -99,6 +100,7 @@ def normalize_adzuna_job(api_job):
         "date_posted": parse_date_to_dt(api_job.get("created")),
         "fetched_at": datetime.now(timezone.utc),
         "is_active": True,
+        "employer_type": api_job.get("contract-time")
     }
 
 def upsert_job(session, job_data):
@@ -138,7 +140,7 @@ def ingest_source_with_upsert(fetch_fn, normalize_fn, *, page_arg_name="page", s
                     with db.session.begin_nested(): #Savepoint
                         job_data = normalize_fn(api_job)
                         print(api_job)
-                        #upsert_job(db.session, job_data)
+                        upsert_job(db.session, job_data)
                 except Exception:
                     logger.exception("Failed upserting job %s from %s", api_job.get("id") or api_job.get("title"), normalize_fn.__name__)
                     # nested transaction rolls back to savepoint; continue to next job

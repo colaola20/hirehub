@@ -1,38 +1,76 @@
 
 
 .job-card {
-    width: 100%;
-    background: #000000;
+    width: 95%;
+    background: rgba(20, 15, 40, 0.75); /* glassy panel effect */
+     -webkit-backdrop-filter: blur(12px);     /* Safari support */
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
     border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
     padding: 20px;
-    transition: transform 0.2s;
+    transition: all 0.25s ease;
     cursor: pointer;
     margin-bottom: 10px;
+    color: #ffffff;    
 }
-.job-card h3    {
-    text-align: center;
-    text-transform: uppercase;
-    font-size: 22px;
-    font-weight: bold;
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
 }
+
+.card-header h3 {
+  text-align: left;
+  text-transform: uppercase;
+  font-size: 22px;
+  font-weight: bold;
+  color: #ffffff;
+  margin: 0;
+  letter-spacing: 1px;
+  flex: 1;
+}
+
+.job-card h3 {
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 22px;
+  font-weight: bold;
+  color: #ffffff;
+  margin-bottom: 16px;
+  letter-spacing: 1px;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  margin-bottom: 12px;
+  font-size: 14px;
+  color: #e0e0e0;
+}
+
+.metaItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
 
 .date{
     font-size: 13px;
     font-weight: bold;
+    color: #ffffff;    
 }
-.source{
-    font-size: 12px;
-    color: #666666;
-}
-.job-card p.description {
-  max-height: 500px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
+
+
 
 .job-card:hover {
   transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 8px 30px rgba(255, 120, 170, 0.15);
 }
 
 .apply-btn {
