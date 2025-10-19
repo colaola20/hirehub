@@ -2106,3 +2106,120 @@
     border-radius: 8px;
   }
 }
+/* =========================
+   SERVICES — layout & card
+   (scope only to .caeliServices)
+   ========================= */
+
+/* Ensure the floating card can sit above the image on desktop too */
+.caeliServices .caeliRight { position: relative !important; }
+.caeliServices .caeliCard  { z-index: 2 !important; }
+
+/* Mobile / small tablets */
+@media (max-width: 900px) {
+  .caeliServices { padding: 24px 0; }
+
+  .caeliServices .caeliContainer{
+    display: grid !important;
+    grid-template-columns: 1fr !important;  /* stack left/right */
+    gap: 18px !important;
+    width: 100%;
+    padding: 0 16px !important;
+  }
+
+  .caeliServices .caeliLeft{
+    margin-left: 0 !important;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .caeliServices .caeliOption{
+    font-size: 22px !important;
+    border: 0 !important;
+    padding: 0 !important;
+  }
+
+  .caeliServices .caeliRight{
+    height: auto !important;
+    margin: 0 !important;
+    justify-content: center !important;
+  }
+
+  .caeliServices .caeliImageWrap{
+    height: 56vh !important;            /* visible, not oversized */
+    border-radius: 16px !important;
+  }
+
+  .caeliServices .caeliImage{
+    height: 100% !important;
+  }
+
+  /* Bring the service card back on top of the image */
+  .caeliServices .caeliCard{
+    position: absolute !important;
+    left: 50% !important;
+    bottom: 12px !important;
+    transform: translateX(-50%);
+    width: 92% !important;
+    padding: 16px 18px !important;
+    border-radius: 14px !important;
+    background: rgba(255,255,255,0.12) !important;
+    backdrop-filter: blur(12px) saturate(120%) !important;
+    -webkit-backdrop-filter: blur(12px) saturate(120%) !important;
+    box-shadow: 0 8px 24px rgba(0,0,0,.35) !important;
+  }
+}
+/* SERVICES — force the overlay card off-center on small screens */
+@media (max-width: 900px) {
+  /* Make the image the positioning context */
+  .caeliServices .caeliRight,
+  .caeliServices .caeliImageWrap { position: relative !important; }
+
+  /* Pin the card, shrink it, and prevent it from covering the photo */
+  .caeliServices .caeliImageWrap .caeliCard {
+    position: absolute !important;
+    top: auto !important;
+    left: auto !important;
+    right: 12px !important;
+    bottom: 12px !important;
+    transform: none !important;
+    z-index: 2 !important;
+
+    width: 68% !important;          /* smaller footprint */
+    max-width: 340px !important;
+    max-height: 42vh !important;    /* don’t cover the image */
+    overflow: auto !important;      /* scroll if copy is long */
+
+    padding: 14px 16px !important;
+    border-radius: 14px !important;
+    background: rgba(255,255,255,0.10) !important;
+    backdrop-filter: blur(12px) saturate(120%) !important;
+    -webkit-backdrop-filter: blur(12px) saturate(120%) !important;
+    box-shadow: 0 8px 24px rgba(0,0,0,.35) !important;
+  }
+
+  /* Ensure the image is still visible/tall enough */
+  .caeliServices .caeliImageWrap {
+    height: 56vh !important;
+    border-radius: 16px !important;
+  }
+
+  /* Tighter text so the card stays compact */
+  .caeliServices .caeliCard p {
+    font-size: 13px !important;
+    line-height: 1.45 !important;
+    margin: 0 !important;
+  }
+}
+
+/* Tablets: keep it docked but allow a bit more space */
+@media (min-width: 901px) and (max-width: 1200px) {
+  .caeliServices .caeliImageWrap .caeliCard {
+    top: auto !important;
+    left: auto !important;
+    right: 24px !important;
+    bottom: 24px !important;
+    width: 46% !important;
+    max-height: 52vh !important;
+  }
+}
