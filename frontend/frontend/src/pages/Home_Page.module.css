@@ -2015,3 +2015,52 @@
 @media (max-width: 640px) {
   .memberBio { font-size: 13.5px; }
 }
+/* remove extra space below the Team section */
+.team {
+  padding-bottom: 0 !important;
+  /* keep this if you also applied the top fix earlier */
+  padding-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+/* make sure the inner wrapper isn't adding spacing */
+.teamInner {
+  margin-bottom: 0 !important;
+}
+/* ——— Join TEAM → CONTACT even if Contact is wrapped ——— */
+
+/* kill bottom spacing on Team itself */
+.team{
+  padding-bottom:0 !important;
+  margin-bottom:0 !important;
+}
+.teamInner{
+  margin-bottom:0 !important;
+  border-bottom-left-radius:0 !important;
+  border-bottom-right-radius:0 !important;
+}
+
+/* target the NEXT element after .team (whatever it is)
+   and remove its top spacing so it butts up against Team */
+.team + *{
+  margin-top:0 !important;
+  padding-top:0 !important;
+}
+
+/* inside that next element, flatten the top corners of the Contact card
+   (works with CSS Modules because we use a substring match) */
+.team + * [class*="angle2-contact__inner"]{
+  border-top-left-radius:0 !important;
+  border-top-right-radius:0 !important;
+}
+
+/* belt-and-suspenders: if Contact really IS the next sibling with the class,
+   these apply too (harmless otherwise) */
+.team + .angle2-contact{
+  margin-top:0 !important;
+  padding-top:0 !important;
+}
+.team + .angle2-contact .angle2-contact__inner{
+  border-top-left-radius:0 !important;
+  border-top-right-radius:0 !important;
+}
