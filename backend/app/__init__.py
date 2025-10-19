@@ -12,6 +12,7 @@ from app.routes.home import home_bp
 from app.routes.users import users_bp
 from app.routes.jobs import jobs_bp
 from app.routes.favorites import favorites_bp
+from app.routes.applications import applications_bp
 from flask_cors import CORS
 from .config import Config
 
@@ -69,5 +70,7 @@ def create_app():
     app.register_blueprint(github_bp)
     app.register_blueprint(google_bp)
     app.register_blueprint(linkedin_bp)
+    app.register_blueprint(applications_bp)
+    
 
     return app

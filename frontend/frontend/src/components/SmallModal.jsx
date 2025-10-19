@@ -5,7 +5,32 @@ const SmallModal = ({ job, onNo }) => {
 
     if (!job) return null;
 
-    const onYes = () => {};
+    const onYes = async () => {
+    try {
+        const token = localStorage.getItem("token");
+        const response = await fetch("/api/apply", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+        },
+        body: JSON.stringify({ job_id: job.id, notes: "" }),
+        });
+
+        if (response.ok) {
+        const data = await response.json();
+        alert(data.message || "Application saved successfully!");
+        onNo(); // close modal
+        } else {
+        const text = await response.text();
+        console.error("Server error:", text);
+        alert("Failed to apply. Check console for details.");
+        }
+    } catch (err) {
+        console.error(err);
+        alert("Something went wrong. Try again.");
+    }
+    };
 
 
     return (

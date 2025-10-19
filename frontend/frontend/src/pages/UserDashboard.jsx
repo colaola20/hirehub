@@ -180,7 +180,7 @@ const fetchLikedJobs = async () => {
       <div className={styles["dashboard-screen-wrapper"]}>
         <PersonalizedNavbar  onShowLiked={handleShowLiked} onShowRecommended={handleShowRecommended} />
         <div className={styles["dashboard-wrapper"]}>
-          <SideBar onClick={fetchJobs}/>
+          <SideBar showRandomJob={fetchJobs}/>
           <main className={styles["dashboard-container"]} role="main">
             <div className={styles["main-content"]}>
               {showLiked && likedJobs.length > 0 ? (
