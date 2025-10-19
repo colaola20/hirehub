@@ -411,7 +411,7 @@ const AngleLanding = () => {
                 alt="Leo Martínez"
                 loading="lazy"
               />
-              <h3 className={styles.memberName}>Mike</h3>
+              <h3 className={styles.memberName}>Mike Moradi</h3>
               <p className={styles.memberRole}>Head of Career Success</p>
               <p className={styles.memberBio}>
                 Ex-recruiter. Turns “meh” bullets into measurable wins.
@@ -429,7 +429,7 @@ const AngleLanding = () => {
                 alt="Amira Hassan"
                 loading="lazy"
               />
-              <h3 className={styles.memberName}>Hashim</h3>
+              <h3 className={styles.memberName}>Hashim Kazmi</h3>
               <p className={styles.memberRole}>NLP Engineer</p>
               <p className={styles.memberBio}>
                 Keyword extraction, ATS parsing, and prompt safety.

@@ -2064,3 +2064,45 @@
   border-top-left-radius:0 !important;
   border-top-right-radius:0 !important;
 }
+/* === Mobile navbar restore + tidy === */
+@media (max-width: 640px) {
+  .angle2-nav{
+    padding: 10px 0;
+    background: rgba(10, 10, 22, 0.28);              /* subtle glass so it reads */
+    backdrop-filter: saturate(120%) blur(6px);
+    -webkit-backdrop-filter: saturate(120%) blur(6px);
+    z-index: 1000;
+  }
+
+  .angle2-nav .angle2-container{
+    display: flex;
+    align-items: center;
+    justify-content: center;                          /* keep content centered */
+    gap: 12px;
+    padding: 0 10px;
+  }
+
+  /* No logo on mobile; links are the nav */
+  .angle2-nav .angle2-logo{ display: none !important; }
+
+  /* show the links row again (we previously hid it) */
+  .angle2-nav .angle2-links{
+    display: flex !important;
+    gap: 14px;
+  }
+
+  .angle2-nav .angle2-links a{
+    font-size: 13px;
+    line-height: 1;
+    padding: 6px 0;
+    opacity: .9;
+  }
+
+  /* keep the small buttons but make them truly small */
+  .angle2-nav .angle2-btn--small{
+    display: inline-flex !important;
+    padding: 6px 10px;
+    font-size: 12px;
+    border-radius: 8px;
+  }
+}
