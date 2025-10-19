@@ -2223,3 +2223,60 @@
     max-height: 52vh !important;
   }
 }
+/* SERVICES – force the glass card off the middle and dock it to the image */
+
+/* Make the image area the positioning context */
+.caeliServices .caeliRight,
+.caeliServices .caeliImageWrap { position: relative !important; }
+
+/* Dock the card bottom-right (works whether card is inside .caeliRight or .caeliImageWrap) */
+.caeliServices .caeliRight .caeliCard,
+.caeliServices .caeliImageWrap .caeliCard {
+  position: absolute !important;
+  top: auto !important;
+  left: auto !important;
+  right: clamp(20px, 3vw, 60px) !important;
+  bottom: clamp(20px, 3vh, 60px) !important;
+  transform: none !important;
+  z-index: 2 !important;
+
+  width: min(38%, 520px) !important;
+  max-height: 60vh !important;
+  overflow: auto !important;
+
+  padding: clamp(14px, 2vw, 28px) clamp(16px, 2.2vw, 36px) !important;
+  border-radius: 16px !important;
+  background: rgba(255,255,255,0.10) !important;
+  backdrop-filter: blur(12px) saturate(120%) !important;
+  -webkit-backdrop-filter: blur(12px) saturate(120%) !important;
+  box-shadow: 0 8px 28px rgba(0,0,0,.40) !important;
+}
+
+/* Keep the photo visible/tall enough */
+.caeliServices .caeliImageWrap { height: 72vh !important; }
+
+/* Kill any centering from the parent that was dragging the card to the middle */
+.caeliServices .caeliRight {
+  align-items: stretch !important;
+  justify-content: flex-end !important;
+}
+
+/* Mobile: smaller card, tighter dock */
+@media (max-width: 900px) {
+  .caeliServices .caeliRight .caeliCard,
+  .caeliServices .caeliImageWrap .caeliCard {
+    right: 12px !important;
+    bottom: 12px !important;
+    width: 70% !important;
+    max-width: 320px !important;
+    max-height: 40vh !important;
+    padding: 12px 14px !important;
+    border-radius: 14px !important;
+  }
+  .caeliServices .caeliCard p {
+    font-size: 13px !important;
+    line-height: 1.45 !important;
+    margin: 0 !important;
+  }
+  .caeliServices .caeliImageWrap { height: 56vh !important; }
+}
