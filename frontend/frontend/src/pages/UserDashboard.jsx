@@ -11,6 +11,7 @@ import SideBar  from "../components/sideBar.jsx";
 import ChatBot from "../components/ChatBot.jsx";
 import JobDetailsModal from "../components/JobDetailsModal.jsx"; 
 import JobCard from "../components/JobCard.jsx";
+import AppliedJobs from "../components/AppliedJobs.jsx";
 
 
 
@@ -21,8 +22,10 @@ const UserDashboard = () => {
   const { username } = useParams();
   const [searchParams] = useSearchParams();
   const [showLiked, setShowLiked] = useState(false);
-   const [selectedJob, setSelectedJob] = useState(null);
-   const [likedJobs, setLikedJobs] = useState([]);
+  const [showApplied, setShowApplied] = useState(false);
+  const [selectedJob, setSelectedJob] = useState(null);
+  const [likedJobs, setLikedJobs] = useState([]);
+
 
 
    const handleJobClick = (job) => {
@@ -141,36 +144,63 @@ const UserDashboard = () => {
   }, []);
 
 
-  // Fetch liked jobs
-const fetchLikedJobs = async () => {
-  try {
-    const token = localStorage.getItem("token");
-    const res = await axios.get("/api/favorites", {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    // Fetch liked jobs
+  const fetchLikedJobs = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await axios.get("/api/favorites", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
-    const favoriteJobs = res.data.favorites.map(fav => ({
-      ...fav.job,
-      dateLiked: fav.created_at,
-    }));
+      const favoriteJobs = res.data.favorites.map(fav => ({
+        ...fav.job,
+        dateLiked: fav.created_at,
+      }));
 
-    console.log("Fetched liked jobs:", favoriteJobs); 
-    setLikedJobs(favoriteJobs);
-  } catch (err) {
-    console.error("Failed to fetch liked jobs:", err);
-  }
-};
+      console.log("Fetched liked jobs:", favoriteJobs); 
+      setLikedJobs(favoriteJobs);
+    } catch (err) {
+      console.error("Failed to fetch liked jobs:", err);
+    }
+  };
+
+  // // Fetch applied jobs
+  // const fetchAppliedJobs = async () => {
+  //   try {
+  //     const token = localStorage.getItem("token");
+  //     const res = await axios.get("/api/applications", {
+  //       headers: { Authorization: `Bearer ${token}` },
+  //     });
+
+  //     const appliedList = res.data.applied.map(app => ({
+  //       ...app.job,
+  //       dateApplied: app.created_at,
+  //     }));
+
+  //     console.log("Fetched applied jobs:", appliedList);
+  //     setApplied(appliedList);
+  //   } catch (err) {
+  //     console.error("Failed to fetch applied jobs:", err);
+  //   }
+  // };
 
   const handleShowLiked = () => {
     setShowLiked(true);
+    setShowApplied(false);
     fetchLikedJobs();
   };
 
   const handleShowRecommended = () => {
-    setShowLiked(false);
+
+      setShowLiked(false);
+      setShowApplied(false);
   };
 
-
+  const handleShowApplied = () => {
+    setShowApplied(true);
+    setShowLiked(false);
+    
+  };
 
 
 
@@ -178,20 +208,24 @@ const fetchLikedJobs = async () => {
     <>
       <ToastContainer position="top-right" />
       <div className={styles["dashboard-screen-wrapper"]}>
-        <PersonalizedNavbar  onShowLiked={handleShowLiked} onShowRecommended={handleShowRecommended} />
+        <PersonalizedNavbar  onShowLiked={handleShowLiked} onShowRecommended={handleShowRecommended} onShowApplied={handleShowApplied} />
         <div className={styles["dashboard-wrapper"]}>
           <SideBar showRandomJob={fetchJobs}/>
           <main className={styles["dashboard-container"]} role="main">
             <div className={styles["main-content"]}>
-              {showLiked && likedJobs.length > 0 ? (
+            {showLiked ? (
+              likedJobs.length > 0 ? (
                 likedJobs.map(job => (
                   <JobCard key={job.id} job={job} cardForLikedJobs={true} onClick={handleJobClick} />
                 ))
-              ) : showLiked ? (
-                <p>No liked jobs yet.</p>
               ) : (
-                <Outlet context={{ onJobClick: handleJobClick }} />
-              )}
+                <p>No liked jobs yet.</p>
+                )
+              ) : showApplied ? (
+                  <AppliedJobs/>
+                ) : (
+              <Outlet context={{ onJobClick: handleJobClick }} />
+            )}
            </div>
           </main>
         </div>

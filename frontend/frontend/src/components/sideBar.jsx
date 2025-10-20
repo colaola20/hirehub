@@ -3,7 +3,7 @@ import {Link, useNavigate} from 'react-router-dom'
 import styles from "./sideBard.module.css"
 import { Home, Briefcase, MessageSquare, Settings, LogOut } from "lucide-react";
 
-const SideBar = ( {showRandomJob}   ) => {
+const SideBar = ( showRandomJob  ) => {
   const navigate = useNavigate()
   const handleLogout = async () => {
         try {

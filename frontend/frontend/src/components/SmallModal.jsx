@@ -8,7 +8,7 @@ const SmallModal = ({ job, onNo }) => {
     const onYes = async () => {
     try {
         const token = localStorage.getItem("token");
-        const response = await fetch("/api/apply", {
+        const response = await fetch("/api/applications", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -21,11 +21,16 @@ const SmallModal = ({ job, onNo }) => {
         const data = await response.json();
         alert(data.message || "Application saved successfully!");
         onNo(); // close modal
+        } else if (response.status === 409) {
+        const data = await response.json();
+        alert(data.error || "You already applied to this job.");
+        onNo();
         } else {
         const text = await response.text();
         console.error("Server error:", text);
-        alert("Failed to apply. Check console for details.");
+        alert("Failed to apply. Please try again later.");
         }
+        
     } catch (err) {
         console.error(err);
         alert("Something went wrong. Try again.");
