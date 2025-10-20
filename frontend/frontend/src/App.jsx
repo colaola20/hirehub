@@ -17,7 +17,7 @@ import JobsList from './pages/JobsList.jsx'
 import UserDashboard from './pages/UserDashboard';
 import ResumeForm from './pages/ResumeForm';
 
-
+import Profile from './pages/Profile.jsx';
 
 // Import helpers
 import OAuthHandler from './components/OAuthHandler';
@@ -56,7 +56,9 @@ function App() {
           }
         >
           <Route index element = {<JobsList/>}/>
+          <Route path="profile" element={<Profile />} />
         </Route>
+
       </Routes>
     </Router>
   );
