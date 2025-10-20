@@ -17,6 +17,8 @@ import JobsList from './pages/JobsList.jsx'
 import UserDashboard from './pages/UserDashboard';
 import ResumeForm from './pages/ResumeForm';
 
+
+
 // Import helpers
 import OAuthHandler from './components/OAuthHandler';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -35,6 +37,7 @@ function App() {
         <Route path="/forgot_password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/resume_form" element={<ResumeForm />} />
+      
 
         {/* OAuth handler route: reads token & redirects */}
         <Route path="/oauth" element={<OAuthHandler />} />
