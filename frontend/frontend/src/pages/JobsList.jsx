@@ -33,6 +33,7 @@ const JobsList = ({ jobs: initialJobs }) => {
 
       const token = localStorage.getItem("token");
       
+      
       const response = await fetch(
         `/api/jobs?limit=${limit}&offset=${offset}&preload=10&search=${encodeURIComponent(query)}`, 
         {
@@ -66,7 +67,7 @@ const JobsList = ({ jobs: initialJobs }) => {
 
 
     // helper used by retry button and explicit reload
-  const reloadInitialJobs = useCallback(async (query) => {
+  const reloadInitialJobs = useCallback(async (query = "") => {
     const { items, total } = await fetchJobs(20, 0, query);
     setJobs(items);
     setTotalJobs(total);
@@ -83,6 +84,7 @@ const JobsList = ({ jobs: initialJobs }) => {
       setLoading(false);
     };
     const token = localStorage.getItem("token");
+   
     if (token) loadInitialJobs();
     return () => { mount = false; };
   }, [fetchJobs]);

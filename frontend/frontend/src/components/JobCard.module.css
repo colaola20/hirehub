@@ -66,6 +66,14 @@
     color: #ffffff;    
 }
 
+.jobInfo{
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* 2 columns */
+    grid-auto-rows: auto;         
+    gap: 10px 20px;                
+    padding-left: 5%;
+}
+
 
 
 .job-card:hover {

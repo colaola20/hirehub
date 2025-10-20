@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import styles from '../pages/Home_Page.module.css';
+import styles from '../components/Footer.module.css';
 
 const Footer = () => {
   return (
