@@ -55,17 +55,8 @@ function App() {
           }
         >
           <Route index element = {<JobsList/>}/>
+          <Route path="profile" element={<Profile />} />
         </Route>
-
-        {/* Protected Route for profile page /<user>/profile */}
-        <Route
-          path="/:username/profile"
-          element={
-            <ProtectedRoute>
-              <Profile />
-            </ProtectedRoute>
-          }
-        />
 
       </Routes>
     </Router>
