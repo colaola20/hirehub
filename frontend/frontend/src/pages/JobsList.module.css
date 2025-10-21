@@ -17,10 +17,20 @@
     padding: 8px;
     display: flex;
     flex-direction: column;
-
-
 }
 
+/* -------Search starts --------*/
+
+.searchAndFiltersRow {
+  display: flex;
+  align-items: center;
+  gap: 0; /* no gap — borders will be merged */
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto 12px;
+  box-sizing: border-box;
+  flex-wrap: nowrap;
+}
 
 .searchContainer {
   position: sticky;
@@ -89,6 +99,44 @@
   fill: currentColor;
 }
 
+/* -------Search ends --------*/
+
+/* -------Filtering starts --------*/
+.filterBar {
+   display: flex;
+   gap: 8px;
+   align-items: center;
+   justify-content: flex-start;
+   padding: 4px 0;
+   flex-wrap: nowrap;
+}
+.filterControl {
+    background: none;;
+    border: none;
+    color: #fff;
+    padding: 3px 4px;
+    max-width: 140px;
+    min-width: 140px;
+    height: 45px; 
+    font-size: 13px;
+    box-sizing: border-box;
+    overflow-x: auto;
+}
+.filterControl[type="number"] {
+    max-width: 110px;
+}
+
+.filterBar::-webkit-scrollbar { height: 6px; }
+.filterBar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.06); border-radius: 6px; }
+
+
+@media (max-width: 640px) {
+  .searchAndFiltersRow{ flex-wrap: wrap;}
+  .filterControl { min-width: 72px; padding: 6px 8px; font-size: 12px; }
+  .filterBar { gap: 6px; flex-wrap: nowrap;}
+  .filterClearBtn { height: 30px; padding: 6px 8px; font-size: 12px; }
+}
+/* -------Filtering ends --------*/
 
 .loadingState,
 .errorState,

@@ -2,14 +2,14 @@
 
 .job-card {
     width: 95%;
-    background: rgba(255, 255, 255, 0.05); /* glassy panel effect */
-     -webkit-backdrop-filter: blur(8px);     /* Safari support */
-    backdrop-filter: blur(8px);             /* adds soft blur like dashboard */
-  
+    background: rgba(20, 15, 40, 0.75); /* glassy panel effect */
+     -webkit-backdrop-filter: blur(12px);     /* Safari support */
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
     border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
     padding: 20px;
-    transition: transform 0.2s;
+    transition: all 0.25s ease;
     cursor: pointer;
     margin-bottom: 10px;
     color: #ffffff;    
@@ -66,11 +66,19 @@
     color: #ffffff;    
 }
 
+.jobInfo{
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* 2 columns */
+    grid-auto-rows: auto;         
+    gap: 10px 20px;                
+    padding-left: 5%;
+}
+
 
 
 .job-card:hover {
   transform: translateY(-5px) scale(1.02);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 8px 30px rgba(255, 120, 170, 0.15);
 }
 
 .apply-btn {

@@ -33,6 +33,7 @@ const JobsList = ({ jobs: initialJobs }) => {
 
       const token = localStorage.getItem("token");
       
+      
       const response = await fetch(
         `/api/jobs?limit=${limit}&offset=${offset}&preload=10&search=${encodeURIComponent(query)}`, 
         {
@@ -66,7 +67,7 @@ const JobsList = ({ jobs: initialJobs }) => {
 
 
     // helper used by retry button and explicit reload
-  const reloadInitialJobs = useCallback(async (query) => {
+  const reloadInitialJobs = useCallback(async (query = "") => {
     const { items, total } = await fetchJobs(20, 0, query);
     setJobs(items);
     setTotalJobs(total);
@@ -83,6 +84,7 @@ const JobsList = ({ jobs: initialJobs }) => {
       setLoading(false);
     };
     const token = localStorage.getItem("token");
+   
     if (token) loadInitialJobs();
     return () => { mount = false; };
   }, [fetchJobs]);
@@ -217,13 +219,13 @@ useEffect(() => {
   const clearFilters = () => setFilters({company: "any", location: "", remote: "any", datePosted: "newest"})
 
   const companyOptions = useMemo(() => {
-        const setC = new Set((jobs || {}).map((j) => (j.company ||"").trim()).filter(Boolean))
+        const setC = new Set((jobs || []).map((j) => (j.company ||"").trim()).filter(Boolean))
     return ["any", ...Array.from(setC)]
   }, [jobs])
 
   // derived filterJobs from fetched jobs
   const filteredJobs = useMemo(() => {
-    if (!jobs || jobs.length) return []
+    if (!jobs || !jobs.length) return []
     let list = jobs.slice()
 
     //company filter
@@ -234,7 +236,7 @@ useEffect(() => {
     // location substring match
     if (filters.location && filters.location.trim() !== "") {
       const loc = filters.location.trim().toLowerCase()
-      list = list.filter((j) => (j.location || "").toLowerCase().include(loc))
+      list = list.filter((j) => (j.location || "").toLowerCase().includes(loc))
     }
 
     // remote (expects job.remote to be "remote", "onside", "hybrid")
@@ -258,10 +260,55 @@ useEffect(() => {
   return (
 
     <section className={styles.jobSection}>
-
+      <div className = {styles.searchAndFiltersRow}>
+        <div className={styles.filterBar} role="region" aria-label="Job filters">
+          <select
+            className={styles.filterControl}
+            value={filters.company}
+            onChange={(e) => handleFilterChange("company", e.target.value)}
+          >
+            {companyOptions.map((c) => (
+              <option key={c} value={c}>
+                {c=="any"? "All companies" : c}
+              </option>
+            ))}
+          </select>
+          <input
+            className={styles.filterControl}
+            type="text"
+            placeholder="Location"
+            value={filters.location}
+            onChange={(e) => handleFilterChange("location", e.target.value)}
+          />
+          <select
+            className = {styles.filterControl}
+            value={filters.remote}
+            onChange={(e) => handleFilterChange("remote", e.target.value)}
+          >
+            <option value="any">Any</option>
+            <option value="remote">Remote</option>
+            <option value="onsite">On-site</option>
+            <option value="hybrid">Hybrid</option>
+          </select>
+          <select
+            className={styles.filterControl}
+            value={filters.datePosted}
+            onChange={(e) => handleFilterChange("datePosted", e.target.value)}
+          >
+            <option value="newest">Newest</option>
+            <option value="oldest">Oldest</option>
+          </select>
+          <button
+            type="button"
+            className={styles.clearBtn}
+            onClick={() => setFilters({company: "any", location: "", remote: "any", datePosted: "newest"})}
+          >
+            <MdClose/>
+          </button>
+        </div>
         <form 
           ref = {containerRef}
-          className={containerClass} 
+          className={styles.searchContainer} 
           onSubmit={handleSearchClick} 
           role="search" 
           aria-label="Search jobs">
@@ -288,6 +335,7 @@ useEffect(() => {
             <MdSearch/>
           </button>
         </form>
+      </div>
 
       {/* Left Column: Job Cards */}
       <div className={styles.cardList}>
@@ -305,22 +353,18 @@ useEffect(() => {
               <button onClick={reloadInitialJobs} className={styles.retryBtn}>Try Again</button>
             </div>
           )}
-
-          {/* Empty state */}
-          {!loading && !error && jobs.length === 0 && (
-            <div className={styles.emptyState}>
-              <p>No jobs found. Check back later!</p>
+          
+          {/* Empty / Job display (use filteredJobs) */}
+          {!loading && filteredJobs.length > 0 && (
+            <div className={styles.jobCard}>
+              {filteredJobs.map((job, idx) => (
+                <JobCard key={job.id || idx} job={job} onClick={() => onJobClick(job)} />
+              ))}
             </div>
           )}
-
-          {/* Job display */}
-          {!loading && jobs.length >0 && (
-            <div className={styles.jobCard}>
-              {jobs.map((job, idx) => (
-                <JobCard key={job.id || idx} job={job}  onClick={() => onJobClick(job)}
-                />
-              ))}
-
+          {!loading && !error && filteredJobs.length === 0 && (
+            <div className={styles.emptyState}>
+              <p>No jobs match the filters.</p>
             </div>
           )}
       </div>

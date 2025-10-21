@@ -5,7 +5,8 @@ import { FaBuilding, FaMapMarkerAlt, FaCalendarAlt } from "react-icons/fa";
 import styles from "./JobCard.module.css";
 import FavoriteButton from "./FavoriteButton";
 
-const JobCard = ({ job, onClick }) => {
+const JobCard = ({ job, onClick , cardForLikedJobs = false}) => {
+
 
 const cleanJobDescription = (html) => {
   if (!html) return "No description provided.";
@@ -40,13 +41,27 @@ return (
           <FavoriteButton jobId={job.id} />
         </div>
 
+      { !cardForLikedJobs ? (
+      <> 
         <p className={styles.date}> <FaCalendarAlt style={{ marginRight: "10px", color: "#a3bffa",fontSize: "20px" }} /><strong>Date:</strong>{" "}{
         job.date_posted ? new Date(job.date_posted).toLocaleDateString() : "No date"}</p>
 
         <p>  <FaBuilding style={{ marginRight: "10px", color: "#a3bffa",fontSize: "20px" }} /> <strong>Company:</strong> {job.company || "Unknown"}</p>
 
-        <p>  <FaMapMarkerAlt style={{ marginRight: "10px", color: "#a3bffa",fontSize: "20px" }} /> <strong>Location:</strong> {job.location || "Unspecified"}</p>
-      
+        <p>  <FaMapMarkerAlt style={{ marginRight: "10px", color: "#a3bffa",fontSize: "20px" }} /> <strong>Location:</strong> {job.location || "Unspecified"}</p> 
+      </>   ) :   
+           
+          <div className={styles.jobInfo}>
+            <p className={styles.date}> <FaCalendarAlt style={{ marginRight: "10px", color: "#a3bffa",fontSize: "20px" }} /><strong>Date:</strong>{" "}{
+            job.date_posted ? new Date(job.date_posted).toLocaleDateString() : "No date"}</p>
+
+            <p>  <FaBuilding style={{ marginRight: "10px", color: "#a3bffa",fontSize: "20px" }} /> <strong>Company:</strong> {job.company || "Unknown"}</p>
+
+            <p>  <FaMapMarkerAlt style={{ marginRight: "10px", color: "#a3bffa",fontSize: "20px" }} /> <strong>Location:</strong> {job.location || "Unspecified"}</p>
+            <p> <FaCalendarAlt style={{ marginRight: "10px", color: "#a3bffa",fontSize: "20px" }} /> <strong> Date Liked: {job.dateLiked ? new Date(job.dateLiked ).toLocaleDateString() : "Unknown"} </strong></p> 
+          </div>
+                       }
+
         {/* <button
         className={styles["apply-btn"]}
         onClick={(e) => { 
@@ -55,7 +70,11 @@ return (
         >
         Apply Now
         </button> */}
-        </div>
+
+        {/* Card Modifications for Liked Jobs*/}
+
+
+    </div>
   );
 };
 

@@ -198,7 +198,7 @@ const ResumeForm = () => {
                         <p>Experience</p>
                         <input
                             type="text"
-                            placeholder="Compamy Name"
+                            placeholder="Company Name"
                             value={company}
                             onChange={(e) => setCompany(e.target.value)}
                             required
