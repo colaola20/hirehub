@@ -32,7 +32,7 @@ const UserDashboard = () => {
   } catch (e) {
     console.warn("Could not store job payload:", e);
   }
-    window.open(`${window.location.origin}/job_dashboard`, "_blank", "noopener");
+    window.open("/job_dashboard", "_blank", "noopener");
     //setSelectedJob(job); // open modal
   }
     const closeModal = () => {

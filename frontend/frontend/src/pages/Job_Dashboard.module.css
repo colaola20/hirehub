@@ -1,0 +1,7 @@
+/* job_dashboard.module.css */
+.wrapper {
+  position: relative;               /* keep stacking context sane */
+  min-height: 100vh;                /* full-page coverage */
+  padding: clamp(56px, 10vh, 100px) 0;
+  background: linear-gradient(180deg, #171428, #24183a); /* your dark bg */
+}
