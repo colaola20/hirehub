@@ -9,15 +9,12 @@ import Login from './pages/Login';
 import Registration from './pages/Registration';
 import Home from './pages/Home';
 import ForgotPassword from './pages/forgot_password';
-
 import JobDetails from "./components/JobDetailsModal.jsx";
-
 import JobsList from './pages/JobsList.jsx'
-
 import UserDashboard from './pages/UserDashboard';
 import ResumeForm from './pages/ResumeForm';
-
 import Profile from './pages/Profile.jsx';
+import JobDashboard from './pages/Job_Dashboard.jsx';
 
 // Import helpers
 import OAuthHandler from './components/OAuthHandler';
@@ -41,10 +38,16 @@ function App() {
 
         {/* OAuth handler route: reads token & redirects */}
         <Route path="/oauth" element={<OAuthHandler />} />
-
-          <Route path="/dev-dashboard" element={<UserDashboard />} />
+        <Route path="/dev-dashboard" element={<UserDashboard />} />
        
-
+      <Route
+          path="/job_dashboard"
+          element={
+            <ProtectedRoute>
+              <JobDashboard />
+            </ProtectedRoute>
+          }
+        />
         {/* Protected dashboard route */}
         <Route
           path="/:username"
