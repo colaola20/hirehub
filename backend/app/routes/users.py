@@ -341,3 +341,8 @@ def save_filter_settings():
 # ------------------------
 # Filters getter
 # ------------------------
+@users_bp.route("/api/filter-settings", methods=["GET"])
+@jwt_required()
+def get_filter_settings():
+    user = User.query.get(get_jwt_identity())
+    return jsonify(user.saved_filters or {})
