@@ -171,25 +171,25 @@ const UserDashboard = () => {
     }
   };
 
-  // // Fetch applied jobs
-  // const fetchAppliedJobs = async () => {
-  //   try {
-  //     const token = localStorage.getItem("token");
-  //     const res = await axios.get("/api/applications", {
-  //       headers: { Authorization: `Bearer ${token}` },
-  //     });
+  // Fetch applied jobs
+  const fetchAppliedJobs = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await axios.get("/api/applications", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
-  //     const appliedList = res.data.applied.map(app => ({
-  //       ...app.job,
-  //       dateApplied: app.created_at,
-  //     }));
+      const appliedList = res.data.applied.map(app => ({
+        ...app.job,
+        dateApplied: app.created_at,
+      }));
 
-  //     console.log("Fetched applied jobs:", appliedList);
-  //     setApplied(appliedList);
-  //   } catch (err) {
-  //     console.error("Failed to fetch applied jobs:", err);
-  //   }
-  // };
+      console.log("Fetched applied jobs:", appliedList);
+      setApplied(appliedList);
+    } catch (err) {
+      console.error("Failed to fetch applied jobs:", err);
+    }
+  };
 
   const handleShowLiked = () => {
     setShowLiked(true);
@@ -231,7 +231,7 @@ const UserDashboard = () => {
               ) : showApplied ? (
                   <AppliedJobs/>
                 ) : (
-              <Outlet context={{ onJobClick: handleJobClick }} />
+              <Outlet context={{ onJobClick: handleJobClick, fetchJobs }} />
             )}
            </div>
           </main>
