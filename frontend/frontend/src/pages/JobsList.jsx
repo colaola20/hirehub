@@ -29,21 +29,31 @@ const JobsList = () => {
   const lastQueryRef = useRef("");
   const debounceRef = useRef(null);
 
+  const initialLoadDone = useRef(false)
+
   // on mount: load filters from db if there is some
   useEffect(() => {
     const token = localStorage.getItem("token")
     fetch("/api/filter-settings", {
-      method: "POST",
+      method: "GET",
       headers: {
-        "Content-Type": "application/json",
         Authorization: `Bearer ${token}`
-      },
-      body: JSON.stringify(filters)
+      }
     })
-  }, [filters])
+    .then(res => res.json())
+    .then(data => {
+      const serverFilters = data
+      setFilters(f => ({...f, ...serverFilters}))
+      initialLoadDone.current = true
+    })
+    .catch(() => {
+      initialLoadDone.current = true
+    })
+  }, [])
 
   // save filters
   useEffect(() => {
+    if (!initialLoadDone.current) return
     const token = localStorage.getItem("token")
     fetch("/api/filter-settings", {
       method: "POST",
