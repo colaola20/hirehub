@@ -369,7 +369,7 @@ const AngleLanding = () => {
             <article className={styles.memberCard} data-reveal>
               <img
                 className={styles.memberAvatar}
-                src="/src/assets/team/samir.jpg"
+                src="/src/assets/JPR.png"
                 alt="Samir Patel"
                 loading="lazy"
               />
@@ -388,7 +388,7 @@ const AngleLanding = () => {
             <article className={styles.memberCard} data-reveal>
               <img
                 className={styles.memberAvatar}
-                src="/src/assets/team/maya.jpg"
+                src="/src/assets/OS.png"
                 alt="Maya Chen"
                 loading="lazy"
               />
@@ -407,7 +407,7 @@ const AngleLanding = () => {
             <article className={styles.memberCard} data-reveal>
               <img
                 className={styles.memberAvatar}
-                src="/src/assets/team/leo.jpg"
+                src="/src/assets/mike.png"
                 alt="Leo Martínez"
                 loading="lazy"
               />
@@ -421,24 +421,7 @@ const AngleLanding = () => {
               </div>
             </article>
 
-            {/* Card 5 */}
-            <article className={styles.memberCard} data-reveal>
-              <img
-                className={styles.memberAvatar}
-                src="/src/assets/team/amira.jpg"
-                alt="Amira Hassan"
-                loading="lazy"
-              />
-              <h3 className={styles.memberName}>Hashim Kazmi</h3>
-              <p className={styles.memberRole}>NLP Engineer</p>
-              <p className={styles.memberBio}>
-                Keyword extraction, ATS parsing, and prompt safety.
-              </p>
-              <div className={styles.memberSocials}>
-                <a href="#" aria-label="Amira on GitHub">GitHub</a>
-                <a href="#" aria-label="Amira on LinkedIn">LinkedIn</a>
-              </div>
-            </article>
+            
           </div>
         </div>
       </section>

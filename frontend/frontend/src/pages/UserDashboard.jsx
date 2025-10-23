@@ -29,7 +29,14 @@ const UserDashboard = () => {
 
 
    const handleJobClick = (job) => {
-    setSelectedJob(job); // open modal
+    try {
+    // make the job available to the new window
+    localStorage.setItem("job_dashboard_payload", JSON.stringify(job));
+  } catch (e) {
+    console.warn("Could not store job payload:", e);
+  }
+    window.open("/job_dashboard", "_blank", "noopener");
+    //setSelectedJob(job); // open modal
   }
     const closeModal = () => {
     setSelectedJob(null); // close modal
