@@ -74,7 +74,7 @@
 }
 
 .personal-info, .social-info, .misc-section, .main-sections{
-    background: linear-gradient(to left, #b0d3f5, #ae89ff); /* prob change this color at some point*/
+    background: linear-gradient(90deg, #7fa0ee 0%, #4a2a86 100%);
     padding: 15px;
     display: flex;
     flex-direction: column;
