@@ -1,23 +1,30 @@
 .container{
-    padding: 200px;
+    padding-top: 100px;
+    padding-bottom: 200px;
     padding-left: 275px;
     padding-right: 275px;   
     position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  min-width: 100vw;                 /* was 100vh */
-  background: none;                  /* gradient is on ::before */
-  overflow: hidden;
+
+/* ------------copy and pasted from login_Page.css------------ */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    min-width: 100vw;                 /* was 100vh */
+    background: none;                  /* gradient is on ::before */
+    overflow: hidden;
 }
 
+/* ----------------------------------------------------------- */
+
+/* ------------copy and pasted from login_Page.css------------ */
+
 .container::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: -2;
-  background:
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    background:
     /* lighter global veil */
     linear-gradient(0deg, rgba(0,0,0,0.28), rgba(0,0,0,0.28)),
 
@@ -44,8 +51,11 @@
 
     /* brighter base gradient */
     linear-gradient(90deg, #7fa0ee 0%, #4a2a86 100%);
-  background-attachment: fixed;
+    background-attachment: fixed;
 }
+
+/* ----------------------------------------------------------- */
+
 
 .form-box{
     background-color: #fff;
