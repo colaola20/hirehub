@@ -4,23 +4,35 @@ import { School } from "lucide-react";
 
 const Profile = () => {
     let defaultProfileData = {
+        // User data
         firstName: "John",
         lastName: "Doe",
-        degree: "B.Sc. in Computer Science",
-        School: "Farmingale State College",
-        username: "jd_123", 
+        username: "jd_123",
         email: "john.doe@example.com",
-        numberApplications: 42,
         memberSince: "10-11-1997",
-        favorites: 7,
-        skills: ["JavaScript", "React", "Node.js", "Python", "Java", "C++"]
+
+        // Profile data
+        headline: "Software Engineer",
+        education: "B.Sc. in Computer Science at Farmingdale State College",
+        experience: "3 years of experience in full-stack development",
+        skills: ["JavaScript", "React", "Node.js", "Python", "Java", "C++"],
+
+        // Computed data
+        numberApplications: 42,
+        favorites: 7
     };
 
     const [profileData, setProfileData] = useState(defaultProfileData);
 
     useEffect(() => {
-        // Fetch profile data from backend API
-        // For now, we will use defaultProfileData
+        // TODO: Fetch profile data from backend API
+        // Expected response structure:
+        // {
+        //   user: { username, email, first_name, last_name, created_at },
+        //   profile: { headline, education, experience, skills: [] },
+        //   numberApplications: count,
+        //   favorites: count
+        // }
         setProfileData(defaultProfileData);
     }, []);
 
@@ -36,20 +48,25 @@ const Profile = () => {
                             {profileData.firstName} {profileData.lastName}
                         </h1>
                         <p className={styles.username}>@{profileData.username}</p>
+                        {profileData.headline && (
+                            <p className={styles.headline}>{profileData.headline}</p>
+                        )}
                     </div>
                 </div>
 
-                <div className={styles.section}>
-                    <h2 className={styles.sectionTitle}>Education</h2>
-                    <div className={styles.infoRow}>
-                        <span className={styles.label}>Degree:</span>
-                        <span className={styles.value}>{profileData.degree}</span>
+                {profileData.education && (
+                    <div className={styles.section}>
+                        <h2 className={styles.sectionTitle}>Education</h2>
+                        <p className={styles.value}>{profileData.education}</p>
                     </div>
-                    <div className={styles.infoRow}>
-                        <span className={styles.label}>School:</span>
-                        <span className={styles.value}>{profileData.School}</span>
+                )}
+
+                {profileData.experience && (
+                    <div className={styles.section}>
+                        <h2 className={styles.sectionTitle}>Experience</h2>
+                        <p className={styles.value}>{profileData.experience}</p>
                     </div>
-                </div>
+                )}
 
                 <div className={styles.section}>
                     <h2 className={styles.sectionTitle}>Contact Information</h2>
@@ -75,16 +92,18 @@ const Profile = () => {
                     </div>
                 </div>
 
-                <div className={styles.section}>
-                    <h2 className={styles.sectionTitle}>Skills</h2>
-                    <div className={styles.skillsContainer}>
-                        {profileData.skills.map((skill, index) => (
-                            <span key={index} className={styles.skillTag}>
-                                {skill}
-                            </span>
-                        ))}
+                {profileData.skills && profileData.skills.length > 0 && (
+                    <div className={styles.section}>
+                        <h2 className={styles.sectionTitle}>Skills</h2>
+                        <div className={styles.skillsContainer}>
+                            {profileData.skills.map((skill, index) => (
+                                <span key={index} className={styles.skillTag}>
+                                    {skill}
+                                </span>
+                            ))}
+                        </div>
                     </div>
-                </div>
+                )}
             </div>
         </div>
     );
