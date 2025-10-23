@@ -1,5 +1,5 @@
 import { useEffect, useCallback, useState, useRef, useMemo } from "react";
-import { useOutletContext } from "react-router-dom";
+import { useOutletContext, useSearchParams } from "react-router-dom";
 
 import styles from "./JobsList.module.css";
 import JobCard from "../components/JobCard.jsx";
@@ -29,6 +29,31 @@ const JobsList = () => {
   const lastQueryRef = useRef("");
   const debounceRef = useRef(null);
 
+  // on mount: load filters from db if there is some
+  useEffect(() => {
+    const token = localStorage.getItem("token")
+    fetch("/api/filter-settings", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify(filters)
+    })
+  }, [filters])
+
+  // save filters
+  useEffect(() => {
+    const token = localStorage.getItem("token")
+    fetch("/api/filter-settings", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify(filters)
+    })
+  }, [filters])
   
   
   // ----------------------------
