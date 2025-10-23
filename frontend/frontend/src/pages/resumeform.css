@@ -1,3 +1,52 @@
+.container{
+    padding: 200px;
+    padding-left: 275px;
+    padding-right: 275px;   
+    position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  min-width: 100vw;                 /* was 100vh */
+  background: none;                  /* gradient is on ::before */
+  overflow: hidden;
+}
+
+.container::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background:
+    /* lighter global veil */
+    linear-gradient(0deg, rgba(0,0,0,0.28), rgba(0,0,0,0.28)),
+
+    /* soft pink/purple accents (unchanged) */
+    radial-gradient(380px 240px at 92% 10%, rgba(255, 120, 170, 0.20), transparent 62%),
+    radial-gradient(180px 120px at 96% 6%,  rgba(255, 155, 195, 0.26), transparent 70%),
+
+    radial-gradient(460px 300px at 8% 12%,  rgba(255, 120, 170, 0.22), transparent 64%),
+    radial-gradient(220px 150px at 5% 8%,   rgba(255, 155, 195, 0.30), transparent 72%),
+
+    radial-gradient(520px 320px at 10% 86%, rgba(255, 130, 185, 0.16), transparent 66%),
+    radial-gradient(240px 160px at 6% 94%,  rgba(255, 170, 210, 0.20), transparent 74%),
+
+    /* slightly stronger neutral highlights */
+    radial-gradient(900px 480px at 75% 12%, rgba(255,255,255,0.12), transparent 60%),
+    radial-gradient(760px 420px at 16% 8%,  rgba(255,255,255,0.08), transparent 62%),
+
+    /* purple wash + warmth */
+    radial-gradient(900px 520px at 22% 70%, rgba(120, 60, 255, 0.12), transparent 62%),
+    radial-gradient(820px 480px at 52% 38%, rgba(255,200,140,0.05), transparent 60%),
+
+    /* softer vignette */
+    radial-gradient(140% 120% at 50% 115%, rgba(0,0,0,0.54), transparent 55%),
+
+    /* brighter base gradient */
+    linear-gradient(90deg, #7fa0ee 0%, #4a2a86 100%);
+  background-attachment: fixed;
+}
+
 .form-box{
     background-color: #fff;
     display: flex;
@@ -6,8 +55,6 @@
     padding: 20px;
     border-radius: 8px;
     width: 100%;
-    max-width: 1200px;
-    min-width: 100vw;
     box-shadow: 0px 8px 24px rgba(0,0,0,0.1);
     color: black;
 }
@@ -24,8 +71,8 @@
     flex-direction: column;
     align-items: center;
     gap: 10px;
-    width: 100%;
-    min-width: 100vw;
+    width: 80%;
+    min-width: 50vw;
     box-sizing: border-box;
     border-radius: 8px;
     margin: 15px 0;

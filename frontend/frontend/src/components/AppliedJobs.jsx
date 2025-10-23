@@ -40,34 +40,49 @@ const AppliedJobs = () => {
 
 
   return (
- <div className={styles.container}>
+  
+    <div className={styles.container}>
       <h2>Your Applied Jobs</h2>
 
       {appliedJobs.length === 0 ? (
         <p className={styles.message}>You haven’t applied to any jobs yet.</p>
       ) : (
-        <div className={styles.cardsContainer}>
+        <div className={styles.tableContainer}>
+          {/* Header Row */}
+          <div className={styles.headerRow}>
+            <span>Title</span>
+            <span>Company</span>
+            <span>Location</span>
+            <span>Date Posted</span>
+            <span>Active</span>
+            <span>Status</span>
+            <span>Notes</span>
+            <span>URL</span>
+            <span>Applied At</span>
+          </div>
+
+          {/* Data Rows */}
           {appliedJobs.map((app) => {
             const job = app.job;
             return (
-              <div key={app.application_id} className={styles.appliedJobCard}>
-                <h3>{job.title || "Untitled Position"}</h3>
-                <p><strong>Company:</strong> {job.company || "Unknown"}</p>
-                <p><strong>Location:</strong> {job.location || "Unspecified"}</p>
-                <p><strong>Date Posted:</strong> {job.date_posted ? new Date(job.date_posted).toLocaleDateString() : "Unknown"}</p>
-                <p><strong>Active:</strong> {job.is_active ? "Yes" : "No"}</p>
-                <p><strong>Status:</strong> {app.status || "Applied"}</p>
-                <p><strong>Notes:</strong> {app.notes || "None"}</p>
-                <p><strong>URL:</strong> {job.url || "Unknown"}</p>
-                <p><strong>Applied At:</strong> {app.applied_at ? new Date(app.applied_at).toLocaleString() : "Unknown"}</p>
+              <div key={app.application_id} className={styles.dataRow}>
+                <span>{job.title || "Untitled Position"}</span>
+                <span>{job.company || "Unknown"}</span>
+                <span>{job.location || "Unspecified"}</span>
+                <span>{job.date_posted ? new Date(job.date_posted).toLocaleDateString() : "Unknown"}</span>
+                <span>{job.is_active ? "Yes" : "No"}</span>
+                <span>{app.status || "Applied"}</span>
+                <span>{app.notes || "None"}</span>
+                <span>{job.url || "Unknown"}</span>
+                <span>{app.applied_at ? new Date(app.applied_at).toLocaleDateString() : "Unknown"}</span>
               </div>
             );
           })}
         </div>
       )}
     </div>
+    
   );
-};
+}
 
-
-export default AppliedJobs;
+export default AppliedJobs
