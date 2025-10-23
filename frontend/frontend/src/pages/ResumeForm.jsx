@@ -51,10 +51,24 @@ const ResumeForm = () => {
     //add more fields as needed
 
 
+
+
+
+
+    // TODO -------------------------------------------- Add conditional rendering
+    // based on whats given by signing up (?)
+    // given for sure -- name, email, number, any url, languages, student check
+    // given maybe -- main section, location, experience, education, projects
+    // not given / not sure -- summary
+
+
+
+
     //  Change the style of the form later, this is just a basic layout for now
     return (
         <div className="container">
-            {/* <Navbar /> */}
+            {/* <PersonalizedNavbar /> 
+            decide later to add this in (prob not but who knows)*/} 
 
             <div className="form-box">
                 <h2>Resume Builder Form</h2>
@@ -277,17 +291,19 @@ const ResumeForm = () => {
                     Generate Resume
                 </button>
 
+
+                {/* get this to conditionally render (or just render when you press the button above) */}
                 <div className="resume-generation">
-                    <textarea 
+                    {/* <textarea 
                         value={resumeText}
                         id=""
                         readOnly
                         className="resume-text"
-                    />
+                    /> */}
                 </div>
-                <button type="submit" className="submit-btn">
+                {/* <button type="submit" className="submit-btn">
                     Export Resume
-                </button>
+                </button> */}
             </div>
         </div>
     )
