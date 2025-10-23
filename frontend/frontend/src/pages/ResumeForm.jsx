@@ -9,26 +9,44 @@ const ResumeForm = () => {
     const [currentStep, setCurrentStep] = useState(1);
 
     const [formData, setFormData] = useState({
+        /* ---PERSONAL INFO--- */
         personalInfoStep: {
-            name: '', email: '', pNum: '',
+            fullname: '', email: '', pNum: '',
             addres: '', city: '', state: '', zip: '',
             summary: ''
         },
 
+        /* ---SOCIAL INFO--- */
         socialInfoStep: { // could combine this and misc into personal, decide later
-
+            linkedIn:'', github: '', portfolio: '',
         },
 
+        /* ---MISC INFO--- */
         miscStep: {
-
-
+            languages: '', interests: ''
         },
 
+        /* ---MAIN SECTIONS--- */
         mainStep: { // maybe split each part into its own steps? 
-
-
+            skills: '',
+            company: '', role: '', roleTime: '',
+            school: '', degree: '', gradYear: '',
+            projTitle: '', projDesc: '', // projLink: '',
+            certs: ''
         },
     })
+
+    const handleInputChange = (e) => {
+        const {name, value} = e.target;
+
+        setFormData({
+            ...formData,
+            [`step${currentStep}`]: {
+                ...formData[`step${currentStep}`],
+                [name]: value
+            }
+        });
+    };
 
     /* ---PERSONAL INFO--- */
     const [fullName, setFullName] = useState("");
@@ -95,7 +113,7 @@ const ResumeForm = () => {
     //  Change the style of the form later, this is just a basic layout for now
     return (
         <div className="container">
-            <PersonalizedNavbar /> 
+            <PersonalizedNavbar />
 
             <div className="form-box">
                 <h2>Resume Builder Form</h2>
