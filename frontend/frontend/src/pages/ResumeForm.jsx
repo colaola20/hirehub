@@ -1,9 +1,34 @@
 import React, { useState } from "react";
 import Navbar from '../components/Navbar'
+import PersonalizedNavbar from '../components/PersonalizedNavbar'
 
 import './resumeform.css';
 
 const ResumeForm = () => {
+
+    const [currentStep, setCurrentStep] = useState(1);
+
+    const [formData, setFormData] = useState({
+        personalInfoStep: {
+            name: '', email: '', pNum: '',
+            addres: '', city: '', state: '', zip: '',
+            summary: ''
+        },
+
+        socialInfoStep: { // could combine this and misc into personal, decide later
+
+        },
+
+        miscStep: {
+
+
+        },
+
+        mainStep: { // maybe split each part into its own steps? 
+
+
+        },
+    })
 
     /* ---PERSONAL INFO--- */
     const [fullName, setFullName] = useState("");
@@ -29,7 +54,7 @@ const ResumeForm = () => {
 
     /* ---MAIN SECTIONS--- */
     const [skills, setSkills] = useState(""); // maybe add what kinds of skills (hard, soft, languages, etc)
-    
+
     // Experience Fields
     const [company, setCompany] = useState("");
     const [role, setRole] = useState("");
@@ -62,13 +87,15 @@ const ResumeForm = () => {
     // not given / not sure -- summary
 
 
+    // ---------------------------------IMPORTANT---------------------------------
+    // commented out most of the divs, when you implemented multi step form
+    // 
 
 
     //  Change the style of the form later, this is just a basic layout for now
     return (
         <div className="container">
-            {/* <PersonalizedNavbar /> 
-            decide later to add this in (prob not but who knows)*/} 
+            {/* <PersonalizedNavbar />  */}
 
             <div className="form-box">
                 <h2>Resume Builder Form</h2>
@@ -209,7 +236,7 @@ const ResumeForm = () => {
                         />
 
                         {/* TODO - Add Multiple fields for Experience, Education and Projects as listed on line 26 27 28 */}
-                        {/* <p>Experience</p>
+                    {/* <p>Experience</p>
                         <input
                             type="text"
                             placeholder="Company Name"
