@@ -33,6 +33,9 @@ class Job(db.Model):
             'description': self.description,
             'url': self.url,
             'date_posted': self.date_posted.isoformat() if self.date_posted else None,
-            'source': self.source
+            'is_active': self.is_active,
+            'source': self.source,
+            'employment_type': self.employment_type
         }
+
     

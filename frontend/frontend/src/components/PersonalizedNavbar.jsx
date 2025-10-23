@@ -2,7 +2,7 @@ import React, {useState} from 'react'
 import {Link, useNavigate} from 'react-router-dom'
 import styles from './Navbar.module.css'
 
-const PersonalizedNavbar = ({ onShowLiked, onShowRecommended }) => {
+const PersonalizedNavbar = ({ onShowLiked, onShowRecommended,onShowApplied }) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const navigate = useNavigate();
 
@@ -61,7 +61,7 @@ const PersonalizedNavbar = ({ onShowLiked, onShowRecommended }) => {
                     <Link to="" onClick={onShowLiked}>
                         Liked
                     </Link>
-                    <Link to="/">
+                    <Link to="" onClick={onShowApplied}>
                         Applied
                     </Link>
 
