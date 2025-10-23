@@ -95,7 +95,7 @@ const ResumeForm = () => {
     //  Change the style of the form later, this is just a basic layout for now
     return (
         <div className="container">
-            {/* <PersonalizedNavbar />  */}
+            <PersonalizedNavbar /> 
 
             <div className="form-box">
                 <h2>Resume Builder Form</h2>
