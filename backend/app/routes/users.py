@@ -166,30 +166,7 @@ def logout():
 # ------------------------
 # Profile
 # ------------------------
-@users_bp.route('/api/profile', methods=['GET'])
-@jwt_required()
-def get_user_profile():
-    """Get current user's profile."""
-    try:
-        current_user_id = int(get_jwt_identity())
-        user = DatabaseService.get_by_id(User, current_user_id)
-
-        if not user:
-            return jsonify({'status': 'error', 'message': 'User not found'}), 404
-
-        return jsonify({
-            'status': 'success',
-            'message': 'Profile retrieved successfully',
-            'data': user.to_dict()
-        }), 200
-
-    except Exception as e:
-        return jsonify({
-            'status': 'error',
-            'message': 'Failed to retrieve profile',
-            'error': str(e)
-        }), 500
-
+# Note: /api/profile endpoint moved to profile.py for full profile management
 
 # ------------------------
 # Forgot Password
