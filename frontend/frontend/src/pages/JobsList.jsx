@@ -208,7 +208,7 @@ useEffect(() => {
   const [filters, setFilters] = useState({
     company: "any",
     location: "",
-    remote: "any",
+    employment_type: "any",
     datePosted: "newest",
   })
 
@@ -216,12 +216,25 @@ useEffect(() => {
     setFilters((f) => ({...f, [key]: value}))
   }
 
-  const clearFilters = () => setFilters({company: "any", location: "", remote: "any", datePosted: "newest"})
-
   const companyOptions = useMemo(() => {
-        const setC = new Set((jobs || []).map((j) => (j.company ||"").trim()).filter(Boolean))
-    return ["any", ...Array.from(setC)]
+        const uniq = Array.from(
+          new Set((jobs || [])
+          .map((j) => (typeof j.company === "string" ? j.company.trim() : ""))
+          .filter(Boolean)
+          )
+        )
+        return [
+          {value: "any", label: "All companies"},
+          ...uniq.map((label) => ({value: label.toLowerCase(), label}))
+        ]
   }, [jobs])
+
+  useEffect(() => {
+    if (filters.company === "any") return
+    if (!companyOptions.some((o) => o.value == filters.company)) {
+      setFilters((f) => ({...f, company: "any"}))
+    }
+  }, [companyOptions, filters.company])
 
   // derived filterJobs from fetched jobs
   const filteredJobs = useMemo(() => {
@@ -230,7 +243,8 @@ useEffect(() => {
 
     //company filter
     if (filters.company && filters.company !== "any") {
-      list = list.filter((j) => (j.company || "").toLowerCase() === filters.company.toLowerCase())
+      const companyKey = filters.company.toLowerCase()
+      list = list.filter((j) => (j.company || "").toLowerCase().includes(companyKey))
     }
 
     // location substring match
@@ -241,8 +255,8 @@ useEffect(() => {
 
     // remote (expects job.remote to be "remote", "onside", "hybrid")
     // we don't have this info save in the db !!!
-    if (filters.remote && filters.remote !== "any") {
-      list = list.filter((j) => (j.remote || "").toLowerCase() === filters.remote.toLowerCase())
+    if (filters.employment_type && filters.employment_type !== "any") {
+      list = list.filter((j) => (j.employment_type || "").toLowerCase() === filters.employment_type.toLowerCase())
     }
 
     //sort by date posted
@@ -252,7 +266,7 @@ useEffect(() => {
       return Number.isFinite(t) ? t: 0
     }
     list.sort((a, b) => 
-      filters.datePosted === "newest" ? getTime(b) - getTime(a) : getTime(a) - getTime(b)
+      (filters.datePosted === "newest" ? getTime(b) - getTime(a) : getTime(a) - getTime(b))
     )
     return list
   }, [jobs, filters])
@@ -267,9 +281,9 @@ useEffect(() => {
             value={filters.company}
             onChange={(e) => handleFilterChange("company", e.target.value)}
           >
-            {companyOptions.map((c) => (
-              <option key={c} value={c}>
-                {c=="any"? "All companies" : c}
+            {(companyOptions || []).map((c) => (
+              <option key={c.value} value={c.value}>
+                {c.label}
               </option>
             ))}
           </select>
@@ -282,13 +296,14 @@ useEffect(() => {
           />
           <select
             className = {styles.filterControl}
-            value={filters.remote}
-            onChange={(e) => handleFilterChange("remote", e.target.value)}
+            value={filters.employment_type}
+            onChange={(e) => handleFilterChange("employment_type", e.target.value)}
           >
             <option value="any">Any</option>
-            <option value="remote">Remote</option>
-            <option value="onsite">On-site</option>
-            <option value="hybrid">Hybrid</option>
+            <option value="full-time">Full-time</option>
+            <option value="part-time">Part-time</option>
+            <option value="contract">Contract</option>
+            <option value="internship">Internship</option>
           </select>
           <select
             className={styles.filterControl}
@@ -301,7 +316,7 @@ useEffect(() => {
           <button
             type="button"
             className={styles.clearBtn}
-            onClick={() => setFilters({company: "any", location: "", remote: "any", datePosted: "newest"})}
+            onClick={() => setFilters({company: "any", location: "", employment_type: "any", datePosted: "newest"})}
           >
             <MdClose/>
           </button>
