@@ -11,14 +11,14 @@ const ResumeForm = () => {
     const [formData, setFormData] = useState({
         /* ---PERSONAL INFO--- */
         personalInfoStep: {
-            fullname: '', email: '', pNum: '',
-            addres: '', city: '', state: '', zip: '',
+            fullname: '', email: '', phNum: '',
+            address: '', city: '', state: '', zip: '',
             summary: ''
         },
 
         /* ---SOCIAL INFO--- */
         socialInfoStep: { // could combine this and misc into personal, decide later
-            linkedIn:'', github: '', portfolio: '',
+            linkedIn: '', github: '', portfolio: '',
         },
 
         /* ---MISC INFO--- */
@@ -37,7 +37,7 @@ const ResumeForm = () => {
     })
 
     const handleInputChange = (e) => {
-        const {name, value} = e.target;
+        const { name, value } = e.target;
 
         setFormData({
             ...formData,
@@ -98,7 +98,7 @@ const ResumeForm = () => {
 
 
 
-    // TODO -------------------------------------------- Add conditional rendering
+    // TODO -------------------------------------------- Add conditional rendering (multi step form)
     // based on whats given by signing up (?)
     // given for sure -- name, email, number, any url, languages, student check
     // given maybe -- main section, location, experience, education, projects
@@ -109,9 +109,115 @@ const ResumeForm = () => {
     // commented out most of the divs, when you implemented multi step form
     // 
 
+    const personalStep = ({ formData, onChange }) => (
+        <div>
+            <h2>Personal Info</h2>
+            <label>Name</label>
+            <input
+                type="text"
+                placeholder="Full Name"
+                value={formData.name}
+                onChange={onChange}
+                required
+            />
+            <label>Email</label>
+            <input
+                type="email"
+                placeholder="Email"
+                value={formData.email}
+                onChange={onChange}
+                required
+            />
+            <label>Phone Number</label>
+            <input
+                type="text"
+                placeholder="Phone Number"
+                value={formData.phNum}
+                onChange={onChange}
+                required
+            />
+            <label>Location</label>
+
+            <input
+                type="text"
+                placeholder="Address"
+                value={formData.address}
+                onChange={onChange}
+                required
+            />
+            {/* <p>City</p> */}
+            <input
+                type="text"
+                placeholder="City Name"
+                value={formData.city}
+                onChange={onChange}
+                required
+            />
+            {/* <p>State</p> */}
+            <input
+                type="text"
+                placeholder="State Name"
+                value={formData.state}
+                onChange={onChange}
+                required
+            />
+            {/* <p>Zip</p> */}
+            <input
+                type="text"
+                placeholder="Zip Code"
+                value={formData.zip}
+                onChange={onChange}
+                required
+            />
+
+            <label>Summary</label>
+            <input
+                type="text"
+                placeholder="Summary Generation (separate keywords by commas)"
+                value={formData.summary}
+                onChange={onChange}
+
+            />
+
+        </div>
+    );
+
+    const socialStep = ({ formData, onChange }) => (
+
+        <div>
+            <h2>Social Information</h2>
+
+            <p>LinkedIn</p>
+            <input
+                type="url"
+                placeholder="LinkedIn URL"
+                value={formData.linkedIn}
+                onChange={(e) => setLinkedIn(e.target.value)}
+            />
+            <p>GitHub</p>
+            <input
+                type="url"
+                placeholder="GitHub URL"
+                value={formData.github}
+                onChange={(e) => setGithub(e.target.value)}
+            />
+            <p>Portfolio</p>
+            <input
+                type="url"
+                placeholder="Portfolio URL"
+                value={formData.portfolio}
+                onChange={(e) => setPortfolio(e.target.value)}
+            />
+        </div>
+
+    );
+
+
+
 
     //  Change the style of the form later, this is just a basic layout for now
     return (
+
         <div className="container">
             <PersonalizedNavbar />
 
