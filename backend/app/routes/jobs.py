@@ -1,6 +1,8 @@
 from flask import Blueprint, jsonify, request
 from app.models.job import Job
 from flask_jwt_extended import jwt_required
+from app.extensions import db
+from sqlalchemy import or_
 
 jobs_bp = Blueprint('jobs', __name__)
 
@@ -10,20 +12,59 @@ def get_jobs():
 
     try:
         q = Job.query.filter_by(is_active=True)
-        search = request.args.get("search")
-        limit = int(request.args.get("limit", 10))
-        offset = int(request.args.get("offset", 0))
-        preload = int(request.args.get("preload", 10))
+        try: 
+            limit = min(int(request.args.get("limit", 10)), 200)
+        except ValueError:
+            limit = 10
+        try:
+            offset = max(int(request.args.get("offset", 0)), 0)
+        except ValueError:
+            offset = 0
+        try:
+            preload = min(int(request.args.get("preload", 10)), 100)
+        except ValueError:
+            preload = 10
+        
+        search = (request.args.get("search") or "").strip()
+        if search == "[object Object]":
+            search = ""
 
         if search:
-            q = q.filter(Job.title.ilike(f"%{search}%") | Job.description.ilike(f"%{search}%"))
+            term = f"%{search}%"
+            q = q.filter(
+                or_(
+                    Job.title.ilike(term),
+                    Job.description.ilike(term),
+                    Job.company.ilike(term)
+                ))
         
-        location = request.args.get("location")
+        company = (request.args.get("company") or "").strip()
+        if company and company.lower() != "any":
+            q = q.filter(Job.company.ilike(f"%{company}%"))
+
+        location = (request.args.get("location") or "").strip()
         if location:
             q = q.filter(Job.location.ilike(f"%{location}%"))
 
-        # Order by most recent jobs
-        q = q.order_by(Job.date_posted.desc()) 
+        employment_type = (request.args.get("employment_type") or "").strip()
+        if employment_type and employment_type.lower() != "any":
+            q = q.filter(Job.employment_type.ilike(f"%{employment_type}%"))
+        
+        sort = (request.args.get("sort") or "").strip()
+        if sort:
+            try:
+                field, direction = sort.split(":", 1)
+                field = field.strip()
+                direction = direction.strip().lower()
+                sort_col = getattr(Job, field, None)
+                if sort_col is not None:
+                    q = q.order_by(sort_col.desc() if direction == "desc" else sort_col.asc())
+                else:
+                    q = q.order_by(Job.date_posted.desc())
+            except Exception:
+                q = q.order_by(Job.date_posted.desc())
+        else:
+            q = q.order_by(Job.date_posted.desc()) 
 
         total_count = q.count()
 
