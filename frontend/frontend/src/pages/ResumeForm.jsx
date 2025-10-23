@@ -22,12 +22,12 @@ const ResumeForm = () => {
         },
 
         /* ---MISC INFO--- */
-        miscStep: {
+        miscinfoStep: {
             languages: '', interests: ''
         },
 
         /* ---MAIN SECTIONS--- */
-        mainStep: { // maybe split each part into its own steps? 
+        maininfoStep: { // maybe split each part into its own steps? 
             skills: '',
             company: '', role: '', roleTime: '',
             school: '', degree: '', gradYear: '',
@@ -210,6 +210,37 @@ const ResumeForm = () => {
             />
         </div>
 
+    );
+
+    const miscStep = ({ formData, onChange }) => (
+        <div>
+
+            <h2>Misc Information</h2>
+
+            <p>Languages</p>
+            <input
+                type="text"
+                placeholder="Languages (separate by commas)"
+                value={formData.languages}
+                onChange={(e) => setLanguages(e.target.value)}
+            />
+
+            <p>Interests and Hobbies</p>
+            <input
+                type="text"
+                placeholder="Interests and Hobbies (separate by commas)"
+                value={formData.interests}
+                onChange={(e) => setInterests(e.target.value)}
+            />
+        </div>
+    );
+
+    const mainStep = ({ formData, onChange }) => (
+        <div>
+
+            <h2>Main Information</h2>
+            
+        </div>
     );
 
 
