@@ -106,7 +106,7 @@ const ResumeForm = () => {
     const PersonalStep = ({ formData, onChange }) => (  // PERSONAL INFO STEP //
         <div>
             <h2>Personal Info</h2>
-            <label>Name</label>
+            <p>Name</p>
             <input
                 type="text"
                 placeholder="Full Name"
@@ -114,7 +114,7 @@ const ResumeForm = () => {
                 onChange={onChange}
                 required
             />
-            <label>Email</label>
+            <p>Email</p>
             <input
                 type="email"
                 placeholder="Email"
@@ -122,7 +122,7 @@ const ResumeForm = () => {
                 onChange={onChange}
                 required
             />
-            <label>Phone Number</label>
+            <p>Phone Number</p>
             <input
                 type="text"
                 placeholder="Phone Number"
@@ -130,7 +130,7 @@ const ResumeForm = () => {
                 onChange={onChange}
                 required
             />
-            <label>Location</label>
+            <p>Location</p>
 
             <input
                 type="text"
@@ -139,7 +139,7 @@ const ResumeForm = () => {
                 onChange={onChange}
                 required
             />
-            {/* <p>City</p> */}
+            {/* City */}
             <input
                 type="text"
                 placeholder="City Name"
@@ -147,7 +147,7 @@ const ResumeForm = () => {
                 onChange={onChange}
                 required
             />
-            {/* <p>State</p> */}
+            {/* State */}
             <input
                 type="text"
                 placeholder="State Name"
@@ -155,7 +155,7 @@ const ResumeForm = () => {
                 onChange={onChange}
                 required
             />
-            {/* <p>Zip</p> */}
+            {/* Zip */}
             <input
                 type="text"
                 placeholder="Zip Code"
@@ -164,7 +164,7 @@ const ResumeForm = () => {
                 required
             />
 
-            <label>Summary</label>
+            <p>Summary</p>
             <input
                 type="text"
                 placeholder="Summary Generation (separate keywords by commas)"
@@ -246,6 +246,7 @@ const ResumeForm = () => {
     const JobStep = ({ formData, onChange }) => ( // JOB HISTORY INFO STEP //
         <div>
             <h2>Job History</h2>
+            <p>Company</p>
             <input
                 type="text"
                 placeholder="Company Name"
@@ -253,13 +254,17 @@ const ResumeForm = () => {
                 onChange={onChange}
                 required
             />
-            <input type="text"
+            <p>Position</p>
+            <input
+                type="text"
                 placeholder="Position Title"
                 value={formData.role}
                 onChange={onChange}
                 required
             />
-            <input type="text"
+            <p>Employement Period</p>
+            <input
+                type="text"
                 placeholder="Time Period (e.g., June 2020 - August 2021)" // change this to a date picker later
                 value={formData.roleTime}
                 onChange={onChange}
@@ -271,6 +276,7 @@ const ResumeForm = () => {
     const SchoolStep = ({ formData, onChange }) => ( // SCHOOL HISTORY INFO STEP //
         <div>
             <h2>Education</h2>
+            <p>School</p>
             <input
                 type="text"
                 placeholder="School Name"
@@ -278,6 +284,7 @@ const ResumeForm = () => {
                 onChange={onChange}
                 required
             />
+            <p>Degree</p>
             <input
                 type="text"
                 placeholder="Degree"
@@ -285,6 +292,7 @@ const ResumeForm = () => {
                 onChange={onChange}
                 required
             />
+            <p>Graduation</p>
             <input
                 type="text"
                 placeholder="Graduation Year (Or Estimated)"
@@ -292,6 +300,7 @@ const ResumeForm = () => {
                 onChange={onChange}
                 required
             />
+            <p>Are you currently a student?</p>
             <input type="checkbox" I Am Currently a Student />
         </div>
     );
@@ -299,26 +308,27 @@ const ResumeForm = () => {
     const ProjectStep = ({ formData, onChange }) => ( // PROJECT INFO STEP //
         <div>
             <h2>Projects</h2>
+            <p>Title</p>
             <input
                 type="text"
                 placeholder="Project Title"
                 value={formData.projTitle}
                 onChange={onChange}
-
             />
+            <p>Description</p>
             <input
                 type="text"
                 placeholder="Project Description"
                 value={formData.projDesc}
                 onChange={onChange}
-
             />
-            {/* <input
+            <p>Link (if deployed)</p>
+            <input
                 type="url"
                 placeholder="Project Link"
                 value={formData.pLink}
                 onChange={onChange}
-            />  */}
+            />
         </div>
     );
 
@@ -358,7 +368,7 @@ const ResumeForm = () => {
                     {currentStep > 1 && <button onClick={prevStep}>Previous</button>}
                     {currentStep < 6 && <button onClick={nextStep}>Next</button>}
                 </div>
-                
+
                 <div className="resume-form">
                     {currentStep === 1 && <PersonalStep formData={formData.personalInfoStep} onChange={handleInputChange} />}
                     {currentStep === 2 && <SocialStep formData={formData.personalInfoStep} onChange={handleInputChange} />}
@@ -366,12 +376,12 @@ const ResumeForm = () => {
                     {currentStep === 4 && <JobStep formData={formData.personalInfoStep} onChange={handleInputChange} />}
                     {currentStep === 5 && <SchoolStep formData={formData.personalInfoStep} onChange={handleInputChange} />}
                     {currentStep === 6 && <ProjectStep formData={formData.personalInfoStep} onChange={handleInputChange} />}
-
                 </div>
+
                 <div>
                     {currentStep > 1 && <button onClick={prevStep}>Previous</button>}
                     {currentStep < 6 && <button onClick={nextStep}>Next</button>}
-                    {currentStep === 6 && <button>Submit</button>}
+                    {currentStep === 6 && <button className="submit-btn">Submit</button>}
                 </div>
             </div>
         </div>

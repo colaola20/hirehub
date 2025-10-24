@@ -63,9 +63,16 @@
     align-items: center;
     padding: 20px;
     border-radius: 20px;
+    max-height: 1000px;
+    overflow: hidden;
+    transition: max-height 0.5s ease-out;
     width: 100%;
     box-shadow: 0px 8px 24px rgba(0,0,0,0.3);
     color: white;
+}
+
+.form-box.expanded{
+    max-height: 10000px;
 }
 
 .form-box h2{
@@ -85,30 +92,33 @@
     flex-direction: column;
     align-items: center;
     gap: 10px;
+    max-height: 750px;
+    overflow: hidden;
+    transition: max-height 0.5s ease-out;
     width: 80%;
     border-radius: 20px;
     min-width: 50vw;
     margin: 15px 0;
-    padding-bottom: 30px;
+    padding-bottom: 50px;
     color: white;
     text-align: center;
 }
 
-.personal-info input{
+.resume-form input{
     background-color: #fff;
     border-radius: 8px;
     padding: 5px 7.5px;
     border: 1px solid #eee;
 }
 
-.personal-info input[placeholder="Summary Generation (separate keywords by commas)"]{
+.resume-form input[placeholder="Summary Generation (separate keywords by commas)"]{
     background-color: white;
     border-radius: 8px;
     padding: 30px 100px;
     border: 1px solid #eee;
 }
 
-.main-sections input[type="checkbox"]{
+.resume-form input[type="checkbox"]{
     accent-color: #562fac;
 }
 
