@@ -36,7 +36,7 @@ const ResumeForm = () => {
         },
     })
 
-    // validation
+    //validation
 
     const personalValidation = Yup.object({
         fullname: Yup.string().required('Name is required'),
@@ -76,9 +76,6 @@ const ResumeForm = () => {
         });
     };
 
-    const [resumeText, setResumeText] = useState(""); // add resume text step (?)
-    //add more fields as needed
-
     const prevStep = () => {
         if (currentStep > 1) setCurrentStep(currentStep - 1);
     }
@@ -106,14 +103,14 @@ const ResumeForm = () => {
     // ---------------------------------Step Components---------------------------------
     // Currently 6 steps
 
-    const personalStep = ({ formData, onChange }) => (  // PERSONAL INFO STEP //
+    const PersonalStep = ({ formData, onChange }) => (  // PERSONAL INFO STEP //
         <div>
             <h2>Personal Info</h2>
             <label>Name</label>
             <input
                 type="text"
                 placeholder="Full Name"
-                value={formData.name}
+                value={formData.fullname}
                 onChange={onChange}
                 required
             />
@@ -179,7 +176,7 @@ const ResumeForm = () => {
         </div>
     );
 
-    const socialStep = ({ formData, onChange }) => ( // SOCIAL INFO STEP //
+    const SocialStep = ({ formData, onChange }) => ( // SOCIAL INFO STEP //
 
         <div>
             <h2>Social Information</h2>
@@ -209,7 +206,7 @@ const ResumeForm = () => {
 
     );
 
-    const miscStep = ({ formData, onChange }) => ( // MISC INFO STEP //
+    const MiscStep = ({ formData, onChange }) => ( // MISC INFO STEP //
         <div>
 
             <h2>Misc Information</h2>
@@ -246,7 +243,7 @@ const ResumeForm = () => {
         </div>
     );
 
-    const jobStep = ({ formData, onChange }) => ( // JOB HISTORY INFO STEP //
+    const JobStep = ({ formData, onChange }) => ( // JOB HISTORY INFO STEP //
         <div>
             <h2>Job History</h2>
             <input
@@ -271,7 +268,7 @@ const ResumeForm = () => {
         </div>
     );
 
-    const schoolStep = ({ formData, onChange }) => ( // SCHOOL HISTORY INFO STEP //
+    const SchoolStep = ({ formData, onChange }) => ( // SCHOOL HISTORY INFO STEP //
         <div>
             <h2>Education</h2>
             <input
@@ -299,7 +296,7 @@ const ResumeForm = () => {
         </div>
     );
 
-    const projectStep = ({ formData, onChange }) => ( // PROJECT INFO STEP //
+    const ProjectStep = ({ formData, onChange }) => ( // PROJECT INFO STEP //
         <div>
             <h2>Projects</h2>
             <input
@@ -347,7 +344,7 @@ const ResumeForm = () => {
             <PersonalizedNavbar />
 
             <div className="form-box">
-                <h2>Resume Builder Form</h2>
+                <h1>Resume Builder Form</h1>
 
                 {/* Make Into Progress bar later on */}
                 <div>
@@ -362,10 +359,15 @@ const ResumeForm = () => {
                     {currentStep < 6 && <button onClick={nextStep}>Next</button>}
                 </div>
                 
-                <form className="resume_form">
-                    {currentStep === 1 && <personalStep formData={formData.personalInfoStep} onChange={handleInputChange} />}
+                <div className="resume-form">
+                    {currentStep === 1 && <PersonalStep formData={formData.personalInfoStep} onChange={handleInputChange} />}
+                    {currentStep === 2 && <SocialStep formData={formData.personalInfoStep} onChange={handleInputChange} />}
+                    {currentStep === 3 && <MiscStep formData={formData.personalInfoStep} onChange={handleInputChange} />}
+                    {currentStep === 4 && <JobStep formData={formData.personalInfoStep} onChange={handleInputChange} />}
+                    {currentStep === 5 && <SchoolStep formData={formData.personalInfoStep} onChange={handleInputChange} />}
+                    {currentStep === 6 && <ProjectStep formData={formData.personalInfoStep} onChange={handleInputChange} />}
 
-                </form>
+                </div>
                 <div>
                     {currentStep > 1 && <button onClick={prevStep}>Previous</button>}
                     {currentStep < 6 && <button onClick={nextStep}>Next</button>}
