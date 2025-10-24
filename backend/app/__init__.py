@@ -14,6 +14,9 @@ from app.routes.jobs import jobs_bp
 from app.routes.favorites import favorites_bp
 from app.routes.skills import skills_bp
 from app.routes.applications import applications_bp
+from app.routes.documents import documents_bp
+
+
 from flask_cors import CORS
 from .config import Config
 
@@ -75,6 +78,7 @@ def create_app():
     app.register_blueprint(google_bp)
     app.register_blueprint(linkedin_bp)
     app.register_blueprint(applications_bp)
+    app.register_blueprint(documents_bp)
     
 
     return app

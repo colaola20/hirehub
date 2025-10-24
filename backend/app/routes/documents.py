@@ -4,6 +4,11 @@ from app.models.document import Document
 from app.models.resume import Resume
 from app.models.cover_letter import CoverLetter
 from flask_jwt_extended import jwt_required, get_jwt_identity
+import os
+
+from groq import Groq
+
+groq_client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
 
 documents_bp = Blueprint('documents', __name__)
 
@@ -196,3 +201,43 @@ def delete_document(document_id):
             'message': 'Failed to delete document',
             'error': str(e)
         }), 500
+    
+
+# ------------------------
+# Generates cover letter
+# ------------------------
+@documents_bp.route("/api/generate/cover-letter", methods=["POST"])
+@jwt_required()
+def generate_cover_letter():
+    body = request.get_json(silent=True) or {}
+    job_description = body.get("job_description")
+    resume_text = body.get("resume_text")
+
+    if not isinstance(job_description, str) or not isinstance(resume_text, str):
+        return jsonify({"status": "error", "message": "job_description and resume_text are required strings"}), 400
+
+    prompt = f"""
+        Using the resume below, write a personalized cover letter that fits this job.
+
+        RESUME:
+        {resume_text}
+
+        JOB DESCRIPTION:
+        {job_description}
+    """
+
+    try:
+        response = groq_client.chat.completions.create(
+            model="llama-3.3-70b-versatile",
+            messages=[
+                {
+                    "role": "user",
+                    "content": prompt
+                }
+            ]
+        )
+    except Exception as exc:
+        return jsonify({"status": "error", "message": "LLM request failed", "error": str(exc)}), 502
+    
+
+    return jsonify({"cover_letter": response.choices[0].message.content})
