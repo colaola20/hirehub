@@ -61,7 +61,7 @@ const ResumeForm = () => {
     })
 
     const projectValidation = Yup.object({
-        
+
     })
 
     const handleInputChange = (e) => {
@@ -361,8 +361,37 @@ const ResumeForm = () => {
                     {currentStep > 1 && <button onClick={prevStep}>Previous</button>}
                     {currentStep < 6 && <button onClick={nextStep}>Next</button>}
                 </div>
+                
                 <form className="resume_form">
-                    <div className='personal-info'>
+                    {currentStep === 1 && <personalStep formData={formData.personalInfoStep} onChange={handleInputChange} />}
+
+                </form>
+                <div>
+                    {currentStep > 1 && <button onClick={prevStep}>Previous</button>}
+                    {currentStep < 6 && <button onClick={nextStep}>Next</button>}
+                    {currentStep === 6 && <button>Submit</button>}
+                </div>
+            </div>
+        </div>
+    )
+
+}
+
+export default ResumeForm;
+
+
+
+
+
+
+
+/*
+
+-------------------------------- storing old code in case i need it later ignore this lolol --------------------------------
+
+/*
+
+<div className='personal-info'>
                         <h3>Personal Information</h3>
 
                         <p> Name</p>
@@ -398,7 +427,7 @@ const ResumeForm = () => {
                             //onChange={(e) => setAddress(e.target.value)}
                             required
                         />
-                        {/* <p>City</p> */}
+
                         <input
                             type="text"
                             placeholder="City Name"
@@ -406,7 +435,7 @@ const ResumeForm = () => {
                             //onChange={(e) => setCity(e.target.value)} // see line 9
                             required
                         />
-                        {/* <p>State</p> */}
+
                         <input
                             type="text"
                             placeholder="State Name"
@@ -414,7 +443,7 @@ const ResumeForm = () => {
                             //onChange={(e) => setState(e.target.value)} // see line 9
                             required
                         />
-                        {/* <p>Zip</p> */}
+
                         <input
                             type="text"
                             placeholder="Zip Code"
@@ -432,49 +461,6 @@ const ResumeForm = () => {
 
                         />
                     </div>
-                </form>
-                <div>
-                    {currentStep > 1 && <button onClick={prevStep}>Previous</button>}
-                    {currentStep < 6 && <button onClick={nextStep}>Next</button>}
-                    {currentStep === 3 && <button>Submit</button>}
-                </div>
-                {/* <br />
-                <button onClick="generateResume" type="submit" className="submit-btn">
-                    Generate Resume
-                </button>  */}
-
-
-                {/* get this to conditionally render (or just render when you press the button above) */}
-                <div className="resume-generation">
-                    {/* <textarea 
-                        value={resumeText}
-                        id=""
-                        readOnly
-                        className="resume-text"
-                    /> */}
-                </div>
-                {/* <button type="submit" className="submit-btn">
-                    Export Resume
-                </button> */}
-            </div>
-        </div>
-    )
-
-}
-
-export default ResumeForm;
-
-
-
-
-
-
-
-/*
-
--------------------------------- storing old code in case i need it later ignore this lolol --------------------------------
-
-/*
 
 {/* <div className="social-info">
 
