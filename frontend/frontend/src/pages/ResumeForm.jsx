@@ -50,19 +50,32 @@ const ResumeForm = () => {
     const [resumeText, setResumeText] = useState(""); // add resume text step (?)
     //add more fields as needed
 
+    const prevStep = () => {
+        if (currentStep > 1) setCurrentStep(currentStep - 1);
+    }
+
+    const nextStep = () => {
+        if (currentStep < 6) setCurrentStep(currentStep + 1);
+    }
 
 
 
 
 
-    // TODO -------------------------------------------- Add conditional rendering (multi step form)
-    // based on whats given by signing up (?)
-    // given for sure -- name, email, number, any url, languages, student check
-    // given maybe -- main section, location, experience, education, projects
-    // not given / not sure -- summary
+
+    /*
+        TODO -------------------------------------------- Add conditional rendering (multi step form)
+        based on whats given by signing up (?)
+        given for sure -- name, email, number, any url, languages, student check
+        given maybe -- main section, location, experience, education, projects
+        not given / not sure -- summary
+
+        move all components to a file in components folder
+    */
 
 
     // ---------------------------------Step Components---------------------------------
+    // Currently 6 steps
 
     const personalStep = ({ formData, onChange }) => (  // PERSONAL INFO STEP //
         <div>
@@ -306,8 +319,19 @@ const ResumeForm = () => {
 
             <div className="form-box">
                 <h2>Resume Builder Form</h2>
-                {/* <p>We'll Help You Create a Professional Resume!</p> */}
 
+                {/* Make Into Progress bar later on */}
+                <div>
+                    <span>Step {currentStep} of 6</span>
+                    <div className="progress-bar">
+                        <div style={{ width: `${(currentStep / 3) * 100}%` }}></div>
+                    </div>
+                </div>
+
+                <div>
+                    {currentStep > 1 && <button onClick={prevStep}>Previous</button>}
+                    {currentStep < 6 && <button onClick={nextStep}>Next</button>}
+                </div>
                 <form className="resume_form">
                     <div className='personal-info'>
                         <h3>Personal Information</h3>
@@ -380,6 +404,11 @@ const ResumeForm = () => {
                         />
                     </div>
                 </form>
+                <div>
+                    {currentStep > 1 && <button onClick={prevStep}>Previous</button>}
+                    {currentStep < 6 && <button onClick={nextStep}>Next</button>}
+                    {currentStep === 3 && <button>Submit</button>}
+                </div>
                 {/* <br />
                 <button onClick="generateResume" type="submit" className="submit-btn">
                     Generate Resume
