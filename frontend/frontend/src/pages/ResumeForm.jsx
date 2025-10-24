@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import PersonalizedNavbar from '../components/PersonalizedNavbar'
+import * as Yup from 'yup'
 
 import './resumeform.css';
 
@@ -33,6 +34,34 @@ const ResumeForm = () => {
             projTitle: '', projDesc: '', // projLink: '',
             certs: ''
         },
+    })
+
+    // validation
+
+    const personalValidation = Yup.object({
+        fullname: Yup.string().required('Name is required'),
+        email: Yup.string().email('Email is required').required('Email is required'),
+        phNum: Yup.string().required('Phone Number is required')
+    })
+
+    const socialValidation = Yup.object({
+
+    })
+
+    const miscValidation = Yup.object({
+
+    })
+
+    const jobValidation = Yup.object({
+
+    })
+
+    const schoolValidation = Yup.object({
+
+    })
+
+    const projectValidation = Yup.object({
+        
     })
 
     const handleInputChange = (e) => {
