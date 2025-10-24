@@ -146,7 +146,7 @@ const ResumeForm = () => {
                         />
                     </div>
 
-                    <div className="social-info">
+                    {/* <div className="social-info">
 
                         <h3>Social Information</h3>
 
@@ -209,7 +209,7 @@ const ResumeForm = () => {
                         />
 
                         {/* TODO - Add Multiple fields for Experience, Education and Projects as listed on line 26 27 28 */}
-                        <p>Experience</p>
+                        {/* <p>Experience</p>
                         <input
                             type="text"
                             placeholder="Company Name"
@@ -284,12 +284,12 @@ const ResumeForm = () => {
                             value={certs}
                             onChange={(e) => setCerts(e.target.value)}
                         />
-                    </div>
+                    </div> */}
                 </form>
-                <br />
+                {/* <br />
                 <button onClick="generateResume" type="submit" className="submit-btn">
                     Generate Resume
-                </button>
+                </button>  */}
 
 
                 {/* get this to conditionally render (or just render when you press the button above) */}
