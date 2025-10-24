@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import Navbar from '../components/Navbar'
 import PersonalizedNavbar from '../components/PersonalizedNavbar'
 
 import './resumeform.css';
@@ -48,49 +47,7 @@ const ResumeForm = () => {
         });
     };
 
-    /* ---PERSONAL INFO--- */
-    const [fullName, setFullName] = useState("");
-    const [email, setEmail] = useState("");
-    const [phoneNum, setPhoneNum] = useState("");
-
-    // Location fields
-    const [address, setAddress] = useState("");
-    const [city, setCity] = useState("");
-    const [state, setState] = useState("");
-    const [zip, setZip] = useState("");
-
-    const [summary, setSummary] = useState(""); // could enter key words to generate summary as well 
-
-    /* ---SOCIAL INFO--- */
-    const [linkedIn, setLinkedIn] = useState("");
-    const [github, setGithub] = useState("");
-    const [portfolio, setPortfolio] = useState("");
-
-    /* ---MISC INFO--- */
-    const [languages, setLanguages] = useState("");
-    const [interests, setInterests] = useState("");
-
-    /* ---MAIN SECTIONS--- */
-    const [skills, setSkills] = useState(""); // maybe add what kinds of skills (hard, soft, languages, etc)
-
-    // Experience Fields
-    const [company, setCompany] = useState("");
-    const [role, setRole] = useState("");
-    const [roleTime, setRoleTime] = useState("");
-
-    // Education Fields
-    const [school, setSchool] = useState("");
-    const [degree, setDegree] = useState("");
-    const [gradYear, setGradYear] = useState("");
-
-    // project fields
-    const [pTitle, setPTitle] = useState("");
-    const [pDesc, setPDesc] = useState("");
-    const [pLink, setPLink] = useState("");
-
-    const [certs, setCerts] = useState(""); // certifications
-
-    const [resumeText, setResumeText] = useState("");
+    const [resumeText, setResumeText] = useState(""); // add resume text step (?)
     //add more fields as needed
 
 
@@ -105,11 +62,9 @@ const ResumeForm = () => {
     // not given / not sure -- summary
 
 
-    // ---------------------------------IMPORTANT---------------------------------
-    // commented out most of the divs, when you implemented multi step form
-    // 
+    // ---------------------------------Step Components---------------------------------
 
-    const personalStep = ({ formData, onChange }) => (
+    const personalStep = ({ formData, onChange }) => (  // PERSONAL INFO STEP //
         <div>
             <h2>Personal Info</h2>
             <label>Name</label>
@@ -182,7 +137,7 @@ const ResumeForm = () => {
         </div>
     );
 
-    const socialStep = ({ formData, onChange }) => (
+    const socialStep = ({ formData, onChange }) => ( // SOCIAL INFO STEP //
 
         <div>
             <h2>Social Information</h2>
@@ -192,37 +147,51 @@ const ResumeForm = () => {
                 type="url"
                 placeholder="LinkedIn URL"
                 value={formData.linkedIn}
-                onChange={(e) => setLinkedIn(e.target.value)}
+                onChange={onChange}
             />
             <p>GitHub</p>
             <input
                 type="url"
                 placeholder="GitHub URL"
                 value={formData.github}
-                onChange={(e) => setGithub(e.target.value)}
+                onChange={onChange}
             />
             <p>Portfolio</p>
             <input
                 type="url"
                 placeholder="Portfolio URL"
                 value={formData.portfolio}
-                onChange={(e) => setPortfolio(e.target.value)}
+                onChange={onChange}
             />
         </div>
 
     );
 
-    const miscStep = ({ formData, onChange }) => (
+    const miscStep = ({ formData, onChange }) => ( // MISC INFO STEP //
         <div>
 
             <h2>Misc Information</h2>
 
+            <p>Skills</p>
+            <input
+                type="text"
+                placeholder="Skills"
+                value={formData.skills}
+                onChange={onChange}
+            />
+            <p>Certifications</p>
+            <input
+                type="text"
+                placeholder="Certifications"
+                value={formData.certs}
+                onChange={onChange}
+            />
             <p>Languages</p>
             <input
                 type="text"
                 placeholder="Languages (separate by commas)"
                 value={formData.languages}
-                onChange={(e) => setLanguages(e.target.value)}
+                onChange={onChange}
             />
 
             <p>Interests and Hobbies</p>
@@ -230,23 +199,106 @@ const ResumeForm = () => {
                 type="text"
                 placeholder="Interests and Hobbies (separate by commas)"
                 value={formData.interests}
-                onChange={(e) => setInterests(e.target.value)}
+                onChange={onChange}
             />
         </div>
     );
 
-    const mainStep = ({ formData, onChange }) => (
+    const jobStep = ({ formData, onChange }) => ( // JOB HISTORY INFO STEP //
         <div>
-
-            <h2>Main Information</h2>
-            
+            <h2>Job History</h2>
+            <input
+                type="text"
+                placeholder="Company Name"
+                value={formData.company}
+                onChange={onChange}
+                required
+            />
+            <input type="text"
+                placeholder="Position Title"
+                value={formData.role}
+                onChange={onChange}
+                required
+            />
+            <input type="text"
+                placeholder="Time Period (e.g., June 2020 - August 2021)" // change this to a date picker later
+                value={formData.roleTime}
+                onChange={onChange}
+                required
+            />
         </div>
     );
+
+    const schoolStep = ({ formData, onChange }) => ( // SCHOOL HISTORY INFO STEP //
+        <div>
+            <h2>Education</h2>
+            <input
+                type="text"
+                placeholder="School Name"
+                value={formData.school}
+                onChange={onChange}
+                required
+            />
+            <input
+                type="text"
+                placeholder="Degree"
+                value={formData.degree}
+                onChange={onChange}
+                required
+            />
+            <input
+                type="text"
+                placeholder="Graduation Year (Or Estimated)"
+                value={formData.gradYear}
+                onChange={onChange}
+                required
+            />
+            <input type="checkbox" I Am Currently a Student />
+        </div>
+    );
+
+    const projectStep = ({ formData, onChange }) => ( // PROJECT INFO STEP //
+        <div>
+            <h2>Projects</h2>
+            <input
+                type="text"
+                placeholder="Project Title"
+                value={formData.projTitle}
+                onChange={onChange}
+
+            />
+            <input
+                type="text"
+                placeholder="Project Description"
+                value={formData.projDesc}
+                onChange={onChange}
+
+            />
+            {/* <input
+                type="url"
+                placeholder="Project Link"
+                value={formData.pLink}
+                onChange={onChange}
+            />  */}
+        </div>
+    );
+
+
+    // const mainStep = ({ formData, onChange }) => ( ------------maybe insert resume view step------------
+    //     <div>
+
+    //         <h2>Main Information</h2>
+
+    //     </div>
+    // );
+
+
 
 
 
 
     //  Change the style of the form later, this is just a basic layout for now
+    // currently here just to see how form will be styled before i fully implement each step
     return (
 
         <div className="container">
@@ -264,24 +316,24 @@ const ResumeForm = () => {
                         <input
                             type="text"
                             placeholder="Full Name"
-                            value={fullName}
-                            onChange={(e) => setFullName(e.target.value)}
+                            //value={fullName}
+                            //onChange={(e) => setFullName(e.target.value)}
                             required
                         />
                         <p>Email</p>
                         <input
                             type="email"
                             placeholder="Email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
+                            //value={email}
+                            //onChange={(e) => setEmail(e.target.value)}
                             required
                         />
                         <p>Phone Number</p>
                         <input
                             type="text"
                             placeholder="Phone Number"
-                            value={phoneNum}
-                            onChange={(e) => setPhoneNum(e.target.value)}
+                            //value={phoneNum}
+                            //onChange={(e) => setPhoneNum(e.target.value)}
                             required
                         />
                         <p>Location</p>
@@ -289,32 +341,32 @@ const ResumeForm = () => {
                         <input
                             type="text"
                             placeholder="Address"
-                            value={address}
-                            onChange={(e) => setAddress(e.target.value)}
+                            //value={address}
+                            //onChange={(e) => setAddress(e.target.value)}
                             required
                         />
                         {/* <p>City</p> */}
                         <input
                             type="text"
                             placeholder="City Name"
-                            value={city}
-                            onChange={(e) => setCity(e.target.value)} // see line 9
+                            //value={city}
+                            //onChange={(e) => setCity(e.target.value)} // see line 9
                             required
                         />
                         {/* <p>State</p> */}
                         <input
                             type="text"
                             placeholder="State Name"
-                            value={state}
-                            onChange={(e) => setState(e.target.value)} // see line 9
+                            //value={state}
+                            //onChange={(e) => setState(e.target.value)} // see line 9
                             required
                         />
                         {/* <p>Zip</p> */}
                         <input
                             type="text"
                             placeholder="Zip Code"
-                            value={zip}
-                            onChange={(e) => setZip(e.target.value)} // see line 9
+                            //value={zip}
+                            //onChange={(e) => setZip(e.target.value)} // see line 9
                             required
                         />
 
@@ -322,13 +374,51 @@ const ResumeForm = () => {
                         <input
                             type="text"
                             placeholder="Summary Generation (separate keywords by commas)"
-                            value={summary}
-                            onChange={(e) => setSummary(e.target.value)} // see line 9
+                        //value={summary}
+                        //onChange={(e) => setSummary(e.target.value)} // see line 9
 
                         />
                     </div>
+                </form>
+                {/* <br />
+                <button onClick="generateResume" type="submit" className="submit-btn">
+                    Generate Resume
+                </button>  */}
 
-                    {/* <div className="social-info">
+
+                {/* get this to conditionally render (or just render when you press the button above) */}
+                <div className="resume-generation">
+                    {/* <textarea 
+                        value={resumeText}
+                        id=""
+                        readOnly
+                        className="resume-text"
+                    /> */}
+                </div>
+                {/* <button type="submit" className="submit-btn">
+                    Export Resume
+                </button> */}
+            </div>
+        </div>
+    )
+
+}
+
+export default ResumeForm;
+
+
+
+
+
+
+
+/*
+
+-------------------------------- storing old code in case i need it later ignore this lolol --------------------------------
+
+/*
+
+{/* <div className="social-info">
 
                         <h3>Social Information</h3>
 
@@ -390,8 +480,8 @@ const ResumeForm = () => {
                             required
                         />
 
-                        {/* TODO - Add Multiple fields for Experience, Education and Projects as listed on line 26 27 28 */}
-                    {/* <p>Experience</p>
+                        /* TODO - Add Multiple fields for Experience, Education and Projects as listed on line 26 27 28 */
+{/* <p>Experience</p>
                         <input
                             type="text"
                             placeholder="Company Name"
@@ -467,29 +557,3 @@ const ResumeForm = () => {
                             onChange={(e) => setCerts(e.target.value)}
                         />
                     </div> */}
-                </form>
-                {/* <br />
-                <button onClick="generateResume" type="submit" className="submit-btn">
-                    Generate Resume
-                </button>  */}
-
-
-                {/* get this to conditionally render (or just render when you press the button above) */}
-                <div className="resume-generation">
-                    {/* <textarea 
-                        value={resumeText}
-                        id=""
-                        readOnly
-                        className="resume-text"
-                    /> */}
-                </div>
-                {/* <button type="submit" className="submit-btn">
-                    Export Resume
-                </button> */}
-            </div>
-        </div>
-    )
-
-}
-
-export default ResumeForm;
