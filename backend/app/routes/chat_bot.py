@@ -6,7 +6,7 @@ chat_bp = Blueprint("chat_bp", __name__)
 
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY")  # set this in your env
 
-@chat_bp.post("/api/chat")
+@chat_bp.post("/chat")
 def chat():
     if not GROQ_API_KEY:
         return jsonify({"error": "GROQ_API_KEY not set"}), 500

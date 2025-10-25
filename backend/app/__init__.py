@@ -20,7 +20,7 @@ from .config import Config
 from app.models.user import User
 from app.models.job import Job
 from app.models.application import Application
-
+from app.routes.chat_bot import chat_bp
 load_dotenv()
 
 jwt = JWTManager()
@@ -33,6 +33,8 @@ def create_app():
     app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['JWT_SECRET_KEY'] = os.environ.get('JWT_SECRET_KEY') or 'jwt-secret-string'
+
+    
 
     # Allow requests from your frontend
     CORS(app, origins=["http://localhost:5173"])
@@ -71,6 +73,7 @@ def create_app():
     app.register_blueprint(google_bp)
     app.register_blueprint(linkedin_bp)
     app.register_blueprint(applications_bp)
+    app.register_blueprint(chat_bp, url_prefix="/api")
     
 
     return app

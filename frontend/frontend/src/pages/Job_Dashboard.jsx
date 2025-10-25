@@ -1,6 +1,7 @@
 // job_dashboard.jsx
 import { useEffect, useState } from "react";
 import styles from "./job_dashboard.module.css"; // your existing CSS module
+import Chatbot from "./chat_bot";
 
 const JobDashboard = () => {
   const [job, setJob] = useState(null);
@@ -65,6 +66,7 @@ const JobDashboard = () => {
           </a>
         )}
       </div>
+      <Chatbot job={job} />
     </div>
   );
 };

@@ -5,3 +5,108 @@
   padding: clamp(56px, 10vh, 100px) 0;
   background: linear-gradient(180deg, #171428, #24183a); /* your dark bg */
 }
+/* --- Chat widget --- */
+.chatDock {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 9999;
+}
+
+.chatToggle {
+  all: unset;
+  cursor: pointer;
+  background: #111;
+  color: #fff;
+  padding: 10px 14px;
+  border-radius: 10px;
+  box-shadow: 0 6px 20px rgba(0,0,0,.25);
+  font-weight: 600;
+}
+
+.chatCard {
+  width: min(360px, calc(100vw - 48px));
+  height: 460px;
+  background: #0f0f13;
+  color: #e9e9ef;
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 16px;
+  box-shadow: 0 12px 40px rgba(0,0,0,.35);
+  display: flex;
+  flex-direction: column;
+  margin-top: 10px;
+  overflow: hidden;
+}
+
+.chatHeader {
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+}
+
+.chatSub {
+  margin-left: auto;
+  font-size: 12px;
+  opacity: .7;
+}
+
+.chatBox {
+  flex: 1;
+  overflow: auto;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.msgUser {
+  align-self: flex-end;
+  background: #2a2a35;
+  padding: 10px 12px;
+  border-radius: 14px 14px 2px 14px;
+  max-width: 85%;
+  white-space: pre-wrap;
+}
+
+.msgAssistant {
+  align-self: flex-start;
+  background: #171720;
+  padding: 10px 12px;
+  border-radius: 14px 14px 14px 2px;
+  max-width: 85%;
+  white-space: pre-wrap;
+  border: 1px solid rgba(255,255,255,.06);
+}
+
+.chatInputRow {
+  border-top: 1px solid rgba(255,255,255,.08);
+  padding: 10px;
+  display: flex;
+  gap: 8px;
+  background: #0f0f13;
+}
+
+.chatInput {
+  flex: 1;
+  resize: none;
+  background: #141420;
+  color: #e9e9ef;
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 10px;
+  padding: 10px 12px;
+  outline: none;
+}
+
+.chatSend {
+  all: unset;
+  cursor: pointer;
+  background: #6c5ce7;
+  color: white;
+  font-weight: 700;
+  padding: 10px 14px;
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(108,92,231,.35);
+}
+.chatSend:disabled { opacity: .5; cursor: not-allowed; }
