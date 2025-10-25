@@ -2,7 +2,6 @@
 import { useEffect, useRef, useState } from "react";
 import styles from "./job_dashboard.module.css";
 
-/* Inline chat panel to match the design mock exactly */
 function JobChatPanel({ job }) {
   const [messages, setMessages] = useState([
     { role: "assistant", content: "Ask me anything about this job or your resume bullets." }
@@ -26,7 +25,7 @@ function JobChatPanel({ job }) {
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error || "Chat error");
       setMessages((m) => [...m, { role: "assistant", content: data.answer || "(no reply)" }]);
-    } catch (e) {
+    } catch {
       setMessages((m) => [...m, { role: "assistant", content: "Sorry—something went wrong reaching the assistant." }]);
     } finally {
       setLoading(false);
@@ -35,10 +34,7 @@ function JobChatPanel({ job }) {
   };
 
   const onKeyDown = (e) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      send();
-    }
+    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); }
   };
 
   return (
@@ -57,11 +53,11 @@ function JobChatPanel({ job }) {
         {loading && <div className={styles.msgAssistant}>Thinking…</div>}
       </div>
 
-      <div className={styles.chatInputRow}>
+      <div className={styles.inputGroup}>
         <textarea
           className={styles.chatInput}
-          rows={2}
-          placeholder="Ask anything…"
+          rows={1}
+          placeholder="Ask anything..."
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={onKeyDown}
@@ -87,9 +83,11 @@ const JobDashboard = () => {
     return (
       <div className={styles.wrapper}>
         <div className={styles.shell}>
-          <div className={styles.card}>
-            <h2>No job selected</h2>
-            <p>Go back to the Jobs list and click a job to view its details here.</p>
+          <div className={styles.frame}>
+            <div className={styles.card}>
+              <h2>No job selected</h2>
+              <p>Go back to the Jobs list and click a job to view its details here.</p>
+            </div>
           </div>
         </div>
       </div>
@@ -99,53 +97,45 @@ const JobDashboard = () => {
   return (
     <div className={styles.wrapper}>
       <div className={styles.shell}>
-        <div className={styles.grid}>
-          {/* LEFT: job content */}
-          <div className={styles.card}>
-            <h1 className={styles.title}>{job.title || "Job Details"}</h1>
+        {/* Outer rounded frame like the mock */}
+        <div className={styles.frame}>
+          <div className={styles.grid}>
+            {/* LEFT: content */}
+            <div className={styles.card}>
+              <h1 className={styles.title}>{job.title || "Job Details"}</h1>
 
-            <div className={styles.meta}>
-              {job.company && (
-                <span className={styles.metaItem}><strong>Company</strong> • {job.company}</span>
+              <div className={styles.meta}>
+                <span className={styles.metaItem}>Company • {job.company || "—"}</span>
+                <span className={styles.metaItem}>Location • {job.location || "—"}</span>
+                <span className={styles.metaItem}>Product Management</span>
+              </div>
+
+              <section>
+                <h3 className={styles.sectionTitle}>Description</h3>
+                <p className={styles.description}>
+                  {job.description || "No description provided."}
+                </p>
+              </section>
+
+              {Array.isArray(job.skills) && job.skills.length > 0 && (
+                <section style={{ marginTop: 18 }}>
+                  <h3 className={styles.sectionTitle}>Skills</h3>
+                  <ul className={styles.skills}>
+                    {job.skills.map((s, i) => <li key={i}>{s}</li>)}
+                  </ul>
+                </section>
               )}
-              {job.location && (
-                <span className={styles.metaItem}><strong>Location</strong> • {job.location}</span>
-              )}
-              {job.category && (
-                <span className={styles.metaItem}><strong>Product Management</strong></span>
+
+              {job.apply_url && (
+                <a className={styles.applyBtn} href={job.apply_url} target="_blank" rel="noopener noreferrer">
+                  APPLY NOW
+                </a>
               )}
             </div>
 
-            <section>
-              <h3 className={styles.sectionTitle}>Description</h3>
-              <p className={styles.description}>
-                {job.description || "No description provided."}
-              </p>
-            </section>
-
-            {Array.isArray(job.skills) && job.skills.length > 0 && (
-              <section style={{ marginTop: 18 }}>
-                <h3 className={styles.sectionTitle}>Skills</h3>
-                <ul className={styles.skills}>
-                  {job.skills.map((s, i) => <li key={i}>{s}</li>)}
-                </ul>
-              </section>
-            )}
-
-            {job.apply_url && (
-              <a
-                className={styles.applyBtn}
-                href={job.apply_url}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                APPLY NOW
-              </a>
-            )}
+            {/* RIGHT: chat panel */}
+            <JobChatPanel job={job} />
           </div>
-
-          {/* RIGHT: embedded chat panel */}
-          <JobChatPanel job={job} />
         </div>
       </div>
     </div>

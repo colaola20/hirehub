@@ -1,24 +1,37 @@
-/* job_dashboard.module.css */
-
-/* ---------- Page background ---------- */
+/* ---------- Page background + vignette ---------- */
 .wrapper {
-  position: relative;
   min-height: 100vh;
   padding: clamp(48px, 6vh, 80px) 0;
   background:
-    radial-gradient(1200px 600px at 10% 0%, rgba(140, 80, 255, 0.10), transparent 60%),
-    radial-gradient(1000px 600px at 90% 0%, rgba(255, 80, 180, 0.08), transparent 60%),
-    linear-gradient(180deg, #171428 0%, #24183a 100%);
-  color: #e9e9ef;
+    radial-gradient(1200px 700px at 12% -10%, rgba(130, 90, 255, 0.12), transparent 60%),
+    radial-gradient(1100px 700px at 88% -10%, rgba(255, 80, 180, 0.10), transparent 60%),
+    linear-gradient(180deg, #151228 0%, #221638 100%);
+  color: #eceaf7;
 }
 
-/* centered shell */
-.shell {
-  width: min(1200px, 92vw);
-  margin: 0 auto;
+/* centered container */
+.shell { width: min(1200px, 92vw); margin: 0 auto; }
+
+/* outer rounded “frame” exactly like the mock */
+.frame {
+  position: relative;
+  border-radius: 22px;
+  padding: clamp(22px, 2.6vw, 30px);
+  background: linear-gradient(180deg, rgba(22,18,36,0.55), rgba(27,20,38,0.48));
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,0.08),
+    0 30px 70px rgba(0,0,0,0.35);
+}
+.frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 22px;
+  pointer-events: none;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06);
 }
 
-/* two-column layout like the mock: content left, chat right */
+/* two columns like the screenshot */
 .grid {
   display: grid;
   grid-template-columns: 1.6fr 1fr;
@@ -26,73 +39,62 @@
   align-items: start;
 }
 
-/* glass cards */
-.card,
-.chatPanel {
-  position: relative;
-  background: linear-gradient(180deg, rgba(20,16,38,0.75), rgba(24,18,38,0.65));
-  border: 1px solid rgba(255,255,255,0.08);
-  box-shadow: 0 20px 50px rgba(0,0,0,0.35);
-  border-radius: 22px;
-  backdrop-filter: saturate(115%) blur(10px);
-}
-
-/* left content card spacing */
+/* left card (glass) */
 .card {
+  background: linear-gradient(180deg, rgba(20,16,38,0.72), rgba(24,18,38,0.62));
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 18px;
+  backdrop-filter: saturate(115%) blur(8px);
   padding: clamp(20px, 3vw, 32px);
+  box-shadow: 0 18px 50px rgba(0,0,0,0.35);
 }
 
-/* title like the mock */
+/* title/typography */
 .title {
-  margin: 0 0 16px 0;
-  font-size: clamp(28px, 4.2vw, 44px);
-  line-height: 1.12;
+  margin: 0 0 14px 0;
+  font-size: clamp(30px, 4.4vw, 46px);
+  line-height: 1.08;
   letter-spacing: 0.2px;
+  color: #f4f2ff;
 }
 
-/* meta pills row */
-.meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 24px;
-}
+/* meta “pills” row */
+.meta { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
 .metaItem {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 13px;
-  line-height: 1;
-  color: #d8d6e8;
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 13px; line-height: 1;
   padding: 8px 12px;
   border-radius: 999px;
+  color: #e3e1f1;
   background: linear-gradient(180deg, rgba(88,76,140,0.35), rgba(48,40,90,0.35));
   border: 1px solid rgba(255,255,255,0.08);
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
 }
+.metaItem::before {
+  content: "";
+  width: 8px; height: 8px;
+  border-radius: 999px;
+  background: #6e61ff;
+}
 
-/* section headers & body width */
+/* section + body width/contrast */
 .sectionTitle {
-  margin: 10px 0 10px 0;
-  font-size: 18px;
+  margin: 8px 0 10px 0;
+  font-size: 20px;
   letter-spacing: .2px;
-  color: #f2f1fb;
+  color: #ffffff;
 }
 .description {
-  max-width: 72ch; /* readable line length */
-  line-height: 1.6;
-  color: #d6d3e6;
-  opacity: 0.95;
+  max-width: 72ch;
+  line-height: 1.62;
+  color: #cecbe4;
+  opacity: .95;
 }
 
-/* skills list chips */
+/* skills chips */
 .skills {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  padding: 0;
-  margin: 10px 0 0 0;
-  list-style: none;
+  display: flex; flex-wrap: wrap; gap: 10px;
+  padding: 0; margin: 10px 0 0 0; list-style: none;
 }
 .skills li {
   font-size: 12.5px;
@@ -102,109 +104,88 @@
   border: 1px solid rgba(255,255,255,0.06);
 }
 
-/* CTA matches mock */
+/* CTA matches the mock */
 .applyBtn {
   display: inline-block;
   margin-top: 22px;
   padding: 14px 18px;
   border-radius: 14px;
-  font-weight: 700;
-  color: #ffffff;
-  background: linear-gradient(180deg, #6f63f0, #5848d3);
-  border: 1px solid rgba(255,255,255,0.12);
-  box-shadow: 0 14px 30px rgba(111, 99, 240, 0.35);
+  font-weight: 800;
+  letter-spacing: .2px;
+  color: #fff;
   text-decoration: none;
+  background: linear-gradient(180deg, #6f63f0, #5a4ad6);
+  border: 1px solid rgba(255,255,255,0.12);
+  box-shadow: 0 16px 36px rgba(111, 99, 240, 0.35);
 }
 
-/* ---------- Right chat panel (embedded, not floating) ---------- */
+/* ---------- Right embedded chat panel ---------- */
 .chatPanel {
-  padding: 16px;
-  height: 520px;                /* close to mock height */
-  display: flex;
-  flex-direction: column;
-  position: sticky;
-  top: 24px;                    /* stays in view while reading */
+  background: linear-gradient(180deg, rgba(20,16,38,0.70), rgba(24,18,38,0.62));
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 18px;
+  backdrop-filter: saturate(115%) blur(8px);
+  box-shadow: 0 18px 50px rgba(0,0,0,0.35);
+  padding: 14px;
+  height: 520px;
+  display: flex; flex-direction: column;
+  position: sticky; top: 24px;
 }
 
 .chatHeader {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 2px 12px;
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px 4px 12px;
   border-bottom: 1px solid rgba(255,255,255,0.08);
 }
-.chatTitle {
-  font-weight: 800;
-  letter-spacing: .2px;
-}
+.chatTitle { font-weight: 800; letter-spacing: .2px; }
 .chatBadge {
-  margin-left: auto;
-  font-size: 12px;
-  opacity: .7;
-  background: rgba(120, 100, 210, .25);
-  padding: 6px 10px;
-  border-radius: 999px;
+  margin-left: auto; font-size: 12px;
+  padding: 6px 10px; border-radius: 999px;
   border: 1px solid rgba(255,255,255,.1);
+  background: rgba(120,100,210,.25);
+  opacity: .9;
 }
 
 /* message area */
 .chatBox {
-  flex: 1;
-  margin-top: 12px;
-  padding: 10px;
-  overflow: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  background: rgba(14, 12, 22, 0.55);
+  flex: 1; margin-top: 12px; padding: 12px;
+  overflow: auto; display: flex; flex-direction: column; gap: 10px;
+  background: rgba(14,12,22,0.55);
   border: 1px solid rgba(255,255,255,.06);
   border-radius: 14px;
 }
-
 .msgUser {
-  align-self: flex-end;
-  background: #2a2a35;
-  padding: 10px 12px;
-  border-radius: 14px 14px 2px 14px;
-  max-width: 85%;
+  align-self: flex-end; max-width: 85%;
+  background: #2a2a35; color: #f2f1fb;
+  padding: 10px 12px; border-radius: 14px 14px 2px 14px;
   white-space: pre-wrap;
-  color: #f2f1fb;
 }
 .msgAssistant {
-  align-self: flex-start;
-  background: #171720;
-  padding: 10px 12px;
-  border-radius: 14px 14px 14px 2px;
-  max-width: 85%;
-  white-space: pre-wrap;
-  border: 1px solid rgba(255,255,255,.06);
-  color: #e7e6f2;
+  align-self: flex-start; max-width: 85%;
+  background: #171720; color: #e7e6f2;
+  padding: 10px 12px; border-radius: 14px 14px 14px 2px;
+  border: 1px solid rgba(255,255,255,.06); white-space: pre-wrap;
 }
 
-/* input row */
-.chatInputRow {
+/* pill-style input group (dark rounded container + button) */
+.inputGroup {
   margin-top: 12px;
-  display: flex;
-  gap: 8px;
+  background: rgba(20,16,38,0.85);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+  padding: 8px;
+  display: flex; gap: 8px; align-items: center;
 }
 .chatInput {
-  flex: 1;
-  resize: none;
-  background: #141420;
-  color: #e9e9ef;
-  border: 1px solid rgba(255,255,255,.08);
-  border-radius: 12px;
-  padding: 10px 12px;
-  outline: none;
+  flex: 1; resize: none; border: 0; outline: none;
+  background: transparent; color: #e9e9ef;
+  font-size: 14px; line-height: 1.4; padding: 6px 8px;
 }
 .chatSend {
-  all: unset;
-  cursor: pointer;
-  background: #6c5ce7;
-  color: white;
-  font-weight: 800;
-  padding: 12px 16px;
-  border-radius: 12px;
+  all: unset; cursor: pointer;
+  background: #6c5ce7; color: white;
+  font-weight: 800; letter-spacing: .2px;
+  padding: 10px 14px; border-radius: 10px;
   box-shadow: 0 8px 20px rgba(108,92,231,.35);
 }
 .chatSend:disabled { opacity: .5; cursor: not-allowed; }
