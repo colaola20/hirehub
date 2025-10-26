@@ -307,3 +307,90 @@
   .grid { grid-template-columns: 3fr 2fr !important; }
   .chatPanel { position: static; height: 460px; }
 }
+/* === Make the description use the full card width === */
+.description {
+  max-width: none !important;   /* remove the 72ch limiter */
+  width: 100%;
+}
+
+/* If you added a scrollbar gutter earlier, neutralize it
+   so there’s no extra inset eating into the width */
+.card { --sb-gutter: 0; }
+
+.card > :not(.cardBody) {
+  padding-right: 0 !important;
+}
+
+.cardBody {
+  padding-right: 0 !important;
+  scrollbar-gutter: auto;  /* no reserved gutter; use full width */
+}
+
+/* (Optional) if you want a tad more readable lines without hard caps:
+.description { max-width: 100%; line-height: 1.6; } */
+
+
+
+/* Remove below styles if they conflict with the above changes */
+
+/* --- Keep description text perfectly aligned with the card/shell --- */
+/* Reserve space for the scrollbar so widths never change */
+.cardBody {
+  /* this makes the layout keep a gutter where the scrollbar appears */
+  scrollbar-gutter: stable both-edges;
+  /* remove the tiny extra you had so left edges are identical */
+  padding-right: 0;
+}
+
+/* Give the header/top area the same right inset as the gutter
+   so header and body text columns line up exactly */
+.card {
+  --sb-gutter: 14px;        /* typical Windows scrollbar width; adjust if needed */
+}
+
+/* Everything at the top of the card (title, pills, etc.) gets the same right inset */
+.card > :not(.cardBody) {
+  padding-right: var(--sb-gutter);
+}
+
+/* The scrolling body gets the matching inset on the inside of the scroller */
+.cardBody {
+  padding-right: var(--sb-gutter);
+}
+
+/* Optional: narrower scrollbar so alignment is tighter on Win */
+.cardBody::-webkit-scrollbar { width: 12px; }
+/* === Make the left job card fixed (sticky) and scroll its content === */
+.card {
+  position: sticky;
+  top: 24px;              /* same offset as the chat */
+  height: 80vh;           /* fills most of the viewport */
+  display: flex;
+  flex-direction: column; /* so the body can flex+scroll */
+  overflow: hidden;       /* keep borders clean */
+}
+
+/* scrollable area inside the card */
+.cardBody {
+  flex: 1;
+  min-height: 0;          /* critical for flex children to shrink */
+  overflow: auto;
+  padding-right: 4px;     /* tiny gutter so the scrollbar doesn’t overlap text */
+  overscroll-behavior: contain;
+}
+
+/* optional: keep the title and meta “pills” always visible at the top */
+.title { margin-bottom: 12px; }
+.meta  { margin-bottom: 16px; }
+
+/* nice sticky subheader for Description (optional) */
+.sectionTitle {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: linear-gradient(180deg, rgba(20,16,38,0.85), rgba(24,18,38,0.75));
+  backdrop-filter: saturate(115%) blur(6px);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  padding-block: 8px;
+  margin: 0 0 10px 0; /* reset top margin because it's sticky */
+}

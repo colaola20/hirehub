@@ -103,36 +103,40 @@ const JobDashboard = () => {
           <div className={styles.grid}>
             {/* LEFT: content */}
             <div className={styles.card}>
-              <h1 className={styles.title}>{job.title || "Job Details"}</h1>
+  <h1 className={styles.title}>{job.title || "Job Details"}</h1>
 
-              <div className={styles.meta}>
-                <span className={styles.metaItem}>Company • {job.company || "—"}</span>
-                <span className={styles.metaItem}>Location • {job.location || "—"}</span>
-                <span className={styles.metaItem}>Product Management</span>
-              </div>
+  <div className={styles.meta}>
+    <span className={styles.metaItem}>Company • {job.company || "—"}</span>
+    <span className={styles.metaItem}>Location • {job.location || "—"}</span>
+    <span className={styles.metaItem}>Product Management</span>
+  </div>
 
-              <section>
-                <h3 className={styles.sectionTitle}>Description</h3>
-                <p className={styles.description}>
-                  {job.description || "No description provided."}
-                </p>
-              </section>
+  {/* NEW: scrollable content area */}
+  <div className={styles.cardBody}>
+    <section>
+      <h3 className={styles.sectionTitle}>Description</h3>
+      <p className={styles.description}>
+        {job.description || "No description provided."}
+      </p>
+    </section>
 
-              {Array.isArray(job.skills) && job.skills.length > 0 && (
-                <section style={{ marginTop: 18 }}>
-                  <h3 className={styles.sectionTitle}>Skills</h3>
-                  <ul className={styles.skills}>
-                    {job.skills.map((s, i) => <li key={i}>{s}</li>)}
-                  </ul>
-                </section>
-              )}
+    {Array.isArray(job.skills) && job.skills.length > 0 && (
+      <section style={{ marginTop: 18 }}>
+        <h3 className={styles.sectionTitle}>Skills</h3>
+        <ul className={styles.skills}>
+          {job.skills.map((s, i) => <li key={i}>{s}</li>)}
+        </ul>
+      </section>
+    )}
 
-              {job.apply_url && (
-                <a className={styles.applyBtn} href={job.apply_url} target="_blank" rel="noopener noreferrer">
-                  APPLY NOW
-                </a>
-              )}
-            </div>
+    {job.apply_url && (
+      <a className={styles.applyBtn} href={job.apply_url} target="_blank" rel="noopener noreferrer">
+        APPLY NOW
+      </a>
+    )}
+  </div>
+</div>
+
 
             {/* RIGHT: chat panel */}
             <Chatbot job={job} />
