@@ -31,7 +31,7 @@ const ResumeForm = () => {
             skills: '',
             company: '', role: '', roleTime: '',
             school: '', degree: '', gradYear: '',
-            projTitle: '', projDesc: '', // projLink: '',
+            projTitle: '', projDesc: '', projLink: '',
             certs: ''
         },
     })
@@ -41,27 +41,35 @@ const ResumeForm = () => {
     const personalValidation = Yup.object({
         fullname: Yup.string().required('Name is required'),
         email: Yup.string().email('Email is required').required('Email is required'),
-        phNum: Yup.string().required('Phone Number is required')
+        phNum: Yup.string().required('Phone Number is required'),
+        address: Yup.string().required('Address is required.'),
+        city: Yup.string().required('City is required.'),
+        state: Yup.string().required('State is required.'),
+        zip: Yup.string().required('Zip code is required.'),
     })
 
     const socialValidation = Yup.object({
-
+        linkedIn: Yup.string().required('LinkedIn URL is required.'),
+        github: Yup.string().required('GitHub URL is required.')
     })
 
     const miscValidation = Yup.object({
-
+        skills: Yup.string().required('Skills are required.'),
+        languages: Yup.string().required('Languages is required.')
     })
 
     const jobValidation = Yup.object({
-
+        company: Yup.string().required('Company Name is required.'),
+        role: Yup.string().required('Position name is required.'),
+        roleTime: Yup.string().required('Time period is required.')
     })
 
     const schoolValidation = Yup.object({
-
+        school: Yup.string().required('School name is required'),
+        degree: Yup.string().required('Degree is required.')
     })
 
-    const projectValidation = Yup.object({
-
+    const projectValidation = Yup.object({ // none (even tho highly recommended to have at least one proj)
     })
 
     const handleInputChange = (e) => {
@@ -90,13 +98,13 @@ const ResumeForm = () => {
 
 
     /*
-        TODO -------------------------------------------- Add conditional rendering (multi step form)
-        based on whats given by signing up (?)
-        given for sure -- name, email, number, any url, languages, student check
-        given maybe -- main section, location, experience, education, projects
-        not given / not sure -- summary
+        TODO -------------------------------------------- 
+        Add + option for work experience, school and projects
+        fix heights per step and/or make smooth transition when height changes
+        get progress bar to show
+        fix buttons
 
-        move all components to a file in components folder
+        move all components to a file in components folder (maybe)
     */
 
 
@@ -326,7 +334,7 @@ const ResumeForm = () => {
             <input
                 type="url"
                 placeholder="Project Link"
-                value={formData.pLink}
+                value={formData.projLink}
                 onChange={onChange}
             />
         </div>
@@ -356,7 +364,7 @@ const ResumeForm = () => {
             <div className="form-box">
                 <h1>Resume Builder Form</h1>
 
-                {/* Make Into Progress bar later on */}
+                {/* Make Into Progress bar component later on */}
                 <div>
                     <span>Step {currentStep} of 6</span>
                     <div className="progress-bar">
