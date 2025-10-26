@@ -340,6 +340,15 @@ const ResumeForm = () => {
         </div>
     );
 
+    const ProgressIndicator = ({ currentStep }) => (
+        <div>
+            <span>Step {currentStep} of 6</span>
+            <div className="progress-bar">
+                <div style={{ width: `${(currentStep / 3) * 100}%` }}></div>
+            </div>
+        </div>
+    );
+
 
     // const mainStep = ({ formData, onChange }) => ( ------------maybe insert resume view step------------
     //     <div>
@@ -364,7 +373,8 @@ const ResumeForm = () => {
             <div className="form-box">
                 <h1>Resume Builder Form</h1>
 
-                {/* Make Into Progress bar component later on */}
+                {/* Debug Progress bar component later on */}
+                {/* <ProgressIndicator/> */}
                 <div>
                     <span>Step {currentStep} of 6</span>
                     <div className="progress-bar">
