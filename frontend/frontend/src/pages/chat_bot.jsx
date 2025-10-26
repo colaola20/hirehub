@@ -1,4 +1,4 @@
-// Chatbot.jsx
+// chat_bot.jsx
 import { useState, useRef } from "react";
 import styles from "./job_dashboard.module.css";
 
@@ -11,10 +11,15 @@ export default function Chatbot({ job }) {
   const [loading, setLoading] = useState(false);
   const boxRef = useRef(null);
 
+  // track last assistant reply + last question (for PDF)
+  const [lastAssistant, setLastAssistant] = useState("");
+  const [lastQuestion, setLastQuestion] = useState("");
+
   const send = async () => {
     const text = input.trim();
     if (!text || loading) return;
     setMessages((m) => [...m, { role: "user", content: text }]);
+    setLastQuestion(text);
     setInput("");
     setLoading(true);
     try {
@@ -25,15 +30,39 @@ export default function Chatbot({ job }) {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error || "Chat error");
-      setMessages((m) => [...m, { role: "assistant", content: data.answer || "(no reply)" }]);
-      // scroll to bottom
+      const answer = data.answer || "(no reply)";
+      setMessages((m) => [...m, { role: "assistant", content: answer }]);
+      setLastAssistant(answer);
       setTimeout(() => boxRef.current?.scrollTo({ top: boxRef.current.scrollHeight, behavior: "smooth" }), 0);
     } catch (e) {
-      setMessages((m) => [...m, { role: "assistant", content: "Sorry—something went wrong reaching the assistant." }]);
+      const err = "Sorry—something went wrong reaching the assistant.";
+      setMessages((m) => [...m, { role: "assistant", content: err }]);
+      setLastAssistant(err);
     } finally {
       setLoading(false);
     }
   };
+
+ const downloadPdf = async () => {
+  if (!lastAssistant) return;
+  const res = await fetch("/api/chat/pdf", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ content: lastAssistant, question: lastQuestion, job })
+  });
+  if (!res.ok) {
+    let msg = "Failed to export PDF";
+    try { const j = await res.json(); if (j?.error) msg = j.error; } catch { /* ignore */ }
+    alert(msg);
+    return;
+  }
+  const blob = await res.blob();
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = "assistant_reply.pdf";
+  document.body.appendChild(a); a.click(); a.remove();
+  URL.revokeObjectURL(url);
+};
 
   const onKey = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -75,6 +104,9 @@ export default function Chatbot({ job }) {
             />
             <button className={styles.chatSend} onClick={send} disabled={loading || !input.trim()}>
               Send
+            </button>
+            <button className={styles.chatExport} onClick={downloadPdf} disabled={!lastAssistant || loading}>
+              PDF
             </button>
           </div>
         </div>

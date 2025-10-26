@@ -1,6 +1,7 @@
 // job_dashboard.jsx
 import { useEffect, useRef, useState } from "react";
 import styles from "./job_dashboard.module.css";
+import Chatbot from "./chat_bot";
 
 function JobChatPanel({ job }) {
   const [messages, setMessages] = useState([
@@ -134,7 +135,7 @@ const JobDashboard = () => {
             </div>
 
             {/* RIGHT: chat panel */}
-            <JobChatPanel job={job} />
+            <Chatbot job={job} />
           </div>
         </div>
       </div>

@@ -214,3 +214,55 @@
   .grid { grid-template-columns: 1fr; }
   .chatPanel { position: static; height: 460px; }
 }
+.chatExport {
+  all: unset;
+  cursor: pointer;
+  background: #4e46c2;
+  color: #fff;
+  font-weight: 800;
+  padding: 10px 12px;
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(78,70,194,.35);
+  margin-left: 4px;
+}
+.chatExport:disabled { opacity: .5; cursor: not-allowed; }
+.chatDock {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 9999;
+}
+
+.chatToggle {
+  all: unset;
+  cursor: pointer;
+  background: #111;
+  color: #fff;
+  padding: 10px 14px;
+  border-radius: 10px;
+  box-shadow: 0 6px 20px rgba(0,0,0,.25);
+  font-weight: 600;
+}
+
+.chatCard {
+  width: min(360px, calc(100vw - 48px));
+  height: 460px;
+  background: #0f0f13;
+  color: #e9e9ef;
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 16px;
+  box-shadow: 0 12px 40px rgba(0,0,0,.35);
+  display: flex;
+  flex-direction: column;
+  margin-top: 10px;
+  overflow: hidden;
+}
+
+.chatHeader {
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+}
+.chatSub { margin-left: auto; font-size: 12px; opacity: .7; }
