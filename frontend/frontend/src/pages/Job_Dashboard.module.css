@@ -266,3 +266,38 @@
   border-bottom: 1px solid rgba(255,255,255,.08);
 }
 .chatSub { margin-left: auto; font-size: 12px; opacity: .7; }
+/* === FORCE FULL-WIDTH 60/40 LAYOUT === */
+
+/* use the whole viewport width (not min(1200px, 92vw)) */
+.shell {
+  width: 100vw;
+  max-width: none;
+  margin: 0;
+}
+
+/* hard split by viewport: left = 60vw, right = 40vw */
+.grid {
+  display: grid;                 /* keep grid in case it's overridden above */
+  grid-template-columns: 60vw 40vw;
+  gap: clamp(16px, 2vw, 24px);
+  align-items: start;
+}
+
+/* allow children to shrink within their tracks (prevents overflow) */
+.card,
+.chatPanel {
+  min-width: 0;
+}
+
+/* optional: make the chat tall on desktop */
+.chatPanel {
+  height: 80vh;                  /* tweak as you like */
+  position: sticky;
+  top: 24px;
+}
+
+/* stack on small screens */
+@media (max-width: 980px) {
+  .grid { grid-template-columns: 1fr; }
+  .chatPanel { position: static; height: 460px; }
+}
