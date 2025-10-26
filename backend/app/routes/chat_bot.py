@@ -55,6 +55,7 @@ def chat():
     return jsonify({"answer": answer})
 
 
+
 # -------- PDF export (lazy import with explicit errors) --------
 @chat_bp.post("/chat/pdf")
 def chat_pdf():
