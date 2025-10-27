@@ -95,7 +95,9 @@ def get_applied_jobs():
         print("Get Applied Jobs Error:", e)
         return jsonify({'error': 'Failed to load applied jobs', 'details': str(e)}), 500
 
-
+# this method might not be correct
+# this method might not be correct
+# this method might not be correct
 @applications_bp.route('/<int:job_id>', methods=['DELETE'])
 @jwt_required()
 def remove_application(job_id):
@@ -142,3 +144,29 @@ def check_application(job_id):
     except Exception as e:
         print("Check Application Error:", e)
         return jsonify({'error': 'Failed to check application', 'details': str(e)}), 500
+    
+
+@applications_bp.route('/<int:application_id>', methods=['PATCH'])
+@jwt_required()
+def update_application_status(application_id):
+    try:
+        user_id = int(get_jwt_identity())
+        app_entry = Application.query.filter_by(id=application_id, user_id=user_id).first()
+        if not app_entry:
+            return jsonify({'error': 'Application not found'}), 404
+
+        data = request.get_json()
+        new_status = data.get('status')
+        if new_status not in ['applied', 'interviewed', 'offer', 'rejected']:
+            return jsonify({'error': 'Invalid status value'}), 400
+
+        app_entry.status = new_status
+        db.session.commit()
+
+        return jsonify({'message': 'Status updated successfully', 'status': app_entry.status}), 200
+
+    except Exception as e:
+        db.session.rollback()
+        print("Update Status Error:", e)
+        return jsonify({'error': 'Failed to update status', 'details': str(e)}), 500
+
