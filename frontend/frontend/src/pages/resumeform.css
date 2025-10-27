@@ -4,6 +4,7 @@
     padding-right: 275px;   
     position: relative;
     width: 100%;
+    min-width: 300px;
 
 /* ------------copy and pasted from login_Page.css------------ */
     display: flex;
@@ -64,6 +65,7 @@
     padding: 20px;
     border-radius: 20px;
     max-height: 1000px;
+    min-width: 400px;
     overflow: hidden;
     transition: max-height 0.5s ease-out;
     width: 100%;
@@ -97,7 +99,6 @@
     transition: max-height 0.5s ease-out;
     width: 80%;
     border-radius: 20px;
-    min-width: 50vw;
     margin: 15px 0;
     padding-bottom: 50px;
     color: white;
