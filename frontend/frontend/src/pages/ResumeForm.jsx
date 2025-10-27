@@ -112,8 +112,8 @@ const ResumeForm = () => {
     // Currently 6 steps
 
     const PersonalStep = ({ formData, onChange }) => (  // PERSONAL INFO STEP //
-        <div>
-            <h2>Personal Info</h2>
+        <div className="resume-form">
+            <h2>Personal Information</h2>
             <p>Name</p>
             <input
                 type="text"
@@ -187,7 +187,7 @@ const ResumeForm = () => {
     const SocialStep = ({ formData, onChange }) => ( // SOCIAL INFO STEP //
 
         <div>
-            <h2>Social Information</h2>
+            <h2>Social Links</h2>
 
             <p>LinkedIn</p>
             <input
@@ -217,7 +217,7 @@ const ResumeForm = () => {
     const MiscStep = ({ formData, onChange }) => ( // MISC INFO STEP //
         <div>
 
-            <h2>Misc Information</h2>
+            <h2>Miscellaneous / Other Information</h2>
 
             <p>Skills</p>
             <input
@@ -240,7 +240,6 @@ const ResumeForm = () => {
                 value={formData.languages}
                 onChange={onChange}
             />
-
             <p>Interests and Hobbies</p>
             <input
                 type="text"
@@ -251,33 +250,43 @@ const ResumeForm = () => {
         </div>
     );
 
+
+    const JobComponent = ({ formData, onChange }) => {
+        return (
+            <div className="job-form">
+                <input
+                    type="text"
+                    placeholder="Company Name"
+                    value={formData.company}
+                    onChange={onChange}
+                    required
+                />
+                {/* <p>Position</p> */}
+                <input
+                    type="text"
+                    placeholder="Position Title"
+                    value={formData.role}
+                    onChange={onChange}
+                    required
+                />
+                {/* <p>Employement Period</p> */}
+                <input
+                    type="text"
+                    placeholder="Time Period (e.g., June 2020 - August 2021)" // change this to a date picker later
+                    value={formData.roleTime}
+                    onChange={onChange}
+                    required
+                />
+            </div>
+        )
+    };
     const JobStep = ({ formData, onChange }) => ( // JOB HISTORY INFO STEP //
         <div>
-            <h2>Job History</h2>
-            <p>Company</p>
-            <input
-                type="text"
-                placeholder="Company Name"
-                value={formData.company}
-                onChange={onChange}
-                required
-            />
-            <p>Position</p>
-            <input
-                type="text"
-                placeholder="Position Title"
-                value={formData.role}
-                onChange={onChange}
-                required
-            />
-            <p>Employement Period</p>
-            <input
-                type="text"
-                placeholder="Time Period (e.g., June 2020 - August 2021)" // change this to a date picker later
-                value={formData.roleTime}
-                onChange={onChange}
-                required
-            />
+            <h2>Relevant Experience</h2>
+            <h3>Add up to three</h3>
+            <br />
+            <JobComponent formData={formData} onChange={onChange} />
+            <button className="btn">+</button>
         </div>
     );
 
@@ -340,6 +349,10 @@ const ResumeForm = () => {
         </div>
     );
 
+    const ViewStep = () => {
+
+    }
+
     const ProgressIndicator = ({ currentStep }) => (
         <div>
             <span>Step {currentStep} of 6</span>
@@ -387,7 +400,7 @@ const ResumeForm = () => {
                     {currentStep < 6 && <button onClick={nextStep}>Next</button>}
                 </div>
 
-                <div className="resume-form">
+                <div className="resume-form-container">
                     {currentStep === 1 && <PersonalStep formData={formData.personalInfoStep} onChange={handleInputChange} />}
                     {currentStep === 2 && <SocialStep formData={formData.personalInfoStep} onChange={handleInputChange} />}
                     {currentStep === 3 && <MiscStep formData={formData.personalInfoStep} onChange={handleInputChange} />}
