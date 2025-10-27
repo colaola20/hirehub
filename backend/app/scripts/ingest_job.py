@@ -47,7 +47,6 @@ def fetch_full_description_from_page(url:str, timeout: int = SCRAPE_TIMEOUT) -> 
             url = "https://" + url.lstrip("/")
         
         r = requests.get(url, headers = HEADERS, timeout=timeout, allow_redirects=True)
-        print(r)
         if r.status_code != 200 or not r.text:
             return None
         
@@ -56,50 +55,30 @@ def fetch_full_description_from_page(url:str, timeout: int = SCRAPE_TIMEOUT) -> 
 
         # spesific for adzuna part !!!    
         selectors = [
-            "section.app-body", "section.adp-body"
+            "section.adp-body"
         ]
         for sel in selectors:
             node = soup.select_one(sel)
             full_desc = []
             if node:
                 txt = node.get_text(separator="\n").strip()
-                # collapse whitespace and normalize
+                txt = re.sub(r"\r\n?", "\n", txt)
+                txt = re.sub(r"[ \t]+\n", "\n", txt)
                 txt = re.sub(r"\n\s*\n+", "\n\n", txt)
-                full_desc.append(txt)
-                print(txt)
-                # if len(txt) > 80:
-                #     return txt
-        print(full_desc)
-        if full_desc:
-            return " ".join(full_desc)
-        
-        #---------------
-        
-        # meta = soup.find("meta", property="og:description") or soup.find("meta", attrs = {"name" : "description"})
-        # if meta and meta.get("content"):
-        #     text = meta.get("content").strip()
-        #     if len(text) > 40:
-        #         print(text)
-        #         return text
+                txt = _html.unescape(txt).strip()
+                if len(txt) >= 80:
+                    logger.debug("fetch_full_description_from_page: got text from selector %s (len=%s)", sel, len(txt))
+                    return txt
+        # Fallback: try to return long text block on page
+        all_text = soup.get_text(separator="\n")
+        all_text = re.sub(r"\n\s*\n+", "\n\n", _html.unescape(all_text)).strip()
+        if len(all_text) >= 200:
+            return all_text
             
-                
-        # candidates = []
-        # for tag in soup.find_all(["section","article","div"]):
-        #     t = tag.get_text(separator = " ", strip=True)
-        #     if len(t) > 40:
-        #         candidates.append(t)
-        # if candidates:
-        #     best = max(candidates, key=len)
-        #     return best.strip()
-        
-        # paras = [p.get_text(" ", strip=True) for p in soup.find_all("p")]
-        # if paras:
-        #     best = max(paras, key=len)
-        #     if len(best) > 40:
-        #         return best.strip()
-            
+    except RequestException as e:
+        logger.warning("RequestException while fetching page %s: %s", url, e)
     except Exception:
-        return None
+        logger.exception("Unexpected error in fetch_full_description_from_page for %s", url)
     finally:
         time.sleep(SCRAP_SLEEP)
     return None
@@ -115,15 +94,25 @@ def is_valid_url(u: str) -> bool:
     
 def check_url_alive(u: str) -> bool:
     # return true if url resolves with status < 400 (HEAD or fallback GET)
+    if not u:
+        return False
     try:
         r = requests.head(u, headers=HEADERS, allow_redirects=True, timeout=TIMEOUT)
         status = r.status_code
 
-        if status >= 400:
-            r = requests.get(u, headers=HEADERS, allow_redirects=True, timeout=TIMEOUT)
+        if status >= 400 or status == 405:
+            r = requests.get(u, headers=HEADERS, allow_redirects=True, timeout=TIMEOUT, stream=True)
             status = r.status_code
+            # ensure we close the stream quickly
+            try:
+                r.close()
+            except Exception:
+                pass
         return status < 400
+    except RequestException:
+        return False
     except Exception:
+        logger.exception("check_url_alive unexpected error for %s", u)
         return False
 
 def _is_remote_flag(value):
@@ -158,10 +147,14 @@ def safe_fetch_with_retries(fetch_fn, *args, max_retries=3, backoff=2, **kwargs)
         try:
             return fetch_fn(*args, **kwargs)
         except RequestException as e:
-            logger.warning("Fetch attemp %s failed: %s", attempt, e)
+            logger.warning("Fetch attemp %s failed (RequestException): %s", attempt, e)
             if attempt == max_retries:
                 raise
             time.sleep(backoff**attempt)
+        except Exception as e:
+            # Non-request exceptions likely indicate a bug — re-raise after logging.
+            logger.exception("Non-request exception during fetch attempt %s: %s", attempt, e)
+            raise
 
 def clean_html_to_text(html_blob: str, min_length: int = 40) -> str | None:
     if not html_blob:
@@ -212,17 +205,21 @@ def sanitize_html_keep_basic(html_blob: str) -> str | None:
 def normalize_findwork_job(api_job):
     url = api_job.get("url")
     if not url:
-        print("There is no url")
+        logger.debug("normalize_findwork_job: no url")
         return None
     
     if not check_url_alive(url):
-        print("Url is invalid")
+        logger.debug("normalize_findwork_job: url not alive: %s", url)
         return None
 
-    description = api_job.get("text")
-    description = clean_html_to_text(description) or description
-    description = sanitize_html_keep_basic(description)
-    print(description)
+    raw_html = api_job.get("text")
+    description_text = clean_html_to_text(raw_html, min_length=40) if raw_html else None
+
+    if not description_text:
+        # try sanitize and then extract text
+        san = sanitize_html_keep_basic(raw_html) if raw_html else None
+        description_text = clean_html_to_text(san, min_length=40) if san else None
+    #print(description_text)
 
 
     remote_val = api_job.get("remote")
@@ -235,12 +232,12 @@ def normalize_findwork_job(api_job):
 
 
     return {
-        "api_id": api_job["id"],
+        "api_id": api_job.get("id"),
         "source": "findwork",
         "title": api_job.get("role"),
         "company": api_job.get("company_name"),
         "location": location_value,
-        "description": description,
+        "description": description_text,
         "url": url,
         "date_posted": parse_date_to_dt(api_job.get("date_posted")),
         "fetched_at": datetime.now(timezone.utc),
@@ -281,30 +278,30 @@ def _canonicalize_employment_type(val):
 def normalize_adzuna_job(api_job):
     url = api_job.get("redirect_url")
     if not url:
-        print("There is no url")
+        logger.debug("normalize_adzuna_job: no redirect_url")
         return None
     
     if not check_url_alive(url):
-        print("Url is invalid")
+        logger.debug("normalize_adzuna_job: url not alive: %s", url)
         return None
     
     desc = api_job.get("description")
-    print( _is_probably_truncated(desc))
-    if _is_probably_truncated(desc):
-        page_url = api_job.get("redirect_url")
-        full = fetch_full_description_from_page(page_url)
-        print("Full description:", full)
-        if full:
-            start_marker = "Apply for this job"
-            start_idx = full.find(start_marker)
-            if start_idx != -1:
-                start_idx += len(start_marker)
-                end_idx = full.find("Apply for this job", start_idx)
-                if end_idx == -1:
-                    end_idx = len(full)
-                description = full[start_idx:end_idx].strip()
+    full = None
 
-    description = max(full, desc)
+    if _is_probably_truncated(desc):
+        try:
+            page_url = api_job.get("redirect_url")
+            full = fetch_full_description_from_page(page_url)
+        except Exception:
+            logger.exception("Failed to fetch full page for adzuna id=%s", api_job.get("id"))
+
+        desc_text = None
+
+    if full and isinstance(full, str) and len(full) >= (len(desc or "") + 50):
+        desc_text = full
+    else:
+        # try to clean html desc first
+        desc_text = clean_html_to_text(desc) or clean_html_to_text(sanitize_html_keep_basic(desc or "")) or desc
 
     location = api_job.get("location")
     if isinstance(location, dict):
@@ -327,9 +324,9 @@ def normalize_adzuna_job(api_job):
         "api_id": str(api_job.get("id")),
         "source": "adzuna",
         "title": api_job.get("title"),
-        "company": api_job.get("company", {}).get("display_name"),
+        "company": (api_job.get("company", {}).get("display_name")),
         "location": location_name,
-        "description": description,
+        "description": desc_text,
         "url": url,
         "date_posted": parse_date_to_dt(api_job.get("created")),
         "fetched_at": datetime.now(timezone.utc),
@@ -338,7 +335,10 @@ def normalize_adzuna_job(api_job):
     }
 
 def upsert_job(session, job_data):
-    stmt = insert(Job).values(**job_data)
+    allowed = {c.key for c in Job.__table__.columns}
+    data = {k: v for k, v in job_data.items() if k in allowed}
+
+    stmt = insert(Job).values(**data)
     update_cols = {
         c.key: stmt.excluded[c.key] 
         for c in Job.__table__.columns
@@ -352,6 +352,7 @@ def upsert_job(session, job_data):
 
 def ingest_source_with_upsert(fetch_fn, normalize_fn, *, page_arg_name="page", start_page=1):
     page=start_page
+    session = db.session
     while True:
         try:
             result = safe_fetch_with_retries(fetch_fn, page=page)
@@ -366,23 +367,28 @@ def ingest_source_with_upsert(fetch_fn, normalize_fn, *, page_arg_name="page", s
             nxt = None
 
         if not items:
+            logger.info("No more items for %s at page %s", normalize_fn.__name__, page)
             break
 
-        with db.session.begin():
+        with session.begin():
             for api_job in items:
                 try:
-                    with db.session.begin_nested(): #Savepoint
-                        job_data = normalize_fn(api_job)
-                        if not job_data:
-                            continue
-                        # print("Our data")
-                        # print(job_data)
-                        # print("API data")
-                        # print(api_job)
-                        upsert_job(db.session, job_data)
+                    job_data = normalize_fn(api_job)
+                    if not job_data:
+                        continue
+                    print("Our data")
+                    print(job_data)
+                    # print("API data")
+                    # print(api_job)
+                    logger.debug("Upserting job %s from %s", api_job.get("id") or api_job.get("title"), normalize_fn.__name__)
+                    try:
+                        with session.begin_nested():
+                            upsert_job(session, job_data)
+                    except Exception:
+                        logger.exception("Failed upserting job %s from %s", api_job.get("id") or api_job.get("title"), normalize_fn.__name__)
+                        # nested transaction rolls back to savepoint; continue to next job
                 except Exception:
-                    logger.exception("Failed upserting job %s from %s", api_job.get("id") or api_job.get("title"), normalize_fn.__name__)
-                    # nested transaction rolls back to savepoint; continue to next job
+                    logger.exception("Rollback failed after batch commit error")
         if not nxt: break
         page +=1
 

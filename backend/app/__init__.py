@@ -12,9 +12,13 @@ from app.routes.home import home_bp
 from app.routes.users import users_bp
 from app.routes.jobs import jobs_bp
 from app.routes.favorites import favorites_bp
+from app.routes.skills import skills_bp
 from app.routes.applications import applications_bp
 from app.routes.skills import skills_bp
 from app.routes.profile import profile_bp
+from app.routes.documents import documents_bp
+
+
 from flask_cors import CORS
 from .config import Config
 
@@ -22,6 +26,8 @@ from .config import Config
 from app.models.user import User
 from app.models.job import Job
 from app.models.application import Application
+from app.models.profile import Profile
+from app.models.skill import Skill
 from app.models.profile import Profile
 from app.models.skill import Skill
 
@@ -77,6 +83,7 @@ def create_app():
     app.register_blueprint(google_bp)
     app.register_blueprint(linkedin_bp)
     app.register_blueprint(applications_bp)
+    app.register_blueprint(documents_bp)
     
 
     return app
