@@ -49,6 +49,8 @@ body, .container {
   display: flex;
   flex-direction: column;
   min-height: 0;;
+
+
 }
 
 /* gradient (like .angle2-root::before) */
@@ -91,6 +93,7 @@ body, .container {
   flex-direction: column;
   width: 100%;
   box-sizing: border-box;
+  
 }
 
 /* 3) Columns — keep widths but ensure content reads well on the glass */
@@ -123,12 +126,15 @@ body, .container {
 .dashboard-container .main-content {
   background: rgba(255,255,255,0.02);
   border-radius: 12px;
-  padding: 20px;
+  /* padding: 20px; */
   width: 100%;
   min-height: calc(100vh - var(--nav-h) - 120px);
   box-shadow: 0 8px 30px rgba(2,6,23,0.45);
   box-sizing: border-box;
-  display: block;
+  display: flex;
+  align-items: center;
+  
+  /* justify-content: center; */
 }
 
 @media (max-width: 900px) {

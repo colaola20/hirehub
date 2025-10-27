@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import JobCard from "../components/JobCard";
 import styles from "./AppliedJobs.module.css";
 
+
 const AppliedJobs = () => {
   const [appliedJobs, setAppliedJobs] = useState([]);
   const [loading, setLoading] = useState(true);
