@@ -99,7 +99,7 @@ const ResumeForm = () => {
 
     /*
         TODO -------------------------------------------- 
-        Add + option for work experience, school and projects
+        Add + option for work experience, school and projects (just need to add functionality)
         fix heights per step and/or make smooth transition when height changes
         get progress bar to show
 
@@ -415,10 +415,7 @@ const ResumeForm = () => {
                     </div>
                 </div>
 
-                <div className="prog-btn">
-                    {currentStep > 1 ? (<button className="prog-btn-btn" onClick={prevStep}>Previous</button>) : (<span className="placeholder"></span>)}
-                    {currentStep < 6 ? (<button className="prog-btn-btn" onClick={nextStep}>Next</button>) : (<span className="placeholder"></span>)}
-                </div>
+                
 
                 <div className="resume-form-container">
                     {currentStep === 1 && <PersonalStep formData={formData.personalInfoStep} onChange={handleInputChange} />}
