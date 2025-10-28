@@ -12,7 +12,13 @@ from app.routes.home import home_bp
 from app.routes.users import users_bp
 from app.routes.jobs import jobs_bp
 from app.routes.favorites import favorites_bp
+from app.routes.skills import skills_bp
 from app.routes.applications import applications_bp
+from app.routes.skills import skills_bp
+from app.routes.profile import profile_bp
+from app.routes.documents import documents_bp
+
+
 from flask_cors import CORS
 from .config import Config
 
@@ -20,7 +26,11 @@ from .config import Config
 from app.models.user import User
 from app.models.job import Job
 from app.models.application import Application
-from app.routes.chat_bot import chat_bp
+from app.models.profile import Profile
+from app.models.skill import Skill
+from app.models.profile import Profile
+from app.models.skill import Skill
+
 load_dotenv()
 
 jwt = JWTManager()
@@ -33,8 +43,6 @@ def create_app():
     app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['JWT_SECRET_KEY'] = os.environ.get('JWT_SECRET_KEY') or 'jwt-secret-string'
-
-    
 
     # Allow requests from your frontend
     CORS(app, origins=["http://localhost:5173"])
@@ -69,11 +77,13 @@ def create_app():
     app.register_blueprint(users_bp)
     app.register_blueprint(jobs_bp)
     app.register_blueprint(favorites_bp)
+    app.register_blueprint(skills_bp)
+    app.register_blueprint(profile_bp)
     app.register_blueprint(github_bp)
     app.register_blueprint(google_bp)
     app.register_blueprint(linkedin_bp)
     app.register_blueprint(applications_bp)
-    app.register_blueprint(chat_bp, url_prefix="/api")
+    app.register_blueprint(documents_bp)
     
 
     return app
