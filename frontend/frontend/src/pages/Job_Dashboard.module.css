@@ -87,30 +87,3 @@
   padding: 6px 8px;
   vertical-align: top;
 }
-/* === Make floating chat 40% of viewport width & taller === */
-.chatCard {
-  width: 35vw !important;        /* 40% of screen */
-  max-width: 40vw !important;    /* prevent clamping to 360px */
-  height: 92vh !important;       /* much taller */
-}
-
-/* Let message bubbles use more horizontal space inside the larger card */
-.msgUser,
-.msgAssistant {
-  max-width: 100% !important;    /* was 85% */
-}
-
-/* Ensure the scroll area can grow properly with the taller card */
-.chatBox {
-  flex: 1;
-  min-height: 0;                 /* critical for flex scrolling */
-}
-
-/* Keep it usable on small screens */
-@media (max-width: 980px) {
-  .chatCard {
-    width: min(95vw, 560px) !important;
-    max-width: min(95vw, 560px) !important;
-    height: 70vh !important;
-  }
-}
