@@ -8,3 +8,23 @@ __pycache__/
 **/__pycache__/
 *.py[cod]
 *.pyo
+*.pyd
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
+
+# database / logs
+*.sqlite3
+*.log
+
+Lib/
+Scripts/
+backend-env/
+venv/
+env/
+.env
+__pycache__/
+*.pyc
+*.log

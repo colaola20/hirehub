@@ -39,6 +39,21 @@ const JobDetailsModal = ({ job, onClose }) => {
         >
           Apply Now
         </button>
+        
+        <button
+        className={styles.applyBtn}
+        onClick={() => {
+          try {
+            localStorage.setItem("job_dashboard_payload", JSON.stringify(job));
+            window.open("/job_dashboard", "_blank", "noopener");
+          } catch (e) {
+            console.warn("Could not open job dashboard:", e);
+          }
+        }}
+      >
+        Open In New Tab
+      </button>
+
       </div>
     </div>
 
