@@ -1,23 +1,28 @@
 .container{
-    padding: 200px;
+    padding: 150px;
     padding-left: 275px;
     padding-right: 275px;   
     position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  min-width: 100vw;                 /* was 100vh */
-  background: none;                  /* gradient is on ::before */
-  overflow: hidden;
+    width: 100%;
+
+/* ------------copy and pasted from login_Page.css------------ */
+    display: flex;
+    justify-content: center;
+    align-items: center;          /* was 100vh */
+    background: none;                  /* gradient is on ::before */
+    overflow: hidden;
 }
 
+/* ----------------------------------------------------------- */
+
+/* ------------copy and pasted from login_Page.css------------ */
+
 .container::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: -2;
-  background:
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    background:
     /* lighter global veil */
     linear-gradient(0deg, rgba(0,0,0,0.28), rgba(0,0,0,0.28)),
 
@@ -44,19 +49,30 @@
 
     /* brighter base gradient */
     linear-gradient(90deg, #7fa0ee 0%, #4a2a86 100%);
-  background-attachment: fixed;
+    background-attachment: fixed;
 }
 
+/* ----------------------------------------------------------- */
+
+
 .form-box{
-    background-color: #fff;
+    background-color: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(10px);
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 20px;
-    border-radius: 8px;
+    border-radius: 20px;
+    max-height: 1000px;
+    overflow: hidden;
+    transition: max-height 0.5s ease-out;
     width: 100%;
-    box-shadow: 0px 8px 24px rgba(0,0,0,0.1);
-    color: black;
+    box-shadow: 0px 8px 24px rgba(0,0,0,0.3);
+    color: white;
+}
+
+.form-box.expanded{
+    max-height: 10000px;
 }
 
 .form-box h2{
@@ -64,36 +80,45 @@
     font-weight: 700;
 }
 
-.personal-info, .social-info, .misc-section, .main-sections{
-    background: linear-gradient(to left, #b0d3f5, #ae89ff); /* prob change this color at some point*/
+.resume-form{
+    /* same color and blur styling as navbar */
+    background: rgba(20, 15, 40, 0.65);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(10px);
+    box-shadow: 0px 8px 24px rgba(0,0,0,0.15);
+
     padding: 15px;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 10px;
+    max-height: 750px;
+    overflow: hidden;
+    transition: max-height 0.5s ease-out;
     width: 80%;
+    border-radius: 20px;
     min-width: 50vw;
-    box-sizing: border-box;
-    border-radius: 8px;
     margin: 15px 0;
-    padding-bottom: 30px;
+    padding-bottom: 50px;
+    color: white;
+    text-align: center;
 }
 
-.personal-info, .social-info, .misc-section, .main-sections, input{
+.resume-form input{
     background-color: #fff;
     border-radius: 8px;
     padding: 5px 7.5px;
     border: 1px solid #eee;
 }
 
-.personal-info input[placeholder="Summary Generation (separate keywords by commas)"]{
+.resume-form input[placeholder="Summary Generation (separate keywords by commas)"]{
     background-color: white;
     border-radius: 8px;
     padding: 30px 100px;
     border: 1px solid #eee;
 }
 
-.main-sections input[type="checkbox"]{
+.resume-form input[type="checkbox"]{
     accent-color: #562fac;
 }
 
