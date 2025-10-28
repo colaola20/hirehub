@@ -360,8 +360,8 @@ const AngleLanding = () => {
                 Product & growth. Previously led job-search tools used by 3M+ applicants.
               </p>
               <div className={styles.memberSocials}>
-                <a href="#" aria-label="Alex on LinkedIn">LinkedIn</a>
-                <a href="#" aria-label="Alex on Twitter">Twitter</a>
+                <a href="https://harisakbar03.github.io/" aria-label="Haris's Portfolio">Portfolio</a>
+                <a href="https://github.com/HarisAkbar03" aria-label="Haris's Github">Github</a>
               </div>
             </article>
 
@@ -370,7 +370,7 @@ const AngleLanding = () => {
               <img
                 className={styles.memberAvatar}
                 src="/src/assets/JPR.png"
-                alt="Samir Patel"
+                alt="Jonatan Paulino"
                 loading="lazy"
               />
               <h3 className={styles.memberName}>Jonatan Paulino</h3>
@@ -379,8 +379,8 @@ const AngleLanding = () => {
                 ML & systems. Ships ranking models and keeps the pixels fast.
               </p>
               <div className={styles.memberSocials}>
-                <a href="#" aria-label="Samir on GitHub">GitHub</a>
-                <a href="#" aria-label="Samir on LinkedIn">LinkedIn</a>
+                <a href="https://github.com/JPR420" aria-label="Jonatan GitHub">GitHub</a>
+                <a href="https://www.linkedin.com/in/jonatan-paulino-8b0269303/" aria-label="Jonatan LinkedIn">LinkedIn</a>
               </div>
             </article>
 
@@ -389,7 +389,7 @@ const AngleLanding = () => {
               <img
                 className={styles.memberAvatar}
                 src="/src/assets/OS.png"
-                alt="Maya Chen"
+                alt="Olha Sorych"
                 loading="lazy"
               />
               <h3 className={styles.memberName}>Olha Sorych</h3>
@@ -398,8 +398,8 @@ const AngleLanding = () => {
                 Design systems, accessibility, and crisp micro-interactions.
               </p>
               <div className={styles.memberSocials}>
-                <a href="#" aria-label="Maya on Dribbble">Dribbble</a>
-                <a href="#" aria-label="Maya on LinkedIn">LinkedIn</a>
+                <a href="https://github.com/colaola20" aria-label="olha Github">Github</a>
+                <a href="https://www.linkedin.com/in/olha-sorych/" aria-label="Olha LinkedIn">LinkedIn</a>
               </div>
             </article>
 
@@ -408,7 +408,7 @@ const AngleLanding = () => {
               <img
                 className={styles.memberAvatar}
                 src="/src/assets/mike.png"
-                alt="Leo Martínez"
+                alt="Mike Moradi"
                 loading="lazy"
               />
               <h3 className={styles.memberName}>Mike Moradi</h3>
@@ -417,7 +417,8 @@ const AngleLanding = () => {
                 Ex-recruiter. Turns “meh” bullets into measurable wins.
               </p>
               <div className={styles.memberSocials}>
-                <a href="#" aria-label="Leo on LinkedIn">LinkedIn</a>
+                <a href="https://github.com/PracticalEscapement" aria-label="Mike Github">Github</a>
+                <a href="https://www.linkedin.com/in/michael-moradi/" aria-label="Mike Github">LinkedIn</a>
               </div>
             </article>
 
