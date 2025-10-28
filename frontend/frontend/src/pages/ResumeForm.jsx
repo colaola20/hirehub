@@ -139,38 +139,39 @@ const ResumeForm = () => {
                 required
             />
             <p>Location</p>
-
-            <input
-                type="text"
-                placeholder="Address"
-                value={formData.address}
-                onChange={onChange}
-                required
-            />
-            {/* City */}
-            <input
-                type="text"
-                placeholder="City Name"
-                value={formData.city}
-                onChange={onChange}
-                required
-            />
-            {/* State */}
-            <input
-                type="text"
-                placeholder="State Name"
-                value={formData.state}
-                onChange={onChange}
-                required
-            />
-            {/* Zip */}
-            <input
-                type="text"
-                placeholder="Zip Code"
-                value={formData.zip}
-                onChange={onChange}
-                required
-            />
+            <div className="location-form">
+                <input
+                    type="text"
+                    placeholder="Address"
+                    value={formData.address}
+                    onChange={onChange}
+                    required
+                />
+                {/* City */}
+                <input
+                    type="text"
+                    placeholder="City Name"
+                    value={formData.city}
+                    onChange={onChange}
+                    required
+                />
+                {/* State */}
+                <input
+                    type="text"
+                    placeholder="State Name"
+                    value={formData.state}
+                    onChange={onChange}
+                    required
+                />
+                {/* Zip */}
+                <input
+                    type="text"
+                    placeholder="Zip Code"
+                    value={formData.zip}
+                    onChange={onChange}
+                    required
+                />
+            </div>
 
             <p>Summary</p>
             <input
@@ -290,35 +291,45 @@ const ResumeForm = () => {
         </div>
     );
 
+    const SchoolComponent = ({ formData, onChange }) => {
+        return (
+            <div className="school-form">
+                <input
+                    type="text"
+                    placeholder="School Name"
+                    value={formData.school}
+                    onChange={onChange}
+                    required
+                />
+                {/* <p>Degree</p> */}
+                <input
+                    type="text"
+                    placeholder="Degree"
+                    value={formData.degree}
+                    onChange={onChange}
+                    required
+                />
+                {/* <p>Graduation</p> */}
+                <input
+                    type="text"
+                    placeholder="Graduation Year (Or Estimated)"
+                    value={formData.gradYear}
+                    onChange={onChange}
+                    required
+                />
+                <div className="student-cb">
+                    <p>Are you currently a student?</p>
+                    <input type="checkbox" I Am Currently a Student />
+                </div>
+            </div>
+        )
+    };
     const SchoolStep = ({ formData, onChange }) => ( // SCHOOL HISTORY INFO STEP //
         <div>
             <h2>Education</h2>
-            <p>School</p>
-            <input
-                type="text"
-                placeholder="School Name"
-                value={formData.school}
-                onChange={onChange}
-                required
-            />
-            <p>Degree</p>
-            <input
-                type="text"
-                placeholder="Degree"
-                value={formData.degree}
-                onChange={onChange}
-                required
-            />
-            <p>Graduation</p>
-            <input
-                type="text"
-                placeholder="Graduation Year (Or Estimated)"
-                value={formData.gradYear}
-                onChange={onChange}
-                required
-            />
-            <p>Are you currently a student?</p>
-            <input type="checkbox" I Am Currently a Student />
+            <h3>Add Up to Three</h3>
+            <SchoolComponent formData={formData} onChange={onChange}/>
+            <button>+</button>
         </div>
     );
 
@@ -395,7 +406,7 @@ const ResumeForm = () => {
                     </div>
                 </div>
 
-                <div>
+                <div className="prog-btn">
                     {currentStep > 1 && <button onClick={prevStep}>Previous</button>}
                     {currentStep < 6 && <button onClick={nextStep}>Next</button>}
                 </div>
@@ -409,10 +420,10 @@ const ResumeForm = () => {
                     {currentStep === 6 && <ProjectStep formData={formData.personalInfoStep} onChange={handleInputChange} />}
                 </div>
 
-                <div>
+                <div className="prog-btn">
                     {currentStep > 1 && <button onClick={prevStep}>Previous</button>}
                     {currentStep < 6 && <button onClick={nextStep}>Next</button>}
-                    {currentStep === 6 && <button className="submit-btn">Submit</button>}
+                    {currentStep === 6 && <button className="submit-btn" onClick={nextStep}>Submit</button>}
                 </div>
             </div>
         </div>

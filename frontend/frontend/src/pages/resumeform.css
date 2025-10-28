@@ -94,9 +94,8 @@
     flex-direction: column;
     align-items: center;
     gap: 50px;
+    min-height: 100px;
     max-height: 750px;
-    overflow: hidden;
-    transition: max-height 0.5s ease-out;
     width: 80%;
     border-radius: 20px;
     margin: 15px 0;
@@ -130,7 +129,23 @@
     gap: 2px;
 }
 
+.location-form{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    padding-bottom: 3px;
+}
+
 .job-form{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 20px;
+    padding-bottom: 45px;
+}
+
+.school-form{
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -138,11 +153,24 @@
     padding-bottom: 30px;
 }
 
+/* .student-cb{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+} */
+
 .submit-btn{
     background: linear-gradient(to right, #86bbf0, #562fac);
     color: white;
     border: 1px solid black;
     margin: 10px;
+}
+
+.prog-btn{
+    display: flex;
+    flex-direction: row;
+    
 }
 
 .resume-generation{
