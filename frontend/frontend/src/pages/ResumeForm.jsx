@@ -327,8 +327,8 @@ const ResumeForm = () => {
     const SchoolStep = ({ formData, onChange }) => ( // SCHOOL HISTORY INFO STEP //
         <div>
             <h2>Education</h2>
-            <h3>Add Up to Three</h3>
-            <SchoolComponent formData={formData} onChange={onChange}/>
+            <h3>Add Up To Three</h3>
+            <SchoolComponent formData={formData} onChange={onChange} />
             <button>+</button>
         </div>
     );
@@ -407,8 +407,8 @@ const ResumeForm = () => {
                 </div>
 
                 <div className="prog-btn">
-                    {currentStep > 1 && <button onClick={prevStep}>Previous</button>}
-                    {currentStep < 6 && <button onClick={nextStep}>Next</button>}
+                    {currentStep > 1 ? (<button className="prog-btn-btn"  onClick={prevStep}>Previous</button>) : (<span className="placeholder"></span>)}
+                    {currentStep < 6 ? (<button className="prog-btn-btn" onClick={nextStep}>Next</button>) : (<span className="placeholder"></span>)}
                 </div>
 
                 <div className="resume-form-container">
@@ -421,9 +421,8 @@ const ResumeForm = () => {
                 </div>
 
                 <div className="prog-btn">
-                    {currentStep > 1 && <button onClick={prevStep}>Previous</button>}
-                    {currentStep < 6 && <button onClick={nextStep}>Next</button>}
-                    {currentStep === 6 && <button className="submit-btn" onClick={nextStep}>Submit</button>}
+                    {currentStep > 1 ? (<button className="prog-btn-btn" onClick={prevStep}>Previous</button>) : (<span className="placeholder"></span>)}
+                    {currentStep < 6 ? (<button className="prog-btn-btn" onClick={nextStep}>Next</button>) : (<button className="submit-form-btn">Submit</button>)}
                 </div>
             </div>
         </div>

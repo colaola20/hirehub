@@ -66,15 +66,9 @@
     border-radius: 20px;
     max-height: 1000px;
     min-width: 400px;
-    overflow: hidden;
-    transition: max-height 0.5s ease-out;
     width: 100%;
     box-shadow: 0px 8px 24px rgba(0,0,0,0.3);
     color: white;
-}
-
-.form-box.expanded{
-    max-height: 10000px;
 }
 
 .form-box h2{
@@ -170,8 +164,25 @@
 .prog-btn{
     display: flex;
     flex-direction: row;
-    align-items: start;
-    justify-content: end;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 1050px;
+}
+
+.prog-btn-btn{
+    background-color: #2c1950;
+}
+
+.prog-btn-btn button:hover{
+    background-color: #48288f;
+}
+
+.submit-form-btn{
+    background-color: #4db9d3;
+}
+
+.submit-form-btn:hover{
+    background-color: #00ccff;
 }
 
 .resume-generation{
