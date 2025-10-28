@@ -30,6 +30,7 @@ from app.models.profile import Profile
 from app.models.skill import Skill
 from app.models.profile import Profile
 from app.models.skill import Skill
+from app.routes.chat_bot import chat_bp
 
 load_dotenv()
 
@@ -84,6 +85,7 @@ def create_app():
     app.register_blueprint(linkedin_bp)
     app.register_blueprint(applications_bp)
     app.register_blueprint(documents_bp)
+    app.register_blueprint(chat_bp, url_prefix="/api")
     
 
     return app
