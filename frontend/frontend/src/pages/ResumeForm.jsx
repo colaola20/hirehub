@@ -102,7 +102,6 @@ const ResumeForm = () => {
         Add + option for work experience, school and projects
         fix heights per step and/or make smooth transition when height changes
         get progress bar to show
-        fix buttons
 
         move all components to a file in components folder (maybe)
     */
@@ -110,6 +109,7 @@ const ResumeForm = () => {
 
     // ---------------------------------Step Components---------------------------------
     // Currently 6 steps
+    // add 7th to view resume
 
     const PersonalStep = ({ formData, onChange }) => (  // PERSONAL INFO STEP //
         <div className="resume-form">
@@ -284,10 +284,10 @@ const ResumeForm = () => {
     const JobStep = ({ formData, onChange }) => ( // JOB HISTORY INFO STEP //
         <div>
             <h2>Relevant Experience</h2>
-            <h3>Add up to three</h3>
+            <h3>Add Up To Three</h3>
             <br />
             <JobComponent formData={formData} onChange={onChange} />
-            <button className="btn">+</button>
+            <button>+</button>
         </div>
     );
 
@@ -333,30 +333,39 @@ const ResumeForm = () => {
         </div>
     );
 
+    const ProjectComponent = ({ formData, onChange }) => {
+        return (
+            <div className="project-form">
+                
+                <input
+                    type="text"
+                    placeholder="Project Title"
+                    value={formData.projTitle}
+                    onChange={onChange}
+                />
+                
+                <input
+                    type="text"
+                    placeholder="Project Description"
+                    value={formData.projDesc}
+                    onChange={onChange}
+                />
+                
+                <input
+                    type="url"
+                    placeholder="Project Link"
+                    value={formData.projLink}
+                    onChange={onChange}
+                />
+            </div >
+        )
+    };
     const ProjectStep = ({ formData, onChange }) => ( // PROJECT INFO STEP //
         <div>
             <h2>Projects</h2>
-            <p>Title</p>
-            <input
-                type="text"
-                placeholder="Project Title"
-                value={formData.projTitle}
-                onChange={onChange}
-            />
-            <p>Description</p>
-            <input
-                type="text"
-                placeholder="Project Description"
-                value={formData.projDesc}
-                onChange={onChange}
-            />
-            <p>Link (if deployed)</p>
-            <input
-                type="url"
-                placeholder="Project Link"
-                value={formData.projLink}
-                onChange={onChange}
-            />
+            <h3>Add Up To Three</h3>
+            <ProjectComponent formData={formData} onChange={onChange}/>
+            <button>+</button>
         </div>
     );
 
@@ -407,7 +416,7 @@ const ResumeForm = () => {
                 </div>
 
                 <div className="prog-btn">
-                    {currentStep > 1 ? (<button className="prog-btn-btn"  onClick={prevStep}>Previous</button>) : (<span className="placeholder"></span>)}
+                    {currentStep > 1 ? (<button className="prog-btn-btn" onClick={prevStep}>Previous</button>) : (<span className="placeholder"></span>)}
                     {currentStep < 6 ? (<button className="prog-btn-btn" onClick={nextStep}>Next</button>) : (<span className="placeholder"></span>)}
                 </div>
 
@@ -422,7 +431,7 @@ const ResumeForm = () => {
 
                 <div className="prog-btn">
                     {currentStep > 1 ? (<button className="prog-btn-btn" onClick={prevStep}>Previous</button>) : (<span className="placeholder"></span>)}
-                    {currentStep < 6 ? (<button className="prog-btn-btn" onClick={nextStep}>Next</button>) : (<button className="submit-form-btn">Submit</button>)}
+                    {currentStep < 6 ? (<button className="prog-btn-btn" onClick={nextStep}>Next</button>) : (<button className="submit-form-btn">Generate</button>)}
                 </div>
             </div>
         </div>

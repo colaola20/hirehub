@@ -136,7 +136,8 @@
     flex-direction: row;
     align-items: center;
     gap: 20px;
-    padding-bottom: 45px;
+    height: 110px;
+    padding-bottom: 40px;
 }
 
 .school-form{
@@ -144,7 +145,18 @@
     flex-direction: row;
     align-items: center;
     gap: 20px;
+    height: 110px;
     padding-bottom: 30px;
+}
+
+.project-form{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 20px;
+    height: 110px;;
+    padding-top: 25px;
+    padding-bottom: 40px;
 }
 
 /* .student-cb{
@@ -195,7 +207,7 @@
 }
 
 @media (max-width: 1450px) {
-    .school-form, .job-form{
+    .school-form, .job-form, .project-form{
         display: flex;
         flex-direction: column;
         align-items: center;
