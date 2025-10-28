@@ -1,9 +1,398 @@
 /* job_dashboard.module.css */
+
+/* ---------- Page background ---------- */
 .wrapper {
-  position: relative;               /* keep stacking context sane */
-  min-height: 100vh;                /* full-page coverage */
-  padding: clamp(56px, 10vh, 100px) 0;
-  background: linear-gradient(180deg, #171428, #24183a); /* your dark bg */
+  position: relative;
+  min-height: 100vh;
+  padding: clamp(48px, 6vh, 80px) 0;
+  background:
+    radial-gradient(1200px 600px at 10% 0%, rgba(140, 80, 255, 0.10), transparent 60%),
+    radial-gradient(1000px 600px at 90% 0%, rgba(255, 80, 180, 0.08), transparent 60%),
+    linear-gradient(180deg, #171428 0%, #24183a 100%);
+  color: #e9e9ef;
+  overflow-x: hidden;
+}
+
+/* centered shell */
+.shell {
+  width: min(1200px, 92vw);      /* center + clamp */
+  max-width: 100%;               /* never exceed viewport */
+  margin-inline: auto;
+  padding-inline: clamp(16px, 2.5vw, 24px); /* breathing room without overflow */
+  box-sizing: border-box;        /* padding stays inside the width */
+}
+/* two-column layout like the mock: content left, chat right */
+.grid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 3fr 2fr;   /* ~60% / 40% without using vw */
+  gap: clamp(16px, 2.5vw, 32px);
+  align-items: start;
+}
+
+/* glass cards */
+.card,
+.chatPanel {
+  position: relative;
+  background: linear-gradient(180deg, rgba(20,16,38,0.75), rgba(24,18,38,0.65));
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.35);
+  border-radius: 22px;
+  backdrop-filter: saturate(115%) blur(10px);
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+/* left content card spacing */
+.card {
+  padding: clamp(20px, 3vw, 32px);
+}
+
+/* title like the mock */
+.title {
+  margin: 0 0 16px 0;
+  font-size: clamp(28px, 4.2vw, 44px);
+  line-height: 1.12;
+  letter-spacing: 0.2px;
+}
+
+/* meta pills row */
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+.metaItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  line-height: 1;
+  color: #d8d6e8;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(88,76,140,0.35), rgba(48,40,90,0.35));
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+}
+
+/* section headers & body width */
+.sectionTitle {
+  margin: 10px 0 10px 0;
+  font-size: 18px;
+  letter-spacing: .2px;
+  color: #f2f1fb;
+}
+.description {
+  max-width: 72ch; /* readable line length */
+  line-height: 1.6;
+  color: #d6d3e6;
+  opacity: 0.95;
+}
+
+/* skills list chips */
+.skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 0;
+  margin: 10px 0 0 0;
+  list-style: none;
+}
+.skills li {
+  font-size: 12.5px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: rgba(40,34,70,0.65);
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+/* CTA matches mock */
+.applyBtn {
+  display: inline-block;
+  margin-top: 22px;
+  padding: 14px 18px;
+  border-radius: 14px;
+  font-weight: 700;
+  color: #ffffff;
+  background: linear-gradient(180deg, #6f63f0, #5848d3);
+  border: 1px solid rgba(255,255,255,0.12);
+  box-shadow: 0 14px 30px rgba(111, 99, 240, 0.35);
+  text-decoration: none;
+}
+
+/* ---------- Right chat panel (embedded, not floating) ---------- */
+.chatPanel {
+  padding: 16px;
+  height: 520px;                /* close to mock height */
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 24px;                    /* stays in view while reading */
+}
+
+.chatHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 2px 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.chatTitle {
+  font-weight: 800;
+  letter-spacing: .2px;
+}
+.chatBadge {
+  margin-left: auto;
+  font-size: 12px;
+  opacity: .7;
+  background: rgba(120, 100, 210, .25);
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.1);
+}
+
+/* message area */
+.chatBox {
+  flex: 1;
+  margin-top: 12px;
+  padding: 10px;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: rgba(14, 12, 22, 0.55);
+  border: 1px solid rgba(255,255,255,.06);
+  border-radius: 14px;
+}
+
+.msgUser {
+  align-self: flex-end;
+  background: #2a2a35;
+  padding: 10px 12px;
+  border-radius: 14px 14px 2px 14px;
+  max-width: 85%;
+  white-space: pre-wrap;
+  color: #f2f1fb;
+}
+.msgAssistant {
+  align-self: flex-start;
+  background: #171720;
+  padding: 10px 12px;
+  border-radius: 14px 14px 14px 2px;
+  max-width: 85%;
+  white-space: pre-wrap;
+  border: 1px solid rgba(255,255,255,.06);
+  color: #e7e6f2;
+}
+
+/* input row */
+.chatInputRow {
+  margin-top: 12px;
+  display: flex;
+  gap: 8px;
+}
+.chatInput {
+  flex: 1;
+  resize: none;
+  background: #141420;
+  color: #e9e9ef;
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 12px;
+  padding: 10px 12px;
+  outline: none;
+}
+.chatSend {
+  all: unset;
+  cursor: pointer;
+  background: #6c5ce7;
+  color: white;
+  font-weight: 800;
+  padding: 12px 16px;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(108,92,231,.35);
+}
+.chatSend:disabled { opacity: .5; cursor: not-allowed; }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 980px) {
+  .grid { grid-template-columns: 1fr; }
+  .chatPanel { position: static; height: 460px; }
+}
+.chatExport {
+  all: unset;
+  cursor: pointer;
+  background: #4e46c2;
+  color: #fff;
+  font-weight: 800;
+  padding: 10px 12px;
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(78,70,194,.35);
+  margin-left: 4px;
+}
+.chatExport:disabled { opacity: .5; cursor: not-allowed; }
+.chatDock {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 9999;
+}
+
+.chatToggle {
+  all: unset;
+  cursor: pointer;
+  background: #111;
+  color: #fff;
+  padding: 10px 14px;
+  border-radius: 10px;
+  box-shadow: 0 6px 20px rgba(0,0,0,.25);
+  font-weight: 600;
+}
+
+.chatCard {
+  width: min(360px, calc(100vw - 48px));
+  height: 460px;
+  background: #0f0f13;
+  color: #e9e9ef;
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 16px;
+  box-shadow: 0 12px 40px rgba(0,0,0,.35);
+  display: flex;
+  flex-direction: column;
+  margin-top: 10px;
+  overflow: hidden;
+}
+
+.chatHeader {
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+}
+.chatSub { margin-left: auto; font-size: 12px; opacity: .7; }
+/* === FORCE FULL-WIDTH 60/40 LAYOUT === */
+
+/* use the whole viewport width (not min(1200px, 92vw)) */
+.shell {
+  width: 100vw;
+  max-width: none;
+  margin: 0;
+}
+
+/* hard split by viewport: left = 60vw, right = 40vw */
+.grid {
+  display: grid;                 /* keep grid in case it's overridden above */
+  grid-template-columns: 60vw 40vw;
+  gap: clamp(16px, 2vw, 24px);
+  align-items: start;
+}
+
+/* allow children to shrink within their tracks (prevents overflow) */
+.card,
+.chatPanel {
+  min-width: 0;
+}
+
+/* optional: make the chat tall on desktop */
+.chatPanel {
+  height: 80vh;                  /* tweak as you like */
+  position: sticky;
+  top: 24px;
+}
+
+/* stack on small screens */
+@media (max-width: 980px) {
+  .grid { grid-template-columns: 3fr 2fr !important; }
+  .chatPanel { position: static; height: 460px; }
+}
+/* === Make the description use the full card width === */
+.description {
+  max-width: none !important;   /* remove the 72ch limiter */
+  width: 100%;
+}
+
+/* If you added a scrollbar gutter earlier, neutralize it
+   so there’s no extra inset eating into the width */
+.card { --sb-gutter: 0; }
+
+.card > :not(.cardBody) {
+  padding-right: 0 !important;
+}
+
+.cardBody {
+  padding-right: 0 !important;
+  scrollbar-gutter: auto;  /* no reserved gutter; use full width */
+}
+
+/* (Optional) if you want a tad more readable lines without hard caps:
+.description { max-width: 100%; line-height: 1.6; } */
+
+
+
+/* Remove below styles if they conflict with the above changes */
+
+/* --- Keep description text perfectly aligned with the card/shell --- */
+/* Reserve space for the scrollbar so widths never change */
+.cardBody {
+  /* this makes the layout keep a gutter where the scrollbar appears */
+  scrollbar-gutter: stable both-edges;
+  /* remove the tiny extra you had so left edges are identical */
+  padding-right: 0;
+}
+
+/* Give the header/top area the same right inset as the gutter
+   so header and body text columns line up exactly */
+.card {
+  --sb-gutter: 14px;        /* typical Windows scrollbar width; adjust if needed */
+}
+
+/* Everything at the top of the card (title, pills, etc.) gets the same right inset */
+.card > :not(.cardBody) {
+  padding-right: var(--sb-gutter);
+}
+
+/* The scrolling body gets the matching inset on the inside of the scroller */
+.cardBody {
+  padding-right: var(--sb-gutter);
+}
+
+/* Optional: narrower scrollbar so alignment is tighter on Win */
+.cardBody::-webkit-scrollbar { width: 12px; }
+/* === Make the left job card fixed (sticky) and scroll its content === */
+.card {
+  position: sticky;
+  top: 24px;              /* same offset as the chat */
+  height: 80vh;           /* fills most of the viewport */
+  display: flex;
+  flex-direction: column; /* so the body can flex+scroll */
+  overflow: hidden;       /* keep borders clean */
+}
+
+/* scrollable area inside the card */
+.cardBody {
+  flex: 1;
+  min-height: 0;          /* critical for flex children to shrink */
+  overflow: auto;
+  padding-right: 4px;     /* tiny gutter so the scrollbar doesn’t overlap text */
+  overscroll-behavior: contain;
+}
+
+/* optional: keep the title and meta “pills” always visible at the top */
+.title { margin-bottom: 12px; }
+.meta  { margin-bottom: 16px; }
+
+/* nice sticky subheader for Description (optional) */
+.sectionTitle {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: linear-gradient(180deg, rgba(20,16,38,0.85), rgba(24,18,38,0.75));
+  backdrop-filter: saturate(115%) blur(6px);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  padding-block: 8px;
+  margin: 0 0 10px 0; /* reset top margin because it's sticky */
 }
 /* --- editor modal --- */
 .editorOverlay {
@@ -86,4 +475,31 @@
   border: 1px solid rgba(255,255,255,0.15);
   padding: 6px 8px;
   vertical-align: top;
+}
+/* === Make floating chat 40% of viewport width & taller === */
+.chatCard {
+  width: 35vw !important;        /* 40% of screen */
+  max-width: 40vw !important;    /* prevent clamping to 360px */
+  height: 92vh !important;       /* much taller */
+}
+
+/* Let message bubbles use more horizontal space inside the larger card */
+.msgUser,
+.msgAssistant {
+  max-width: 100% !important;    /* was 85% */
+}
+
+/* Ensure the scroll area can grow properly with the taller card */
+.chatBox {
+  flex: 1;
+  min-height: 0;                 /* critical for flex scrolling */
+}
+
+/* Keep it usable on small screens */
+@media (max-width: 980px) {
+  .chatCard {
+    width: min(95vw, 560px) !important;
+    max-width: min(95vw, 560px) !important;
+    height: 70vh !important;
+  }
 }
