@@ -170,7 +170,8 @@
 .prog-btn{
     display: flex;
     flex-direction: row;
-    
+    align-items: start;
+    justify-content: end;
 }
 
 .resume-generation{
@@ -180,4 +181,13 @@
 
 .resume-text{
     background-color: antiquewhite;
+}
+
+@media (max-width: 1450px) {
+    .school-form, .job-form{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
 }
