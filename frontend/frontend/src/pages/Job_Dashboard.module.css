@@ -508,3 +508,21 @@
   white-space: pre-wrap;   /* preserves \n as real breaks, wraps long lines */
   line-height: 1.55;
 }
+/* === Auto layout: full-width until chatbot opens, then 60/40 split === */
+
+/* When the floating chat is CLOSED (no .chatCard in the DOM), use one column */
+.wrapper:not(:has(.chatCard)) .grid {
+  grid-template-columns: 1fr !important; /* description spans full screen */
+}
+
+/* When the floating chat is OPEN (has .chatCard), switch to 60/40 */
+.wrapper:has(.chatCard) .grid {
+  grid-template-columns: 60% 40% !important; /* left = 60%, right = 40% */
+}
+
+/* Keep stacking on small screens */
+@media (max-width: 980px) {
+  .wrapper:has(.chatCard) .grid {
+    grid-template-columns: 1fr !important;
+  }
+}
