@@ -526,3 +526,45 @@
     grid-template-columns: 1fr !important;
   }
 }
+/* back arrow row */
+.backRow {
+  display: flex;
+  align-items: center;
+  margin: 4px 0 10px 0;
+}
+
+/* pill-style back button */
+.backBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  text-decoration: none;
+  color: #e9e9ef;
+  background: linear-gradient(180deg, rgba(88,76,140,0.28), rgba(48,40,90,0.28));
+  border: 1px solid rgba(255,255,255,0.10);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+  transition: transform 120ms ease, background 120ms ease, border-color 120ms ease;
+}
+
+.backBtn:hover {
+  background: linear-gradient(180deg, rgba(88,76,140,0.4), rgba(48,40,90,0.4));
+  transform: translateX(-1px);
+  border-color: rgba(255,255,255,0.18);
+}
+
+.backIcon {
+  display: block;
+}
+
+.backText {
+  font-weight: 600;
+  letter-spacing: .2px;
+  font-size: 14px;
+}
+
+/* keep spacing tidy on small screens */
+@media (max-width: 980px) {
+  .backRow { margin: 0 0 8px 0; }
+}

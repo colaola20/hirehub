@@ -102,6 +102,26 @@ const JobDashboard = () => {
       <div className={styles.shell}>
         {/* Outer rounded frame like the mock */}
         <div className={styles.frame}>
+          {/* Back to dashboard */}
+          <div className={styles.backRow}>
+            <a
+              href="/UserDashboard"
+              className={styles.backBtn}
+              aria-label="Back to user dashboard"
+            >
+              <svg
+                className={styles.backIcon}
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+              <span className={styles.backText}>Back</span>
+            </a>
+          </div>
+
           <div className={styles.grid}>
             {/* LEFT: content */}
             <div className={styles.card}>
