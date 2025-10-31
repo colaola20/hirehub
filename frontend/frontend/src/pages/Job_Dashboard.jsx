@@ -2,6 +2,8 @@
 import { useEffect, useRef, useState } from "react";
 import styles from "./job_dashboard.module.css";
 import Chatbot from "./chat_bot";
+import { marked } from "marked";
+import DOMPurify from "dompurify";
 
 function JobChatPanel({ job }) {
   const [messages, setMessages] = useState([
@@ -115,10 +117,16 @@ const JobDashboard = () => {
   <div className={styles.cardBody}>
     <section>
       <h3 className={styles.sectionTitle}>Description</h3>
-      <p className={styles.description}>
-        {job.description || "No description provided."}
-      </p>
+      <div
+        className={styles.description}
+        dangerouslySetInnerHTML={{
+          __html: DOMPurify.sanitize(
+            marked.parse(job.description || "No description provided.")
+          ),
+        }}
+      />
     </section>
+
 
     {Array.isArray(job.skills) && job.skills.length > 0 && (
       <section style={{ marginTop: 18 }}>

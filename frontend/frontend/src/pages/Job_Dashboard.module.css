@@ -503,3 +503,8 @@
     height: 70vh !important;
   }
 }
+/* job_dashboard.module.css */
+.description {
+  white-space: pre-wrap;   /* preserves \n as real breaks, wraps long lines */
+  line-height: 1.55;
+}
