@@ -87,6 +87,17 @@ body {
 
 
 /* Make <Link> buttons styled like buttons */
+
+.linkButton {
+  background: none;
+  border: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  padding: 0 8px;
+}
+
+.linkButton:focus { outline: 2px solid rgba(99,102,241,0.6); border-radius: 6px; }
 .angle2-btn,
 .angle2-btn:link,
 .angle2-btn:visited {
@@ -102,7 +113,7 @@ body {
   gap: 16px
 }
 
-.angle2-links a {
+.angle2-links a, .linkButton {
   color: rgba(255,255,255,0.85);
   text-decoration: none;
   font-size: 14.5px;
@@ -110,10 +121,11 @@ body {
   position: relative;
   padding: 6px 4px;
   outline: none;
+  background: none;
 }
 
 /* animated underline */
-.angle2-links a::after {
+.angle2-links a, .linkButton::after {
   content: "";
   position: absolute;
   left: 0;
@@ -128,24 +140,24 @@ body {
   opacity: 0.95;
 }
 
-.angle2-links a:hover,
-.angle2-links a:focus {
+.angle2-links a, .linkButton:hover,
+.angle2-links a, .linkButton:focus {
   color: #ffffff;
   transform: translateY(-1px);
 }
 
-.angle2-links a:hover::after,
-.angle2-links a:focus::after {
+.angle2-links a, .linkButton:hover::after,
+.angle2-links a, .linkButton:focus::after {
   transform: scaleX(1);
 }
 
-.angle2-links a:active {
+.angle2-links a, .linkButton:active {
   transform: translateY(0);
   opacity: .95;
 }
 
 /* keyboard-focus visible for accessibility */
-.angle2-links a:focus-visible {
+.angle2-links a, .linkButton:focus-visible {
   box-shadow: 0 0 0 4px rgba(102,126,234,0.16);
   border-radius: 6px;
 }
