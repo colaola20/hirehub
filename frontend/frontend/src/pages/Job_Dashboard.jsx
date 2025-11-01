@@ -2,6 +2,8 @@
 import { useEffect, useRef, useState } from "react";
 import styles from "./job_dashboard.module.css";
 import Chatbot from "./chat_bot";
+import { marked } from "marked";
+import DOMPurify from "dompurify";
 
 function JobChatPanel({ job }) {
   const [messages, setMessages] = useState([
@@ -100,6 +102,26 @@ const JobDashboard = () => {
       <div className={styles.shell}>
         {/* Outer rounded frame like the mock */}
         <div className={styles.frame}>
+          {/* Back to dashboard */}
+          <div className={styles.backRow}>
+            <a
+              href="/UserDashboard"
+              className={styles.backBtn}
+              aria-label="Back to user dashboard"
+            >
+              <svg
+                className={styles.backIcon}
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+              <span className={styles.backText}>Back</span>
+            </a>
+          </div>
+
           <div className={styles.grid}>
             {/* LEFT: content */}
             <div className={styles.card}>
@@ -115,10 +137,16 @@ const JobDashboard = () => {
   <div className={styles.cardBody}>
     <section>
       <h3 className={styles.sectionTitle}>Description</h3>
-      <p className={styles.description}>
-        {job.description || "No description provided."}
-      </p>
+      <div
+        className={styles.description}
+        dangerouslySetInnerHTML={{
+          __html: DOMPurify.sanitize(
+            marked.parse(job.description || "No description provided.")
+          ),
+        }}
+      />
     </section>
+
 
     {Array.isArray(job.skills) && job.skills.length > 0 && (
       <section style={{ marginTop: 18 }}>

@@ -4,6 +4,7 @@
     padding-right: 275px;   
     position: relative;
     width: 100%;
+    min-width: 300px;
 
 /* ------------copy and pasted from login_Page.css------------ */
     display: flex;
@@ -64,15 +65,10 @@
     padding: 20px;
     border-radius: 20px;
     max-height: 1000px;
-    overflow: hidden;
-    transition: max-height 0.5s ease-out;
+    min-width: 400px;
     width: 100%;
     box-shadow: 0px 8px 24px rgba(0,0,0,0.3);
     color: white;
-}
-
-.form-box.expanded{
-    max-height: 10000px;
 }
 
 .form-box h2{
@@ -80,7 +76,7 @@
     font-weight: 700;
 }
 
-.resume-form{
+.resume-form-container{
     /* same color and blur styling as navbar */
     background: rgba(20, 15, 40, 0.65);
     border: 1px solid rgba(255, 255, 255, 0.3);
@@ -91,42 +87,114 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 10px;
+    gap: 50px;
+    min-height: 100px;
     max-height: 750px;
-    overflow: hidden;
-    transition: max-height 0.5s ease-out;
     width: 80%;
     border-radius: 20px;
-    min-width: 50vw;
     margin: 15px 0;
     padding-bottom: 50px;
     color: white;
     text-align: center;
 }
 
-.resume-form input{
+.resume-form-container input{
     background-color: #fff;
     border-radius: 8px;
     padding: 5px 7.5px;
     border: 1px solid #eee;
 }
 
-.resume-form input[placeholder="Summary Generation (separate keywords by commas)"]{
+.resume-form-container input[placeholder="Summary Generation (separate keywords by commas)"]{
     background-color: white;
     border-radius: 8px;
     padding: 30px 100px;
     border: 1px solid #eee;
 }
 
-.resume-form input[type="checkbox"]{
+.resume-form-container input[type="checkbox"]{
     accent-color: #562fac;
 }
+
+.resume-form{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+}
+
+.location-form{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    padding-bottom: 3px;
+}
+
+.job-form{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 20px;
+    height: 110px;
+    padding-bottom: 40px;
+}
+
+.school-form{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 20px;
+    height: 110px;
+    padding-bottom: 30px;
+}
+
+.project-form{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 20px;
+    height: 110px;;
+    padding-top: 25px;
+    padding-bottom: 40px;
+}
+
+/* .student-cb{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+} */
 
 .submit-btn{
     background: linear-gradient(to right, #86bbf0, #562fac);
     color: white;
     border: 1px solid black;
     margin: 10px;
+}
+
+.prog-btn{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 1050px;
+}
+
+.prog-btn-btn{
+    background-color: #2c1950;
+}
+
+.prog-btn-btn button:hover{
+    background-color: #48288f;
+}
+
+.submit-form-btn{
+    background-color: #4db9d3;
+}
+
+.submit-form-btn:hover{
+    background-color: #00ccff;
 }
 
 .resume-generation{
@@ -136,4 +204,13 @@
 
 .resume-text{
     background-color: antiquewhite;
+}
+
+@media (max-width: 1450px) {
+    .school-form, .job-form, .project-form{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
 }

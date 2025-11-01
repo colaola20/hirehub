@@ -99,10 +99,9 @@ const ResumeForm = () => {
 
     /*
         TODO -------------------------------------------- 
-        Add + option for work experience, school and projects
+        Add + option for work experience, school and projects (just need to add functionality)
         fix heights per step and/or make smooth transition when height changes
         get progress bar to show
-        fix buttons
 
         move all components to a file in components folder (maybe)
     */
@@ -110,10 +109,11 @@ const ResumeForm = () => {
 
     // ---------------------------------Step Components---------------------------------
     // Currently 6 steps
+    // add 7th to view resume
 
     const PersonalStep = ({ formData, onChange }) => (  // PERSONAL INFO STEP //
-        <div>
-            <h2>Personal Info</h2>
+        <div className="resume-form">
+            <h2>Personal Information</h2>
             <p>Name</p>
             <input
                 type="text"
@@ -139,38 +139,39 @@ const ResumeForm = () => {
                 required
             />
             <p>Location</p>
-
-            <input
-                type="text"
-                placeholder="Address"
-                value={formData.address}
-                onChange={onChange}
-                required
-            />
-            {/* City */}
-            <input
-                type="text"
-                placeholder="City Name"
-                value={formData.city}
-                onChange={onChange}
-                required
-            />
-            {/* State */}
-            <input
-                type="text"
-                placeholder="State Name"
-                value={formData.state}
-                onChange={onChange}
-                required
-            />
-            {/* Zip */}
-            <input
-                type="text"
-                placeholder="Zip Code"
-                value={formData.zip}
-                onChange={onChange}
-                required
-            />
+            <div className="location-form">
+                <input
+                    type="text"
+                    placeholder="Address"
+                    value={formData.address}
+                    onChange={onChange}
+                    required
+                />
+                {/* City */}
+                <input
+                    type="text"
+                    placeholder="City Name"
+                    value={formData.city}
+                    onChange={onChange}
+                    required
+                />
+                {/* State */}
+                <input
+                    type="text"
+                    placeholder="State Name"
+                    value={formData.state}
+                    onChange={onChange}
+                    required
+                />
+                {/* Zip */}
+                <input
+                    type="text"
+                    placeholder="Zip Code"
+                    value={formData.zip}
+                    onChange={onChange}
+                    required
+                />
+            </div>
 
             <p>Summary</p>
             <input
@@ -187,7 +188,7 @@ const ResumeForm = () => {
     const SocialStep = ({ formData, onChange }) => ( // SOCIAL INFO STEP //
 
         <div>
-            <h2>Social Information</h2>
+            <h2>Social Links</h2>
 
             <p>LinkedIn</p>
             <input
@@ -217,7 +218,7 @@ const ResumeForm = () => {
     const MiscStep = ({ formData, onChange }) => ( // MISC INFO STEP //
         <div>
 
-            <h2>Misc Information</h2>
+            <h2>Miscellaneous / Other Information</h2>
 
             <p>Skills</p>
             <input
@@ -240,7 +241,6 @@ const ResumeForm = () => {
                 value={formData.languages}
                 onChange={onChange}
             />
-
             <p>Interests and Hobbies</p>
             <input
                 type="text"
@@ -251,94 +251,127 @@ const ResumeForm = () => {
         </div>
     );
 
+
+    const JobComponent = ({ formData, onChange }) => {
+        return (
+            <div className="job-form">
+                <input
+                    type="text"
+                    placeholder="Company Name"
+                    value={formData.company}
+                    onChange={onChange}
+                    required
+                />
+                {/* <p>Position</p> */}
+                <input
+                    type="text"
+                    placeholder="Position Title"
+                    value={formData.role}
+                    onChange={onChange}
+                    required
+                />
+                {/* <p>Employement Period</p> */}
+                <input
+                    type="text"
+                    placeholder="Time Period (e.g., June 2020 - August 2021)" // change this to a date picker later
+                    value={formData.roleTime}
+                    onChange={onChange}
+                    required
+                />
+            </div>
+        )
+    };
     const JobStep = ({ formData, onChange }) => ( // JOB HISTORY INFO STEP //
         <div>
-            <h2>Job History</h2>
-            <p>Company</p>
-            <input
-                type="text"
-                placeholder="Company Name"
-                value={formData.company}
-                onChange={onChange}
-                required
-            />
-            <p>Position</p>
-            <input
-                type="text"
-                placeholder="Position Title"
-                value={formData.role}
-                onChange={onChange}
-                required
-            />
-            <p>Employement Period</p>
-            <input
-                type="text"
-                placeholder="Time Period (e.g., June 2020 - August 2021)" // change this to a date picker later
-                value={formData.roleTime}
-                onChange={onChange}
-                required
-            />
+            <h2>Relevant Experience</h2>
+            <h3>Add Up To Three</h3>
+            <br />
+            <JobComponent formData={formData} onChange={onChange} />
+            <button>+</button>
         </div>
     );
 
+    const SchoolComponent = ({ formData, onChange }) => {
+        return (
+            <div className="school-form">
+                <input
+                    type="text"
+                    placeholder="School Name"
+                    value={formData.school}
+                    onChange={onChange}
+                    required
+                />
+                {/* <p>Degree</p> */}
+                <input
+                    type="text"
+                    placeholder="Degree"
+                    value={formData.degree}
+                    onChange={onChange}
+                    required
+                />
+                {/* <p>Graduation</p> */}
+                <input
+                    type="text"
+                    placeholder="Graduation Year (Or Estimated)"
+                    value={formData.gradYear}
+                    onChange={onChange}
+                    required
+                />
+                <div className="student-cb">
+                    <p>Are you currently a student?</p>
+                    <input type="checkbox" I Am Currently a Student />
+                </div>
+            </div>
+        )
+    };
     const SchoolStep = ({ formData, onChange }) => ( // SCHOOL HISTORY INFO STEP //
         <div>
             <h2>Education</h2>
-            <p>School</p>
-            <input
-                type="text"
-                placeholder="School Name"
-                value={formData.school}
-                onChange={onChange}
-                required
-            />
-            <p>Degree</p>
-            <input
-                type="text"
-                placeholder="Degree"
-                value={formData.degree}
-                onChange={onChange}
-                required
-            />
-            <p>Graduation</p>
-            <input
-                type="text"
-                placeholder="Graduation Year (Or Estimated)"
-                value={formData.gradYear}
-                onChange={onChange}
-                required
-            />
-            <p>Are you currently a student?</p>
-            <input type="checkbox" I Am Currently a Student />
+            <h3>Add Up To Three</h3>
+            <SchoolComponent formData={formData} onChange={onChange} />
+            <button>+</button>
         </div>
     );
 
+    const ProjectComponent = ({ formData, onChange }) => {
+        return (
+            <div className="project-form">
+                
+                <input
+                    type="text"
+                    placeholder="Project Title"
+                    value={formData.projTitle}
+                    onChange={onChange}
+                />
+                
+                <input
+                    type="text"
+                    placeholder="Project Description"
+                    value={formData.projDesc}
+                    onChange={onChange}
+                />
+                
+                <input
+                    type="url"
+                    placeholder="Project Link"
+                    value={formData.projLink}
+                    onChange={onChange}
+                />
+            </div >
+        )
+    };
     const ProjectStep = ({ formData, onChange }) => ( // PROJECT INFO STEP //
         <div>
             <h2>Projects</h2>
-            <p>Title</p>
-            <input
-                type="text"
-                placeholder="Project Title"
-                value={formData.projTitle}
-                onChange={onChange}
-            />
-            <p>Description</p>
-            <input
-                type="text"
-                placeholder="Project Description"
-                value={formData.projDesc}
-                onChange={onChange}
-            />
-            <p>Link (if deployed)</p>
-            <input
-                type="url"
-                placeholder="Project Link"
-                value={formData.projLink}
-                onChange={onChange}
-            />
+            <h3>Add Up To Three</h3>
+            <ProjectComponent formData={formData} onChange={onChange}/>
+            <button>+</button>
         </div>
     );
+
+    const ViewStep = () => {
+
+    }
 
     const ProgressIndicator = ({ currentStep }) => (
         <div>
@@ -382,12 +415,9 @@ const ResumeForm = () => {
                     </div>
                 </div>
 
-                <div>
-                    {currentStep > 1 && <button onClick={prevStep}>Previous</button>}
-                    {currentStep < 6 && <button onClick={nextStep}>Next</button>}
-                </div>
+                
 
-                <div className="resume-form">
+                <div className="resume-form-container">
                     {currentStep === 1 && <PersonalStep formData={formData.personalInfoStep} onChange={handleInputChange} />}
                     {currentStep === 2 && <SocialStep formData={formData.personalInfoStep} onChange={handleInputChange} />}
                     {currentStep === 3 && <MiscStep formData={formData.personalInfoStep} onChange={handleInputChange} />}
@@ -396,10 +426,9 @@ const ResumeForm = () => {
                     {currentStep === 6 && <ProjectStep formData={formData.personalInfoStep} onChange={handleInputChange} />}
                 </div>
 
-                <div>
-                    {currentStep > 1 && <button onClick={prevStep}>Previous</button>}
-                    {currentStep < 6 && <button onClick={nextStep}>Next</button>}
-                    {currentStep === 6 && <button className="submit-btn">Submit</button>}
+                <div className="prog-btn">
+                    {currentStep > 1 ? (<button className="prog-btn-btn" onClick={prevStep}>Previous</button>) : (<span className="placeholder"></span>)}
+                    {currentStep < 6 ? (<button className="prog-btn-btn" onClick={nextStep}>Next</button>) : (<button className="submit-form-btn">Generate</button>)}
                 </div>
             </div>
         </div>

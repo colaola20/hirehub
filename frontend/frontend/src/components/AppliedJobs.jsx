@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import JobCard from "../components/JobCard";
+import AppliedNotesModal from "./AppliedNotesModal.jsx";
 import styles from "./AppliedJobs.module.css";
 import { FileText, Briefcase, MapPin, Calendar, CheckCircle, Edit, StickyNote, ExternalLink, Clock } from "lucide-react";
 
@@ -8,6 +8,10 @@ const AppliedJobs = () => {
   const [appliedJobs, setAppliedJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
+
+  const [selectedJob, setSelectedJob] = useState(null);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     const fetchAppliedJobs = async () => {
@@ -56,6 +60,81 @@ const AppliedJobs = () => {
   };
 
 
+// Sorting logic
+  const sortJobs = (key) => {
+    let direction = "asc";
+    if (sortConfig.key === key && sortConfig.direction === "asc") {
+      direction = "desc";
+    }
+    setSortConfig({ key, direction });
+
+    const sorted = [...appliedJobs].sort((a, b) => {
+      const getValue = (obj) => {
+        switch (key) {
+          case "title":
+            return obj.job?.title || "";
+          case "company":
+            return obj.job?.company || "";
+          case "location":
+            return obj.job?.location || "";
+          case "date_posted":
+            return obj.job?.date_posted || "";
+          case "status":
+            return obj.status || "";
+          case "applied_at":
+            return obj.applied_at || "";
+          default:
+            return "";
+        }
+      };
+
+      const aVal = getValue(a);
+      const bVal = getValue(b);
+
+      if (key.includes("date") || key === "applied_at") {
+        // date comparison
+        const dateA = new Date(aVal);
+        const dateB = new Date(bVal);
+        return direction === "asc" ? dateA - dateB : dateB - dateA;
+      }
+
+      // string comparison
+      return direction === "asc"
+        ? aVal.localeCompare(bVal)
+        : bVal.localeCompare(aVal);
+    });
+
+    setAppliedJobs(sorted);
+  };
+
+    const handleOpenNotes = (app) => {
+    setSelectedJob(app);
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setSelectedJob(null);
+  };
+
+
+  const getSortIcon = (key) => {
+    if (sortConfig.key !== key) return "⇅";
+    return sortConfig.direction === "asc" ? "▲" : "▼";
+  };
+
+  const updateJobNotes = (applicationId, newNotes) => {
+  setAppliedJobs((prevJobs) =>
+    prevJobs.map((app) =>
+      app.application_id === applicationId
+        ? { ...app, notes: newNotes }
+        : app
+    )
+  );
+};
+
+
+
   if (loading) return <p className={styles.message}>Loading your applied jobs...</p>;
   if (error) return <p className={styles.error}>{error}</p>;
 
@@ -70,15 +149,27 @@ const AppliedJobs = () => {
         <div className={styles.tableContainer}>
           {/* Header Row */}
           <div className={styles.headerRow}>
-            <span><FileText size={16} /> Title</span>
-            <span><Briefcase size={16} /> Company</span>
-            <span><MapPin size={16} /> Location</span>
-            <span><Calendar size={16} /> Date Posted</span>
+            <span onClick={() => sortJobs("title")} className={styles.sortable}>
+              <FileText size={16} /> Title <span className={styles.arrow}>{getSortIcon("title")}</span>
+            </span>
+            <span onClick={() => sortJobs("company")} className={styles.sortable}>
+              <Briefcase size={16} /> Company <span className={styles.arrow}>{getSortIcon("company")}</span>
+            </span>
+            <span onClick={() => sortJobs("location")} className={styles.sortable}>
+              <MapPin size={16} /> Location <span className={styles.arrow}>{getSortIcon("location")}</span>
+            </span>
+            <span onClick={() => sortJobs("date_posted")} className={styles.sortable}>
+              <Calendar size={16} /> Date Posted <span className={styles.arrow}>{getSortIcon("date_posted")}</span>
+            </span>
             <span><CheckCircle size={16} /> Active</span>
-            <span><Edit size={16} /> Status</span>
+            <span onClick={() => sortJobs("status")} className={styles.sortable}>
+              <Edit size={16} /> Status <span className={styles.arrow}>{getSortIcon("status")}</span>
+            </span>
             <span><StickyNote size={16} /> Notes</span>
             <span><ExternalLink size={16} /> URL</span>
-            <span><Clock size={16} /> Applied At</span>
+            <span onClick={() => sortJobs("applied_at")} className={styles.sortable}>
+              <Clock size={16} /> Applied At <span className={styles.arrow}>{getSortIcon("applied_at")}</span>
+            </span>
           </div>
 
           {/* Data Rows */}
@@ -97,13 +188,33 @@ const AppliedJobs = () => {
                   <option value="offer">Offer</option>
                   <option value="rejected">Rejected</option>
                 </select>
-                <span>{app.notes || "None"}</span>
+                <span
+                  className={`${styles.clickableNote} ${!app.notes ? styles.noNote : ""}`}
+                  onClick={() => handleOpenNotes(app)}
+                >
+                  {app.notes ? (
+                    <>
+                    <span className={styles.noteText}>View Note</span>
+                    </>
+                  ) : (
+                    "None"
+                  )}
+                </span>
                 <span>{job.url || "Unknown"}</span>
                 <span>{app.applied_at ? new Date(app.applied_at).toLocaleDateString() : "Unknown"}</span>
               </div>
             );
           })}
         </div>
+     )}
+
+      {/* ✅ Modal */}
+      {showModal && selectedJob && (
+        <AppliedNotesModal
+          job={selectedJob}
+          onClose={handleCloseModal}
+          onUpdateNotes={updateJobNotes} 
+        />
       )}
     </div>
   );

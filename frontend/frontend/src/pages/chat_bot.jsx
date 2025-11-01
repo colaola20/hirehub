@@ -21,12 +21,23 @@ export default function Chatbot({ job }) {
   const [editorOpen, setEditorOpen] = useState(false);
   const [editorValue, setEditorValue] = useState("");
 
-  const send = async () => {
-    const text = input.trim();
+  // === NEW: quick prompts shown in the center before first user message ===
+  const quickPrompts = [
+    "Draft 3 resume bullets from this JD",
+    "Write a 120-word mini cover letter",
+    "Summarize responsibilities in 5 points",
+    "Match my skills to this job",
+    "What keywords should I add to my resume?"
+  ];
+
+  // NOTE: send() now accepts an optional preset string; existing calls still work
+  const send = async (preset) => {
+    const raw = typeof preset === "string" ? preset : input;
+    const text = (raw || "").trim();
     if (!text || loading) return;
     setMessages((m) => [...m, { role: "user", content: text }]);
     setLastQuestion(text);
-    setInput("");
+    if (!preset) setInput("");
     setLoading(true);
     try {
       const res = await fetch("/api/chat", {
@@ -103,6 +114,8 @@ export default function Chatbot({ job }) {
     setEditorOpen(false);
   };
 
+  const hasUserMessage = messages.some((m) => m.role === "user");
+
   return (
     <div className={styles.chatDock}>
       <button className={styles.chatToggle} onClick={() => setOpen(!open)}>
@@ -125,6 +138,53 @@ export default function Chatbot({ job }) {
                 {m.role === "user" ? m.content : null}
               </div>
             ))}
+
+            {/* === NEW: Centered pre-defined prompts (only before first user message) === */}
+            {!loading && !hasUserMessage && (
+              <div
+                style={{
+                  display: "grid",
+                  gap: "10px",
+                  gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+                  alignItems: "center",
+                  justifyItems: "center",
+                  width: "100%",
+                  maxWidth: 720,
+                  margin: "24px auto 8px",
+                  padding: "8px 0",
+                  opacity: 0.95
+                }}
+              >
+                {quickPrompts.map((p, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => send(p)}
+                    aria-label={`Use prompt: ${p}`}
+                    style={{
+                      cursor: "pointer",
+                      border: "1px solid rgba(255,255,255,0.12)",
+                      background: "rgba(255,255,255,0.06)",
+                      padding: "10px 14px",
+                      borderRadius: "999px",
+                      fontSize: "0.95rem",
+                      lineHeight: 1.25,
+                      textAlign: "center",
+                      width: "100%",
+                      transition: "transform 120ms ease, background 120ms ease, border-color 120ms ease",
+                      backdropFilter: "blur(2px)",
+                      WebkitBackdropFilter: "blur(2px)",
+                      color: "inherit"
+                    }}
+                    onMouseDown={(e) => e.currentTarget.style.transform = "scale(0.98)"}
+                    onMouseUp={(e) => e.currentTarget.style.transform = "scale(1)"}
+                    onMouseLeave={(e) => e.currentTarget.style.transform = "scale(1)"}
+                  >
+                    {p}
+                  </button>
+                ))}
+              </div>
+            )}
+
             {loading && <div className={styles.msgAssistant}>Thinking…</div>}
           </div>
 
@@ -137,7 +197,7 @@ export default function Chatbot({ job }) {
               placeholder="e.g., Draft 3 resume bullets from this JD"
               rows={2}
             />
-            <button className={styles.chatSend} onClick={send} disabled={loading || !input.trim()}>
+            <button className={styles.chatSend} onClick={() => send()} disabled={loading || !input.trim()}>
               Send
             </button>
             <button className={styles.chatExport} onClick={downloadPdf} disabled={!lastAssistant || loading}>
@@ -176,7 +236,7 @@ export default function Chatbot({ job }) {
                   uploader: { insertImageAsBase64URI: true },
                   // a generous toolbar; trim as you like
                   buttons:
-                    "source,|,undo,redo,|,font,fontsize,paragraph,|,bold,italic,underline,strikethrough,|" +
+                    "source,|,undo,redo,|,font,fontsize,paragraph,|,bold,italgic,underline,strikethrough,|" +
                     "superscript,subscript,|,align,|,ul,ol,indent,outdent,|,lineHeight,|,fontcolor,background,|" +
                     "link,image,table,hr,emoji,|,cut,copy,paste,selectall,find,|,eraser,fullsize"
                 }}
