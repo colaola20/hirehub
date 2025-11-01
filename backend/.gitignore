@@ -5,6 +5,18 @@ env/
 .env
 __pycache__/
 *.pyc
-**/__pycache__/
-*.py[cod]
 *.pyo
+*.pyd
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
+
+
+# database / logs
+*.sqlite3
+*.log
+
+Lib/
+Scripts/
