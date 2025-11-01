@@ -130,5 +130,17 @@
 
 
 
+.clickableNote {
+  color: #555657;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.clickableNote:hover {
+  color: #6f7172;
+}
+
+
+
 
 

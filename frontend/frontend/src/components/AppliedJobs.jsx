@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import JobCard from "../components/JobCard";
+import AppliedNotesModal from "./AppliedNotesModal.jsx";
 import styles from "./AppliedJobs.module.css";
 import { FileText, Briefcase, MapPin, Calendar, CheckCircle, Edit, StickyNote, ExternalLink, Clock } from "lucide-react";
 
@@ -10,6 +10,8 @@ const AppliedJobs = () => {
   const [error, setError] = useState("");
   const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
 
+  const [selectedJob, setSelectedJob] = useState(null);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     const fetchAppliedJobs = async () => {
@@ -105,6 +107,16 @@ const AppliedJobs = () => {
     setAppliedJobs(sorted);
   };
 
+    const handleOpenNotes = (app) => {
+    setSelectedJob(app);
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setSelectedJob(null);
+  };
+
 
   const getSortIcon = (key) => {
     if (sortConfig.key !== key) return "⇅";
@@ -165,13 +177,26 @@ const AppliedJobs = () => {
                   <option value="offer">Offer</option>
                   <option value="rejected">Rejected</option>
                 </select>
-                <span>{app.notes || "None"}</span>
+                <span
+                  className={styles.clickableNote}
+                  onClick={() => handleOpenNotes(app)}
+                >
+                  {app.notes || "None"}
+                </span>
                 <span>{job.url || "Unknown"}</span>
                 <span>{app.applied_at ? new Date(app.applied_at).toLocaleDateString() : "Unknown"}</span>
               </div>
             );
           })}
         </div>
+     )}
+
+      {/* ✅ Modal */}
+      {showModal && selectedJob && (
+        <AppliedNotesModal
+          job={selectedJob}
+          onClose={handleCloseModal}
+        />
       )}
     </div>
   );

@@ -1,0 +1,114 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(10, 10, 20, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  backdrop-filter: blur(8px);
+  z-index: 999;
+}
+
+.modal {
+  position: relative;
+  width: 420px;
+  background: rgba(25, 20, 50, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 24px;
+  color: white;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+.closeBtn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: transparent;
+  border: none;
+  color: #ccc;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.closeBtn:hover {
+  color: #ff6666;
+}
+
+.title {
+  text-align: center;
+  margin-bottom: 10px;
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+
+.status {
+  text-align: center;
+  margin-bottom: 15px;
+  font-size: 0.95rem;
+  color: #aaa;
+}
+
+.textArea {
+  width: 100%;
+  min-height: 120px;
+  resize: none;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  padding: 10px;
+  color: white;
+  font-size: 0.95rem;
+  outline: none;
+}
+
+.textArea:disabled {
+  opacity: 0.7;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.editBtn,
+.saveBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+
+.editBtn {
+  background: #444;
+  color: #fff;
+}
+
+.editBtn:hover {
+  background: #555;
+}
+
+.saveBtn {
+  background: #007bff;
+  color: #fff;
+}
+
+.saveBtn:hover {
+  background: #0066cc;
+}
+
+.clickableNote {
+  cursor: pointer;
+  color: #80d0ff;
+  text-decoration: underline;
+}
