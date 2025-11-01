@@ -170,3 +170,28 @@ def update_application_status(application_id):
         print("Update Status Error:", e)
         return jsonify({'error': 'Failed to update status', 'details': str(e)}), 500
 
+@applications_bp.route('/<int:application_id>/notes', methods=['PATCH'])
+@jwt_required()
+def update_application_notes(application_id):
+    """Update the notes for a user's application"""
+    try:
+        user_id = int(get_jwt_identity())
+        app_entry = Application.query.filter_by(id=application_id, user_id=user_id).first()
+        if not app_entry:
+            return jsonify({'error': 'Application not found'}), 404
+
+        data = request.get_json()
+        new_notes = data.get('notes', '').strip()
+
+        app_entry.notes = new_notes
+        db.session.commit()
+
+        return jsonify({
+            'message': 'Notes updated successfully',
+            'notes': app_entry.notes
+        }), 200
+
+    except Exception as e:
+        db.session.rollback()
+        print("Update Notes Error:", e)
+        return jsonify({'error': 'Failed to update notes', 'details': str(e)}), 500

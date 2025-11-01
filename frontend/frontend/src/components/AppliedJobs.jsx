@@ -178,10 +178,16 @@ const AppliedJobs = () => {
                   <option value="rejected">Rejected</option>
                 </select>
                 <span
-                  className={styles.clickableNote}
+                  className={`${styles.clickableNote} ${!app.notes ? styles.noNote : ""}`}
                   onClick={() => handleOpenNotes(app)}
                 >
-                  {app.notes || "None"}
+                  {app.notes ? (
+                    <>
+                    <span className={styles.noteText}>View Note</span>
+                    </>
+                  ) : (
+                    "None"
+                  )}
                 </span>
                 <span>{job.url || "Unknown"}</span>
                 <span>{app.applied_at ? new Date(app.applied_at).toLocaleDateString() : "Unknown"}</span>

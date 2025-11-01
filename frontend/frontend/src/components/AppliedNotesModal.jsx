@@ -5,12 +5,36 @@ import styles from "./AppliedNotesModal.module.css";
 const AppliedNotesModal = ({ job, onClose }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [note, setNote] = useState(job.notes || "");
+  const [saving, setSaving] = useState(false);
 
   const handleEdit = () => setIsEditing(true);
-  const handleSave = () => {
-    // Save logic will be added later
-    setIsEditing(false);
-  };
+
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch(`/api/applications/${job.application_id}/notes`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ notes: note }),
+      });
+
+      if (!res.ok) throw new Error("Failed to save notes");
+
+      const data = await res.json();
+      setIsEditing(false);
+      setSaving(false);
+      
+      
+    } catch (err) {
+      console.error("Error saving notes:", err);
+      alert("Failed to save notes");
+
+  }
+}
 
   return (
     <div className={styles.overlay}>
@@ -36,8 +60,12 @@ const AppliedNotesModal = ({ job, onClose }) => {
               <Edit3 size={16} /> Edit
             </button>
           ) : (
-            <button className={styles.saveBtn} onClick={handleSave}>
-              <Save size={16} /> Save
+            <button
+              className={styles.saveBtn}
+              onClick={handleSave}
+              disabled={saving}
+            >
+              <Save size={16} /> {saving ? "Saving..." : "Save"}
             </button>
           )}
         </div>
