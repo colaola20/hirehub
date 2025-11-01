@@ -8,6 +8,8 @@ const AppliedJobs = () => {
   const [appliedJobs, setAppliedJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
+
 
   useEffect(() => {
     const fetchAppliedJobs = async () => {
@@ -56,6 +58,60 @@ const AppliedJobs = () => {
   };
 
 
+// Sorting logic
+  const sortJobs = (key) => {
+    let direction = "asc";
+    if (sortConfig.key === key && sortConfig.direction === "asc") {
+      direction = "desc";
+    }
+    setSortConfig({ key, direction });
+
+    const sorted = [...appliedJobs].sort((a, b) => {
+      const getValue = (obj) => {
+        switch (key) {
+          case "title":
+            return obj.job?.title || "";
+          case "company":
+            return obj.job?.company || "";
+          case "location":
+            return obj.job?.location || "";
+          case "date_posted":
+            return obj.job?.date_posted || "";
+          case "status":
+            return obj.status || "";
+          case "applied_at":
+            return obj.applied_at || "";
+          default:
+            return "";
+        }
+      };
+
+      const aVal = getValue(a);
+      const bVal = getValue(b);
+
+      if (key.includes("date") || key === "applied_at") {
+        // date comparison
+        const dateA = new Date(aVal);
+        const dateB = new Date(bVal);
+        return direction === "asc" ? dateA - dateB : dateB - dateA;
+      }
+
+      // string comparison
+      return direction === "asc"
+        ? aVal.localeCompare(bVal)
+        : bVal.localeCompare(aVal);
+    });
+
+    setAppliedJobs(sorted);
+  };
+
+
+  const getSortIcon = (key) => {
+    if (sortConfig.key !== key) return "⇅";
+    return sortConfig.direction === "asc" ? "▲" : "▼";
+  };
+
+
   if (loading) return <p className={styles.message}>Loading your applied jobs...</p>;
   if (error) return <p className={styles.error}>{error}</p>;
 
@@ -70,15 +126,27 @@ const AppliedJobs = () => {
         <div className={styles.tableContainer}>
           {/* Header Row */}
           <div className={styles.headerRow}>
-            <span><FileText size={16} /> Title</span>
-            <span><Briefcase size={16} /> Company</span>
-            <span><MapPin size={16} /> Location</span>
-            <span><Calendar size={16} /> Date Posted</span>
+            <span onClick={() => sortJobs("title")} className={styles.sortable}>
+              <FileText size={16} /> Title <span className={styles.arrow}>{getSortIcon("title")}</span>
+            </span>
+            <span onClick={() => sortJobs("company")} className={styles.sortable}>
+              <Briefcase size={16} /> Company <span className={styles.arrow}>{getSortIcon("company")}</span>
+            </span>
+            <span onClick={() => sortJobs("location")} className={styles.sortable}>
+              <MapPin size={16} /> Location <span className={styles.arrow}>{getSortIcon("location")}</span>
+            </span>
+            <span onClick={() => sortJobs("date_posted")} className={styles.sortable}>
+              <Calendar size={16} /> Date Posted <span className={styles.arrow}>{getSortIcon("date_posted")}</span>
+            </span>
             <span><CheckCircle size={16} /> Active</span>
-            <span><Edit size={16} /> Status</span>
+            <span onClick={() => sortJobs("status")} className={styles.sortable}>
+              <Edit size={16} /> Status <span className={styles.arrow}>{getSortIcon("status")}</span>
+            </span>
             <span><StickyNote size={16} /> Notes</span>
             <span><ExternalLink size={16} /> URL</span>
-            <span><Clock size={16} /> Applied At</span>
+            <span onClick={() => sortJobs("applied_at")} className={styles.sortable}>
+              <Clock size={16} /> Applied At <span className={styles.arrow}>{getSortIcon("applied_at")}</span>
+            </span>
           </div>
 
           {/* Data Rows */}
