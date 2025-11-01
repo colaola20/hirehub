@@ -17,6 +17,8 @@ from app.routes.applications import applications_bp
 from app.routes.skills import skills_bp
 from app.routes.profile import profile_bp
 from app.routes.documents import documents_bp
+from datetime import timedelta
+
 
 from app.routes.chat_bot import chat_bp
 from flask_cors import CORS
@@ -44,6 +46,8 @@ def create_app():
     app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['JWT_SECRET_KEY'] = os.environ.get('JWT_SECRET_KEY') or 'jwt-secret-string'
+
+    app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=12) 
 
     # Allow requests from your frontend
     CORS(app, origins=["http://localhost:5173"])

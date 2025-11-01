@@ -123,6 +123,17 @@ const AppliedJobs = () => {
     return sortConfig.direction === "asc" ? "▲" : "▼";
   };
 
+  const updateJobNotes = (applicationId, newNotes) => {
+  setAppliedJobs((prevJobs) =>
+    prevJobs.map((app) =>
+      app.application_id === applicationId
+        ? { ...app, notes: newNotes }
+        : app
+    )
+  );
+};
+
+
 
   if (loading) return <p className={styles.message}>Loading your applied jobs...</p>;
   if (error) return <p className={styles.error}>{error}</p>;
@@ -202,6 +213,7 @@ const AppliedJobs = () => {
         <AppliedNotesModal
           job={selectedJob}
           onClose={handleCloseModal}
+          onUpdateNotes={updateJobNotes} 
         />
       )}
     </div>

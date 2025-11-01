@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { X, Edit3, Save } from "lucide-react";
 import styles from "./AppliedNotesModal.module.css";
 
-const AppliedNotesModal = ({ job, onClose }) => {
+const AppliedNotesModal = ({ job, onClose, onUpdateNotes }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [note, setNote] = useState(job.notes || "");
   const [saving, setSaving] = useState(false);
@@ -25,9 +25,10 @@ const AppliedNotesModal = ({ job, onClose }) => {
       if (!res.ok) throw new Error("Failed to save notes");
 
       const data = await res.json();
+
+      if (onUpdateNotes) onUpdateNotes(job.application_id, note);
       setIsEditing(false);
       setSaving(false);
-      
       
     } catch (err) {
       console.error("Error saving notes:", err);
