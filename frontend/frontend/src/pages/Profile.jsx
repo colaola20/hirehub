@@ -14,6 +14,8 @@ const Profile = () => {
     });
     const [newSkill, setNewSkill] = useState('');
     const [saving, setSaving] = useState(false);
+    const [uploadingImage, setUploadingImage] = useState(false);
+    const [imagePreview, setImagePreview] = useState(null);
 
     useEffect(() => {
         const fetchProfileData = async () => {
@@ -69,6 +71,7 @@ const Profile = () => {
                     education: profileData.profile.education || '',
                     experience: profileData.profile.experience || '',
                     skills: profileData.profile.skills || [],
+                    profileImage: profileData.profile.profile_image || null,
 
                     // Computed data
                     numberApplications: 0, // TODO: Add applications endpoint
@@ -210,6 +213,60 @@ const Profile = () => {
         }
     };
 
+    const handleImageUpload = async (event) => {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        // Validate file type
+        const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg'];
+        if (!allowedTypes.includes(file.type)) {
+            alert('Only PNG, JPG, and JPEG images are allowed');
+            return;
+        }
+
+        // Validate file size (5MB)
+        if (file.size > 5 * 1024 * 1024) {
+            alert('File size must be less than 5MB');
+            return;
+        }
+
+        try {
+            setUploadingImage(true);
+            const token = localStorage.getItem("token");
+
+            const formData = new FormData();
+            formData.append('image', file);
+
+            const response = await fetch('/api/profile/image', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+                body: formData
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Failed to upload image');
+            }
+
+            const data = await response.json();
+
+            // Update profile data with new image
+            setProfileData({
+                ...profileData,
+                profileImage: data.profile_image
+            });
+
+            setUploadingImage(false);
+            alert('Profile image updated successfully!');
+        } catch (err) {
+            console.error('Error uploading image:', err);
+            alert(err.message || 'Failed to upload image. Please try again.');
+            setUploadingImage(false);
+        }
+    };
+
     if (loading) {
         return (
             <div className={styles.container}>
@@ -244,8 +301,28 @@ const Profile = () => {
         <div className={styles.container}>
             <div className={styles.profileCard}>
                 <div className={styles.header}>
-                    <div className={styles.avatar}>
-                        {profileData.firstName.charAt(0)}{profileData.lastName.charAt(0)}
+                    <div className={styles.avatarContainer}>
+                        {profileData.profileImage ? (
+                            <img
+                                src={`/api/profile/image/${profileData.profileImage}`}
+                                alt="Profile"
+                                className={styles.avatar}
+                            />
+                        ) : (
+                            <div className={styles.avatar}>
+                                {profileData.firstName.charAt(0)}{profileData.lastName.charAt(0)}
+                            </div>
+                        )}
+                        <label className={styles.uploadButton}>
+                            <input
+                                type="file"
+                                accept="image/png, image/jpeg, image/jpg"
+                                onChange={handleImageUpload}
+                                disabled={uploadingImage}
+                                style={{ display: 'none' }}
+                            />
+                            {uploadingImage ? 'Uploading...' : 'Change Photo'}
+                        </label>
                     </div>
                     <div className={styles.headerInfo}>
                         <h1 className={styles.name}>

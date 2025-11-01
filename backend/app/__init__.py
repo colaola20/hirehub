@@ -30,6 +30,7 @@ from app.models.profile import Profile
 from app.models.skill import Skill
 from app.models.profile import Profile
 from app.models.skill import Skill
+from app.routes.chat_bot import chat_bp
 
 load_dotenv()
 
@@ -43,6 +44,11 @@ def create_app():
     app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['JWT_SECRET_KEY'] = os.environ.get('JWT_SECRET_KEY') or 'jwt-secret-string'
+
+    # File upload configuration
+    app.config['UPLOAD_FOLDER'] = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'uploads')
+    app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024  # 5MB max file size
+    app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg'}
 
     # Allow requests from your frontend
     CORS(app, origins=["http://localhost:5173"])
@@ -85,5 +91,6 @@ def create_app():
     app.register_blueprint(applications_bp)
     app.register_blueprint(documents_bp)
     
+    app.register_blueprint(chat_bp, url_prefix="/api") 
 
     return app
