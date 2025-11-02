@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import PersonalizedNavbar from '../components/PersonalizedNavbar'
 import * as Yup from 'yup'
+import ProgressIndicator from "../components/ProgressIndicator";
+import PersonalStep from "../components/PersonalStep";
+import ResumeViewStep from "../components/ResumeViewStep"
 
 import './resumeform.css';
 
@@ -89,7 +92,7 @@ const ResumeForm = () => {
     }
 
     const nextStep = () => {
-        if (currentStep < 6) setCurrentStep(currentStep + 1);
+        if (currentStep < 7) setCurrentStep(currentStep + 1);
     }
 
 
@@ -111,79 +114,7 @@ const ResumeForm = () => {
     // Currently 6 steps
     // add 7th to view resume
 
-    const PersonalStep = ({ formData, onChange }) => (  // PERSONAL INFO STEP //
-        <div className="resume-form">
-            <h2>Personal Information</h2>
-            <p>Name</p>
-            <input
-                type="text"
-                placeholder="Full Name"
-                value={formData.fullname}
-                onChange={onChange}
-                required
-            />
-            <p>Email</p>
-            <input
-                type="email"
-                placeholder="Email"
-                value={formData.email}
-                onChange={onChange}
-                required
-            />
-            <p>Phone Number</p>
-            <input
-                type="text"
-                placeholder="Phone Number"
-                value={formData.phNum}
-                onChange={onChange}
-                required
-            />
-            <p>Location</p>
-            <div className="location-form">
-                <input
-                    type="text"
-                    placeholder="Address"
-                    value={formData.address}
-                    onChange={onChange}
-                    required
-                />
-                {/* City */}
-                <input
-                    type="text"
-                    placeholder="City Name"
-                    value={formData.city}
-                    onChange={onChange}
-                    required
-                />
-                {/* State */}
-                <input
-                    type="text"
-                    placeholder="State Name"
-                    value={formData.state}
-                    onChange={onChange}
-                    required
-                />
-                {/* Zip */}
-                <input
-                    type="text"
-                    placeholder="Zip Code"
-                    value={formData.zip}
-                    onChange={onChange}
-                    required
-                />
-            </div>
-
-            <p>Summary</p>
-            <input
-                type="text"
-                placeholder="Summary Generation (separate keywords by commas)"
-                value={formData.summary}
-                onChange={onChange}
-
-            />
-
-        </div>
-    );
+    
 
     const SocialStep = ({ formData, onChange }) => ( // SOCIAL INFO STEP //
 
@@ -373,25 +304,6 @@ const ResumeForm = () => {
 
     }
 
-    const ProgressIndicator = ({ currentStep }) => (
-        <div>
-            <span>Step {currentStep} of 6</span>
-            <div className="progress-bar">
-                <div style={{ width: `${(currentStep / 3) * 100}%` }}></div>
-            </div>
-        </div>
-    );
-
-
-    // const mainStep = ({ formData, onChange }) => ( ------------maybe insert resume view step------------
-    //     <div>
-
-    //         <h2>Main Information</h2>
-
-    //     </div>
-    // );
-
-
 
 
 
@@ -404,16 +316,11 @@ const ResumeForm = () => {
             <PersonalizedNavbar />
 
             <div className="form-box">
-                <h1>Resume Builder Form</h1>
+                <h1>Let's Build Your Resume!</h1>
+                <br />
 
                 {/* Debug Progress bar component later on */}
-                {/* <ProgressIndicator/> */}
-                <div>
-                    <span>Step {currentStep} of 6</span>
-                    <div className="progress-bar">
-                        <div style={{ width: `${(currentStep / 3) * 100}%` }}></div>
-                    </div>
-                </div>
+                <ProgressIndicator currentStep={currentStep}/>
 
                 
 
@@ -424,11 +331,12 @@ const ResumeForm = () => {
                     {currentStep === 4 && <JobStep formData={formData.personalInfoStep} onChange={handleInputChange} />}
                     {currentStep === 5 && <SchoolStep formData={formData.personalInfoStep} onChange={handleInputChange} />}
                     {currentStep === 6 && <ProjectStep formData={formData.personalInfoStep} onChange={handleInputChange} />}
+                    {currentStep === 7 && <ResumeViewStep/>}
                 </div>
 
                 <div className="prog-btn">
                     {currentStep > 1 ? (<button className="prog-btn-btn" onClick={prevStep}>Previous</button>) : (<span className="placeholder"></span>)}
-                    {currentStep < 6 ? (<button className="prog-btn-btn" onClick={nextStep}>Next</button>) : (<button className="submit-form-btn">Generate</button>)}
+                    {currentStep < 7 ? (<button className="prog-btn-btn" onClick={nextStep}>Next</button>) : (<button onClick={nextStep} className="submit-form-btn">Generate</button>)}
                 </div>
             </div>
         </div>
