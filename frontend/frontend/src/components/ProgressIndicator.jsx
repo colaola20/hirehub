@@ -12,7 +12,7 @@ const ProgressIndicator = ({ currentStep }) => {
                 <span>Step {currentStep} of 7</span>
             </div>
             <div className="progress-bar">
-                <div style={{ width: `${(progressPercent)}%` , backgroundColor: 'blue'}}></div>
+                <div style={{ width: `${(progressPercent)}%`}}></div>
             </div>
         </div>
     );
