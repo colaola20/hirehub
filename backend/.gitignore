@@ -5,16 +5,17 @@ env/
 .env
 __pycache__/
 *.pyc
-**/__pycache__/
-*.py[cod]
 *.pyo
+*.pyd
 
-frontend/node_modules/
-frontend/build/
-
+# OS / editor
 .DS_Store
 .vscode/
 .idea/
+
+
+# database / logs
+*.sqlite3
 *.log
 
 backend/Lib/

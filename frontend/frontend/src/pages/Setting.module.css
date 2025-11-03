@@ -1,0 +1,14 @@
+.settingContainer {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    box-sizing: border-box;
+    align-items: center;
+    padding: 20px;
+}
+
+.separator {
+  width: 100%;
+  border-top: 2px solid #ccc;
+  margin: 0;
+}
