@@ -95,6 +95,6 @@ def create_app():
     app.register_blueprint(chat_bp, url_prefix="/api") 
 
     
-    app.register_blueprint(chat_bp, url_prefix="/api") 
+   
 
     return app
