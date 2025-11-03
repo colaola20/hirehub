@@ -10,6 +10,7 @@ class Profile(db.Model):
     headline = db.Column(db.String(255))
     education = db.Column(db.Text)
     experience = db.Column(db.Text)
+    profile_image = db.Column(db.String(500))  # Store image filename
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     updated_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
 
@@ -27,6 +28,7 @@ class Profile(db.Model):
             'education': self.education,
             'skills': [skill.skill_name for skill in self.skills],
             'experience': self.experience,
+            'profile_image': self.profile_image,
             'created_at': self.created_at.isoformat() if self.created_at else None,
             'updated_at': self.updated_at.isoformat() if self.updated_at else None
         }
