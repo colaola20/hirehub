@@ -121,14 +121,19 @@ export default function Chatbot({ job }) {
       style={{ top: 0, bottom: 0, alignItems: "flex-start" }}
     >
       {/* Full-height chat card */}
-      <div className={styles.chatCard} style={{ height: "100vh" }}>
+      <div
+      className={`${styles.chatCard} ${minimized ? styles.minimized : ""}`}
+      style={{ height: minimized ? 32 : "100vh" }}>
+
         {/* NAVBAR (uses your existing .chatHeader style) */}
         <div className={styles.chatHeader}>
           <strong>Job Assistant</strong>
           <button
+            type="button"
             onClick={() => setMinimized((m) => !m)}
             className={styles.chatMinBtn}
             aria-label={minimized ? "Expand chat" : "Minimize chat"}
+            aria-pressed={minimized}
           />
       </div>
 
