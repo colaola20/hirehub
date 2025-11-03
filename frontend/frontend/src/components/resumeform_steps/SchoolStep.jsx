@@ -1,4 +1,4 @@
-import '../pages/resumeform.css'
+import './stepstyle.css'
 
 const SchoolComponent = ({ formData, onChange }) => {
         return (

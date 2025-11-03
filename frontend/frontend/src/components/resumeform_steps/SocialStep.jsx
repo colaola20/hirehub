@@ -1,4 +1,4 @@
-import '../pages/resumeform.css'
+import './stepstyle.css'
 
 const SocialStep = ({ formData, onChange }) => ( // SOCIAL INFO STEP //
 

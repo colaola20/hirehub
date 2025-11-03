@@ -1,5 +1,5 @@
 import React from 'react';
-import '../pages/resumeform.css'
+import './stepstyle.css'
 
 const PersonalStep = ({ formData, onChange }) => (  // PERSONAL INFO STEP //
         <div className="resume-form">
