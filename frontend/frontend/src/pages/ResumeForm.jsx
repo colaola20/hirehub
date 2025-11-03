@@ -129,7 +129,7 @@ const ResumeForm = () => {
     return (
 
         <div className="container">
-            <PersonalizedNavbar />
+            {/* <PersonalizedNavbar /> */}
 
             <div className="form-box">
                 <h1>Let's Build Your Resume!</h1>
@@ -137,6 +137,10 @@ const ResumeForm = () => {
 
                 {/* Debug Progress bar component later on */}
                 <ProgressIndicator currentStep={currentStep}/>
+                <div className="prog-btn">
+                    {currentStep > 1 ? (<button className="prog-btn-btn" onClick={prevStep}>Previous</button>) : (<span className="placeholder"></span>)}
+                    {currentStep < 7 ? (<button className="prog-btn-btn" onClick={nextStep}>Next</button>) : (<button onClick={nextStep} className="submit-form-btn">Generate</button>)}
+                </div>
 
                 
 
@@ -148,11 +152,6 @@ const ResumeForm = () => {
                     {currentStep === 5 && <SchoolStep formData={formData.personalInfoStep} onChange={handleInputChange} />}
                     {currentStep === 6 && <ProjectStep formData={formData.personalInfoStep} onChange={handleInputChange} />}
                     {currentStep === 7 && <ResumeViewStep/>}
-                </div>
-
-                <div className="prog-btn">
-                    {currentStep > 1 ? (<button className="prog-btn-btn" onClick={prevStep}>Previous</button>) : (<span className="placeholder"></span>)}
-                    {currentStep < 7 ? (<button className="prog-btn-btn" onClick={nextStep}>Next</button>) : (<button onClick={nextStep} className="submit-form-btn">Generate</button>)}
                 </div>
             </div>
         </div>
