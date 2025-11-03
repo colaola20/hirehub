@@ -111,9 +111,10 @@ const ResumeForm = () => {
         TODO -------------------------------------------- 
         Add + option for work experience, school and projects (just need to add functionality)
         fix heights per step and/or make smooth transition when height changes
-        get progress bar to show
 
-        move all components to a file in components folder (maybe)
+        make form more consistent with styling
+        fix spacing between elements
+        look at other resume forms to get ideas
     */
 
 
