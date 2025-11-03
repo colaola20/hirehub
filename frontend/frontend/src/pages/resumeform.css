@@ -120,7 +120,7 @@
 }
 
 
-.submit-form-btn{
+.submit-btn{
     background: linear-gradient(to right, #86bbf0, #562fac);
     color: white;
     border: 1px solid black;
@@ -136,19 +136,30 @@
 }
 
 .prog-btn-btn{
-    background-color: #2c1950;
+    background-color: rgba(20, 15, 40, 0.65);
+    width: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.prog-btn-btn button:hover{
-    background-color: #48288f;
+.prog-btn-btn:hover{
+    background-color: rgba(69, 41, 131, 0.65);
+    transition: background-color 0.05s ease;
 }
 
 .submit-form-btn{
-    background-color: #4db9d3;
+    background-color: rgba(77, 185, 211, 0.65);
+    width: 90px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.submit-form-btn:hover{
-    background-color: #00ccff;
+.submit-form-btn:hover{ 
+    background-color: rgba(0, 204, 255, 0.748);
+    transition: background-color 0.05s ease;
 }
 
 .resume-generation{
