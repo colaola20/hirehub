@@ -5,7 +5,6 @@ import JoditEditor from "jodit-react";
 import styles from "./job_dashboard.module.css";
 
 export default function Chatbot({ job }) {
-  const [open, setOpen] = useState(true);
   const [messages, setMessages] = useState([
     { role: "assistant", content: "Hi! Ask me anything about this job, your resume bullets, or a mini cover letter." }
   ]);
@@ -21,7 +20,10 @@ export default function Chatbot({ job }) {
   const [editorOpen, setEditorOpen] = useState(false);
   const [editorValue, setEditorValue] = useState("");
 
-  // === NEW: quick prompts shown in the center before first user message ===
+  // NEW: minimized state for navbar button
+  const [minimized, setMinimized] = useState(false);
+
+  // quick prompts
   const quickPrompts = [
     "Draft 3 resume bullets from this JD",
     "Write a 120-word mini cover letter",
@@ -30,7 +32,7 @@ export default function Chatbot({ job }) {
     "What keywords should I add to my resume?"
   ];
 
-  // NOTE: send() now accepts an optional preset string; existing calls still work
+  // send stays the same
   const send = async (preset) => {
     const raw = typeof preset === "string" ? preset : input;
     const text = (raw || "").trim();
@@ -88,7 +90,7 @@ export default function Chatbot({ job }) {
     }
   };
 
-  // === NEW: open editor with last assistant reply ===
+  // editor helpers unchanged
   const openInEditor = () => {
     if (!lastAssistant) return;
     setEditorValue(lastAssistant);
@@ -96,10 +98,7 @@ export default function Chatbot({ job }) {
   };
 
   const applyEditorChanges = () => {
-    // write edits back so PDF uses the edited content
     setLastAssistant(editorValue);
-
-    // also reflect the edited reply in the chat history (replace last assistant bubble if it was last)
     setMessages((prev) => {
       for (let i = prev.length - 1; i >= 0; i--) {
         if (prev[i].role === "assistant") {
@@ -110,113 +109,126 @@ export default function Chatbot({ job }) {
       }
       return prev;
     });
-
     setEditorOpen(false);
   };
 
   const hasUserMessage = messages.some((m) => m.role === "user");
 
   return (
-    <div className={styles.chatDock}>
-      <button className={styles.chatToggle} onClick={() => setOpen(!open)}>
-        {open ? "×" : "Chat"}
-      </button>
+    // stick to top and full-height without touching your CSS file
+    <div
+      className={styles.chatDock}
+      style={{ top: 0, bottom: 0, alignItems: "flex-start" }}
+    >
+      {/* Full-height chat card */}
+      <div className={styles.chatCard} style={{ height: "100vh" }}>
+        {/* NAVBAR (uses your existing .chatHeader style) */}
+        <div className={styles.chatHeader}>
+          <strong>Job Assistant</strong>
+          <button
+            onClick={() => setMinimized((m) => !m)}
+            className={styles.chatMinBtn}
+            aria-label={minimized ? "Expand chat" : "Minimize chat"}
+          />
+      </div>
 
-      {open && (
-        <div className={styles.chatCard}>
-          <div className={styles.chatHeader}>
-            <strong>Job Assistant</strong>
-            <span className={styles.chatSub}>Groq</span>
-          </div>
 
-          <div className={styles.chatBox} ref={boxRef}>
-            {messages.map((m, i) => (
-              <div key={i} className={m.role === "user" ? styles.msgUser : styles.msgAssistant}
-                   dangerouslySetInnerHTML={ m.role === "assistant"
-                     ? { __html: m.content } // allow rich text rendering
-                     : undefined }>
-                {m.role === "user" ? m.content : null}
-              </div>
-            ))}
+        {/* Hide body when minimized */}
+        {!minimized && (
+          <>
+            <div className={styles.chatBox} ref={boxRef}>
+              {messages.map((m, i) => (
+                <div
+                  key={i}
+                  className={m.role === "user" ? styles.msgUser : styles.msgAssistant}
+                  dangerouslySetInnerHTML={
+                    m.role === "assistant" ? { __html: m.content } : undefined
+                  }
+                >
+                  {m.role === "user" ? m.content : null}
+                </div>
+              ))}
 
-            {/* === NEW: Centered pre-defined prompts (only before first user message) === */}
-            {!loading && !hasUserMessage && (
-              <div
-                style={{
-                  display: "grid",
-                  gap: "10px",
-                  gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-                  alignItems: "center",
-                  justifyItems: "center",
-                  width: "100%",
-                  maxWidth: 720,
-                  margin: "24px auto 8px",
-                  padding: "8px 0",
-                  opacity: 0.95
-                }}
-              >
-                {quickPrompts.map((p, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => send(p)}
-                    aria-label={`Use prompt: ${p}`}
-                    style={{
-                      cursor: "pointer",
-                      border: "1px solid rgba(255,255,255,0.12)",
-                      background: "rgba(255,255,255,0.06)",
-                      padding: "10px 14px",
-                      borderRadius: "999px",
-                      fontSize: "0.95rem",
-                      lineHeight: 1.25,
-                      textAlign: "center",
-                      width: "100%",
-                      transition: "transform 120ms ease, background 120ms ease, border-color 120ms ease",
-                      backdropFilter: "blur(2px)",
-                      WebkitBackdropFilter: "blur(2px)",
-                      color: "inherit"
-                    }}
-                    onMouseDown={(e) => e.currentTarget.style.transform = "scale(0.98)"}
-                    onMouseUp={(e) => e.currentTarget.style.transform = "scale(1)"}
-                    onMouseLeave={(e) => e.currentTarget.style.transform = "scale(1)"}
-                  >
-                    {p}
-                  </button>
-                ))}
-              </div>
-            )}
+              {!loading && !hasUserMessage && (
+                <div
+                  style={{
+                    display: "grid",
+                    gap: "10px",
+                    gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+                    alignItems: "center",
+                    justifyItems: "center",
+                    width: "100%",
+                    maxWidth: 720,
+                    margin: "24px auto 8px",
+                    padding: "8px 0",
+                    opacity: 0.95
+                  }}
+                >
+                  {quickPrompts.map((p, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => send(p)}
+                      aria-label={`Use prompt: ${p}`}
+                      style={{
+                        cursor: "pointer",
+                        border: "1px solid rgba(255,255,255,0.12)",
+                        background: "rgba(255,255,255,0.06)",
+                        padding: "10px 14px",
+                        borderRadius: "999px",
+                        fontSize: "0.95rem",
+                        lineHeight: 1.25,
+                        textAlign: "center",
+                        width: "100%",
+                        transition:
+                          "transform 120ms ease, background 120ms ease, border-color 120ms ease",
+                        backdropFilter: "blur(2px)",
+                        WebkitBackdropFilter: "blur(2px)",
+                        color: "inherit"
+                      }}
+                      onMouseDown={(e) => (e.currentTarget.style.transform = "scale(0.98)")}
+                      onMouseUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
+                      onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+                    >
+                      {p}
+                    </button>
+                  ))}
+                </div>
+              )}
 
-            {loading && <div className={styles.msgAssistant}>Thinking…</div>}
-          </div>
+              {loading && <div className={styles.msgAssistant}>Thinking…</div>}
+            </div>
 
-          <div className={styles.chatInputRow}>
-            <textarea
-              className={styles.chatInput}
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={onKey}
-              placeholder="e.g., Draft 3 resume bullets from this JD"
-              rows={2}
-            />
-            <button className={styles.chatSend} onClick={() => send()} disabled={loading || !input.trim()}>
-              Send
-            </button>
-            <button className={styles.chatExport} onClick={downloadPdf} disabled={!lastAssistant || loading}>
-              PDF
-            </button>
-            {/* NEW: Open in Editor button */}
-            <button className={styles.chatEditorBtn} onClick={openInEditor} disabled={!lastAssistant || loading}>
-              Open in Editor
-            </button>
-          </div>
-        </div>
-      )}
+            <div className={styles.chatInputRow}>
+              <textarea
+                className={styles.chatInput}
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={onKey}
+                placeholder="e.g., Draft 3 resume bullets from this JD"
+                rows={2}
+              />
+              <button className={styles.chatSend} onClick={() => send()} disabled={loading || !input.trim()}>
+                Send
+              </button>
+              <button className={styles.chatExport} onClick={downloadPdf} disabled={!lastAssistant || loading}>
+                PDF
+              </button>
+              <button className={styles.chatEditorBtn} onClick={openInEditor} disabled={!lastAssistant || loading}>
+                Open in Editor
+              </button>
+            </div>
+          </>
+        )}
+      </div>
 
-      {/* === NEW: Editor Modal === */}
+      {/* Editor Modal unchanged */}
       {editorOpen && (
-        <div className={styles.editorOverlay} onMouseDown={(e) => {
-          // click outside to close (optional). Remove if you don't want this behavior.
-          if (e.target.classList.contains(styles.editorOverlay)) setEditorOpen(false);
-        }}>
+        <div
+          className={styles.editorOverlay}
+          onMouseDown={(e) => {
+            if (e.target.classList.contains(styles.editorOverlay)) setEditorOpen(false);
+          }}
+        >
           <div className={styles.editorModal} onMouseDown={(e) => e.stopPropagation()}>
             <div className={styles.editorHeader}>
               <strong>Edit Assistant Reply</strong>
@@ -232,9 +244,7 @@ export default function Chatbot({ job }) {
                   readonly: false,
                   toolbarSticky: false,
                   toolbarAdaptive: false,
-                  // lets images work without a server
                   uploader: { insertImageAsBase64URI: true },
-                  // a generous toolbar; trim as you like
                   buttons:
                     "source,|,undo,redo,|,font,fontsize,paragraph,|,bold,italgic,underline,strikethrough,|" +
                     "superscript,subscript,|,align,|,ul,ol,indent,outdent,|,lineHeight,|,fontcolor,background,|" +
