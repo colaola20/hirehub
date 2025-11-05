@@ -6,6 +6,7 @@ const ProjectComponent = ({ formData, onChange }) => {
                 
                 <input
                     type="text"
+                    name='projTitle'
                     placeholder="Project Title"
                     value={formData.projTitle}
                     onChange={onChange}
@@ -13,6 +14,7 @@ const ProjectComponent = ({ formData, onChange }) => {
                 
                 <input
                     type="text"
+                    name='projDesc'
                     placeholder="Project Description"
                     value={formData.projDesc}
                     onChange={onChange}
@@ -20,6 +22,7 @@ const ProjectComponent = ({ formData, onChange }) => {
                 
                 <input
                     type="url"
+                    name='projLink'
                     placeholder="Project Link"
                     value={formData.projLink}
                     onChange={onChange}
