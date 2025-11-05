@@ -332,4 +332,4 @@ def get_filter_settings():
 @jwt_required()
 def get_user_info():
     user = User.query.get(get_jwt_identity())
-    return jsonify(user.email or "")
+    return jsonify(user.email or {})
