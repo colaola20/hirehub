@@ -4,6 +4,7 @@ import { useState, useEffect} from "react"
 const Settings = () => {
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [email, setEmail] = useState("")
     useEffect(() => {
         const fetchUserEmail = async () => {
             try {
@@ -13,21 +14,54 @@ const Settings = () => {
                     setLoading(false);
                     return;
                 }
+
+                const userInfoResponse = await fetch('/api/user-email', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                })
+
+                if (!userInfoResponse.ok) {
+                    throw new Error('Failed to user email');
+                }
+
+                const userEmail = await userInfoResponse.json()
+                setEmail(userEmail)
+
             } catch (err) {
-                console.error('Error fetching profile:', err);
+                console.error('Error fetching user email:', err);
                 setError(err.message);
                 setLoading(false);
             }
         }
-    })
+        fetchUserEmail()
+    }, [])
 
     return (
         <div className={styles.settingContainer}>
-            <h3>Login & Security</h3>
-            <div className={styles.separator}></div>
             <div className={styles.loginSection}>
-                <h5>Email</h5>
-                <p></p>
+                <h3>Login & Security</h3>
+                <div className={styles.separator}></div>
+                <div className={styles.email}>
+                    <h5>Email</h5>
+                    <p>{email}</p>
+                </div>
+                <div className={styles.password} >
+                    <h5>Password</h5>
+                    <button className={styles.setBtn}>Reset password</button>
+                </div>
+                <div className={styles.deleteAccount}>
+                    <div>
+                        <h5>Delete my acount</h5>
+                        <p>Permanently delete your HireHub account and all associated data</p>
+                    </div>
+                    <button className={styles.setBtn}>Delete my account</button>
+                </div>
+            </div>
+            <div className={styles.alertsPreference}>
+                <h3>Job Alerts Preference</h3>
+                <div className={styles.separator}></div>
             </div>
         </div>
     )

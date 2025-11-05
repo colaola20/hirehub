@@ -2,9 +2,10 @@
     display: flex;
     flex-direction: column;
     width: 100%;
+    gap: 2rem;
     box-sizing: border-box;
     align-items: center;
-    padding: 20px;
+    padding: 3rem;
     background: rgba(20, 15, 40, 0.75);
     height: 100vh;
     -webkit-backdrop-filter: blur(12px);
@@ -12,13 +13,69 @@
     border: 1px solid rgba(255, 255, 255, 0.05);
     border-radius: 12px;
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
-    padding: 40px;
     color: #ffffff;
     transition: all 0.3s ease;
 }
+
+.loginSection, .alertsPreference {
+  width: 100%;
+}
+
+.email,
+.password,
+.deleteAccount {
+}
+
+.password, .deleteAccount {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.password {
+  margin: 1.5rem 0;
+}
+
+h3 {
+  margin:0 0 0.5rem 0;
+  font-size:1.2rem;
+  letter-spacing:0.2px;
+}
+
+h5 {
+  margin:0 0 6px 0;
+  font-size: 1rem;
+}
+
+p {
+  margin: 0;
+  color: #9aa4b2;
+}
+
 
 .separator {
   width: 100%;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   margin: 0;
+  margin-bottom: 1.5rem;
+}
+
+
+.setBtn {
+  padding: 10px 24px;
+  background: linear-gradient(135deg, #8ec5fc 0%, #e0c3fc 100%);
+  border: none;
+  border-radius: 8px;
+  height: 2.5rem;
+  color: #2b155a;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(142, 197, 252, 0.3);
+}
+
+.editBusetBtntton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(142, 197, 252, 0.4);
 }
