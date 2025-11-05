@@ -43,13 +43,13 @@ const ResumeForm = () => {
 
         },
 
-        step5:{
+        step5: {
 
             school: '', degree: '', gradYear: ''
 
         },
 
-        step6:{
+        step6: {
 
             projTitle: '', projDesc: '', projLink: ''
 
@@ -94,31 +94,6 @@ const ResumeForm = () => {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-
-        // let key;
-        // switch (currentStep){
-        //     case 1:
-        //         key = 'personalInfoStep';
-        //         break;
-                
-        //     case 2:
-        //         key = 'socialInfoStep';
-        //         break;
-            
-        //     case 3:
-        //         key = 'miscinfoStep';
-        //         break;
-            
-        //     case 4:
-        //     case 5:
-        //     case 6:
-        //         key = 'maininfoStep';
-        //         break;
-
-
-        //     default:
-        //         return;
-        // }
 
         setFormData({
             ...formData,
@@ -172,13 +147,16 @@ const ResumeForm = () => {
                 <br />
 
                 {/* Debug Progress bar component later on */}
-                <ProgressIndicator currentStep={currentStep}/>
+                <ProgressIndicator currentStep={currentStep} />
                 <div className="prog-btn">
                     {currentStep > 1 ? (<button className="prog-btn-btn" onClick={prevStep}>Previous</button>) : (<span className="placeholder"></span>)}
+                    <div className="progress-indicator">
+                        <span>Step {currentStep} of 7</span>
+                    </div>
                     {currentStep < 7 ? (<button className="prog-btn-btn" onClick={nextStep}>Next</button>) : (<button onClick={nextStep} className="submit-form-btn">Generate</button>)}
                 </div>
 
-                
+
 
                 <div className="resume-form-container">
                     {currentStep === 1 && <PersonalStep formData={formData.step1} onChange={handleInputChange} />}
@@ -187,7 +165,7 @@ const ResumeForm = () => {
                     {currentStep === 4 && <JobStep formData={formData.step4} onChange={handleInputChange} />}
                     {currentStep === 5 && <SchoolStep formData={formData.step5} onChange={handleInputChange} />}
                     {currentStep === 6 && <ProjectStep formData={formData.step6} onChange={handleInputChange} />}
-                    {currentStep === 7 && <ResumeViewStep/>}
+                    {currentStep === 7 && <ResumeViewStep />}
                 </div>
             </div>
         </div>

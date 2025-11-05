@@ -17,9 +17,6 @@ const ProgressIndicator = ({ currentStep }) => {
                     ></div>
                 ))}
             </div>
-            <div className="progress-indicator">
-                <span>Step {currentStep} of 7</span>
-            </div>
         </div>
     );
 }
