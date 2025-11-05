@@ -2,7 +2,7 @@
     display: flex;
     flex-direction: column;
     width: 100%;
-    gap: 2rem;
+    gap: 1rem;
     box-sizing: border-box;
     align-items: center;
     padding: 3rem;
@@ -24,6 +24,7 @@
 .email,
 .password,
 .deleteAccount {
+  margin:1.2rem 0 0 0;
 }
 
 .password, .deleteAccount {
@@ -36,19 +37,16 @@
   margin: 1.5rem 0;
 }
 
-.email,
-.password,
-.deleteAccount h3 {
-  margin:0 0 0.5rem 0;
+.title {
+  margin-bottom: 0.3rem;
   font-size:1.2rem;
   letter-spacing:0.2px;
 }
 
-.email,
-.password,
-.deleteAccount h5 {
+.label {
   margin:0 0 6px 0;
   font-size: 1rem;
+  color: #ffffff;
 }
 
 .email,
