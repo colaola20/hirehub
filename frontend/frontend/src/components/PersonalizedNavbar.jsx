@@ -2,7 +2,7 @@ import React, {useState} from 'react'
 import {Link, useNavigate} from 'react-router-dom'
 import styles from './Navbar.module.css'
 
-const PersonalizedNavbar = () => {
+const PersonalizedNavbar = ({ onShowLiked, onShowRecommended,onShowApplied }) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const navigate = useNavigate();
 
@@ -49,20 +49,32 @@ const PersonalizedNavbar = () => {
         }
     }
 
+
     return (
         <header className={styles["angle2-nav"]}>
             <div className={styles["angle2-container"]}>
                 <h2>JOBS:</h2>
                 <nav className={styles["angle2-links"]}>
-                    <Link to="/">
+                    <button
+                        type="button"
+                        className={styles.linkButton}
+                    >
                         Recommended
-                    </Link>
-                    <Link to="/">
+                    </button>
+                    <button 
+                        type="button"
+                        className={styles.linkButton}
+                        onClick={(e) => { e.preventDefault(); onShowLiked?.(); }}
+                    >
                         Liked
-                    </Link>
-                    <Link to="/">
+                    </button>
+                    <button 
+                        type="button"
+                        className={styles.linkButton}
+                        onClick={(e) => { e.preventDefault(); onShowApplied?.(); }}
+                        >
                         Applied
-                    </Link>
+                    </button>
 
                 </nav>
                 {/* right side actions (buttons etc) */}

@@ -33,7 +33,7 @@ body, .container {
   display: grid;
   grid-template-columns: 250px 1fr;
   gap: var(--gap);
-  max-width: 1600px;
+  max-width: 1700px;
   width: 100%;
   margin: 0 auto;
   align-items: start;
@@ -45,10 +45,14 @@ body, .container {
 }
 
 .dashboard-container {
-  grid-column: 2/3;
   display: flex;
   flex-direction: column;
-  min-height: 0;;
+  flex: 1; 
+  grid-column: 2/3;
+  min-height: 0;
+  box-sizing: border-box;
+  height: 100%;
+  /* background-color: green; */
 }
 
 /* gradient (like .angle2-root::before) */
@@ -86,11 +90,12 @@ body, .container {
 
 /* 2) Main container: glass panel instead of plain transparent box */
 .dashboard-container .main-content {
-  flex: 2/3;
+  flex: 1;
   display: flex;
   flex-direction: column;
   width: 100%;
   box-sizing: border-box;
+  
 }
 
 /* 3) Columns — keep widths but ensure content reads well on the glass */
@@ -123,12 +128,15 @@ body, .container {
 .dashboard-container .main-content {
   background: rgba(255,255,255,0.02);
   border-radius: 12px;
-  padding: 20px;
+  /* padding: 20px; */
   width: 100%;
   min-height: calc(100vh - var(--nav-h) - 120px);
   box-shadow: 0 8px 30px rgba(2,6,23,0.45);
   box-sizing: border-box;
-  display: block;
+  display: flex;
+  align-items: center;
+  
+  /* justify-content: center; */
 }
 
 @media (max-width: 900px) {

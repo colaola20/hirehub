@@ -10,6 +10,7 @@ import urllib.parse
 from werkzeug.security import generate_password_hash
 from flask import current_app
 import traceback
+from app.extensions import db
 
 users_bp = Blueprint('users', __name__)
 
@@ -166,30 +167,7 @@ def logout():
 # ------------------------
 # Profile
 # ------------------------
-@users_bp.route('/api/profile', methods=['GET'])
-@jwt_required()
-def get_user_profile():
-    """Get current user's profile."""
-    try:
-        current_user_id = int(get_jwt_identity())
-        user = DatabaseService.get_by_id(User, current_user_id)
-
-        if not user:
-            return jsonify({'status': 'error', 'message': 'User not found'}), 404
-
-        return jsonify({
-            'status': 'success',
-            'message': 'Profile retrieved successfully',
-            'data': user.to_dict()
-        }), 200
-
-    except Exception as e:
-        return jsonify({
-            'status': 'error',
-            'message': 'Failed to retrieve profile',
-            'error': str(e)
-        }), 500
-
+# Note: /api/profile endpoint moved to profile.py for full profile management
 
 # ------------------------
 # Forgot Password
@@ -316,3 +294,32 @@ def reset_password():
     except Exception as e:
         current_app.logger.error("reset-password outer crash:\n%s", traceback.format_exc())
         return jsonify({"status": "error", "where": "outer", "error": type(e).__name__, "message": str(e)}), 500
+    
+# ------------------------
+# Filters setter
+# ------------------------
+@users_bp.route("/api/filter-settings", methods=["POST"])
+@jwt_required()
+def save_filter_settings():
+    data = request.get_json() or {}
+    try:
+        current_user_id = int(get_jwt_identity())
+    except Exception:
+        current_user_id = get_jwt_identity()
+
+    user = User.query.get(current_user_id)
+    if not user:
+        return jsonify({"status": "error", "message": "User not found"}), 404
+    user.saved_filters = data
+    db.session.commit()
+    return jsonify({"status": "ok"}), 200
+
+
+# ------------------------
+# Filters getter
+# ------------------------
+@users_bp.route("/api/filter-settings", methods=["GET"])
+@jwt_required()
+def get_filter_settings():
+    user = User.query.get(get_jwt_identity())
+    return jsonify(user.saved_filters or {})

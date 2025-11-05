@@ -12,6 +12,15 @@ from app.routes.home import home_bp
 from app.routes.users import users_bp
 from app.routes.jobs import jobs_bp
 from app.routes.favorites import favorites_bp
+from app.routes.skills import skills_bp
+from app.routes.applications import applications_bp
+from app.routes.skills import skills_bp
+from app.routes.profile import profile_bp
+from app.routes.documents import documents_bp
+from datetime import timedelta
+
+
+from app.routes.chat_bot import chat_bp
 from flask_cors import CORS
 from .config import Config
 
@@ -19,6 +28,11 @@ from .config import Config
 from app.models.user import User
 from app.models.job import Job
 from app.models.application import Application
+from app.models.profile import Profile
+from app.models.skill import Skill
+from app.models.profile import Profile
+from app.models.skill import Skill
+from app.routes.chat_bot import chat_bp
 
 load_dotenv()
 
@@ -32,6 +46,11 @@ def create_app():
     app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['JWT_SECRET_KEY'] = os.environ.get('JWT_SECRET_KEY') or 'jwt-secret-string'
+
+    # File upload configuration
+    app.config['UPLOAD_FOLDER'] = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'uploads')
+    app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024  # 5MB max file size
+    app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg'}
 
     # Allow requests from your frontend
     CORS(app, origins=["http://localhost:5173"])
@@ -66,8 +85,16 @@ def create_app():
     app.register_blueprint(users_bp)
     app.register_blueprint(jobs_bp)
     app.register_blueprint(favorites_bp)
+    app.register_blueprint(skills_bp)
+    app.register_blueprint(profile_bp)
     app.register_blueprint(github_bp)
     app.register_blueprint(google_bp)
     app.register_blueprint(linkedin_bp)
+    app.register_blueprint(applications_bp)
+    app.register_blueprint(documents_bp)
+    app.register_blueprint(chat_bp, url_prefix="/api") 
+
+    
+   
 
     return app

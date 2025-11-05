@@ -17,7 +17,7 @@ class Job(db.Model):
     is_active = db.Column(db.Boolean, default=True) # indicates if a job is still open
     applications = db.relationship("Application", backref='job', lazy=True)
     favorites = db.relationship('Favorite', backref='job', lazy=True, cascade='all, delete-orphan')
-    employer_type = db.Column(db.String(), nullable=True)
+    employment_type = db.Column(db.String(), nullable=True)
 
 
     __table_args__ = (
@@ -33,6 +33,9 @@ class Job(db.Model):
             'description': self.description,
             'url': self.url,
             'date_posted': self.date_posted.isoformat() if self.date_posted else None,
-            'source': self.source
+            'is_active': self.is_active,
+            'source': self.source,
+            'employment_type': self.employment_type
         }
+
     

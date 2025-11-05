@@ -1,10 +1,11 @@
 import {useState} from "react";
-import {Link, useNavigate} from 'react-router-dom'
+import {Link, useNavigate, useParams} from 'react-router-dom'
 import styles from "./sideBard.module.css"
-import { Home, Briefcase, MessageSquare, Settings, LogOut } from "lucide-react";
+import { Home, Briefcase, Bell, Settings, LogOut, User } from "lucide-react";
 
-const SideBar = () => {
+const SideBar = ( {showRandomJob, onReset}  ) => {
   const navigate = useNavigate()
+  const { username } = useParams()
   const handleLogout = async () => {
         try {
             const token = localStorage.getItem("token")
@@ -91,24 +92,27 @@ const SideBar = () => {
                       </Link>
                   </div>
                 </div>
-                <Link to='/'>
+                <Link to='/' onClick={() => { showRandomJob(); onReset(); }}>
                 <div className={styles.navItem}><Home size={20}/>Home</div>
                 </Link>
-                <Link to='/'>
+                <Link to={`/${username}`} onClick={() => { showRandomJob(); onReset(); }}>
                 <div className={styles.navItem}><Briefcase size={20}/> Jobs</div>
                 </Link>
-                <Link to='/'>
-                <div className={styles.navItem}><MessageSquare size={20}/> Messages</div>
+                <Link to={`/${username}/notifications`} onClick={() => { onReset() }}>
+                <div className={styles.navItem}><Bell size={20}/> Notifications</div>
                 </Link>
               </nav>
             </div>
 
           {/* Bottom Section */}
             <div className={styles.bottomSection}>
-              <Link to='/'>
+              <Link to={`/${username}/profile`} onClick={() => { onReset() }}>
+                <div className={styles.navItem}><User size={20}/> Profile</div>
+              </Link>
+              <Link to={`/${username}/settings`} onClick={() => { onReset() }}>
                 <div className={styles.navItem}><Settings size={20}/> Settings</div>
               </Link>
-              <Link to='/'>
+              <Link to='/' onClick={() => { onReset() }}>
                 <div className={styles.navItem} onClick={handleLogout}><LogOut size={20}/> Logout</div>
               </Link>
             </div>

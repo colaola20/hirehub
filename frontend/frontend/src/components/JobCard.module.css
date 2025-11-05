@@ -12,6 +12,8 @@
     transition: all 0.25s ease;
     cursor: pointer;
     margin-bottom: 10px;
+    /* margin-left: 20px; */
+    margin-top: 40px;
     color: #ffffff;    
 }
 .card-header {
@@ -64,6 +66,14 @@
     font-size: 13px;
     font-weight: bold;
     color: #ffffff;    
+}
+
+.jobInfo{
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* 2 columns */
+    grid-auto-rows: auto;         
+    gap: 10px 20px;                
+    padding-left: 5%;
 }
 
 

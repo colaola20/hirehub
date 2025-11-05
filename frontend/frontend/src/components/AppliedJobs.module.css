@@ -1,0 +1,146 @@
+
+
+.container {
+  width: 100%;
+  margin: 0;
+  padding: 20px;
+  min-height: calc(100vh - var(--nav-h) - 120px);
+  background: rgba(20, 15, 40, 0.75);
+  border-radius: 10px;
+  text-align: center;
+
+}
+
+
+.cardsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.message {
+  text-align: center;
+  color: #ccc;
+}
+
+.error {
+  color: #ff6b6b;
+  text-align: center;
+}
+
+.tableContainer {
+  display: grid;
+  gap: 0;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  overflow-x: auto; 
+
+}
+
+/* .headerRow,
+.dataRow {
+  display: grid;
+  grid-template-columns: 2fr 1.5fr 1.5fr 1.2fr 0.8fr 1fr 1.5fr 2fr 1.5fr;
+  padding: 10px;
+  gap: 30px;
+  border-bottom: 1px solid #ccc;
+  align-items: center;
+  
+} */
+
+.headerRow {
+  display: grid;
+  grid-template-columns: 150px 120px 120px 140px 60px 100px 85px 200px 150px;
+  gap: 23px;
+  padding: 10px;
+  font-weight: bold;
+  background: rgba(59, 58, 58, 0.5);
+  color: white;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.dataRow {
+  display: grid;
+  grid-template-columns: 150px 120px 120px 140px 60px 100px 85px 200px 150px;
+  gap: 23px;
+  padding: 8px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  color: rgb(255, 255, 255);
+}
+
+.dataRow:nth-child(even) {
+  background: rgba(255, 255, 255, 0.09);
+  /* background:rgba(20, 15, 40, 0.2);  */
+}
+
+/* .dataRow span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+} */
+
+.mainContentGlass::-webkit-scrollbar {
+  height: 8px;
+}
+
+.headerRow span,
+.dataRow span,
+.dataRow select {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dataRow select {
+  background: #333;
+  color: white;
+  border: 1px solid #555;
+  border-radius: 5px;
+  padding: 2px 4px;
+  width: 100%;
+}
+
+.sortable {
+  cursor: pointer;
+  transition: color 0.2s ease, transform 0.2s ease;
+  user-select: none;
+}
+
+.sortable:hover {
+  color: #66ccff;
+  text-decoration: underline;
+}
+
+.arrow {
+  font-size: 12px;
+  margin-left: 4px;
+  opacity: 0.8;
+}
+
+.sortable:hover .arrow {
+  opacity: 1;
+  transform: scale(1.2);
+}
+
+
+
+.clickableNote {
+  color: #555657;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.clickableNote:hover {
+  color: #6f7172;
+}
+
+
+
+
+

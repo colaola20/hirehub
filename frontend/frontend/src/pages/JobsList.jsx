@@ -1,18 +1,24 @@
 import { useEffect, useCallback, useState, useRef, useMemo } from "react";
-import { useOutletContext } from "react-router-dom";
+import { useOutletContext, useSearchParams } from "react-router-dom";
 
 import styles from "./JobsList.module.css";
 import JobCard from "../components/JobCard.jsx";
 import { MdClose } from "react-icons/md";
 import { MdSearch } from 'react-icons/md';
 
-const JobsList = ({ jobs: initialJobs }) => {
+const JobsList = () => {
 
-  const { onJobClick } = useOutletContext();
+  const outlet = useOutletContext() || {}
+  const { onJobClick = () => {}} = outlet
 
-  const [jobs, setJobs] = useState(initialJobs || []);
-
+  const [jobs, setJobs] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [filters, setFilters] = useState({
+    company: "any",
+    location: "",
+    employment_type: "any",
+    datePosted: "newest",
+  })
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -21,10 +27,49 @@ const JobsList = ({ jobs: initialJobs }) => {
   
   const loadingMore = useRef(false)
   const lastQueryRef = useRef("");
-  
+  const debounceRef = useRef(null);
 
+  const initialLoadDone = useRef(false)
+
+  // on mount: load filters from db if there is some
+  useEffect(() => {
+    const token = localStorage.getItem("token")
+    fetch("/api/filter-settings", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+    .then(res => res.json())
+    .then(data => {
+      const serverFilters = data
+      setFilters(f => ({...f, ...serverFilters}))
+      initialLoadDone.current = true
+    })
+    .catch(() => {
+      initialLoadDone.current = true
+    })
+  }, [])
+
+  // save filters
+  useEffect(() => {
+    if (!initialLoadDone.current) return
+    const token = localStorage.getItem("token")
+    fetch("/api/filter-settings", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify(filters)
+    })
+  }, [filters])
+  
+  
+  // ----------------------------
+  // fetch jobs from server
   // fetchJobs accepts limit, offset, and search query
-  const fetchJobs = useCallback(async (limit = 20, offset = 0, query = "") => {
+  const fetchJobs = useCallback(async (limit = 20, offset = 0, query = "", filters = {}) => {
     try {
       if (offset === 0) {
         setLoading(true);
@@ -32,10 +77,19 @@ const JobsList = ({ jobs: initialJobs }) => {
       }
 
       const token = localStorage.getItem("token");
+
+      const params = new URLSearchParams()
+      params.set("limit", limit)
+      params.set("offset", offset)
+
+      if (query.trim()) params.set("search", query.trim())
+      if (filters.company && filters.company !== "any") params.set("company", filters.company)
+      if (filters.location?.trim()) params.set("location", filters.location.trim())
+      if (filters.employment_type && filters.employment_type !== "any") params.set("employment_type", filters.employment_type)
+      if (filters.datePosted) params.set("sort", filters.datePosted === "newest"? "date_posted:desc" : "date_posted:asc")
       
-      const response = await fetch(
-        `/api/jobs?limit=${limit}&offset=${offset}&preload=10&search=${encodeURIComponent(query)}`, 
-        {
+      const url = `/api/jobs?${params.toString()}`;
+      const response = await fetch(url, {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -63,31 +117,32 @@ const JobsList = ({ jobs: initialJobs }) => {
     }
   }, []);
 
+  // ----------------------------
+  // Initial load + search/filters debounce
 
+  useEffect(() => {
+    if (debounceRef.current) clearTimeout(debounceRef.current)
+    debounceRef.current = setTimeout(async () => {
+      lastQueryRef.current = searchQuery
+
+      const {items, total} = await fetchJobs(50, 0, searchQuery, filters)
+      setJobs(items)
+      setTotalJobs(total)
+    }, 300)
+    return () => {
+      clearTimeout(debounceRef.current)
+    }
+  }, [searchQuery, filters, fetchJobs])
 
     // helper used by retry button and explicit reload
-  const reloadInitialJobs = useCallback(async (query) => {
-    const { items, total } = await fetchJobs(20, 0, query);
+  const reloadInitialJobs = useCallback(async (query = "") => {
+    const { items, total } = await fetchJobs(20, 0, searchQuery, filters);
     setJobs(items);
     setTotalJobs(total);
   }, [fetchJobs]);
 
-  // initial load
-  useEffect(() => {
-    let mount = true;
-    const loadInitialJobs = async () => {
-      const { items, total } = await fetchJobs(20, 0, "");
-      if (!mount) return;
-      setJobs(items);
-      setTotalJobs(total);
-      setLoading(false);
-    };
-    const token = localStorage.getItem("token");
-    if (token) loadInitialJobs();
-    return () => { mount = false; };
-  }, [fetchJobs]);
-
-  
+// ----------------------------
+// Infinite scroll
 // infinite scroll
 useEffect(() => {
   const scrollable = document.querySelector(`.${styles.cardList}`);
@@ -100,7 +155,7 @@ useEffect(() => {
     if (scrolledToBottom && !loadingMore.current && jobs.length < totalJobs) {
       loadingMore.current = true;
       try {
-        const { items } = await fetchJobs(20, jobs.length, lastQueryRef.current);
+        const { items } = await fetchJobs(20, jobs.length, lastQueryRef.current, filters);
         if (items.length > 0) setJobs(prev => [...prev, ...items]);
       } finally {
         loadingMore.current = false;
@@ -110,150 +165,30 @@ useEffect(() => {
 
   scrollable.addEventListener("scroll", handleScroll);
   return () => scrollable.removeEventListener("scroll", handleScroll);
-}, [jobs.length, totalJobs, fetchJobs]);
+}, [jobs.length, totalJobs, filters, fetchJobs]);
 
-
-
-  const performSearch = useCallback(async (searchQuery) => {
-    lastQueryRef.current = searchQuery
-    setLoading(true)
-    setJobs([])
-    setTotalJobs(0)
-    const {items, total} = await fetchJobs(20, 0, searchQuery)
-    setJobs(items);
-    setTotalJobs(total);
-    setLoading(false);
-  }, [fetchJobs])
-
-  const handleSearchClick = async (e) => {
-    if (e && e.preventDefault) e.preventDefault()
-      await performSearch(searchQuery.trim())
-  }
-
-  const clearSearch = async () => {
-    setSearchQuery("")
-    await performSearch("")
-  };
-
-  useEffect(() => {
-    const id = setTimeout(() => {
-      if (searchQuery !== lastQueryRef.current) performSearch(searchQuery.trim())
-    }, 500)
-    return () => clearTimeout(id)
-  }, [searchQuery, performSearch])
-
-
-  // Making search sticky but also callapsing when scolling
-  const [isCollapsed, setIsCollapsed] = useState(false)
-  const [isExpend, setIsExpend] = useState(false)
-  const containerRef = useRef(null)
-  const scrollTrick = useRef(false)
-
-  useEffect(() => {
-    const onScroll = () => {
-      if (scrollTrick.current) return
-      scrollTrick.current = true
-      window.requestAnimationFrame(()=> {
-        const shouldCollapse = window.scrollY > 160 && window.innerWidth > 720
-        // only auto-collapse if user has not manually expanded
-        if (!isExpend) setIsCollapsed(shouldCollapse)
-          scrollTrick.current = false
-      })
-    }
-    window.addEventListener("scroll", onScroll, {passive: true})
-    return () => window.removeEventListener("scroll", onScroll)
-  }, [isExpend])
-
-  useEffect(() => {
-    if (!isExpend) return
-    const onKey = (e) => { if (e.key === "Escape") setIsExpend(false)}
-    const onDocClick = (e) => {
-      if (!containerRef.current) return
-      if (!containerRef.current.contains(e.target)) setIsExpend(false)
-    }
-    document.addEventListener("keydown", onKey)
-    document.addEventListener("mousedown", onDocClick)
-    return () => {
-      document.removeEventListener("keydown", onKey)
-      document.removeEventListener("mousedown", onDocClick)
-    }
-  }, [isExpend])
-
-  const handleToggle = (e) => {
-    e?.preventDefault()
-    //if currently collapsed, open the expended view
-    if (isCollapsed && !isExpend) {
-      setIsExpend(true)
-      window.requestAnimationFrame(() => {
-        const el = containerRef.current?.querySelector("input")
-        if (el) el.focus()
-      })
-    return
-    }
-    // otherwise submit or toggle normally
-    // if already expanded, closing will keep it collapsed on scroll
-    setIsExpend((v) => !v)
-  }
-
-  const containerClass = [
-    styles.searchContainer,
-    isCollapsed ? styles.collapsed : "",
-    isExpend ? styles.expanded: "",
-  ].join(" ").trim()
+  // ----------------------------
+  // Clear search
+  const clearSearch = () => setSearchQuery("")
 
   //------------------------------------
   // new filter state
-  const [filters, setFilters] = useState({
-    company: "any",
-    location: "",
-    remote: "any",
-    datePosted: "newest",
-  })
-
   const handleFilterChange = (key, value) => {
     setFilters((f) => ({...f, [key]: value}))
   }
 
-  const clearFilters = () => setFilters({company: "any", location: "", remote: "any", datePosted: "newest"})
-
   const companyOptions = useMemo(() => {
-        const setC = new Set((jobs || []).map((j) => (j.company ||"").trim()).filter(Boolean))
-    return ["any", ...Array.from(setC)]
+        const uniq = Array.from(
+          new Set((jobs || [])
+          .map((j) => (typeof j.company === "string" ? j.company.trim() : ""))
+          .filter(Boolean)
+          )
+        )
+        return [
+          {value: "any", label: "All companies"},
+          ...uniq.map((label) => ({value: label.toLowerCase(), label}))
+        ]
   }, [jobs])
-
-  // derived filterJobs from fetched jobs
-  const filteredJobs = useMemo(() => {
-    if (!jobs || !jobs.length) return []
-    let list = jobs.slice()
-
-    //company filter
-    if (filters.company && filters.company !== "any") {
-      list = list.filter((j) => (j.company || "").toLowerCase() === filters.company.toLowerCase())
-    }
-
-    // location substring match
-    if (filters.location && filters.location.trim() !== "") {
-      const loc = filters.location.trim().toLowerCase()
-      list = list.filter((j) => (j.location || "").toLowerCase().includes(loc))
-    }
-
-    // remote (expects job.remote to be "remote", "onside", "hybrid")
-    // we don't have this info save in the db !!!
-    if (filters.remote && filters.remote !== "any") {
-      list = list.filter((j) => (j.remote || "").toLowerCase() === filters.remote.toLowerCase())
-    }
-
-    //sort by date posted
-    const getTime = (job) => {
-      const d = job.date_posted || null
-      const t = d? new Date(d).getTime() : 0
-      return Number.isFinite(t) ? t: 0
-    }
-    list.sort((a, b) => 
-      filters.datePosted === "newest" ? getTime(b) - getTime(a) : getTime(a) - getTime(b)
-    )
-    return list
-  }, [jobs, filters])
 
   return (
 
@@ -265,9 +200,9 @@ useEffect(() => {
             value={filters.company}
             onChange={(e) => handleFilterChange("company", e.target.value)}
           >
-            {companyOptions.map((c) => (
-              <option key={c} value={c}>
-                {c=="any"? "All companies" : c}
+            {(companyOptions || []).map((c) => (
+              <option key={c.value} value={c.value}>
+                {c.label}
               </option>
             ))}
           </select>
@@ -280,13 +215,14 @@ useEffect(() => {
           />
           <select
             className = {styles.filterControl}
-            value={filters.remote}
-            onChange={(e) => handleFilterChange("remote", e.target.value)}
+            value={filters.employment_type}
+            onChange={(e) => handleFilterChange("employment_type", e.target.value)}
           >
             <option value="any">Any</option>
-            <option value="remote">Remote</option>
-            <option value="onsite">On-site</option>
-            <option value="hybrid">Hybrid</option>
+            <option value="full-time">Full-time</option>
+            <option value="part-time">Part-time</option>
+            <option value="contract">Contract</option>
+            <option value="internship">Internship</option>
           </select>
           <select
             className={styles.filterControl}
@@ -299,15 +235,15 @@ useEffect(() => {
           <button
             type="button"
             className={styles.clearBtn}
-            onClick={() => setFilters({company: "any", location: "", remote: "any", datePosted: "newest"})}
+            onClick={() => setFilters({company: "any", location: "", employment_type: "any", datePosted: "newest"})}
           >
             <MdClose/>
           </button>
         </div>
         <form 
-          ref = {containerRef}
+          // ref = {containerRef}
           className={styles.searchContainer} 
-          onSubmit={handleSearchClick} 
+          onSubmit={(e) => e.preventDefault()} 
           role="search" 
           aria-label="Search jobs">
           <input
@@ -323,15 +259,6 @@ useEffect(() => {
               <MdClose/>
             </button>
           )}
-          <button
-            type={isCollapsed ? "button" : "submit"}
-            className={styles.searchBtn}
-            aria-label={isCollapsed ? (isExpend ? "Close search": "Open search") : "Submit search"}
-            aria-expanded={isExpend}
-            onClick={handleToggle}
-          >
-            <MdSearch/>
-          </button>
         </form>
       </div>
 
@@ -353,23 +280,19 @@ useEffect(() => {
           )}
           
           {/* Empty / Job display (use filteredJobs) */}
-          {!loading && filteredJobs.length > 0 && (
+          {!loading && jobs.length > 0 && (
             <div className={styles.jobCard}>
-              {filteredJobs.map((job, idx) => (
+              {jobs.map((job, idx) => (
                 <JobCard key={job.id || idx} job={job} onClick={() => onJobClick(job)} />
               ))}
             </div>
           )}
-          {!loading && !error && filteredJobs.length === 0 && (
+          {!loading && !error && jobs.length === 0 && (
             <div className={styles.emptyState}>
               <p>No jobs match the filters.</p>
             </div>
           )}
       </div>
-      {/* Right Column: Chatbot */}
-      {/* <div className="chat-column">
-        <h2>Chatbot Coming Soon </h2>
-      </div> */}
     </section>
 
   )

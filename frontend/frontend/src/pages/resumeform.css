@@ -1,15 +1,74 @@
+.container{
+    padding: 150px;
+    padding-left: 275px;
+    padding-right: 275px;   
+    position: relative;
+    width: 100%;
+    min-width: 300px;
+
+/* ------------copy and pasted from login_Page.css------------ */
+    display: flex;
+    justify-content: center;
+    align-items: center;          /* was 100vh */
+    background: none;                  /* gradient is on ::before */
+    overflow: hidden;
+}
+
+/* ----------------------------------------------------------- */
+
+/* ------------copy and pasted from login_Page.css------------ */
+
+.container::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    background:
+    /* lighter global veil */
+    linear-gradient(0deg, rgba(0,0,0,0.28), rgba(0,0,0,0.28)),
+
+    /* soft pink/purple accents (unchanged) */
+    radial-gradient(380px 240px at 92% 10%, rgba(255, 120, 170, 0.20), transparent 62%),
+    radial-gradient(180px 120px at 96% 6%,  rgba(255, 155, 195, 0.26), transparent 70%),
+
+    radial-gradient(460px 300px at 8% 12%,  rgba(255, 120, 170, 0.22), transparent 64%),
+    radial-gradient(220px 150px at 5% 8%,   rgba(255, 155, 195, 0.30), transparent 72%),
+
+    radial-gradient(520px 320px at 10% 86%, rgba(255, 130, 185, 0.16), transparent 66%),
+    radial-gradient(240px 160px at 6% 94%,  rgba(255, 170, 210, 0.20), transparent 74%),
+
+    /* slightly stronger neutral highlights */
+    radial-gradient(900px 480px at 75% 12%, rgba(255,255,255,0.12), transparent 60%),
+    radial-gradient(760px 420px at 16% 8%,  rgba(255,255,255,0.08), transparent 62%),
+
+    /* purple wash + warmth */
+    radial-gradient(900px 520px at 22% 70%, rgba(120, 60, 255, 0.12), transparent 62%),
+    radial-gradient(820px 480px at 52% 38%, rgba(255,200,140,0.05), transparent 60%),
+
+    /* softer vignette */
+    radial-gradient(140% 120% at 50% 115%, rgba(0,0,0,0.54), transparent 55%),
+
+    /* brighter base gradient */
+    linear-gradient(90deg, #7fa0ee 0%, #4a2a86 100%);
+    background-attachment: fixed;
+}
+
+/* ----------------------------------------------------------- */
+
+
 .form-box{
-    background-color: #fff;
+    background-color: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(10px);
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 20px;
-    border-radius: 8px;
+    border-radius: 20px;
+    max-height: 1000px;
+    min-width: 400px;
     width: 100%;
-    max-width: 1200px;
-    min-width: 100vw;
-    box-shadow: 0px 8px 24px rgba(0,0,0,0.1);
-    color: black;
+    box-shadow: 0px 8px 24px rgba(0,0,0,0.3);
+    color: white;
 }
 
 .form-box h2{
@@ -17,44 +76,128 @@
     font-weight: 700;
 }
 
-.personal-info, .social-info, .misc-section, .main-sections{
-    background: linear-gradient(to left, #b0d3f5, #ae89ff); /* prob change this color at some point*/
+.resume-form-container{
+    /* same color and blur styling as navbar */
+    background: rgba(20, 15, 40, 0.65);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(10px);
+    box-shadow: 0px 8px 24px rgba(0,0,0,0.15);
+
     padding: 15px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 10px;
-    width: 100%;
-    min-width: 100vw;
-    box-sizing: border-box;
-    border-radius: 8px;
+    gap: 50px;
+    min-height: 100px;
+    max-height: 1000px;
+    width: 80%;
+    border-radius: 20px;
     margin: 15px 0;
-    padding-bottom: 30px;
+    padding-bottom: 50px;
+    color: white;
+    text-align: center;
 }
 
-.personal-info, .social-info, .misc-section, .main-sections, input{
+.resume-form-container input{
     background-color: #fff;
     border-radius: 8px;
     padding: 5px 7.5px;
     border: 1px solid #eee;
 }
 
-.personal-info input[placeholder="Summary Generation (separate keywords by commas)"]{
+.resume-form-container input[placeholder="Summary Generation (separate keywords by commas)"]{
     background-color: white;
     border-radius: 8px;
-    padding: 30px 100px;
+    padding: 12px 16px;
     border: 1px solid #eee;
+    text-align: center;
+    width: 400px;
+    height: 80px;
 }
 
-.main-sections input[type="checkbox"]{
+.resume-form-container input[type="checkbox"]{
     accent-color: #562fac;
 }
+
+.resume-form{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+}
+
+.location-form{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    padding-bottom: 3px;
+}
+
+.job-form{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 20px;
+    height: 110px;
+    padding-bottom: 40px;
+}
+
+.school-form{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 20px;
+    height: 110px;
+    padding-bottom: 30px;
+}
+
+.project-form{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 20px;
+    height: 110px;;
+    padding-top: 25px;
+    padding-bottom: 40px;
+}
+
+/* .student-cb{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+} */
 
 .submit-btn{
     background: linear-gradient(to right, #86bbf0, #562fac);
     color: white;
     border: 1px solid black;
     margin: 10px;
+}
+
+.prog-btn{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 1050px;
+}
+
+.prog-btn-btn{
+    background-color: #2c1950;
+}
+
+.prog-btn-btn button:hover{
+    background-color: #48288f;
+}
+
+.submit-form-btn{
+    background-color: #4db9d3;
+}
+
+.submit-form-btn:hover{
+    background-color: #00ccff;
 }
 
 .resume-generation{
@@ -64,4 +207,22 @@
 
 .resume-text{
     background-color: antiquewhite;
+}
+
+@media (max-width: 1450px) {
+    .school-form, .job-form, .project-form{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 1550px){
+    .location-form{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
 }

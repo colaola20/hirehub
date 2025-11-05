@@ -1,91 +1,204 @@
 import React, { useState } from "react";
-import Navbar from '../components/Navbar'
+import PersonalizedNavbar from '../components/PersonalizedNavbar'
+import * as Yup from 'yup'
+
+import ProgressIndicator from "../components/ProgressIndicator";
+
+import PersonalStep from "../components/PersonalStep";
+import ResumeViewStep from "../components/ResumeViewStep";
+import SocialStep from "../components/SocialStep";
+import MiscStep from "../components/MiscStep";
+import JobStep from "../components/JobStep";
+import SchoolStep from "../components/SchoolStep";
+import ProjectStep from "../components/ProjectStep";
 
 import './resumeform.css';
 
 const ResumeForm = () => {
 
-    /* ---PERSONAL INFO--- */
-    const [fullName, setFullName] = useState("");
-    const [email, setEmail] = useState("");
-    const [phoneNum, setPhoneNum] = useState("");
+    const [currentStep, setCurrentStep] = useState(1);
 
-    // Location fields
-    const [address, setAddress] = useState("");
-    const [city, setCity] = useState("");
-    const [state, setState] = useState("");
-    const [zip, setZip] = useState("");
+    const [formData, setFormData] = useState({
+        /* ---PERSONAL INFO--- */
+        personalInfoStep: {
+            fullname: '', email: '', phNum: '',
+            address: '', city: '', state: '', zip: '',
+            summary: ''
+        },
 
-    const [summary, setSummary] = useState(""); // could enter key words to generate summary as well 
+        /* ---SOCIAL INFO--- */
+        socialInfoStep: { // could combine this and misc into personal, decide later
+            linkedIn: '', github: '', portfolio: '',
+        },
 
-    /* ---SOCIAL INFO--- */
-    const [linkedIn, setLinkedIn] = useState("");
-    const [github, setGithub] = useState("");
-    const [portfolio, setPortfolio] = useState("");
+        /* ---MISC INFO--- */
+        miscinfoStep: {
+            languages: '', interests: ''
+        },
 
-    /* ---MISC INFO--- */
-    const [languages, setLanguages] = useState("");
-    const [interests, setInterests] = useState("");
+        /* ---MAIN SECTIONS--- */
+        maininfoStep: { // maybe split each part into its own steps? 
+            skills: '',
+            company: '', role: '', roleTime: '',
+            school: '', degree: '', gradYear: '',
+            projTitle: '', projDesc: '', projLink: '',
+            certs: ''
+        },
+    })
 
-    /* ---MAIN SECTIONS--- */
-    const [skills, setSkills] = useState(""); // maybe add what kinds of skills (hard, soft, languages, etc)
-    
-    // Experience Fields
-    const [company, setCompany] = useState("");
-    const [role, setRole] = useState("");
-    const [roleTime, setRoleTime] = useState("");
+    //validation
 
-    // Education Fields
-    const [school, setSchool] = useState("");
-    const [degree, setDegree] = useState("");
-    const [gradYear, setGradYear] = useState("");
+    const personalValidation = Yup.object({
+        fullname: Yup.string().required('Name is required'),
+        email: Yup.string().email('Email is required').required('Email is required'),
+        phNum: Yup.string().required('Phone Number is required'),
+        address: Yup.string().required('Address is required.'),
+        city: Yup.string().required('City is required.'),
+        state: Yup.string().required('State is required.'),
+        zip: Yup.string().required('Zip code is required.'),
+    })
 
-    // project fields
-    const [pTitle, setPTitle] = useState("");
-    const [pDesc, setPDesc] = useState("");
-    const [pLink, setPLink] = useState("");
+    const socialValidation = Yup.object({
+        linkedIn: Yup.string().required('LinkedIn URL is required.'),
+        github: Yup.string().required('GitHub URL is required.')
+    })
 
-    const [certs, setCerts] = useState(""); // certifications
+    const miscValidation = Yup.object({
+        skills: Yup.string().required('Skills are required.'),
+        languages: Yup.string().required('Languages is required.')
+    })
 
-    const [resumeText, setResumeText] = useState("");
-    //add more fields as needed
+    const jobValidation = Yup.object({
+        company: Yup.string().required('Company Name is required.'),
+        role: Yup.string().required('Position name is required.'),
+        roleTime: Yup.string().required('Time period is required.')
+    })
+
+    const schoolValidation = Yup.object({
+        school: Yup.string().required('School name is required'),
+        degree: Yup.string().required('Degree is required.')
+    })
+
+    const projectValidation = Yup.object({ // none (even tho highly recommended to have at least one proj)
+    })
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+
+        setFormData({
+            ...formData,
+            [`step${currentStep}`]: {
+                ...formData[`step${currentStep}`],
+                [name]: value
+            }
+        });
+    };
+
+    const prevStep = () => {
+        if (currentStep > 1) setCurrentStep(currentStep - 1);
+    }
+
+    const nextStep = () => {
+        if (currentStep < 7) setCurrentStep(currentStep + 1);
+    }
+
+
+
+
+
+
+    /*
+        TODO -------------------------------------------- 
+        Add + option for work experience, school and projects (just need to add functionality)
+        fix heights per step and/or make smooth transition when height changes
+        get progress bar to show
+
+        move all components to a file in components folder (maybe)
+    */
+
+
+    // ---------------------------------Step Components---------------------------------
+    // Currently 6 steps
+    // add 7th to view resume
+
+
 
 
     //  Change the style of the form later, this is just a basic layout for now
+    // currently here just to see how form will be styled before i fully implement each step
     return (
+
         <div className="container">
-            {/* <Navbar /> */}
+            <PersonalizedNavbar />
 
             <div className="form-box">
-                <h2>Resume Builder Form</h2>
-                {/* <p>We'll Help You Create a Professional Resume!</p> */}
+                <h1>Let's Build Your Resume!</h1>
+                <br />
 
-                <form className="resume_form">
-                    <div className='personal-info'>
+                {/* Debug Progress bar component later on */}
+                <ProgressIndicator currentStep={currentStep}/>
+
+                
+
+                <div className="resume-form-container">
+                    {currentStep === 1 && <PersonalStep formData={formData.personalInfoStep} onChange={handleInputChange} />}
+                    {currentStep === 2 && <SocialStep formData={formData.personalInfoStep} onChange={handleInputChange} />}
+                    {currentStep === 3 && <MiscStep formData={formData.personalInfoStep} onChange={handleInputChange} />}
+                    {currentStep === 4 && <JobStep formData={formData.personalInfoStep} onChange={handleInputChange} />}
+                    {currentStep === 5 && <SchoolStep formData={formData.personalInfoStep} onChange={handleInputChange} />}
+                    {currentStep === 6 && <ProjectStep formData={formData.personalInfoStep} onChange={handleInputChange} />}
+                    {currentStep === 7 && <ResumeViewStep/>}
+                </div>
+
+                <div className="prog-btn">
+                    {currentStep > 1 ? (<button className="prog-btn-btn" onClick={prevStep}>Previous</button>) : (<span className="placeholder"></span>)}
+                    {currentStep < 7 ? (<button className="prog-btn-btn" onClick={nextStep}>Next</button>) : (<button onClick={nextStep} className="submit-form-btn">Generate</button>)}
+                </div>
+            </div>
+        </div>
+    )
+
+}
+
+export default ResumeForm;
+
+
+
+
+
+
+
+/*
+
+-------------------------------- storing old code in case i need it later ignore this lolol --------------------------------
+
+/*
+
+<div className='personal-info'>
                         <h3>Personal Information</h3>
 
                         <p> Name</p>
                         <input
                             type="text"
                             placeholder="Full Name"
-                            value={fullName}
-                            onChange={(e) => setFullName(e.target.value)}
+                            //value={fullName}
+                            //onChange={(e) => setFullName(e.target.value)}
                             required
                         />
                         <p>Email</p>
                         <input
                             type="email"
                             placeholder="Email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
+                            //value={email}
+                            //onChange={(e) => setEmail(e.target.value)}
                             required
                         />
                         <p>Phone Number</p>
                         <input
                             type="text"
                             placeholder="Phone Number"
-                            value={phoneNum}
-                            onChange={(e) => setPhoneNum(e.target.value)}
+                            //value={phoneNum}
+                            //onChange={(e) => setPhoneNum(e.target.value)}
                             required
                         />
                         <p>Location</p>
@@ -93,32 +206,32 @@ const ResumeForm = () => {
                         <input
                             type="text"
                             placeholder="Address"
-                            value={address}
-                            onChange={(e) => setAddress(e.target.value)}
+                            //value={address}
+                            //onChange={(e) => setAddress(e.target.value)}
                             required
                         />
-                        {/* <p>City</p> */}
+
                         <input
                             type="text"
                             placeholder="City Name"
-                            value={city}
-                            onChange={(e) => setCity(e.target.value)} // see line 9
+                            //value={city}
+                            //onChange={(e) => setCity(e.target.value)} // see line 9
                             required
                         />
-                        {/* <p>State</p> */}
+
                         <input
                             type="text"
                             placeholder="State Name"
-                            value={state}
-                            onChange={(e) => setState(e.target.value)} // see line 9
+                            //value={state}
+                            //onChange={(e) => setState(e.target.value)} // see line 9
                             required
                         />
-                        {/* <p>Zip</p> */}
+
                         <input
                             type="text"
                             placeholder="Zip Code"
-                            value={zip}
-                            onChange={(e) => setZip(e.target.value)} // see line 9
+                            //value={zip}
+                            //onChange={(e) => setZip(e.target.value)} // see line 9
                             required
                         />
 
@@ -126,13 +239,13 @@ const ResumeForm = () => {
                         <input
                             type="text"
                             placeholder="Summary Generation (separate keywords by commas)"
-                            value={summary}
-                            onChange={(e) => setSummary(e.target.value)} // see line 9
+                        //value={summary}
+                        //onChange={(e) => setSummary(e.target.value)} // see line 9
 
                         />
                     </div>
 
-                    <div className="social-info">
+{/* <div className="social-info">
 
                         <h3>Social Information</h3>
 
@@ -194,8 +307,8 @@ const ResumeForm = () => {
                             required
                         />
 
-                        {/* TODO - Add Multiple fields for Experience, Education and Projects as listed on line 26 27 28 */}
-                        <p>Experience</p>
+                        /* TODO - Add Multiple fields for Experience, Education and Projects as listed on line 26 27 28 */
+{/* <p>Experience</p>
                         <input
                             type="text"
                             placeholder="Company Name"
@@ -270,28 +383,4 @@ const ResumeForm = () => {
                             value={certs}
                             onChange={(e) => setCerts(e.target.value)}
                         />
-                    </div>
-                </form>
-                <br />
-                <button onClick="generateResume" type="submit" className="submit-btn">
-                    Generate Resume
-                </button>
-
-                <div className="resume-generation">
-                    <textarea 
-                        value={resumeText}
-                        id=""
-                        readOnly
-                        className="resume-text"
-                    />
-                </div>
-                <button type="submit" className="submit-btn">
-                    Export Resume
-                </button>
-            </div>
-        </div>
-    )
-
-}
-
-export default ResumeForm;
+                    </div> */}

@@ -50,7 +50,6 @@
   /* subtle hairline like the glass cards */
   border: 1px solid rgba(255,255,255,0.10);
   background: rgba(255,255,255,0.04);
-
   transition: background .2s ease, border-color .2s ease, color .2s ease, transform .15s ease;
 }
 
