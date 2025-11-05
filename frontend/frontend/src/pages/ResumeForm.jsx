@@ -20,30 +20,40 @@ const ResumeForm = () => {
 
     const [formData, setFormData] = useState({
         /* ---PERSONAL INFO--- */
-        personalInfoStep: {
+        step1: {
             fullname: '', email: '', phNum: '',
             address: '', city: '', state: '', zip: '',
             summary: ''
         },
 
         /* ---SOCIAL INFO--- */
-        socialInfoStep: { // could combine this and misc into personal, decide later
+        step2: { // could combine this and misc into personal, decide later
             linkedIn: '', github: '', portfolio: '',
         },
 
         /* ---MISC INFO--- */
-        miscinfoStep: {
-            languages: '', interests: ''
+        step3: {
+            skills: '', languages: '', interests: '', certs: ''
         },
 
         /* ---MAIN SECTIONS--- */
-        maininfoStep: { // maybe split each part into its own steps? 
-            skills: '',
-            company: '', role: '', roleTime: '',
-            school: '', degree: '', gradYear: '',
-            projTitle: '', projDesc: '', projLink: '',
-            certs: ''
+        step4: { // maybe split each part into its own steps? 
+
+            company: '', role: '', roleTime: ''
+
         },
+
+        step5:{
+
+            school: '', degree: '', gradYear: ''
+
+        },
+
+        step6:{
+
+            projTitle: '', projDesc: '', projLink: ''
+
+        }
     })
 
     //validation
@@ -84,6 +94,31 @@ const ResumeForm = () => {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
+
+        // let key;
+        // switch (currentStep){
+        //     case 1:
+        //         key = 'personalInfoStep';
+        //         break;
+                
+        //     case 2:
+        //         key = 'socialInfoStep';
+        //         break;
+            
+        //     case 3:
+        //         key = 'miscinfoStep';
+        //         break;
+            
+        //     case 4:
+        //     case 5:
+        //     case 6:
+        //         key = 'maininfoStep';
+        //         break;
+
+
+        //     default:
+        //         return;
+        // }
 
         setFormData({
             ...formData,
@@ -146,12 +181,12 @@ const ResumeForm = () => {
                 
 
                 <div className="resume-form-container">
-                    {currentStep === 1 && <PersonalStep formData={formData.personalInfoStep} onChange={handleInputChange} />}
-                    {currentStep === 2 && <SocialStep formData={formData.personalInfoStep} onChange={handleInputChange} />}
-                    {currentStep === 3 && <MiscStep formData={formData.personalInfoStep} onChange={handleInputChange} />}
-                    {currentStep === 4 && <JobStep formData={formData.personalInfoStep} onChange={handleInputChange} />}
-                    {currentStep === 5 && <SchoolStep formData={formData.personalInfoStep} onChange={handleInputChange} />}
-                    {currentStep === 6 && <ProjectStep formData={formData.personalInfoStep} onChange={handleInputChange} />}
+                    {currentStep === 1 && <PersonalStep formData={formData.step1} onChange={handleInputChange} />}
+                    {currentStep === 2 && <SocialStep formData={formData.step2} onChange={handleInputChange} />}
+                    {currentStep === 3 && <MiscStep formData={formData.step3} onChange={handleInputChange} />}
+                    {currentStep === 4 && <JobStep formData={formData.step4} onChange={handleInputChange} />}
+                    {currentStep === 5 && <SchoolStep formData={formData.step5} onChange={handleInputChange} />}
+                    {currentStep === 6 && <ProjectStep formData={formData.step6} onChange={handleInputChange} />}
                     {currentStep === 7 && <ResumeViewStep/>}
                 </div>
             </div>
