@@ -36,18 +36,24 @@
   margin: 1.5rem 0;
 }
 
-h3 {
+.email,
+.password,
+.deleteAccount h3 {
   margin:0 0 0.5rem 0;
   font-size:1.2rem;
   letter-spacing:0.2px;
 }
 
-h5 {
+.email,
+.password,
+.deleteAccount h5 {
   margin:0 0 6px 0;
   font-size: 1rem;
 }
 
-p {
+.email,
+.password,
+.deleteAccount p {
   margin: 0;
   color: #9aa4b2;
 }

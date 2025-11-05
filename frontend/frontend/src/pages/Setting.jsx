@@ -1,10 +1,12 @@
 import styles from './Setting.module.css'
 import { useState, useEffect} from "react"
+import PasswordReset from '../components/settingPage/PasswordReset'
 
 const Settings = () => {
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
     const [email, setEmail] = useState("")
+    const [isOpenPasswordReset, setIsOpenPasswordReset] = useState(false)
     useEffect(() => {
         const fetchUserEmail = async () => {
             try {
@@ -38,6 +40,10 @@ const Settings = () => {
         fetchUserEmail()
     }, [])
 
+    const handleResetPassword = () => {
+        setIsOpenPasswordReset(true)
+    }
+
     return (
         <div className={styles.settingContainer}>
             <div className={styles.loginSection}>
@@ -49,7 +55,7 @@ const Settings = () => {
                 </div>
                 <div className={styles.password} >
                     <h5>Password</h5>
-                    <button className={styles.setBtn}>Reset password</button>
+                    <button className={styles.setBtn} onClick={handleResetPassword}>Reset password</button>
                 </div>
                 <div className={styles.deleteAccount}>
                     <div>
@@ -63,6 +69,9 @@ const Settings = () => {
                 <h3>Job Alerts Preference</h3>
                 <div className={styles.separator}></div>
             </div>
+            {isOpenPasswordReset && (
+                <PasswordReset />
+            )}
         </div>
     )
 }
