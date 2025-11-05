@@ -5,10 +5,20 @@
     box-sizing: border-box;
     align-items: center;
     padding: 20px;
+    background: rgba(20, 15, 40, 0.75);
+    height: 100vh;
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+    padding: 40px;
+    color: #ffffff;
+    transition: all 0.3s ease;
 }
 
 .separator {
   width: 100%;
-  border-top: 2px solid #ccc;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
   margin: 0;
 }
