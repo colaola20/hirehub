@@ -323,3 +323,13 @@ def save_filter_settings():
 def get_filter_settings():
     user = User.query.get(get_jwt_identity())
     return jsonify(user.saved_filters or {})
+
+
+# ------------------------
+# User email
+# ------------------------
+@users_bp.route("/api/user-email", methods=["GET"])
+@jwt_required()
+def get_user_info():
+    user = User.query.get(get_jwt_identity())
+    return jsonify(user.email or "")
