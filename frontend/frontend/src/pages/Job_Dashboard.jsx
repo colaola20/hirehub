@@ -78,6 +78,7 @@ const JobDashboard = () => {
 
   useEffect(() => {
     const raw = localStorage.getItem("job_dashboard_payload");
+    console.log(raw)
     if (!raw) return;
     try { setJob(JSON.parse(raw)); } catch {}
   }, []);
@@ -157,7 +158,7 @@ const JobDashboard = () => {
       </section>
     )}
 
-    {job.apply_url && (
+    {job.url && (
       <a className={styles.applyBtn} href={job.apply_url} target="_blank" rel="noopener noreferrer">
         APPLY NOW
       </a>
