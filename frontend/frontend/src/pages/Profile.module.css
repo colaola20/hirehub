@@ -18,7 +18,7 @@
   padding: 40px;
   color: #ffffff;
   transition: all 0.3s ease;
-  height: 100vh;
+  min-height: 100vh;
 }
 
 .profileCard:hover {
