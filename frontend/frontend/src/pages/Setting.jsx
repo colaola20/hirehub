@@ -44,6 +44,10 @@ const Settings = () => {
         setIsOpenPasswordReset(true)
     }
 
+    const handleCloseModal = () => {
+
+    }
+
     return (
         <div className={styles.container}>
             <div className={styles.settingContainer}>
@@ -72,7 +76,9 @@ const Settings = () => {
                 </div>
             </div>
             {isOpenPasswordReset && (
-                <PasswordReset />
+                <PasswordReset 
+                    email={email}
+                    onClose={handleCloseModal}/>
             )}
         </div>
     )
