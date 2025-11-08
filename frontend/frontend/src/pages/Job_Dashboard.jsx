@@ -112,13 +112,20 @@ const JobDashboard = () => {
   <h1 className={styles.title}>{job.title || "Job Details"}</h1>
 
   <div className={styles.meta}>
+    
     <span className={styles.metaItem}>Company • {job.company || "—"}</span>
     <span className={styles.metaItem}>Location • {job.location || "—"}</span>
     <span className={styles.metaItem}>Product Management</span>
+    {job.url && (
+      <a className={styles.applyBtn} href={job.apply_url} target="_blank" rel="noopener noreferrer">
+        APPLY NOW
+      </a>
+    )}
   </div>
 
   {/* NEW: scrollable content area */}
   <div className={styles.cardBody}>
+    
    <section>
   <h3 className={styles.sectionTitle}>Description</h3>
   <div className={styles.description}>
@@ -164,11 +171,7 @@ const JobDashboard = () => {
       </section>
     )}
 
-    {job.url && (
-      <a className={styles.applyBtn} href={job.apply_url} target="_blank" rel="noopener noreferrer">
-        APPLY NOW
-      </a>
-    )}
+    
   </div>
 </div>
 
