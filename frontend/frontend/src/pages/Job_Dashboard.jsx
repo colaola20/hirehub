@@ -75,6 +75,7 @@ function JobChatPanel({ job }) {
 
 const JobDashboard = () => {
   const [job, setJob] = useState(null);
+  const [isChatOpen, setIsChatOpen] = useState(false);
 
   useEffect(() => {
     const raw = localStorage.getItem("job_dashboard_payload");
@@ -82,6 +83,10 @@ const JobDashboard = () => {
     if (!raw) return;
     try { setJob(JSON.parse(raw)); } catch {}
   }, []);
+
+  const toggleChat = () => {
+    setIsChatOpen(!isChatOpen);
+  };
 
   if (!job) {
     return (
@@ -108,7 +113,7 @@ const JobDashboard = () => {
 
           <div className={styles.grid}>
             {/* LEFT: content */}
-            <div className={styles.card}>
+            <div className={`${styles.card} ${isChatOpen ? styles.chatOpen : ''}`}>
   <h1 className={styles.title}>{job.title || "Job Details"}</h1>
 
   <div className={styles.meta}>
@@ -171,13 +176,23 @@ const JobDashboard = () => {
       </section>
     )}
 
-    
+    <div className={styles.actionButtons}>
+      <a href="#apply" className={styles.applyBtn}>
+        Apply Now
+      </a>
+      <button 
+        className={styles.chatToggle}
+        onClick={toggleChat}
+      >
+        {isChatOpen ? 'Close Chat' : 'Open Chat'}
+      </button>
+    </div>
   </div>
 </div>
 
 
             {/* RIGHT: chat panel */}
-            <Chatbot job={job} />
+            {isChatOpen && <Chatbot job={job} />}
           </div>
         </div>
       </div>
