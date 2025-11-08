@@ -45,6 +45,17 @@ function JobChatPanel({ job }) {
       <div className={styles.chatHeader}>
         <div className={styles.chatTitle}>Job Assistant</div>
         <div className={styles.chatBadge}>Groq</div>
+        <div className={styles.chatControls}>
+          <button 
+            className={styles.minimizeBtn}
+            onClick={onClose}
+            aria-label="Minimize chat"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24">
+              <path d="M19 13H5v-2h14v2z" fill="currentColor"/>
+            </svg>
+          </button>
+          </div>
       </div>
 
       <div className={styles.chatBox} ref={boxRef}>
