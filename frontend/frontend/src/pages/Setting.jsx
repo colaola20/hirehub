@@ -45,7 +45,7 @@ const Settings = () => {
     }
 
     const handleCloseModal = () => {
-
+        setIsOpenPasswordReset(false)
     }
 
     return (
