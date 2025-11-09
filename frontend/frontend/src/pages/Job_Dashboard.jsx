@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import styles from "./job_dashboard.module.css";
 import Chatbot from "./chat_bot";
+import SmallModal from "../components/SmallModal.jsx";
 import { marked } from "marked";
 import DOMPurify from "dompurify";
 
@@ -12,6 +13,8 @@ function JobChatPanel({ job }) {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const boxRef = useRef(null);
+  
+
 
   const send = async () => {
     const text = input.trim();
@@ -75,6 +78,7 @@ function JobChatPanel({ job }) {
 
 const JobDashboard = () => {
   const [job, setJob] = useState(null);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     const raw = localStorage.getItem("job_dashboard_payload");
@@ -169,7 +173,15 @@ const JobDashboard = () => {
         APPLY NOW
       </a>
     )}
+
+
   </div>
+    {/* NEW button */}
+    <button className={styles.applyBtn} onClick={() => setShowModal(true)}>
+    Apply
+    </button>
+            
+
 </div>
 
 
@@ -178,6 +190,14 @@ const JobDashboard = () => {
           </div>
         </div>
       </div>
+      {/* Modal */}
+      {showModal && (
+        <SmallModal
+          job={job}
+          onNo={() => setShowModal(false)}
+          href={job.apply_url}
+        />
+      )}
     </div>
   );
 };

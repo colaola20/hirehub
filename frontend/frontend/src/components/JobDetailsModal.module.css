@@ -137,6 +137,7 @@ color: #000000;
   border-radius: 8px;
   cursor: pointer;
   transition: 0.2s ease;
+  margin-left: 10px;
 }
 
 .applyBtn:hover {
