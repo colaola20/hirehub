@@ -136,11 +136,6 @@ const JobDashboard = () => {
     <span className={styles.metaItem}>Location • {job.location || "—"}</span>
     <span className={styles.metaItem}>Product Management</span>
     <div className={styles.actionButtons}>
-      {job.url && (
-        <a className={styles.applyBtn} href={job.apply_url} target="_blank" rel="noopener noreferrer">
-          APPLY NOW
-        </a>
-      )}
       <button 
         className={styles.chatToggle}
         onClick={toggleChat}
@@ -199,7 +194,7 @@ const JobDashboard = () => {
     )}
 
     {job.url && (
-      <a className={styles.applyBtn} href={job.apply_url} target="_blank" rel="noopener noreferrer">
+      <a className={styles.applyBtn} href={job.url} target="_blank" rel="noopener noreferrer">
         APPLY NOW
       </a>
     )}
@@ -207,7 +202,8 @@ const JobDashboard = () => {
 
   </div>
     {/* NEW button */}
-    <button className={styles.applyBtn} onClick={() => setShowModal(true)}>
+    <button className={styles.applyBtn} onClick={() => {window.open(job.url, "_blank");
+      setShowModal(true)}}>
     Apply
     </button>
             
