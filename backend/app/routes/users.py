@@ -380,3 +380,36 @@ def get_user_info():
 
 
 
+# ------------------------
+# Delete User
+# ------------------------
+@users_bp.route("/api/delete-user", methods=["DELETE"])
+@jwt_required()
+def delete_user():
+    try:
+        user_id = get_jwt_identity()
+        user = User.query.get(user_id)
+        if not user:
+            return jsonify({"status": "error", "message": "User not found"}), 404
+        # require explicit confirmation in body to avoid accidental deletes
+        data = request.get_json(silent=True) or {}
+        if not (data.get("confirm") is True or data.get("confirm") == "DELETE"):
+            return jsonify({
+                "status": "error",
+                "message": "Provide confirm=true or confirm='DELETE' in request body to delete account"
+            }), 400
+        try:
+            db.session.delete(user)
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
+            raise
+
+        # clear JWT cookies if any and return success
+        resp = jsonify({"status": "success", "message": "User deleted"})
+        unset_jwt_cookies(resp)
+        return resp, 200
+    except Exception as e:
+        current_app.logger.exception("delete_user error")
+        return jsonify({"status": "error", "message": "Failed to delete user", "error": str(e)}), 500
+
