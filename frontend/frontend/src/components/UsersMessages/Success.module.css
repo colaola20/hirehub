@@ -1,0 +1,12 @@
+.overlay {
+  position: fixed;
+  inset: 0; 
+  width: 100%;
+  min-height: 100vh;
+  background: rgba(10, 10, 20, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  backdrop-filter: blur(8px);
+  z-index: 999;
+} 
