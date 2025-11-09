@@ -2,6 +2,8 @@
 import { useEffect, useRef, useState } from "react";
 import styles from "./job_dashboard.module.css";
 import Chatbot from "./chat_bot";
+import { marked } from "marked";
+import DOMPurify from "dompurify";
 
 function JobChatPanel({ job }) {
   const [messages, setMessages] = useState([
@@ -43,6 +45,17 @@ function JobChatPanel({ job }) {
       <div className={styles.chatHeader}>
         <div className={styles.chatTitle}>Job Assistant</div>
         <div className={styles.chatBadge}>Groq</div>
+        <div className={styles.chatControls}>
+          <button 
+            className={styles.minimizeBtn}
+            onClick={onClose}
+            aria-label="Minimize chat"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24">
+              <path d="M19 13H5v-2h14v2z" fill="currentColor"/>
+            </svg>
+          </button>
+          </div>
       </div>
 
       <div className={styles.chatBox} ref={boxRef}>
@@ -73,12 +86,18 @@ function JobChatPanel({ job }) {
 
 const JobDashboard = () => {
   const [job, setJob] = useState(null);
+  const [isChatOpen, setIsChatOpen] = useState(false);
 
   useEffect(() => {
     const raw = localStorage.getItem("job_dashboard_payload");
+    console.log(raw)
     if (!raw) return;
     try { setJob(JSON.parse(raw)); } catch {}
   }, []);
+
+  const toggleChat = () => {
+    setIsChatOpen(!isChatOpen);
+  };
 
   if (!job) {
     return (
@@ -100,25 +119,71 @@ const JobDashboard = () => {
       <div className={styles.shell}>
         {/* Outer rounded frame like the mock */}
         <div className={styles.frame}>
+          {/* Back to dashboard */}
+         
+
           <div className={styles.grid}>
             {/* LEFT: content */}
-            <div className={styles.card}>
+            <div className={`${styles.card} ${isChatOpen ? styles.chatOpen : ''}`}>
   <h1 className={styles.title}>{job.title || "Job Details"}</h1>
 
   <div className={styles.meta}>
     <span className={styles.metaItem}>Company • {job.company || "—"}</span>
     <span className={styles.metaItem}>Location • {job.location || "—"}</span>
     <span className={styles.metaItem}>Product Management</span>
+    <div className={styles.actionButtons}>
+      {job.url && (
+        <a className={styles.applyBtn} href={job.apply_url} target="_blank" rel="noopener noreferrer">
+          APPLY NOW
+        </a>
+      )}
+      <button 
+        className={styles.chatToggle}
+        onClick={toggleChat}
+      >
+        {isChatOpen ? 'Close Chat' : 'Open Chat'}
+      </button>
+    </div>
   </div>
 
   {/* NEW: scrollable content area */}
   <div className={styles.cardBody}>
-    <section>
-      <h3 className={styles.sectionTitle}>Description</h3>
-      <p className={styles.description}>
-        {job.description || "No description provided."}
-      </p>
-    </section>
+    
+   <section>
+  <h3 className={styles.sectionTitle}>Description</h3>
+  <div className={styles.description}>
+    {/* Back button now lives inside the description grid */}
+    <div className={styles.backRow}>
+      <a
+        href="/UserDashboard"
+        className={styles.backBtn}
+        aria-label="Back to user dashboard"
+      >
+        <svg
+          className={styles.backIcon}
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
+          <path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+        <span className={styles.backText}>Back</span>
+      </a>
+    </div>
+
+    {/* existing description HTML */}
+    <div
+      dangerouslySetInnerHTML={{
+        __html: DOMPurify.sanitize(
+          marked.parse(job.description || "No description provided.")
+        ),
+      }}
+    />
+  </div>
+</section>
+
+
 
     {Array.isArray(job.skills) && job.skills.length > 0 && (
       <section style={{ marginTop: 18 }}>
@@ -129,17 +194,12 @@ const JobDashboard = () => {
       </section>
     )}
 
-    {job.apply_url && (
-      <a className={styles.applyBtn} href={job.apply_url} target="_blank" rel="noopener noreferrer">
-        APPLY NOW
-      </a>
-    )}
   </div>
 </div>
 
 
             {/* RIGHT: chat panel */}
-            <Chatbot job={job} />
+            {isChatOpen && <Chatbot job={job} />}
           </div>
         </div>
       </div>

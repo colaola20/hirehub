@@ -1,5 +1,5 @@
 import { useEffect, useCallback, useState, useRef } from "react";
-import { Outlet, useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { Outlet, useNavigate, useParams, useSearchParams, useLocation } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 import axios from "axios";
@@ -26,7 +26,7 @@ const UserDashboard = () => {
   const [selectedJob, setSelectedJob] = useState(null);
   const [likedJobs, setLikedJobs] = useState([]);
 
-
+  const location = useLocation();
 
    const handleJobClick = (job) => {
     try {
@@ -35,7 +35,8 @@ const UserDashboard = () => {
   } catch (e) {
     console.warn("Could not store job payload:", e);
   }
-    setSelectedJob(job); // open modal
+  window.open("/job_dashboard", "_blank", "noopener");
+    //setSelectedJob(job); // open modal
   }
     const closeModal = () => {
     setSelectedJob(null); // close modal
@@ -216,7 +217,15 @@ const UserDashboard = () => {
       <div className={styles["dashboard-screen-wrapper"]}>
         <PersonalizedNavbar  onShowLiked={handleShowLiked} onShowRecommended={handleShowRecommended} onShowApplied={handleShowApplied} />
         <div className={styles["dashboard-wrapper"]}>
-          <SideBar showRandomJob={fetchJobs}/>
+          <SideBar 
+            showRandomJob={fetchJobs}
+            onReset = {() => {
+              setShowLiked(false);
+              setShowApplied(false);
+              console.log(showApplied)
+              console.log(showLiked)
+            }}
+          />
           <main className={styles["dashboard-container"]} role="main">
             <div className={styles["main-content"]}>
             {showLiked ? (

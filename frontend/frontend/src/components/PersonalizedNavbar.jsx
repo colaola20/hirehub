@@ -55,15 +55,26 @@ const PersonalizedNavbar = ({ onShowLiked, onShowRecommended,onShowApplied }) =>
             <div className={styles["angle2-container"]}>
                 <h2>JOBS:</h2>
                 <nav className={styles["angle2-links"]}>
-                    <Link to="/">
+                    <button
+                        type="button"
+                        className={styles.linkButton}
+                    >
                         Recommended
-                    </Link>
-                    <Link to="" onClick={onShowLiked}>
+                    </button>
+                    <button 
+                        type="button"
+                        className={styles.linkButton}
+                        onClick={(e) => { e.preventDefault(); onShowLiked?.(); }}
+                    >
                         Liked
-                    </Link>
-                    <Link to="" onClick={onShowApplied}>
+                    </button>
+                    <button 
+                        type="button"
+                        className={styles.linkButton}
+                        onClick={(e) => { e.preventDefault(); onShowApplied?.(); }}
+                        >
                         Applied
-                    </Link>
+                    </button>
 
                 </nav>
                 {/* right side actions (buttons etc) */}

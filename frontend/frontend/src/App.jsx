@@ -20,6 +20,8 @@ import JobDashboard from './pages/Job_Dashboard.jsx';
 import OAuthHandler from './components/OAuthHandler';
 import ProtectedRoute from './components/ProtectedRoute';
 import ResetPassword from './pages/reset_password.jsx';
+import Settings from './pages/Setting.jsx'
+import Notifications from './pages/Notifications.jsx'
 
 
 
@@ -49,19 +51,20 @@ function App() {
           }
         />
         {/* Protected dashboard route */}
-        <Route
+        <Route 
           path="/:username"
           element={
             <ProtectedRoute>
               <UserDashboard />
-              <JobDetails />
             </ProtectedRoute>
           }
         >
-          <Route index element = {<JobsList/>}/>
-          <Route path="profile" element={<Profile />} />
+          <Route index element={<JobsList/>} />
+          <Route path="profile" element={<Profile/>} />
+          <Route path="notifications" element={<Notifications/>} />
+          <Route path="settings" element={<Settings/>} />
         </Route>
-
+        <Route path="*" element={<div>Not Found</div>} />
       </Routes>
     </Router>
   );

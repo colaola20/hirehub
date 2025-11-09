@@ -25,7 +25,7 @@
 .grid {
   width: 100%;
   display: grid;
-  grid-template-columns: 3fr 2fr;   /* ~60% / 40% without using vw */
+  grid-template-columns: 1fr;
   gap: clamp(16px, 2.5vw, 32px);
   align-items: start;
 }
@@ -502,4 +502,324 @@
     max-width: min(95vw, 560px) !important;
     height: 70vh !important;
   }
+}
+/* job_dashboard.module.css */
+.description {
+  white-space: pre-wrap;   /* preserves \n as real breaks, wraps long lines */
+  line-height: 1.55;
+}
+/* === Auto layout: full-width until chatbot opens, then 60/40 split === */
+
+/* When the floating chat is CLOSED (no .chatCard in the DOM), use one column */
+.wrapper:not(:has(.chatCard)) .grid {
+  grid-template-columns: 1fr !important; /* description spans full screen */
+}
+
+/* When the floating chat is OPEN (has .chatCard), switch to 60/40 */
+.wrapper:has(.chatCard) .grid {
+  grid-template-columns: 60% 40% !important; /* left = 60%, right = 40% */
+}
+
+/* Keep stacking on small screens */
+@media (max-width: 980px) {
+  .wrapper:has(.chatCard) .grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+/* back arrow row */
+.backRow {
+  display: flex;
+  align-items: center;
+  margin: 4px 0 10px 0;
+}
+
+/* pill-style back button */
+.backBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  text-decoration: none;
+  color: #e9e9ef;
+  background: linear-gradient(180deg, rgba(88,76,140,0.28), rgba(48,40,90,0.28));
+  border: 1px solid rgba(255,255,255,0.10);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+  transition: transform 120ms ease, background 120ms ease, border-color 120ms ease;
+}
+
+.backBtn:hover {
+  background: linear-gradient(180deg, rgba(88,76,140,0.4), rgba(48,40,90,0.4));
+  transform: translateX(-1px);
+  border-color: rgba(255,255,255,0.18);
+}
+
+.backIcon {
+  display: block;
+}
+
+.backText {
+  font-weight: 600;
+  letter-spacing: .2px;
+  font-size: 14px;
+}
+
+/* keep spacing tidy on small screens */
+@media (max-width: 980px) {
+  .backRow { margin: 0 0 8px 0; }
+}
+/* Make the floating chat docked to the RIGHT, full-height, from the top */
+.chatDock {
+  position: fixed;
+  top: 0;              /* stick to top */
+  right: 24px;
+  bottom: 0;           /* full height */
+  z-index: 9999;
+  display: flex;
+  align-items: flex-start;  /* card starts at the top */
+}
+
+/* Full-height chat card */
+.chatCard {
+  height: 100vh !important;   /* take the entire viewport height */
+  display: flex;
+  flex-direction: column;
+}
+
+/* New top navbar inside the chat card */
+.chatNavbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+  background: rgba(255,255,255,0.04);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+/* Minimize/Expand button in the navbar */
+.chatMinBtn {
+  all: unset;
+  cursor: pointer;
+  margin-left: auto;
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.12);
+  font-weight: 700;
+  background: rgba(255,255,255,0.08);
+}
+
+/* Minimized state: keep only the navbar visible */
+.minimized {
+  height: 48px !important;
+  overflow: hidden;
+}
+.minimized .chatBox,
+.minimized .chatInputRow {
+  display: none !important;
+}
+
+/* keep it usable on small screens */
+@media (max-width: 980px) {
+  .chatCard {
+    height: 70vh !important; /* your previous mobile rule can stay */
+  }
+}
+/* === Full-bleed floating chat: no gaps, 100% height & width of its column === */
+.chatDock {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  /* stick to the right edge; no offsets/margins */
+  margin: 0;
+  padding: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: stretch;
+}
+
+/* the card itself should be flush, no rounded edges or borders */
+.chatCard {
+  width: 40vw !important;   /* adjust if you want another width; fills this width fully */
+  max-width: 40vw !important;
+  height: 100vh !important; /* full viewport height */
+  margin: 0 !important;
+  border-radius: 0 !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;    /* remove internal card padding */
+  display: flex;
+  flex-direction: column;
+}
+
+/* header acts like a navbar; keep it tight */
+.chatHeader {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  padding: 6px 8px !important;           /* smaller */
+  border-bottom: 1px solid rgba(255,255,255,.08);
+}
+
+/* message area should be edge-to-edge */
+.chatBox {
+  flex: 1;
+  margin: 0 !important;
+  padding: 8px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  min-height: 0;
+  overflow: auto;
+}
+
+/* input row flush with edges */
+.chatInputRow {
+  margin: 0 !important;
+  padding: 8px !important;
+  border-top: 1px solid rgba(255,255,255,.08);
+}
+
+/* ultra-minimal minimize button: tiny dash */
+.chatMinBtn {
+  all: unset;
+  cursor: pointer;
+  margin-left: auto;
+  width: 24px;                 /* tiny */
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border-radius: 6px;
+  opacity: .8;
+  transition: opacity 120ms ease;
+}
+.chatMinBtn:hover { opacity: 1; }
+.chatMinBtn::before {
+  content: "–";                /* the dash */
+  font-size: 18px;
+  line-height: 1;
+}
+
+/* minimized state: only show the navbar */
+.minimized {
+  height: 32px !important;     /* just the header bar */
+  overflow: hidden !important;
+}
+.minimized .chatBox,
+.minimized .chatInputRow { display: none !important; }
+
+/* mobile: still full-bleed, but width fits screen */
+@media (max-width: 980px) {
+  .chatCard {
+    width: 100vw !important;
+    max-width: 100vw !important;
+  }
+}
+
+/* When the floating chat is OPEN (has .chatCard), let the card take full space */
+.wrapper:has(.chatCard) .card {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 60vw;
+  height: 100vh;
+  margin: 0;
+  border-radius: 0;
+  z-index: 1;
+  overflow-y: auto;
+}
+
+/* Ensure the content inside the card stays readable */
+.wrapper:has(.chatCard) .cardBody {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+/* Adjust spacing for better readability when expanded */
+.wrapper:has(.chatCard) .title {
+  margin-top: 24px;
+}
+
+/* Keep the 60/40 split with chat */
+.wrapper:has(.chatCard) .grid {
+  grid-template-columns: 60% 40% !important;
+}
+
+/* Responsive adjustment */
+@media (max-width: 980px) {
+  .wrapper:has(.chatCard) .card {
+    position: static;
+    width: 100%;
+    height: auto;
+  }
+  
+  .wrapper:has(.chatCard) .grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Reset the grid to always be full width */
+.grid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(16px, 2.5vw, 32px);
+  align-items: start;
+}
+
+/* Chat slide-in from left */
+.chatPanel {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 40%;
+  height: 100vh;
+  margin: 0;
+  border-radius: 0;
+  transform: translateX(-100%);
+  transition: transform 0.3s ease-in-out;
+  z-index: 100;
+}
+
+/* When chat is open */
+.chatPanel.open {
+  transform: translateX(0);
+}
+
+/* Adjust main content when chat is open */
+.card.chatOpen {
+  width: 60%;
+  margin-left: 40%;
+  transition: all 0.3s ease-in-out;
+}
+
+/* Button group for Apply and Chat */
+.actionButtons {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-left: auto;  /* This will push the buttons to the right */
+}
+
+/* Style for chat toggle button */
+.chatToggle {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.chatToggle:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
 }
