@@ -3,8 +3,8 @@ import {useNavigate} from 'react-router-dom'
 import { BiKey } from 'react-icons/bi'
 import styles from './PasswordReset.module.css'
 import { X } from "lucide-react";
-import Sucess from '../UsersMessages/Success'
-
+import Success from '../UsersMessages/Success'
+import Error from '../UsersMessages/Error'
 const PasswordReset = ({email, onClose}) => {
     const [newEmail, setNewEmail] = useState(email)
     const [loading, setLoading] = useState(false)
@@ -35,10 +35,8 @@ const PasswordReset = ({email, onClose}) => {
             });
             const data = await response.json();
             if (response.ok) {
-                alert("✅ Password reset link sent to your email. Please check your inbox.");
                 setShowSuccess(true)
             } else {
-                alert(`❌ Error: ${data.message}`);
                 setShowError(true)
             }
         } catch (error) {
@@ -47,6 +45,12 @@ const PasswordReset = ({email, onClose}) => {
         } finally {
             setLoading(false);
         }
+    }
+
+    const handleClose = () => {
+        setShowSuccess(false)
+        setShowError(false)
+        onClose()
     }
 
     return (
@@ -69,6 +73,13 @@ const PasswordReset = ({email, onClose}) => {
                     <button className={styles.sentBtn} onClick={handleClick}>Sent</button>
                 </form>
             </div>
+            {showSuccess && (
+                <Success title="Email sent successfully!" description="We've sent an email to the provided address with the instructions to reset your password." handleClose={handleClose}/>
+            )}
+
+            {showError && (
+                <Error title="Failed to send reset link!" description="Please try again later." handleClose={handleClose}/>
+            )}
         </div>
     )
 }

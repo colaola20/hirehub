@@ -10,3 +10,44 @@
   backdrop-filter: blur(8px);
   z-index: 999;
 } 
+
+.modalContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  width: 420px;
+  background: rgba(25, 20, 50, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 24px;
+  color: white;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+.text {
+    text-align: center;
+}
+
+.icon {
+  width: 4rem;
+  height: 4rem;
+  background: #6f67f0;
+  border-radius: 100px;
+}
+
+.closeBtn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: transparent;
+  border: none;
+  color: #ccc;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.closeBtn:hover {
+  color: #ff6666;
+}
