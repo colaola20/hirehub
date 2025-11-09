@@ -8,11 +8,14 @@ const ProgressIndicator = ({ currentStep }) => {
 
     return (
         <div className="progress-container">
-            <div className="progress-indicator">
-                <span>Step {currentStep} of 7</span>
-            </div>
+            
             <div className="progress-bar">
-                <div style={{ width: `${(progressPercent)}%`}}></div>
+                {Array.from({ length: totalSteps }, (_, i) => i + 1).map((step) => (
+                    <div
+                        key={step}
+                        className={`progress-segment ${step <= currentStep ? "active" : ""}`}
+                    ></div>
+                ))}
             </div>
         </div>
     );

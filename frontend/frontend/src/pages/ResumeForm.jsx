@@ -4,13 +4,13 @@ import * as Yup from 'yup'
 
 import ProgressIndicator from "../components/ProgressIndicator";
 
-import PersonalStep from "../components/PersonalStep";
-import ResumeViewStep from "../components/ResumeViewStep";
-import SocialStep from "../components/SocialStep";
-import MiscStep from "../components/MiscStep";
-import JobStep from "../components/JobStep";
-import SchoolStep from "../components/SchoolStep";
-import ProjectStep from "../components/ProjectStep";
+import PersonalStep from "../components/resumeform_steps/PersonalStep";
+import ResumeViewStep from "../components/resumeform_steps/ResumeViewStep";
+import SocialStep from "../components/resumeform_steps/SocialStep";
+import MiscStep from "../components/resumeform_steps/MiscStep";
+import JobStep from "../components/resumeform_steps/JobStep";
+import SchoolStep from "../components/resumeform_steps/SchoolStep";
+import ProjectStep from "../components/resumeform_steps/ProjectStep";
 
 import './resumeform.css';
 
@@ -20,30 +20,40 @@ const ResumeForm = () => {
 
     const [formData, setFormData] = useState({
         /* ---PERSONAL INFO--- */
-        personalInfoStep: {
+        step1: {
             fullname: '', email: '', phNum: '',
             address: '', city: '', state: '', zip: '',
             summary: ''
         },
 
         /* ---SOCIAL INFO--- */
-        socialInfoStep: { // could combine this and misc into personal, decide later
+        step2: { // could combine this and misc into personal, decide later
             linkedIn: '', github: '', portfolio: '',
         },
 
         /* ---MISC INFO--- */
-        miscinfoStep: {
-            languages: '', interests: ''
+        step3: {
+            skills: '', languages: '', interests: '', certs: ''
         },
 
         /* ---MAIN SECTIONS--- */
-        maininfoStep: { // maybe split each part into its own steps? 
-            skills: '',
-            company: '', role: '', roleTime: '',
-            school: '', degree: '', gradYear: '',
-            projTitle: '', projDesc: '', projLink: '',
-            certs: ''
+        step4: { // maybe split each part into its own steps? 
+
+            company: '', role: '', roleTime: ''
+
         },
+
+        step5: {
+
+            school: '', degree: '', gradYear: ''
+
+        },
+
+        step6: {
+
+            projTitle: '', projDesc: '', projLink: ''
+
+        }
     })
 
     //validation
@@ -111,9 +121,10 @@ const ResumeForm = () => {
         TODO -------------------------------------------- 
         Add + option for work experience, school and projects (just need to add functionality)
         fix heights per step and/or make smooth transition when height changes
-        get progress bar to show
 
-        move all components to a file in components folder (maybe)
+        make form more consistent with styling
+        fix spacing between elements
+        look at other resume forms to get ideas
     */
 
 
@@ -129,30 +140,32 @@ const ResumeForm = () => {
     return (
 
         <div className="container">
-            <PersonalizedNavbar />
+            {/* <PersonalizedNavbar /> */}
 
             <div className="form-box">
                 <h1>Let's Build Your Resume!</h1>
                 <br />
 
                 {/* Debug Progress bar component later on */}
-                <ProgressIndicator currentStep={currentStep}/>
-
-                
-
-                <div className="resume-form-container">
-                    {currentStep === 1 && <PersonalStep formData={formData.personalInfoStep} onChange={handleInputChange} />}
-                    {currentStep === 2 && <SocialStep formData={formData.personalInfoStep} onChange={handleInputChange} />}
-                    {currentStep === 3 && <MiscStep formData={formData.personalInfoStep} onChange={handleInputChange} />}
-                    {currentStep === 4 && <JobStep formData={formData.personalInfoStep} onChange={handleInputChange} />}
-                    {currentStep === 5 && <SchoolStep formData={formData.personalInfoStep} onChange={handleInputChange} />}
-                    {currentStep === 6 && <ProjectStep formData={formData.personalInfoStep} onChange={handleInputChange} />}
-                    {currentStep === 7 && <ResumeViewStep/>}
-                </div>
-
+                <ProgressIndicator currentStep={currentStep} />
                 <div className="prog-btn">
                     {currentStep > 1 ? (<button className="prog-btn-btn" onClick={prevStep}>Previous</button>) : (<span className="placeholder"></span>)}
+                    <div className="progress-indicator">
+                        <span>Step {currentStep} of 7</span>
+                    </div>
                     {currentStep < 7 ? (<button className="prog-btn-btn" onClick={nextStep}>Next</button>) : (<button onClick={nextStep} className="submit-form-btn">Generate</button>)}
+                </div>
+
+
+
+                <div className="resume-form-container">
+                    {currentStep === 1 && <PersonalStep formData={formData.step1} onChange={handleInputChange} />}
+                    {currentStep === 2 && <SocialStep formData={formData.step2} onChange={handleInputChange} />}
+                    {currentStep === 3 && <MiscStep formData={formData.step3} onChange={handleInputChange} />}
+                    {currentStep === 4 && <JobStep formData={formData.step4} onChange={handleInputChange} />}
+                    {currentStep === 5 && <SchoolStep formData={formData.step5} onChange={handleInputChange} />}
+                    {currentStep === 6 && <ProjectStep formData={formData.step6} onChange={handleInputChange} />}
+                    {currentStep === 7 && <ResumeViewStep />}
                 </div>
             </div>
         </div>
@@ -161,226 +174,3 @@ const ResumeForm = () => {
 }
 
 export default ResumeForm;
-
-
-
-
-
-
-
-/*
-
--------------------------------- storing old code in case i need it later ignore this lolol --------------------------------
-
-/*
-
-<div className='personal-info'>
-                        <h3>Personal Information</h3>
-
-                        <p> Name</p>
-                        <input
-                            type="text"
-                            placeholder="Full Name"
-                            //value={fullName}
-                            //onChange={(e) => setFullName(e.target.value)}
-                            required
-                        />
-                        <p>Email</p>
-                        <input
-                            type="email"
-                            placeholder="Email"
-                            //value={email}
-                            //onChange={(e) => setEmail(e.target.value)}
-                            required
-                        />
-                        <p>Phone Number</p>
-                        <input
-                            type="text"
-                            placeholder="Phone Number"
-                            //value={phoneNum}
-                            //onChange={(e) => setPhoneNum(e.target.value)}
-                            required
-                        />
-                        <p>Location</p>
-
-                        <input
-                            type="text"
-                            placeholder="Address"
-                            //value={address}
-                            //onChange={(e) => setAddress(e.target.value)}
-                            required
-                        />
-
-                        <input
-                            type="text"
-                            placeholder="City Name"
-                            //value={city}
-                            //onChange={(e) => setCity(e.target.value)} // see line 9
-                            required
-                        />
-
-                        <input
-                            type="text"
-                            placeholder="State Name"
-                            //value={state}
-                            //onChange={(e) => setState(e.target.value)} // see line 9
-                            required
-                        />
-
-                        <input
-                            type="text"
-                            placeholder="Zip Code"
-                            //value={zip}
-                            //onChange={(e) => setZip(e.target.value)} // see line 9
-                            required
-                        />
-
-                        <p>Summary</p>
-                        <input
-                            type="text"
-                            placeholder="Summary Generation (separate keywords by commas)"
-                        //value={summary}
-                        //onChange={(e) => setSummary(e.target.value)} // see line 9
-
-                        />
-                    </div>
-
-{/* <div className="social-info">
-
-                        <h3>Social Information</h3>
-
-                        <p>LinkedIn</p>
-                        <input
-                            type="url"
-                            placeholder="LinkedIn URL"
-                            value={linkedIn}
-                            onChange={(e) => setLinkedIn(e.target.value)}
-                        />
-                        <p>GitHub</p>
-                        <input
-                            type="url"
-                            placeholder="GitHub URL"
-                            value={github}
-                            onChange={(e) => setGithub(e.target.value)}
-                        />
-                        <p>Portfolio</p>
-                        <input
-                            type="url"
-                            placeholder="Portfolio URL"
-                            value={portfolio}
-                            onChange={(e) => setPortfolio(e.target.value)}
-                        />
-
-                    </div>
-                    <div className="misc-section">
-
-                        <h3>Miscellaneous Information</h3>
-
-                        <p>Languages</p>
-                        <input
-                            type="text"
-                            placeholder="Languages (separate by commas)"
-                            value={languages}
-                            onChange={(e) => setLanguages(e.target.value)}
-                        />
-
-                        <p>Interests and Hobbies</p>
-                        <input
-                            type="text"
-                            placeholder="Interests and Hobbies (separate by commas)"
-                            value={interests}
-                            onChange={(e) => setInterests(e.target.value)}
-                        />
-
-                    </div>
-
-                    <div className="main-sections">
-
-                        <h3>Main Sections</h3>
-
-                        <p>Skills</p>
-                        <input
-                            type="text"
-                            placeholder="Skills (separate by commas)"
-                            value={skills}
-                            onChange={(e) => setSkills(e.target.value)}
-                            required
-                        />
-
-                        /* TODO - Add Multiple fields for Experience, Education and Projects as listed on line 26 27 28 */
-{/* <p>Experience</p>
-                        <input
-                            type="text"
-                            placeholder="Company Name"
-                            value={company}
-                            onChange={(e) => setCompany(e.target.value)}
-                            required
-                        />
-                        <input type="text"
-                            placeholder="Position Title"
-                            value={role}
-                            onChange={(e) => setRole(e.target.value)}
-                            required
-                        />
-                        <input type="text"
-                            placeholder="Time Period (e.g., June 2020 - August 2021)" // change this to a date picker later
-                            value={roleTime}
-                            onChange={(e) => setRoleTime(e.target.value)}
-                            required
-                        />
-
-                        <p>Education</p>
-                        <input
-                            type="text"
-                            placeholder="School Name"
-                            value={school}
-                            onChange={(e) => setSchool(e.target.value)}
-                            required
-                        />
-                        <input 
-                            type="text"
-                            placeholder="Degree"
-                            value={degree}
-                            onChange={(e) => setDegree(e.target.value)}
-                            required
-                        />
-                        <input 
-                        type="text"
-                            placeholder="Graduation Year (Or Estimated)"
-                            value={gradYear}
-                            onChange={(e) => setGradYear(e.target.value)}
-                            required
-                        />
-                        <input type="checkbox" /> I am currently a student
-
-                        <p>Projects</p>
-                        <input
-                            type="text"
-                            placeholder="Project Title"
-                            value={pTitle}
-                            onChange={(e) => setPTitle(e.target.value)}
-                            
-                        />
-                        <input 
-                            type="text"
-                            placeholder="Project Description"
-                            value={pDesc}
-                            onChange={(e) => setPDesc(e.target.value)}
-                            
-                        />
-                        <input 
-                            type="url"
-                            placeholder="Project Link"
-                            value={pLink}
-                            onChange={(e) => setPLink(e.target.value)}
-                        />
-
-
-                        <p>Certifications</p>
-                        <input
-                            type="text"
-                            placeholder="Certifications (separate by commas)"
-                            value={certs}
-                            onChange={(e) => setCerts(e.target.value)}
-                        />
-                    </div> */}

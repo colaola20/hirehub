@@ -1,4 +1,4 @@
-import '../pages/resumeform.css'
+import './stepstyle.css'
 
 const MiscStep = ({ formData, onChange }) => ( // MISC INFO STEP //
         <div>
@@ -8,6 +8,7 @@ const MiscStep = ({ formData, onChange }) => ( // MISC INFO STEP //
             <p>Skills</p>
             <input
                 type="text"
+                name='skills'
                 placeholder="Skills"
                 value={formData.skills}
                 onChange={onChange}
@@ -15,6 +16,7 @@ const MiscStep = ({ formData, onChange }) => ( // MISC INFO STEP //
             <p>Certifications</p>
             <input
                 type="text"
+                name='certs'
                 placeholder="Certifications"
                 value={formData.certs}
                 onChange={onChange}
@@ -22,6 +24,7 @@ const MiscStep = ({ formData, onChange }) => ( // MISC INFO STEP //
             <p>Languages</p>
             <input
                 type="text"
+                name='languages'
                 placeholder="Languages (separate by commas)"
                 value={formData.languages}
                 onChange={onChange}
@@ -29,6 +32,7 @@ const MiscStep = ({ formData, onChange }) => ( // MISC INFO STEP //
             <p>Interests and Hobbies</p>
             <input
                 type="text"
+                name='interests'
                 placeholder="Interests and Hobbies (separate by commas)"
                 value={formData.interests}
                 onChange={onChange}

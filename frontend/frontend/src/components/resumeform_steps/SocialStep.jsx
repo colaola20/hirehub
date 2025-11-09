@@ -1,4 +1,4 @@
-import '../pages/resumeform.css'
+import './stepstyle.css'
 
 const SocialStep = ({ formData, onChange }) => ( // SOCIAL INFO STEP //
 
@@ -8,6 +8,7 @@ const SocialStep = ({ formData, onChange }) => ( // SOCIAL INFO STEP //
             <p>LinkedIn</p>
             <input
                 type="url"
+                name='linkedIn'
                 placeholder="LinkedIn URL"
                 value={formData.linkedIn}
                 onChange={onChange}
@@ -15,6 +16,7 @@ const SocialStep = ({ formData, onChange }) => ( // SOCIAL INFO STEP //
             <p>GitHub</p>
             <input
                 type="url"
+                name='github'
                 placeholder="GitHub URL"
                 value={formData.github}
                 onChange={onChange}
@@ -22,6 +24,7 @@ const SocialStep = ({ formData, onChange }) => ( // SOCIAL INFO STEP //
             <p>Portfolio</p>
             <input
                 type="url"
+                name='portfolio'
                 placeholder="Portfolio URL"
                 value={formData.portfolio}
                 onChange={onChange}
