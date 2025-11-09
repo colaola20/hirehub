@@ -48,6 +48,17 @@ function JobChatPanel({ job }) {
       <div className={styles.chatHeader}>
         <div className={styles.chatTitle}>Job Assistant</div>
         <div className={styles.chatBadge}>Groq</div>
+        <div className={styles.chatControls}>
+          <button 
+            className={styles.minimizeBtn}
+            onClick={onClose}
+            aria-label="Minimize chat"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24">
+              <path d="M19 13H5v-2h14v2z" fill="currentColor"/>
+            </svg>
+          </button>
+          </div>
       </div>
 
       <div className={styles.chatBox} ref={boxRef}>
@@ -79,6 +90,7 @@ function JobChatPanel({ job }) {
 const JobDashboard = () => {
   const [job, setJob] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [isChatOpen, setIsChatOpen] = useState(false);
 
   useEffect(() => {
     const raw = localStorage.getItem("job_dashboard_payload");
@@ -86,6 +98,10 @@ const JobDashboard = () => {
     if (!raw) return;
     try { setJob(JSON.parse(raw)); } catch {}
   }, []);
+
+  const toggleChat = () => {
+    setIsChatOpen(!isChatOpen);
+  };
 
   if (!job) {
     return (
@@ -112,17 +128,31 @@ const JobDashboard = () => {
 
           <div className={styles.grid}>
             {/* LEFT: content */}
-            <div className={styles.card}>
+            <div className={`${styles.card} ${isChatOpen ? styles.chatOpen : ''}`}>
   <h1 className={styles.title}>{job.title || "Job Details"}</h1>
 
   <div className={styles.meta}>
     <span className={styles.metaItem}>Company • {job.company || "—"}</span>
     <span className={styles.metaItem}>Location • {job.location || "—"}</span>
     <span className={styles.metaItem}>Product Management</span>
+    <div className={styles.actionButtons}>
+      {job.url && (
+        <a className={styles.applyBtn} href={job.apply_url} target="_blank" rel="noopener noreferrer">
+          APPLY NOW
+        </a>
+      )}
+      <button 
+        className={styles.chatToggle}
+        onClick={toggleChat}
+      >
+        {isChatOpen ? 'Close Chat' : 'Open Chat'}
+      </button>
+    </div>
   </div>
 
   {/* NEW: scrollable content area */}
   <div className={styles.cardBody}>
+    
    <section>
   <h3 className={styles.sectionTitle}>Description</h3>
   <div className={styles.description}>
@@ -186,7 +216,7 @@ const JobDashboard = () => {
 
 
             {/* RIGHT: chat panel */}
-            <Chatbot job={job} />
+            {isChatOpen && <Chatbot job={job} />}
           </div>
         </div>
       </div>
