@@ -1,12 +1,14 @@
 import styles from './Setting.module.css'
 import { useState, useEffect} from "react"
 import PasswordReset from '../components/settingPage/PasswordReset'
+import Confirmation from '../components/UsersMessages/Confirmation'
 
 const Settings = () => {
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
     const [email, setEmail] = useState("")
     const [isOpenPasswordReset, setIsOpenPasswordReset] = useState(false)
+    const [showConfirmation, setShowConfirmation] = useState(true)
     useEffect(() => {
         const fetchUserEmail = async () => {
             try {
@@ -46,6 +48,11 @@ const Settings = () => {
 
     const handleCloseModal = () => {
         setIsOpenPasswordReset(false)
+        setShowConfirmation(false)
+    }
+
+    const handleDeletion = () => {
+        setShowConfirmation(true)
     }
 
     return (
@@ -67,7 +74,7 @@ const Settings = () => {
                             <h5 className={styles.label}>Delete my acount</h5>
                             <p>Permanently delete your HireHub account and all associated data</p>
                         </div>
-                        <button className={styles.setBtn}>Delete my account</button>
+                        <button className={styles.setBtn} onClick={handleDeletion}>Delete my account</button>
                     </div>
                 </div>
                 <div className={styles.alertsPreference}>
@@ -79,6 +86,9 @@ const Settings = () => {
                 <PasswordReset 
                     email={email}
                     onClose={handleCloseModal}/>
+            )}
+            {showConfirmation && (
+                <Confirmation title="Are you sure you want to delete your account?" description="This action is irreversible and will permanently remove all your data, including your profile, job matches, and any saved settings." onClose={handleCloseModal}/>
             )}
         </div>
     )
