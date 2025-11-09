@@ -15,6 +15,29 @@ frontend/build/
 .idea/
 *.log
 venv/
-/backend/env/
+# Ignore Python cache directories
+backend-env/
+venv/
+env/
+.env
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
 
 
+# database / logs
+*.sqlite3
+*.log
+
+backend/Lib/
+
+# Ignore uploaded files
+backend/uploads/
+
+backend/Scripts/
