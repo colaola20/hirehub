@@ -1,0 +1,30 @@
+.progress-container {
+    width: 80%;
+    text-align: center;
+    margin: 20px 0;
+}
+
+.progress-indicator {
+    margin-top: 60px;
+    font-weight: 600;
+}
+
+.progress-bar {
+    display: flex;
+    justify-content: space-between;
+    gap: 30px;
+}
+
+.progress-segment {
+    flex: 1;
+    height: 10px;
+    background-color: #a9a9a9;
+    border-radius: 5px;
+    box-shadow: 0px 8px 24px rgba(0,0,0,0.15);
+    transition: background-color 0.3s ease;
+}
+
+.progress-segment.active {
+    background-color: #ffffff;
+    box-shadow: 0px 8px 24px rgba(0,0,0,0.3)
+}
