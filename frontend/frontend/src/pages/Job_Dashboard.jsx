@@ -6,6 +6,15 @@ import SmallModal from "../components/SmallModal.jsx";
 import { marked } from "marked";
 import DOMPurify from "dompurify";
 
+// Configure marked options for better formatting
+marked.setOptions({
+  breaks: true, // Adds <br> on single line breaks
+  gfm: true, // GitHub Flavored Markdown
+  headerIds: false, // Disable header IDs
+  smartLists: true, // Use smarter list behavior
+  smartypants: true, // Use smart punctuation
+});
+
 function JobChatPanel({ job }) {
   const [messages, setMessages] = useState([
     { role: "assistant", content: "Ask me anything about this job or your resume bullets." }
@@ -167,9 +176,10 @@ const JobDashboard = () => {
     
     {/* existing description HTML */}
     <div
+      className={styles.descriptionContent}
       dangerouslySetInnerHTML={{
         __html: DOMPurify.sanitize(
-          marked.parse(job.description || "No description provided.")
+          marked.parse(job.description?.trim() || "No description provided.")
         ),
       }}
     />
