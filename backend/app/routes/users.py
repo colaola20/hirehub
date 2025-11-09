@@ -169,11 +169,12 @@ def logout():
 # ------------------------
 # Note: /api/profile endpoint moved to profile.py for full profile management
 
+
 # ------------------------
 # Forgot Password
 # ------------------------
 @users_bp.route("/api/forgot-password", methods=["POST"])
-def forgot_password():
+def forgot_password_token():
     try:
         data = request.get_json()
         email = data.get("email")
@@ -208,6 +209,49 @@ def forgot_password():
 
     except Exception as e:
         return jsonify({"status": "error", "message": "Failed to process request", "error": str(e)}), 500
+    
+
+# ------------------------
+# Forgot Password using token
+# ------------------------
+@users_bp.route("/api/forgot-password-token", methods=["POST"])
+@jwt_required()
+def forgot_password():
+    try:
+        data = request.get_json()
+        email = data.get("newEmail")
+        if not email:
+            return jsonify({"status": "error", "message": "Email is required"}), 400
+
+        user_id = get_jwt_identity()
+        user = User.query.get(user_id)
+        if not user:
+            return jsonify({"error": "User not found"}), 404
+
+        token = jwt.encode(
+            {"user_id": user.id, "exp": datetime.datetime.utcnow() + datetime.timedelta(minutes=15)},
+            SECRET_KEY,
+            algorithm="HS256"
+        )
+
+        # ✅ derive the frontend origin and encode the token
+        FRONTEND_URL = os.environ.get("FRONTEND_URL", "http://localhost:5173")
+        reset_link = f"{FRONTEND_URL}/reset-password?token={urllib.parse.quote(token)}"
+
+        try:
+            msg = Message("HireHub Password Reset", recipients=[email])
+            msg.body = f"Hello {user.first_name}, reset link: {reset_link}"
+            mail.send(msg)
+        except Exception as e:
+            print(f"[DEBUG] Could not send email. Reset link: {reset_link}")
+            print(f"[DEBUG] Error: {e}")
+
+        return jsonify({"status": "success", "message": "If your email is registered, a reset link has been sent"}), 200
+
+    except Exception as e:
+        return jsonify({"status": "error", "message": "Failed to process request", "error": str(e)}), 500
+
+
 # ------------------------
 # Reset Password
 # ------------------------
@@ -333,3 +377,6 @@ def get_filter_settings():
 def get_user_info():
     user = User.query.get(get_jwt_identity())
     return jsonify(user.email or {})
+
+
+
