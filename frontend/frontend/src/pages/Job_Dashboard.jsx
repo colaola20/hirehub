@@ -129,7 +129,12 @@ const JobDashboard = () => {
           <div className={styles.grid}>
             {/* LEFT: content */}
             <div className={`${styles.card} ${isChatOpen ? styles.chatOpen : ''}`}>
-  <h1 className={styles.title}>{job.title || "Job Details"}</h1>
+  <div className={styles.titleSection}>
+    <a href="/UserDashboard" className={styles.backBtn}>
+      <span className={styles.backText}>Go back to home</span>
+    </a>
+    <h1 className={styles.title}>{job.title || "Job Details"}</h1>
+  </div>
 
   <div className={styles.meta}>
     <div className={styles.metaInfo}>
@@ -159,26 +164,7 @@ const JobDashboard = () => {
    <section>
   <h3 className={styles.sectionTitle}>Description</h3>
   <div className={styles.description}>
-    {/* Back button now lives inside the description grid */}
-    <div className={styles.backRow}>
-      <a
-        href="/UserDashboard"
-        className={styles.backBtn}
-        aria-label="Back to user dashboard"
-      >
-        <svg
-          className={styles.backIcon}
-          width="18"
-          height="18"
-          viewBox="0 0 24 24"
-          aria-hidden="true"
-        >
-          <path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-        </svg>
-        <span className={styles.backText}>Back</span>
-      </a>
-    </div>
-
+    
     {/* existing description HTML */}
     <div
       dangerouslySetInnerHTML={{
