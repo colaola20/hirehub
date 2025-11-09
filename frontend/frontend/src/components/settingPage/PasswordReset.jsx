@@ -23,7 +23,7 @@ const PasswordReset = ({email, onClose}) => {
                         onChange={(e) => setNewEmail(e.target.value)}
                         required
                     />
-                    <button>Sent</button>
+                    <button className={styles.sentBtn}>Sent</button>
                 </form>
             </div>
         </div>
