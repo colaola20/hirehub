@@ -6,6 +6,15 @@ import SmallModal from "../components/SmallModal.jsx";
 import { marked } from "marked";
 import DOMPurify from "dompurify";
 
+// Configure marked options for better formatting
+marked.setOptions({
+  breaks: true, // Adds <br> on single line breaks
+  gfm: true, // GitHub Flavored Markdown
+  headerIds: false, // Disable header IDs
+  smartLists: true, // Use smarter list behavior
+  smartypants: true, // Use smart punctuation
+});
+
 function JobChatPanel({ job }) {
   const [messages, setMessages] = useState([
     { role: "assistant", content: "Ask me anything about this job or your resume bullets." }
@@ -129,12 +138,25 @@ const JobDashboard = () => {
           <div className={styles.grid}>
             {/* LEFT: content */}
             <div className={`${styles.card} ${isChatOpen ? styles.chatOpen : ''}`}>
-  <h1 className={styles.title}>{job.title || "Job Details"}</h1>
+  <div className={styles.titleSection}>
+    <a href="/UserDashboard" className={styles.backBtn}>
+      <span className={styles.backText}>Go back to home</span>
+    </a>
+    <h1 className={styles.title}>{job.title || "Job Details"}</h1>
+  </div>
 
   <div className={styles.meta}>
-    <span className={styles.metaItem}>Company • {job.company || "—"}</span>
-    <span className={styles.metaItem}>Location • {job.location || "—"}</span>
-    <span className={styles.metaItem}>Product Management</span>
+    <div className={styles.metaInfo}>
+      <span className={styles.metaItem}>
+        <span className={styles.metaLabel}>Company:</span> {job.company || "—"}
+      </span>
+      <span className={styles.metaItem}>
+        <span className={styles.metaLabel}>Location:</span> {job.location || "—"}
+      </span>
+      <span className={styles.metaItem}>
+        <span className={styles.metaLabel}>Department:</span> Product Management
+      </span>
+    </div>
     <div className={styles.actionButtons}>
       <button 
         className={styles.chatToggle}
@@ -151,31 +173,13 @@ const JobDashboard = () => {
    <section>
   <h3 className={styles.sectionTitle}>Description</h3>
   <div className={styles.description}>
-    {/* Back button now lives inside the description grid */}
-    <div className={styles.backRow}>
-      <a
-        href="/UserDashboard"
-        className={styles.backBtn}
-        aria-label="Back to user dashboard"
-      >
-        <svg
-          className={styles.backIcon}
-          width="18"
-          height="18"
-          viewBox="0 0 24 24"
-          aria-hidden="true"
-        >
-          <path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-        </svg>
-        <span className={styles.backText}>Back</span>
-      </a>
-    </div>
-
+    
     {/* existing description HTML */}
     <div
+      className={styles.descriptionContent}
       dangerouslySetInnerHTML={{
         __html: DOMPurify.sanitize(
-          marked.parse(job.description || "No description provided.")
+          marked.parse(job.description?.trim() || "No description provided.")
         ),
       }}
     />
@@ -191,12 +195,6 @@ const JobDashboard = () => {
           {job.skills.map((s, i) => <li key={i}>{s}</li>)}
         </ul>
       </section>
-    )}
-
-    {job.url && (
-      <a className={styles.applyBtn} href={job.url} target="_blank" rel="noopener noreferrer">
-        APPLY NOW
-      </a>
     )}
 
 
