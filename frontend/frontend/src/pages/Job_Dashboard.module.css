@@ -137,25 +137,88 @@
 
 /* CTA matches mock */
 .applyBtn {
-  display: block;
-  width: 100%;
-  padding: 14px;
-  margin: 0;
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 16px;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80%;
+  max-width: 400px;
+  padding: 20px 0;
+  margin: 20px 0;
+  font-weight: 700;
+  font-size: 18px;
   color: #ffffff;
-  background: linear-gradient(135deg, #7367f0, #4839eb);
-  border: none;
-  box-shadow: 0 14px 30px rgba(111, 99, 240, 0.35);
+  background: #2d2b55;
+  border: 2px solid #6f67f0;
+  border-radius: 24px;
+  text-align: center;
+  line-height: 1;
+  white-space: nowrap;
   text-decoration: none;
   cursor: pointer;
-  transition: all 0.2s ease;
+  position: relative;
+  isolation: isolate;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  overflow: hidden;
+  transition: all 0.4s ease;
+}
+
+.applyBtn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(111, 103, 240, 0.2),
+    transparent
+  );
+  transform: translateX(-100%);
+  transition: transform 0.6s ease;
+  z-index: -1;
+}
+
+.applyBtn::after {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(90deg, #ff66c4, #6f67f0, #4839eb);
+  border-radius: 22px;
+  z-index: -2;
+  opacity: 0;
+  transition: opacity 0.4s ease;
 }
 
 .applyBtn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  color: #fff;
+  border-color: transparent;
+  transform: translateX(-50%) translateY(-2px);
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
+  box-shadow: 
+    0 10px 20px -10px rgba(111, 103, 240, 0.5),
+    inset 0 0 20px rgba(111, 103, 240, 0.2);
+}
+
+.applyBtn:hover::before {
+  transform: translateX(100%);
+}
+
+.applyBtn:hover::after {
+  opacity: 1;
+}
+
+.applyBtn:active {
+  transform: translateX(-50%) translateY(0);
+  box-shadow: 0 5px 10px -5px rgba(111, 103, 240, 0.3);
 }
 
 /* ---------- Right chat panel (embedded, not floating) ---------- */
