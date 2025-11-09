@@ -132,15 +132,18 @@ const JobDashboard = () => {
   <h1 className={styles.title}>{job.title || "Job Details"}</h1>
 
   <div className={styles.meta}>
-    <span className={styles.metaItem}>Company • {job.company || "—"}</span>
-    <span className={styles.metaItem}>Location • {job.location || "—"}</span>
-    <span className={styles.metaItem}>Product Management</span>
+    <div className={styles.metaInfo}>
+      <span className={styles.metaItem}>
+        <span className={styles.metaLabel}>Company:</span> {job.company || "—"}
+      </span>
+      <span className={styles.metaItem}>
+        <span className={styles.metaLabel}>Location:</span> {job.location || "—"}
+      </span>
+      <span className={styles.metaItem}>
+        <span className={styles.metaLabel}>Department:</span> Product Management
+      </span>
+    </div>
     <div className={styles.actionButtons}>
-      {job.url && (
-        <a className={styles.applyBtn} href={job.apply_url} target="_blank" rel="noopener noreferrer">
-          APPLY NOW
-        </a>
-      )}
       <button 
         className={styles.chatToggle}
         onClick={toggleChat}
@@ -196,12 +199,6 @@ const JobDashboard = () => {
           {job.skills.map((s, i) => <li key={i}>{s}</li>)}
         </ul>
       </section>
-    )}
-
-    {job.url && (
-      <a className={styles.applyBtn} href={job.apply_url} target="_blank" rel="noopener noreferrer">
-        APPLY NOW
-      </a>
     )}
 
 
