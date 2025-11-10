@@ -128,6 +128,13 @@ const ResumeForm = () => {
         make form more consistent with styling
         fix spacing between elements
         look at other resume forms to get ideas
+
+        fix fields - styling and layout
+        add validation and error messages
+        connect to backend (generate resume at the end)
+        add functionality to dynamically add multiple entries for work experience, education, and projects
+        save progress functionality?
+        -----------------------------------------------
     */
 
 
