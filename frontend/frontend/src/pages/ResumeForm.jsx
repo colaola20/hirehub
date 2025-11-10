@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import PersonalizedNavbar from '../components/PersonalizedNavbar'
+import { Link } from "react-router-dom";
 import * as Yup from 'yup'
 
 import ProgressIndicator from "../components/ProgressIndicator";
@@ -12,7 +13,9 @@ import JobStep from "../components/resumeform_steps/JobStep";
 import SchoolStep from "../components/resumeform_steps/SchoolStep";
 import ProjectStep from "../components/resumeform_steps/ProjectStep";
 
-import './resumeform.css';
+// import './resumeform.css';
+import styles from './resumeform.module.css';
+
 
 const ResumeForm = () => {
 
@@ -139,26 +142,31 @@ const ResumeForm = () => {
     // currently here just to see how form will be styled before i fully implement each step
     return (
 
-        <div className="container">
+        <div className={styles["container"]}>
             {/* <PersonalizedNavbar /> */}
+            <div className={styles["back-btn"]}>
+                <p>
+                    <Link to="/dev_dashboard" >Back</Link>
+                </p>
+            </div>
 
-            <div className="form-box">
+            <div className={styles["form-box"]}>
                 <h1>Let's Build Your Resume!</h1>
                 <br />
 
                 {/* Debug Progress bar component later on */}
                 <ProgressIndicator currentStep={currentStep} />
-                <div className="prog-btn">
-                    {currentStep > 1 ? (<button className="prog-btn-btn" onClick={prevStep}>Previous</button>) : (<span className="placeholder"></span>)}
-                    <div className="progress-indicator">
+                <div className={styles["prog-btn"]}>
+                    {currentStep > 1 ? (<button className={styles["prog-btn-btn"]} onClick={prevStep}>Previous</button>) : (<span className={styles.placeholder}></span>)}
+                    <div className={styles["progress-indicator"]}>
                         <span>Step {currentStep} of 7</span>
                     </div>
-                    {currentStep < 7 ? (<button className="prog-btn-btn" onClick={nextStep}>Next</button>) : (<button onClick={nextStep} className="submit-form-btn">Generate</button>)}
+                    {currentStep < 7 ? (<button className={styles["prog-btn-btn"]} onClick={nextStep}>Next</button>) : (<button onClick={nextStep} className={styles["submit-form-btn"]}>Generate</button>)}
                 </div>
 
 
 
-                <div className="resume-form-container">
+                <div className={styles["resume-form-container"]}>
                     {currentStep === 1 && <PersonalStep formData={formData.step1} onChange={handleInputChange} />}
                     {currentStep === 2 && <SocialStep formData={formData.step2} onChange={handleInputChange} />}
                     {currentStep === 3 && <MiscStep formData={formData.step3} onChange={handleInputChange} />}
