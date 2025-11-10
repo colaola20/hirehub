@@ -7,6 +7,8 @@ from app.models.user import User
 from datetime import datetime
 from werkzeug.utils import secure_filename
 import os
+import openai
+import json
 
 profile_bp = Blueprint('profile', __name__, url_prefix='/api/profile')
 
@@ -236,3 +238,68 @@ def get_profile_image(filename):
             'error': 'Image not found',
             'message': str(e)
         }), 404
+
+
+
+
+@profile_bp.route('/analyze', methods=['POST'])
+@jwt_required()
+def analyze_job_fit():
+    import json
+    from flask import request, jsonify
+    import openai
+
+    openai.api_key = current_app.config["OPENAI_API_KEY"]
+
+    try:
+        user = get_jwt_identity()
+        data = request.get_json()
+        job = data.get("job", {})
+
+        job_title = job.get("title", "")
+        job_description = job.get("description", "")
+        user_skills = ["Python", "Flask", "React", "SQL"]  # ← Example. Replace with real user skills later.
+
+        prompt = f"""
+Analyze how well this user's skills match the job posting.
+
+USER SKILLS: {user_skills}
+JOB TITLE: {job_title}
+JOB DESCRIPTION: {job_description}
+
+Return a JSON object with exactly this format (no extra text):
+{{
+  "percentage_match": integer (0–100),
+  "job_skills": [list of short skill strings found in the job description],
+  "matched_skills": [skills present in both job_skills and user_skills]
+ 
+}}
+"""
+        # Make the OpenAI call
+        completion = openai.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[{"role": "user", "content": prompt}]
+        )
+
+        raw_reply = completion.choices[0].message.content.strip()
+
+        # Try to extract JSON safely
+        try:
+            response_data = json.loads(raw_reply)
+        except json.JSONDecodeError:
+            # fallback: remove text before/after JSON braces
+            start = raw_reply.find('{')
+            end = raw_reply.rfind('}') + 1
+            response_data = json.loads(raw_reply[start:end]) if start >= 0 else {}
+
+        # Default safe values if something went wrong
+        return jsonify({
+            "percentage_match": response_data.get("percentage_match", 0),
+            "job_skills": response_data.get("job_skills", []),
+            "matched_skills": response_data.get("matched_skills", [])
+           
+        })
+
+    except Exception as e:
+        print("❌ Error in /analyze:", e)
+        return jsonify({"error": str(e)}), 500

@@ -96,3 +96,90 @@
 .apply-btn:hover {
   background-color: #4338ca;
 }
+
+.cardWrapper {
+  display: flex;              
+  justify-content: space-between; 
+  align-items: flex-start; 
+    
+}
+
+.leftSide {
+  flex: 1;
+                 
+}
+
+.rightSide {
+  flex: 2;  
+  text-align: center;         
+
+}
+
+.analyzeBtn {
+  margin-top: 12px;
+  background-color: #667eea;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  cursor: pointer;
+  
+}
+.analyzeBtn:hover {
+  background-color: #5a67d8;
+}
+
+.analysisPlaceholder {
+  color: #888;
+  font-style: italic;
+}
+
+.pctRow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.pctBig {
+  font-size: 30px;
+  font-weight: bold;
+  color: #4c51bf;
+}
+
+.pctLabel {
+  font-size: 1rem;
+  color: #6b7280;
+}
+
+.section {
+  margin-top: 12px;
+  width: 100%;
+}
+
+.sectionTitle {
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #4a5568;
+}
+
+.skillList {
+  display: flex;
+ 
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.skillPill {
+  background-color: #d8d9dc;
+  color: #3730a3;
+  border-radius: 12px;
+  padding: 4px 10px;
+  font-size: 0.85rem;
+}
+
+
+
+
+
+
