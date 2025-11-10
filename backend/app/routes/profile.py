@@ -252,33 +252,79 @@ def analyze_job_fit():
     openai.api_key = current_app.config["OPENAI_API_KEY"]
 
     try:
-        user = get_jwt_identity()
+       # Get current user and profile
+        current_user_id = int(get_jwt_identity())
+        user = User.query.get(current_user_id)
+        if not user:
+            return jsonify({"error": "User not found"}), 404
+
+        profile = Profile.query.filter_by(user_email=user.email).first()
+        if not profile:
+            return jsonify({"error": "No profile found for user"}), 400
+
+        # Pull skills from the skills table
+        user_skills = [skill.skill_name for skill in profile.skills]
+
+        # Pull experience from the profile
+        user_experience = profile.experience or ""
+
+        # Get job info from request
         data = request.get_json()
         job = data.get("job", {})
-
         job_title = job.get("title", "")
         job_description = job.get("description", "")
-        user_skills = ["Python", "Flask", "React", "SQL"]  # ← Example. Replace with real user skills later.
 
         prompt = f"""
-Analyze how well this user's skills match the job posting.
+            You are an expert AI job matching assistant. Analyze how well this user's profile fits the job posting.
 
-USER SKILLS: {user_skills}
-JOB TITLE: {job_title}
-JOB DESCRIPTION: {job_description}
+            User Profile:
+            - Skills: {user_skills}
+            - Experience: {user_experience}
 
-Return a JSON object with exactly this format (no extra text):
-{{
-  "percentage_match": integer (0–100),
-  "job_skills": [list of short skill strings found in the job description],
-  "matched_skills": [skills present in both job_skills and user_skills]
- 
-}}
-"""
+            Job Posting:
+            - Title: {job_title}
+            - Description: {job_description}
+
+            Your task:
+            1. Compare the user's skills and experience to the job requirements.
+            2. Identify skills mentioned in the job description.
+            3. Determine which of the user's skills match the job skills.
+            4. Assign a percentage match (0-100) representing overall fit.
+            5. Only output **valid JSON** with this exact structure:
+
+            Return a JSON object with exactly this format (no extra text):
+            {{
+            "percentage_match": integer (0–100),
+            "job_skills": [list of short skill strings found in the job description],
+            "matched_skills": [skills present in both job_skills and user_skills]
+            
+            }}
+            Constraints:
+            - Do NOT include explanations, comments, or extra text.
+            - Be concise and accurate.
+
+            """
         # Make the OpenAI call
         completion = openai.chat.completions.create(
             model="gpt-4o-mini",
-            messages=[{"role": "user", "content": prompt}]
+            messages=[
+                {"role": "system", "content": """
+                You are an expert job matching AI. Your task is to analyze a job posting and compare it to a user's skills. 
+
+                Instructions:
+                - Only output **valid JSON**, nothing else.
+                - JSON must include:
+                - `percentage_match` (integer 0–100)
+                - `job_skills` (array of short skill strings from the job description)
+                - `matched_skills` (array of skills that are present in both job_skills and user_skills)
+                - Avoid extra text, explanations, or comments.
+                - Be concise and accurate.
+                """},
+                {"role": "user", "content": prompt}
+            ],
+            temperature= 0,
+            max_completion_tokens= 700,
+            response_format={"type": "json_object"}  # strict JSON response
         )
 
         raw_reply = completion.choices[0].message.content.strip()
