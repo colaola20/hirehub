@@ -26,13 +26,13 @@
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
 }
 
-.keyIcon {
-    width: 4rem;
-    height: 4rem;
-}
-
 .text {
     text-align: center;
+}
+
+.icon {
+  width: 4rem;
+  height: 4rem;
 }
 
 .closeBtn {
@@ -48,19 +48,4 @@
 
 .closeBtn:hover {
   color: #ff6666;
-}
-
-.emailField {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  gap: 1rem;
-}
-
-.emailField input {
-  text-align: center;
-}
-
-.sentBtn:hover {
-  border: 1px solid #6f67f0;
 }

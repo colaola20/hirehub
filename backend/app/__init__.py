@@ -33,6 +33,7 @@ from app.models.skill import Skill
 from app.models.profile import Profile
 from app.models.skill import Skill
 from app.routes.chat_bot import chat_bp
+from datetime import timedelta
 
 load_dotenv()
 
