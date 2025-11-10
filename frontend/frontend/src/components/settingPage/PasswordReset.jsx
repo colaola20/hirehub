@@ -18,9 +18,7 @@ const PasswordReset = ({email, onClose}) => {
         setShowError(false)
         setShowSuccess(false)
         try {
-            console.log(newEmail)
             const token = localStorage.getItem("token");
-            console.log(token)
             if (!token) {
                 navigate("/login");
                 return
