@@ -40,6 +40,7 @@ const JobCard = ({ job, onClick , cardForLikedJobs = false}) => {
         });
       } else {
         setAnalysis(data);
+
       }
     } catch (err) {
       console.error("Network analysis error:", err);
@@ -49,6 +50,8 @@ const JobCard = ({ job, onClick , cardForLikedJobs = false}) => {
       setDataAnalized(true);
     }
   };
+
+  
 
   const renderList = (arr) => {
     if (!arr || arr.length === 0) return <em>None</em>;
@@ -143,18 +146,8 @@ return (
             <p>  <FaMapMarkerAlt style={{ marginRight: "10px", color: "#a3bffa",fontSize: "20px" }} /> <strong>Location:</strong> {job.location || "Unspecified"}</p>
             <p> <FaCalendarAlt style={{ marginRight: "10px", color: "#a3bffa",fontSize: "20px" }} /> <strong> Date Liked: {job.dateLiked ? new Date(job.dateLiked ).toLocaleDateString() : "Unknown"} </strong></p> 
           </div>
-                       }
 
-        {/* <button
-        className={styles["apply-btn"]}
-        onClick={(e) => { 
-          e.stopPropagation(); // prevent opening modal
-          window.open(job.url, "_blank");}}
-        >
-        Apply Now
-        </button> */}
-
-        {/* Card Modifications for Liked Jobs*/}
+          }
 
 
     </div>

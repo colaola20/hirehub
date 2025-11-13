@@ -274,6 +274,10 @@ def analyze_job_fit():
         job_title = job.get("title", "")
         job_description = job.get("description", "")
 
+        job_description = job_description[:600]  # cut long text
+        user_experience = user_experience[:400]
+        
+        # promt is no in use at the moment but kept for reference
         prompt = f"""
             You are an expert AI job matching assistant. Analyze how well this user's profile fits the job posting.
 
@@ -304,30 +308,39 @@ def analyze_job_fit():
             - Be concise and accurate.
 
             """
+        
         # Make the OpenAI call
         completion = openai.chat.completions.create(
-            model="gpt-4o-mini",
+            model="gpt-4o-mini", #"gpt-4o-mini" or "gpt-3.5-turbo" for even faster
             messages=[
-                {"role": "system", "content": """
-                You are an expert job matching AI. Your task is to analyze a job posting and compare it to a user's skills. 
+                {"role": "user", "content": f"""
+                    Compare this user's skills and experience with the job posting. 
+                    Return valid JSON only, no explanations.
 
-                Instructions:
-                - Only output **valid JSON**, nothing else.
-                - JSON must include:
-                - `percentage_match` (integer 0–100)
-                - `job_skills` (array of short skill strings from the job description)
-                - `matched_skills` (array of skills that are present in both job_skills and user_skills)
-                - Avoid extra text, explanations, or comments.
-                - Be concise and accurate.
-                """},
-                {"role": "user", "content": prompt}
+                    User skills: {user_skills}
+                    User experience: {user_experience}
+
+                    Job title: {job_title}
+                    Job description: {job_description}
+
+                    Format:
+                    {{
+                    "percentage_match": integer (0–100),
+                    "job_skills": [strings],
+                    "matched_skills": [strings]
+                    }}
+                """}
             ],
             temperature= 0,
-            max_completion_tokens= 700,
+            max_completion_tokens= 300,
             response_format={"type": "json_object"}  # strict JSON response
         )
 
-        raw_reply = completion.choices[0].message.content.strip()
+        raw_reply = completion.choices[0].message.content or ""
+        raw_reply = raw_reply.strip()
+
+
+
 
         # Try to extract JSON safely
         try:
