@@ -157,7 +157,7 @@ def update_application_status(application_id):
 
         data = request.get_json()
         new_status = data.get('status')
-        if new_status not in ['applied', 'interviewed', 'offer', 'rejected']:
+        if new_status not in ['applied', 'interviewed', 'joboffered', 'rejected']:
             return jsonify({'error': 'Invalid status value'}), 400
 
         app_entry.status = new_status

@@ -444,11 +444,13 @@
   margin-left: 4px;
 }
 .chatExport:disabled { opacity: .5; cursor: not-allowed; }
+
+
 .chatDock {
   position: fixed;
   right: 24px;
   bottom: 24px;
-  z-index: 9999;
+  z-index: 10;
 }
 
 .chatToggle {

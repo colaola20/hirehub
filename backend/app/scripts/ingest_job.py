@@ -376,10 +376,11 @@ def ingest_source_with_upsert(fetch_fn, normalize_fn, *, page_arg_name="page", s
                     job_data = normalize_fn(api_job)
                     if not job_data:
                         continue
-                    print("Our data")
-                    print(job_data)
+                    # print("Our data")
+                    # print(job_data)
                     # print("API data")
                     # print(api_job)
+                    print("Job saved")
                     logger.debug("Upserting job %s from %s", api_job.get("id") or api_job.get("title"), normalize_fn.__name__)
                     try:
                         with session.begin_nested():
