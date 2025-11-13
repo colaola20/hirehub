@@ -27,34 +27,36 @@
   color: #ff6b6b;
   text-align: center;
 }
+ 
 
+/* Responsive table container */
 .tableContainer {
-  display: grid;
-  gap: 0;
-  border: 1px solid #ccc;
-  border-radius: 8px;
   overflow-x: auto; 
+  overflow-y: auto; 
+  border-radius: 8px;
+  border: 1px solid #ccc;
+
+  max-height: 750px; 
+  scrollbar-width: none; 
+  -ms-overflow-style: none;
 
 }
 
-/* .headerRow,
-.dataRow {
-  display: grid;
-  grid-template-columns: 2fr 1.5fr 1.5fr 1.2fr 0.8fr 1fr 1.5fr 2fr 1.5fr;
-  padding: 10px;
-  gap: 30px;
-  border-bottom: 1px solid #ccc;
-  align-items: center;
-  
-} */
+.tableContainer::-webkit-scrollbar {
+  width: 0px; 
+  height: 0px; 
+}
+
+
+
 
 .headerRow {
   display: grid;
-  grid-template-columns: 150px 120px 120px 140px 60px 100px 85px 200px 150px;
+  grid-template-columns: 320px 120px 120px 140px 60px 100px 85px 65px 150px;
   gap: 23px;
   padding: 10px;
   font-weight: bold;
-  background: rgba(59, 58, 58, 0.5);
+  background: rgb(58, 58, 58);
   color: white;
   border-bottom: 1px solid rgba(255,255,255,0.1);
   position: sticky;
@@ -64,11 +66,15 @@
 
 .dataRow {
   display: grid;
-  grid-template-columns: 150px 120px 120px 140px 60px 100px 85px 200px 150px;
+  grid-template-columns: 320px 120px 120px 140px 60px 100px 85px 65px 150px;
   gap: 23px;
   padding: 8px;
   border-bottom: 1px solid rgba(255,255,255,0.05);
   color: rgb(255, 255, 255);
+  text-align: center; 
+
+  align-items: center;
+
 }
 
 .dataRow:nth-child(even) {
@@ -137,10 +143,87 @@
 }
 
 .clickableNote:hover {
-  color: #6f7172;
+   color: #4292e2;
+}
+
+
+/* === Status Dropdown === */
+.statusSelect {
+  background: #333;
+  color: white;
+  border: 1px solid #555;
+  border-radius: 5px;
+  padding: 2px 4px;
+  width: 100%;
+  transition: all 0.3s ease;
+  font-weight: bold;
+}
+
+/* Base dropdown styling */
+.statusSelect {
+  background: #333;
+  color: white;
+  border: 1px solid #555;
+  border-radius: 5px;
+  padding: 2px 4px;
+  width: 100%;
+  font-weight: bold;
+  transition: all 0.3s ease;
 }
 
 
 
+
+.jobUrl {
+   color: #555657;
+  text-decoration: underline;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: inline-block;
+  max-width: 100%;
+}
+
+.jobUrl:hover {
+  color: #4292e2;
+}
+
+
+
+@media (max-width: 1024px) {
+  .headerRow {
+    grid-template-columns: 120px 100px 100px 120px 50px 90px 70px 180px 120px;
+    gap: 12px;
+  }
+
+  .dataRow {
+    grid-template-columns: 120px 100px 100px 120px 50px 90px 70px 180px 120px;
+    gap: 12px;
+  }
+}
+
+@media (max-width: 768px) {
+  .headerRow {
+    grid-template-columns: 100px 90px 90px 100px 50px 80px 60px 75px 120px;
+    gap: 10px;
+  }
+
+  .dataRow {
+    grid-template-columns: 100px 90px 90px 100px 50px 80px 60px 75px 120px;
+    gap: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .tableContainer {
+    overflow-x: auto;
+  }
+
+  .headerRow,
+  .dataRow {
+    grid-template-columns: 120px 100px 100px 120px auto; /* allow scrolling */
+    gap: 8px;
+  }
+}
 
 
