@@ -1,5 +1,5 @@
 import React from 'react';
-import '../pages/resumeform.css'
+import './stepstyle.css'
 
 const PersonalStep = ({ formData, onChange }) => (  // PERSONAL INFO STEP //
         <div className="resume-form">
@@ -7,6 +7,7 @@ const PersonalStep = ({ formData, onChange }) => (  // PERSONAL INFO STEP //
             <p>Name</p>
             <input
                 type="text"
+                name='fullname'
                 placeholder="Full Name"
                 value={formData.fullname}
                 onChange={onChange}
@@ -15,6 +16,7 @@ const PersonalStep = ({ formData, onChange }) => (  // PERSONAL INFO STEP //
             <p>Email</p>
             <input
                 type="email"
+                name='email'
                 placeholder="Email"
                 value={formData.email}
                 onChange={onChange}
@@ -23,6 +25,7 @@ const PersonalStep = ({ formData, onChange }) => (  // PERSONAL INFO STEP //
             <p>Phone Number</p>
             <input
                 type="text"
+                name='phNum'
                 placeholder="Phone Number"
                 value={formData.phNum}
                 onChange={onChange}
@@ -32,6 +35,7 @@ const PersonalStep = ({ formData, onChange }) => (  // PERSONAL INFO STEP //
             <div className="location-form">
                 <input
                     type="text"
+                    name='address'
                     placeholder="Address"
                     value={formData.address}
                     onChange={onChange}
@@ -40,6 +44,7 @@ const PersonalStep = ({ formData, onChange }) => (  // PERSONAL INFO STEP //
                 {/* City */}
                 <input
                     type="text"
+                    name='city'
                     placeholder="City Name"
                     value={formData.city}
                     onChange={onChange}
@@ -48,6 +53,7 @@ const PersonalStep = ({ formData, onChange }) => (  // PERSONAL INFO STEP //
                 {/* State */}
                 <input
                     type="text"
+                    name='state'
                     placeholder="State Name"
                     value={formData.state}
                     onChange={onChange}
@@ -56,6 +62,7 @@ const PersonalStep = ({ formData, onChange }) => (  // PERSONAL INFO STEP //
                 {/* Zip */}
                 <input
                     type="text"
+                    name='zip'
                     placeholder="Zip Code"
                     value={formData.zip}
                     onChange={onChange}
@@ -66,6 +73,7 @@ const PersonalStep = ({ formData, onChange }) => (  // PERSONAL INFO STEP //
             <p>Summary</p>
             <input
                 type="text"
+                name='summary'
                 placeholder="Summary Generation (separate keywords by commas)"
                 value={formData.summary}
                 onChange={onChange}

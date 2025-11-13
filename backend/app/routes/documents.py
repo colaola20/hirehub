@@ -5,10 +5,31 @@ from app.models.resume import Resume
 from app.models.cover_letter import CoverLetter
 from flask_jwt_extended import jwt_required, get_jwt_identity
 import os
+import logging
 
-from groq import Groq
+# from groq import Groq
 
-groq_client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
+# groq_client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
+
+
+logger = logging.getLogger(__name__)
+
+# Guarded / lazy GROQ client initialization: only create client when API key is present.
+groq_client = None
+try:
+    from groq import Groq
+    groq_api_key = os.environ.get("GROQ_API_KEY")
+    if groq_api_key:
+        try:
+            groq_client = Groq(api_key=groq_api_key)
+        except Exception as exc:
+            logger.warning("Failed to initialize Groq client: %s", exc)
+            groq_client = None
+    else:
+        logger.info("GROQ_API_KEY not set; GROQ features disabled")
+except Exception as exc:
+    logger.warning("groq import failed or unavailable, GROQ features disabled: %s", exc)
+    groq_client = None
 
 documents_bp = Blueprint('documents', __name__)
 

@@ -1,10 +1,11 @@
-import '../pages/resumeform.css'
+import './stepstyle.css'
 
 const JobComponent = ({ formData, onChange }) => {
         return (
             <div className="job-form">
                 <input
                     type="text"
+                    name='company'
                     placeholder="Company Name"
                     value={formData.company}
                     onChange={onChange}
@@ -13,6 +14,7 @@ const JobComponent = ({ formData, onChange }) => {
                 {/* <p>Position</p> */}
                 <input
                     type="text"
+                    name='role'
                     placeholder="Position Title"
                     value={formData.role}
                     onChange={onChange}
@@ -21,6 +23,7 @@ const JobComponent = ({ formData, onChange }) => {
                 {/* <p>Employement Period</p> */}
                 <input
                     type="text"
+                    name='roleTime'
                     placeholder="Time Period (e.g., June 2020 - August 2021)" // change this to a date picker later
                     value={formData.roleTime}
                     onChange={onChange}

@@ -7,6 +7,8 @@ from app.models.user import User
 from datetime import datetime
 from werkzeug.utils import secure_filename
 import os
+import openai
+import json
 
 profile_bp = Blueprint('profile', __name__, url_prefix='/api/profile')
 
@@ -236,3 +238,127 @@ def get_profile_image(filename):
             'error': 'Image not found',
             'message': str(e)
         }), 404
+
+
+
+
+@profile_bp.route('/analyze', methods=['POST'])
+@jwt_required()
+def analyze_job_fit():
+    import json
+    from flask import request, jsonify
+    import openai
+
+    openai.api_key = current_app.config["OPENAI_API_KEY"]
+
+    try:
+       # Get current user and profile
+        current_user_id = int(get_jwt_identity())
+        user = User.query.get(current_user_id)
+        if not user:
+            return jsonify({"error": "User not found"}), 404
+
+        profile = Profile.query.filter_by(user_email=user.email).first()
+        if not profile:
+            return jsonify({"error": "No profile found for user"}), 400
+
+        # Pull skills from the skills table
+        user_skills = [skill.skill_name for skill in profile.skills]
+
+        # Pull experience from the profile
+        user_experience = profile.experience or ""
+
+        # Get job info from request
+        data = request.get_json()
+        job = data.get("job", {})
+        job_title = job.get("title", "")
+        job_description = job.get("description", "")
+
+        job_description = job_description[:600]  # cut long text
+        user_experience = user_experience[:400]
+        
+        # promt is no in use at the moment but kept for reference
+        prompt = f"""
+            You are an expert AI job matching assistant. Analyze how well this user's profile fits the job posting.
+
+            User Profile:
+            - Skills: {user_skills}
+            - Experience: {user_experience}
+
+            Job Posting:
+            - Title: {job_title}
+            - Description: {job_description}
+
+            Your task:
+            1. Compare the user's skills and experience to the job requirements.
+            2. Identify skills mentioned in the job description.
+            3. Determine which of the user's skills match the job skills.
+            4. Assign a percentage match (0-100) representing overall fit.
+            5. Only output **valid JSON** with this exact structure:
+
+            Return a JSON object with exactly this format (no extra text):
+            {{
+            "percentage_match": integer (0–100),
+            "job_skills": [list of short skill strings found in the job description],
+            "matched_skills": [skills present in both job_skills and user_skills]
+            
+            }}
+            Constraints:
+            - Do NOT include explanations, comments, or extra text.
+            - Be concise and accurate.
+
+            """
+        
+        # Make the OpenAI call
+        completion = openai.chat.completions.create(
+            model="gpt-4o-mini", #"gpt-4o-mini" or "gpt-3.5-turbo" for even faster
+            messages=[
+                {"role": "user", "content": f"""
+                    Compare this user's skills and experience with the job posting. 
+                    Return valid JSON only, no explanations.
+
+                    User skills: {user_skills}
+                    User experience: {user_experience}
+
+                    Job title: {job_title}
+                    Job description: {job_description}
+
+                    Format:
+                    {{
+                    "percentage_match": integer (0–100),
+                    "job_skills": [strings],
+                    "matched_skills": [strings]
+                    }}
+                """}
+            ],
+            temperature= 0,
+            max_completion_tokens= 300,
+            response_format={"type": "json_object"}  # strict JSON response
+        )
+
+        raw_reply = completion.choices[0].message.content or ""
+        raw_reply = raw_reply.strip()
+
+
+
+
+        # Try to extract JSON safely
+        try:
+            response_data = json.loads(raw_reply)
+        except json.JSONDecodeError:
+            # fallback: remove text before/after JSON braces
+            start = raw_reply.find('{')
+            end = raw_reply.rfind('}') + 1
+            response_data = json.loads(raw_reply[start:end]) if start >= 0 else {}
+
+        # Default safe values if something went wrong
+        return jsonify({
+            "percentage_match": response_data.get("percentage_match", 0),
+            "job_skills": response_data.get("job_skills", []),
+            "matched_skills": response_data.get("matched_skills", [])
+           
+        })
+
+    except Exception as e:
+        print("❌ Error in /analyze:", e)
+        return jsonify({"error": str(e)}), 500

@@ -33,6 +33,7 @@ from app.models.skill import Skill
 from app.models.profile import Profile
 from app.models.skill import Skill
 from app.routes.chat_bot import chat_bp
+from datetime import timedelta
 
 load_dotenv()
 
@@ -46,6 +47,8 @@ def create_app():
     app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['JWT_SECRET_KEY'] = os.environ.get('JWT_SECRET_KEY') or 'jwt-secret-string'
+
+    app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=12) 
 
     # File upload configuration
     app.config['UPLOAD_FOLDER'] = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'uploads')

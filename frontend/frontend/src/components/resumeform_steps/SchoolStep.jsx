@@ -1,10 +1,11 @@
-import '../pages/resumeform.css'
+import './stepstyle.css'
 
 const SchoolComponent = ({ formData, onChange }) => {
         return (
             <div className="school-form">
                 <input
                     type="text"
+                    name='school'
                     placeholder="School Name"
                     value={formData.school}
                     onChange={onChange}
@@ -13,6 +14,7 @@ const SchoolComponent = ({ formData, onChange }) => {
                 {/* <p>Degree</p> */}
                 <input
                     type="text"
+                    name='degree'
                     placeholder="Degree"
                     value={formData.degree}
                     onChange={onChange}
@@ -21,6 +23,7 @@ const SchoolComponent = ({ formData, onChange }) => {
                 {/* <p>Graduation</p> */}
                 <input
                     type="text"
+                    name='gradYear'
                     placeholder="Graduation Year (Or Estimated)"
                     value={formData.gradYear}
                     onChange={onChange}
@@ -28,7 +31,7 @@ const SchoolComponent = ({ formData, onChange }) => {
                 />
                 <div className="student-cb">
                     <p>Are you currently a student?</p>
-                    <input type="checkbox" I Am Currently a Student />
+                    <input type="checkbox" name='status' I Am Currently a Student />
                 </div>
             </div>
         )
