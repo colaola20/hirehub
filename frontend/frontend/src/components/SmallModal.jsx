@@ -1,7 +1,13 @@
-import React from "react";
+import {React ,useState } from "react";
+
 import styles from "./SmallModal.module.css";
+import Error from "./UsersMessages/Error.jsx";
+import Success from "./UsersMessages/Success.jsx";
 
 const SmallModal = ({ job, onNo }) => {
+    const [showError, setShowError] = useState(false);
+    const [showSuccess, setShowSuccess] = useState(false);
+    const [alreadyApplied, setAlreadyApplied] = useState(false);
 
     if (!job) return null;
 
@@ -19,28 +25,74 @@ const SmallModal = ({ job, onNo }) => {
 
         if (response.ok) {
         const data = await response.json();
-        alert(data.message || "Application saved successfully!");
-        onNo(); // close modal
+        setShowSuccess(true);
+
         } else if (response.status === 409) {
         const data = await response.json();
-        alert(data.error || "You already applied to this job.");
-        onNo();
+
+       setAlreadyApplied(true);
+
+   
         } else {
         const text = await response.text();
-        console.error("Server error:", text);
-        alert("Failed to apply. Please try again later.");
+        // console.error("Server error:", text);
+        setShowError(true);
         }
         
     } catch (err) {
-        console.error(err);
-        alert("Something went wrong. Try again.");
+        // console.error(err);
+        setShowError(true);
     }
     };
+
+    // When closing error modal, also call onNo to close the SmallModal
+    const closeErrorModal = () => {
+        setShowError(false);
+        onNo();
+    };
+
+    // When closing success modal, also call onNo to close the SmallModal
+    const closeSuccessModal = () => {
+        setShowSuccess(false);
+        onNo();
+    }
+
+    // When closing already applied modal, also call onNo to close the SmallModal
+    const closeAlreadyAppliedModal = () => {
+        setAlreadyApplied(false);
+        onNo();
+    }
 
 
     return (
         
         <div className={styles.smallModalOverlay}>
+
+            {/* Success Component */}
+            {showSuccess && (
+            <Success
+                title="Application Submitted"
+                description="Your job application was successfully saved!"
+                handleClose={closeSuccessModal}
+            />
+            )}
+
+            {/* Success Component */}
+            {alreadyApplied && (
+            <Success
+                title="You’ve Already Applied!"
+                description="Looks like you’ve already sent in your application for this job."
+                handleClose={closeAlreadyAppliedModal}
+            />
+            )}
+            
+            {/* Error Component */}
+            {showError && (
+                <Error title={"Application to Job"} 
+                description={"Application was not save. Please try again."} 
+                handleClose={closeErrorModal} />
+            )}
+            
             <div className={styles.smallModal}>
                 {/* <div className={styles.closeButton} onClick={onNo}>✕</div> */}
 

@@ -118,7 +118,7 @@ export default function Chatbot({ job }) {
     // stick to top and full-height without touching your CSS file
     <div
       className={styles.chatDock}
-      style={{ top: 0, bottom: 0, alignItems: "flex-start" }}
+      style={{ top: 4, bottom: 0, alignItems: "flex-start" }}
     >
       {/* Full-height chat card */}
       <div

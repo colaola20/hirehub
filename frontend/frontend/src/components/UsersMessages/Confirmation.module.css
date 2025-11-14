@@ -17,7 +17,7 @@
   justify-content: center;
   align-items: center;
   position: relative;
-  width: 420px;
+  width: 550px;
   background: rgba(25, 20, 50, 0.9);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
@@ -26,13 +26,20 @@
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
 }
 
-.keyIcon {
-    width: 4rem;
-    height: 4rem;
-}
-
 .text {
     text-align: center;
+}
+
+.separator {
+  width: 100%;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin: 0;
+  margin-bottom: 1.5rem;
+}
+
+.icon {
+  width: 4rem;
+  height: 4rem;
 }
 
 .closeBtn {
@@ -50,17 +57,19 @@
   color: #ff6666;
 }
 
-.emailField {
-  display: flex;
-  flex-direction: column;
+.submissionArea {
+  margin: 1rem;
   width: 100%;
+  display: flex;
   gap: 1rem;
 }
 
-.emailField input {
-  text-align: center;
+.CancelBtn {
+  width: 50%;
+  background: #5850bb;
 }
 
-.sentBtn:hover {
+.SubmitBtn{
+  width: 50%;
   border: 1px solid #6f67f0;
 }

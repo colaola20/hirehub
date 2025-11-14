@@ -200,7 +200,8 @@ const JobDashboard = () => {
 
   </div>
     {/* NEW button */}
-    <button className={styles.applyBtn} onClick={() => setShowModal(true)}>
+    <button className={styles.applyBtn} onClick={() => {window.open(job.url, "_blank");
+      setShowModal(true)}}>
     Apply
     </button>
             
