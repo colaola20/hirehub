@@ -18,7 +18,9 @@ class Job(db.Model):
     applications = db.relationship("Application", backref='job', lazy=True)
     favorites = db.relationship('Favorite', backref='job', lazy=True, cascade='all, delete-orphan')
     employment_type = db.Column(db.String(), nullable=True)
-    skills = db.Column(db.JSON, nullable=True)
+    skills_extracted = db.Column(db.JSON, nullable=True)
+    skills_by_category = db.Column(db.JSON, nullable=True)
+
 
 
     __table_args__ = (
@@ -37,7 +39,8 @@ class Job(db.Model):
             'is_active': self.is_active,
             'source': self.source,
             'employment_type': self.employment_type,
-            'skills': self.skills or []
+            'skills_extracted': self.skills_extracted or [],
+            'skills_by_category': self.skills_by_category or []
         }
 
     
