@@ -3,9 +3,9 @@ from app.models.form import Form
 from app.models.user import User
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
-form_bp = Blueprint('form', __name__, url_prefix='/api/forms')
+form_bp = Blueprint('form', __name__)
 
-@form_bp.route('/', methods=['GET'])
+@form_bp.route('/api/form', methods=['GET'])
 @jwt_required()
 
 def get_resume_form():
@@ -15,10 +15,13 @@ def get_resume_form():
 
     data = {
         "step1": {
-            "first_name": user.first_name,
-            "last_name": user.last_name,
+            "fullname": user.fullname,
             "email": user.email,
-            "phone": user.phone,
+            "phNum": user.phNum,
+            "address": user.address,
+            "city": user.city,
+            "state": user.state,
+            "zip": user.zip,
             "summary": user.summary
         },
         "step2": {
@@ -50,13 +53,13 @@ def get_resume_form():
     }
     return jsonify(data), 200
 
-    #post
-    @form.bp.route('/', methods=['POST'])
-    @jwt_required()
+#post
+@form_bp.route('/api/form', methods=['POST'])
+@jwt_required()
 
-    def submit_form():
-        form_data = request.get_json()
+def submit_form():
+    form_data = request.get_json()
 
-        result = generate_resume(form_data)
+    result = generate_resume(form_data) #to be implemented
 
-        return jsonify({"message": "Resume generated successfully", "resume": result}), 200
+    return jsonify({"message": "Resume generated successfully", "resume": result}), 200
