@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PersonalizedNavbar from '../components/PersonalizedNavbar'
 import { Link } from "react-router-dom";
 import * as Yup from 'yup'
@@ -15,7 +15,6 @@ import ProjectStep from "../components/resumeform_steps/ProjectStep";
 
 // import './resumeform.css';
 import styles from './resumeform.module.css';
-
 
 const ResumeForm = () => {
 
@@ -58,6 +57,13 @@ const ResumeForm = () => {
 
         }
     })
+
+    const fetchData = async () => {
+        const response = await fetch('/api/resume_form');
+        const data = await response.json();
+        setFormData(data);
+    }
+
 
     //validation
 
