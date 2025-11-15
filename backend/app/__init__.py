@@ -96,6 +96,12 @@ def create_app():
     app.register_blueprint(applications_bp)
     app.register_blueprint(documents_bp)
     app.register_blueprint(chat_bp, url_prefix="/api") 
+    # Notifications blueprint
+    try:
+        from app.routes.notifications import notifications_bp
+        app.register_blueprint(notifications_bp)
+    except Exception:
+        app.logger.debug('Notifications blueprint not available')
 
     
    
