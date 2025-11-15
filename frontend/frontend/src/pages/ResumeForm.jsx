@@ -19,6 +19,7 @@ import styles from './resumeform.module.css';
 const ResumeForm = () => {
 
     const [currentStep, setCurrentStep] = useState(1);
+    const [errors, setErrors] = useState({});   
 
     const [formData, setFormData] = useState({
         /* ---PERSONAL INFO--- */
@@ -59,7 +60,7 @@ const ResumeForm = () => {
     })
 
     const fetchData = async () => {
-        const response = await fetch('/api/resume_form');
+        const response = await fetch('/api/form');
         const data = await response.json();
         setFormData(data);
     }
@@ -101,6 +102,34 @@ const ResumeForm = () => {
     const projectValidation = Yup.object({ // none (even tho highly recommended to have at least one proj)
     })
 
+    
+
+    const validateStep = async () => {
+        let schema;
+
+        if (currentStep === 1) schema = personalValidation;
+        if (currentStep === 2) schema = socialValidation;
+        if (currentStep === 3) schema = miscValidation;
+        if (currentStep === 4) schema = jobValidation;
+        if (currentStep === 5) schema = schoolValidation;
+        if (currentStep === 6) schema = projectValidation;
+
+        try {
+            await schema.validate(formData[`step${currentStep}`], { abortEarly: false });
+            setErrors({});
+            return true;
+        }
+        catch (validationErrors) {
+            const formattedErrors = {};
+            validationErrors.inner.forEach((error) => {
+                formattedErrors[error.path] = error.message;
+            });
+            setErrors(formattedErrors);
+            return false;
+        }
+    }
+
+
     const handleInputChange = (e) => {
         const { name, value } = e.target;
 
@@ -117,8 +146,13 @@ const ResumeForm = () => {
         if (currentStep > 1) setCurrentStep(currentStep - 1);
     }
 
-    const nextStep = () => {
-        if (currentStep < 7) setCurrentStep(currentStep + 1);
+    const nextStep = async () => {
+        if (currentStep < 7) {
+            const isValid = await validateStep();
+            if (!isValid) 
+                return;
+            setCurrentStep(currentStep + 1);
+        }
     }
 
 
@@ -180,12 +214,12 @@ const ResumeForm = () => {
 
 
                 <div className={styles["resume-form-container"]}>
-                    {currentStep === 1 && <PersonalStep formData={formData.step1} onChange={handleInputChange} />}
-                    {currentStep === 2 && <SocialStep formData={formData.step2} onChange={handleInputChange} />}
-                    {currentStep === 3 && <MiscStep formData={formData.step3} onChange={handleInputChange} />}
-                    {currentStep === 4 && <JobStep formData={formData.step4} onChange={handleInputChange} />}
-                    {currentStep === 5 && <SchoolStep formData={formData.step5} onChange={handleInputChange} />}
-                    {currentStep === 6 && <ProjectStep formData={formData.step6} onChange={handleInputChange} />}
+                    {currentStep === 1 && <PersonalStep formData={formData.step1} onChange={handleInputChange} errors={errors} />}
+                    {currentStep === 2 && <SocialStep formData={formData.step2} onChange={handleInputChange} errors={errors}/>}
+                    {currentStep === 3 && <MiscStep formData={formData.step3} onChange={handleInputChange} errors={errors} />}
+                    {currentStep === 4 && <JobStep formData={formData.step4} onChange={handleInputChange} errors={errors} />}
+                    {currentStep === 5 && <SchoolStep formData={formData.step5} onChange={handleInputChange} errors={errors} />}
+                    {currentStep === 6 && <ProjectStep formData={formData.step6} onChange={handleInputChange} errors={errors} />}
                     {currentStep === 7 && <ResumeViewStep />}
                 </div>
             </div>
