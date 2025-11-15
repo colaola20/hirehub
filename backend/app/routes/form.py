@@ -1,12 +1,11 @@
 from flask import Blueprint, request, jsonify
-from app.extensions import db
 from app.models.form import Form
-form_bp = Blueprint('form', __name__, url_prefix='/api/forms')
 from app.models.user import User
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
+form_bp = Blueprint('form', __name__, url_prefix='/api/forms')
 
-@form_bp.route('/', methods=['POST'])
+@form_bp.route('/', methods=['GET'])
 @jwt_required()
 
 def get_resume_form():
@@ -32,17 +31,17 @@ def get_resume_form():
             "languages": user.languages,
             "certifications": user.certifications,
             "hobbies": user.hobbies
-        }
+        },
         "step4":{
             "companies": "",
             "roles": "",
             "durations": "",
-        }
+        },
         "step5":{
             "school": "",
             "degree": "",
             "gradYear": ""
-        }
+        },
         "step6":{
             "projTitle":"",
             "projDesc":"",
@@ -50,3 +49,14 @@ def get_resume_form():
         }
     }
     return jsonify(data), 200
+
+    #post
+    @form.bp.route('/', methods=['POST'])
+    @jwt_required()
+
+    def submit_form():
+        form_data = request.get_json()
+
+        result = generate_resume(form_data)
+
+        return jsonify({"message": "Resume generated successfully", "resume": result}), 200
