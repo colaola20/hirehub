@@ -1,5 +1,5 @@
 // src/components/JobCard.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import truncate from "html-truncate";
 import { FaBuilding, FaMapMarkerAlt, FaCalendarAlt } from "react-icons/fa";
 import styles from "./JobCard.module.css";
@@ -10,6 +10,7 @@ const JobCard = ({ job, onClick , cardForLikedJobs = false}) => {
   const [loadingAnalysis, setLoadingAnalysis] = useState(false);
   const [dataAnalized, setDataAnalized] = useState(false);
   const token = localStorage.getItem("token");
+  
 
   const analyzeJob = async (e) => {
     if (e && e.stopPropagation) e.stopPropagation();
@@ -19,6 +20,7 @@ const JobCard = ({ job, onClick , cardForLikedJobs = false}) => {
       return;
     }
 
+
     setLoadingAnalysis(true);
     try {
       const res = await fetch("/api/profile/analyze", {
@@ -27,14 +29,17 @@ const JobCard = ({ job, onClick , cardForLikedJobs = false}) => {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          job: { title: job.title, description: job.description },
+          body: JSON.stringify({
+            job: { 
+              title: job.title, 
+              skills_extracted: job.skills_extracted || [] 
+            }
         }),
       });
 
       const data = await res.json();
       if (!res.ok) {
-        console.error("Analysis error:", data);
+        //console.error("Analysis error:", data);
         setAnalysis({
           error: data.error || data.message || "Analysis failed",
         });
@@ -43,7 +48,7 @@ const JobCard = ({ job, onClick , cardForLikedJobs = false}) => {
 
       }
     } catch (err) {
-      console.error("Network analysis error:", err);
+     // console.error("Network analysis error:", err);
       setAnalysis({ error: "Network error" });
     } finally {
       setLoadingAnalysis(false);
@@ -63,15 +68,23 @@ const JobCard = ({ job, onClick , cardForLikedJobs = false}) => {
   };
 
 
+  
+
+
 return (
+
+  <>
+
+  { !cardForLikedJobs ? (
+
     <div className={styles["job-card"]}
      onClick={() => onClick && onClick(job)}>
         <div className={styles["card-header"]}>
           <h3>{job.title || "Untitled Position"}</h3>
-          <FavoriteButton jobId={job.id} />
+          <FavoriteButton jobId={job.id} initialFavorited={job.is_favorited}  />
         </div>
 
-      { !cardForLikedJobs ? (
+      
       <div className={styles.cardWrapper}> 
         <div className={styles.leftSide}>
         <p className={styles.date}> <FaCalendarAlt style={{ marginRight: "10px", color: "#a3bffa",fontSize: "20px" }} /><strong>Date:</strong>{" "}{
@@ -96,6 +109,7 @@ return (
             )}
 
             {analysis && !analysis.error && (
+              
               <>
                 <div className={styles.pctRow}>
                   <div className={styles.pctBig}>
@@ -104,12 +118,14 @@ return (
                   <div className={styles.pctLabel}>Match</div>
                 </div>
 
-                {/* <div className={styles.section}>
+              <div className={styles.analysisContentWrapper}>
+
+                <div className={styles.section}>
                   <div className={styles.sectionTitle}>Skills in Job</div>
                   <div className={styles.skillList}>
                     {renderList(analysis.job_skills)}
                   </div>
-                </div> */}
+                </div>
 
                 <div className={styles.section}>
                   <div className={styles.sectionTitle}>Matched Skills</div>
@@ -117,6 +133,8 @@ return (
                     {renderList(analysis.matched_skills)}
                   </div>
                 </div>
+
+              </div>
               </>
             )}
 
@@ -134,8 +152,19 @@ return (
           
         </div> 
           
+    </div>
 
-       ) :   
+       ) : (
+
+      <>
+        <div className={styles["job-card"]}
+        onClick={() => onClick && onClick(job)}>
+            <div className={styles["card-header"]}>
+              <h3>{job.title || "Untitled Position"}</h3>
+              <FavoriteButton jobId={job.id} initialFavorited={true}  />
+            </div>
+           
+        
            
           <div className={styles.jobInfo}>
             <p className={styles.date}> <FaCalendarAlt style={{ marginRight: "10px", color: "#a3bffa",fontSize: "20px" }} /><strong>Date:</strong>{" "}{
@@ -146,11 +175,10 @@ return (
             <p>  <FaMapMarkerAlt style={{ marginRight: "10px", color: "#a3bffa",fontSize: "20px" }} /> <strong>Location:</strong> {job.location || "Unspecified"}</p>
             <p> <FaCalendarAlt style={{ marginRight: "10px", color: "#a3bffa",fontSize: "20px" }} /> <strong> Date Liked: {job.dateLiked ? new Date(job.dateLiked ).toLocaleDateString() : "Unknown"} </strong></p> 
           </div>
-
-          }
-
-
-    </div>
+           </div>
+        </>
+       )}
+    </>
   );
 };
 

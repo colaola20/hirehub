@@ -128,8 +128,18 @@
   justify-content: space-between; 
   align-items: center;
   min-height: 100%;
-  
+  margin-right: 9%;
  
+}
+
+.analysisContentWrapper{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 130%;
+  
+  
+
 }
 
 .analyzeBtn {

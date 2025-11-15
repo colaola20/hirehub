@@ -41,6 +41,7 @@ class Job(db.Model):
             'employment_type': self.employment_type,
             'skills_extracted': self.skills_extracted or [],
             'skills_by_category': self.skills_by_category or []
+            
         }
 
     
