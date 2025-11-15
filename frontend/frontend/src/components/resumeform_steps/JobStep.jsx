@@ -1,6 +1,6 @@
 import './stepstyle.css'
 
-const JobComponent = ({ formData, onChange }) => {
+const JobComponent = ({ formData, onChange, errors }) => {
         return (
             <div className="job-form">
                 <input
@@ -11,6 +11,7 @@ const JobComponent = ({ formData, onChange }) => {
                     onChange={onChange}
                     required
                 />
+                {errors.company && <p style={{ color: 'red' }}>{errors.company}</p>}
                 {/* <p>Position</p> */}
                 <input
                     type="text"
@@ -20,6 +21,7 @@ const JobComponent = ({ formData, onChange }) => {
                     onChange={onChange}
                     required
                 />
+                {errors.role && <p style={{ color: 'red' }}>{errors.role}</p>}
                 {/* <p>Employement Period</p> */}
                 <input
                     type="text"
@@ -29,16 +31,17 @@ const JobComponent = ({ formData, onChange }) => {
                     onChange={onChange}
                     required
                 />
+                {errors.roleTime && <p style={{ color: 'red' }}>{errors.roleTime}</p>}
             </div>
         )
     };
 
-    const JobStep = ({ formData, onChange }) => ( // JOB HISTORY INFO STEP //
+    const JobStep = ({ formData, onChange, errors }) => ( // JOB HISTORY INFO STEP //
         <div>
             <h2>Relevant Experience</h2>
             <h3>Add Up To Three</h3>
             <br />
-            <JobComponent formData={formData} onChange={onChange} />
+            <JobComponent formData={formData} onChange={onChange} errors={errors}/>
             <button>+</button>
         </div>
     );

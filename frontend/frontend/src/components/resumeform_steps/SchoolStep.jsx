@@ -1,6 +1,6 @@
 import './stepstyle.css'
 
-const SchoolComponent = ({ formData, onChange }) => {
+const SchoolComponent = ({ formData, onChange, errors }) => {
         return (
             <div className="school-form">
                 <input
@@ -11,6 +11,7 @@ const SchoolComponent = ({ formData, onChange }) => {
                     onChange={onChange}
                     required
                 />
+                {errors.school && <p style={{ color: 'red' }}>{errors.school}</p>}
                 {/* <p>Degree</p> */}
                 <input
                     type="text"
@@ -20,6 +21,7 @@ const SchoolComponent = ({ formData, onChange }) => {
                     onChange={onChange}
                     required
                 />
+                {errors.degree && <p style={{ color: 'red' }}>{errors.degree}</p>}
                 {/* <p>Graduation</p> */}
                 <input
                     type="text"
@@ -29,18 +31,19 @@ const SchoolComponent = ({ formData, onChange }) => {
                     onChange={onChange}
                     required
                 />
-                <div className="student-cb">
+                {errors.gradYear && <p style={{ color: 'red' }}>{errors.gradYear}</p>}
+                {/* <div className="student-cb">
                     <p>Are you currently a student?</p>
                     <input type="checkbox" name='status' I Am Currently a Student />
-                </div>
+                </div> */}
             </div>
         )
     };
-    const SchoolStep = ({ formData, onChange }) => ( // SCHOOL HISTORY INFO STEP //
+    const SchoolStep = ({ formData, onChange, errors }) => ( // SCHOOL HISTORY INFO STEP //
         <div>
             <h2>Education</h2>
             <h3>Add Up To Three</h3>
-            <SchoolComponent formData={formData} onChange={onChange} />
+            <SchoolComponent formData={formData} onChange={onChange} errors={errors} />
             <button>+</button>
         </div>
     );

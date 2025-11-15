@@ -1,7 +1,7 @@
 import React from 'react';
 import './stepstyle.css'
 
-const PersonalStep = ({ formData, onChange }) => (  // PERSONAL INFO STEP //
+const PersonalStep = ({ formData, onChange, errors}) => (  // PERSONAL INFO STEP //
         <div className="resume-form">
             <h2>Personal Information</h2>
             <p>Name</p>
@@ -11,8 +11,8 @@ const PersonalStep = ({ formData, onChange }) => (  // PERSONAL INFO STEP //
                 placeholder="Full Name"
                 value={formData.fullname}
                 onChange={onChange}
-                required
             />
+            {errors.fullname && <p style={{ color: 'red' }}>{errors.fullname}</p>}
             <p>Email</p>
             <input
                 type="email"
@@ -22,6 +22,7 @@ const PersonalStep = ({ formData, onChange }) => (  // PERSONAL INFO STEP //
                 onChange={onChange}
                 required
             />
+            {errors.email && <p style={{ color: 'red' }}>{errors.email}</p>}
             <p>Phone Number</p>
             <input
                 type="text"
@@ -31,6 +32,7 @@ const PersonalStep = ({ formData, onChange }) => (  // PERSONAL INFO STEP //
                 onChange={onChange}
                 required
             />
+            {errors.phNum && <p style={{ color: 'red' }}>{errors.phNum}</p>}
             <p>Location</p>
             <div className="location-form">
                 <input
@@ -41,6 +43,7 @@ const PersonalStep = ({ formData, onChange }) => (  // PERSONAL INFO STEP //
                     onChange={onChange}
                     required
                 />
+                {errors.address && <p style={{ color: 'red' }}>{errors.address}</p>}
                 {/* City */}
                 <input
                     type="text"
@@ -50,6 +53,7 @@ const PersonalStep = ({ formData, onChange }) => (  // PERSONAL INFO STEP //
                     onChange={onChange}
                     required
                 />
+                {errors.city && <p style={{ color: 'red' }}>{errors.city}</p>}
                 {/* State */}
                 <input
                     type="text"
@@ -59,6 +63,7 @@ const PersonalStep = ({ formData, onChange }) => (  // PERSONAL INFO STEP //
                     onChange={onChange}
                     required
                 />
+                {errors.state && <p style={{ color: 'red' }}>{errors.state}</p>}
                 {/* Zip */}
                 <input
                     type="text"
@@ -68,9 +73,10 @@ const PersonalStep = ({ formData, onChange }) => (  // PERSONAL INFO STEP //
                     onChange={onChange}
                     required
                 />
+                {errors.zip && <p style={{ color: 'red' }}>{errors.zip}</p>}
             </div>
 
-            <p>Summary</p>
+            {/* <p>Summary</p>
             <input
                 type="text"
                 name='summary'
@@ -78,7 +84,7 @@ const PersonalStep = ({ formData, onChange }) => (  // PERSONAL INFO STEP //
                 value={formData.summary}
                 onChange={onChange}
 
-            />
+            /> */}
 
         </div>
     );
