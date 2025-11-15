@@ -52,46 +52,46 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'pdf', 'txt', 'doc'}
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-# @documents_bp.route('upload', methods=['POST'])
-# @jwt_required()
-# def upload_file():
-#     user_id = get_jwt_identity()
-#     user = User.query.get(user_id)
-#     if 'file' not in request.files:
-#         return jsonify({'error': 'No file provided'}), 400
+@documents_bp.route('/api/upload', methods=['POST'])
+@jwt_required()
+def upload_file():
+    user_id = get_jwt_identity()
+    user = User.query.get(user_id)
+    if 'file' not in request.files:
+        return jsonify({'error': 'No file provided'}), 400
     
-#     file = request.files['file']
+    file = request.files['file']
 
-#     if file.filename == '':
-#         return jsonify({'eror': "No file selected"}), 400
+    if file.filename == '':
+        return jsonify({'eror': "No file selected"}), 400
     
-#     if not allowed_file(file.filename):
-#         return jsonify({'error': 'File type not allowed'}), 400
+    if not allowed_file(file.filename):
+        return jsonify({'error': 'File type not allowed'}), 400
     
-#     try:
-#         # Generate unique filename. Added prefix user_id to quickly access user's files
-#         filename = secure_filename(file.filename)
-#         unique_filename = f"{user.id}/{uuid.uuid4()}_{filename}"
+    try:
+        # Generate unique filename. Added prefix user_id to quickly access user's files
+        filename = secure_filename(file.filename)
+        unique_filename = f"{user.id}/{uuid.uuid4()}_{filename}"
 
-#         # Upload to S3
-#         s3_client.upload_fileobj(
-#             file,
-#             BUCKET_NAME,
-#             unique_filename,
-#             ExtraArgs={'ContentType': file.content_type}
-#         )
+        # Upload to S3
+        s3_client.upload_fileobj(
+            file,
+            BUCKET_NAME,
+            unique_filename,
+            ExtraArgs={'ContentType': file.content_type}
+        )
 
-#         # Generate URL
-#         file_url = f"https://{BUCKET_NAME}.s3.{os.getenv('AWS_REGION')}.amazonaws.com/{unique_filename}"
+        # Generate URL
+        file_url = f"https://{BUCKET_NAME}.s3.{os.getenv('AWS_REGION')}.amazonaws.com/{unique_filename}"
 
-#         return jsonify({
-#             'message': 'File uploaded successfully',
-#             'filename': unique_filename,
-#             'url': file_url
-#         }), 200
+        return jsonify({
+            'message': 'File uploaded successfully',
+            'filename': unique_filename,
+            'url': file_url
+        }), 200
         
-#     except Exception as e:
-#         return jsonify({'error': str(e)}), 500
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 
 # ------------------------
