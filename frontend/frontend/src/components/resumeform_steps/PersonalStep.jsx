@@ -43,7 +43,7 @@ const PersonalStep = ({ formData, onChange, errors}) => (  // PERSONAL INFO STEP
                     onChange={onChange}
                     required
                 />
-                {errors.address && <p style={{ color: 'red' }}>{errors.address}</p>}
+                
                 {/* City */}
                 <input
                     type="text"
@@ -53,7 +53,7 @@ const PersonalStep = ({ formData, onChange, errors}) => (  // PERSONAL INFO STEP
                     onChange={onChange}
                     required
                 />
-                {errors.city && <p style={{ color: 'red' }}>{errors.city}</p>}
+                
                 {/* State */}
                 <input
                     type="text"
@@ -63,7 +63,7 @@ const PersonalStep = ({ formData, onChange, errors}) => (  // PERSONAL INFO STEP
                     onChange={onChange}
                     required
                 />
-                {errors.state && <p style={{ color: 'red' }}>{errors.state}</p>}
+                
                 {/* Zip */}
                 <input
                     type="text"
@@ -73,6 +73,12 @@ const PersonalStep = ({ formData, onChange, errors}) => (  // PERSONAL INFO STEP
                     onChange={onChange}
                     required
                 />
+                
+            </div>
+            <div className='location-validation'>
+                {errors.address && <p style={{ color: 'red' }}>{errors.address}</p>}
+                {errors.city && <p style={{ color: 'red' }}>{errors.city}</p>}
+                {errors.state && <p style={{ color: 'red' }}>{errors.state}</p>}
                 {errors.zip && <p style={{ color: 'red' }}>{errors.zip}</p>}
             </div>
 
