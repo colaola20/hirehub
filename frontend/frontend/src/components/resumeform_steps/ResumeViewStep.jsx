@@ -1,13 +1,36 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './resumeviewstep.css'
 
 const ResumeViewStep = () => {
     const [resumeText, setResumeText] = useState('Resume Generated Here')
+    const [formData, setFormData] = useState({});
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await fetch('/api/form');
+                const data = await response.json();
+                setFormData(data);
+            }
+            catch (error) {
+                console.error('Error fetching form data:', error);
+            }
+            finally {
+                setLoading(false);
+            }
+        };
+        fetchData();
+    }, []);
+
+    if (loading) {return (<p> Loading data...</p>);}
+
     return(
         <div>
-            <h2>Resume Preview</h2>
+            <button onClick={fetchData}> Refresh Resume Data </button>
+            <h2>Resume Preview</h2> {/* DISPLAY JSON if available */}
             <div className='resume-preview'>
-                <p>{resumeText}</p>
+                {formData ? (<pre> {JSON.stringify(formData, null, 2)} </pre>) : (<p>{resumeText}</p>)}
             </div>
 
         </div>

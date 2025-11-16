@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import PersonalizedNavbar from '../components/PersonalizedNavbar'
 import { Link } from "react-router-dom";
 import * as Yup from 'yup'
@@ -59,11 +59,27 @@ const ResumeForm = () => {
         }
     })
 
-    const fetchData = async () => {
-        const response = await fetch('/api/form');
+    const submitForm = async () => {
+        const response = await fetch('/api/form', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData),
+        });
         const data = await response.json();
-        setFormData(data);
+        console.log(data);
+        sendBackendData(data);
     }
+
+    // pull info from user profile to prefill form
+    useEffect(() => {
+        fetch('/api/form')
+            .then(response => response.json())
+            .then(data => setFormData(data))
+    }, []);
+
+
 
 
     //validation
@@ -220,7 +236,7 @@ const ResumeForm = () => {
                     {currentStep === 4 && <JobStep formData={formData.step4} onChange={handleInputChange} errors={errors} />}
                     {currentStep === 5 && <SchoolStep formData={formData.step5} onChange={handleInputChange} errors={errors} />}
                     {currentStep === 6 && <ProjectStep formData={formData.step6} onChange={handleInputChange} errors={errors} />}
-                    {currentStep === 7 && <ResumeViewStep />}
+                    {currentStep === 7 && <ResumeViewStep backendData={formData}/>}
                 </div>
             </div>
         </div>
