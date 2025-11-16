@@ -6,7 +6,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 form_bp = Blueprint('form', __name__)
 
 @form_bp.route('/api/form', methods=['GET'])
-@jwt_required()
+# @jwt_required()
 
 def get_resume_form():
     current_user_id = get_jwt_identity()
@@ -55,7 +55,7 @@ def get_resume_form():
 
 #post
 @form_bp.route('/api/form', methods=['POST'])
-@jwt_required()
+# @jwt_required()
 
 def submit_form():
     form_data = request.get_json()

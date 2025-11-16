@@ -17,6 +17,7 @@ from app.routes.applications import applications_bp
 from app.routes.skills import skills_bp
 from app.routes.profile import profile_bp
 from app.routes.documents import documents_bp
+from app.routes.form import form_bp
 from datetime import timedelta
 
 
@@ -95,6 +96,7 @@ def create_app():
     app.register_blueprint(linkedin_bp)
     app.register_blueprint(applications_bp)
     app.register_blueprint(documents_bp)
+    app.register_blueprint(form_bp)
     app.register_blueprint(chat_bp, url_prefix="/api") 
 
     
