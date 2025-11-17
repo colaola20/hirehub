@@ -103,6 +103,18 @@ def create_app():
     except Exception:
         app.logger.debug('Notifications blueprint not available')
 
+    # Start optional background notification worker (best-effort)
+    # Configure via environment or app.config: RUN_NOTIFICATION_WORKER (bool) and NOTIFICATION_INTERVAL_SECONDS (int)
+    try:
+        run_worker = os.getenv('RUN_NOTIFICATION_WORKER', str(app.config.get('RUN_NOTIFICATION_WORKER', False))).lower() in ('1','true','yes')
+        if run_worker:
+            interval = int(os.getenv('NOTIFICATION_INTERVAL_SECONDS', app.config.get('NOTIFICATION_INTERVAL_SECONDS', 86400)))
+            from app.tasks.notifications_task import send_periodic_notifications
+            send_periodic_notifications(app, interval_seconds=interval)
+            app.logger.info('Notification worker configured (interval=%s)', interval)
+    except Exception:
+        app.logger.exception('Failed to start notification worker')
+
     
    
 

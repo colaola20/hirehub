@@ -98,19 +98,31 @@ export default function Notifications() {
 			<div className={styles.list}>
 				{loading && <div className={styles.empty}>Loading…</div>}
 				{!loading && notifications.length === 0 && <div className={styles.empty}>No notifications</div>}
-				{notifications.map((n) => (
-					<div key={n.id} className={`${styles.item} ${n.read ? styles.read : ''}`}>
-						<div className={styles.itemMain}>
-							<div className={styles.itemTitle}>{n.title}</div>
-							<div className={styles.itemTime}>{new Date(n.created_at).toLocaleString()}</div>
-						</div>
-						<div className={styles.itemBody}>{n.body}</div>
-						<div className={styles.itemActions}>
-							{!n.read && <button onClick={() => markRead(n.id)} className={styles.markBtn}>Mark read</button>}
-							<button onClick={() => remove(n.id)} className={styles.delBtn}>Delete</button>
-						</div>
-					</div>
-				))}
+						{notifications.map((n) => (
+							<div key={n.id} className={`${styles['gmail-row']} ${!n.read ? 'unread' : ''}`}>
+								<div className={styles['gmail-left']}>
+									<input type="checkbox" aria-label="select notification" />
+									<button className={styles['star-btn']} aria-label="star">☆</button>
+								</div>
+
+								<div>
+									<div>
+										<span className={styles['gmail-sender']}>HireHub</span>
+										<span className={styles['gmail-subject']}>{n.title}</span>
+										<span className={styles['gmail-snippet']}>{' — '}{n.body.slice(0, 120)}</span>
+									</div>
+									<div style={{ marginTop: 6, color: '#bdb8d8', fontSize: 13 }}>{/* small meta row */}</div>
+								</div>
+
+								<div className={styles['gmail-time']}>
+									<div>{new Date(n.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+									<div style={{ marginTop: 8 }}>
+										{!n.read && <button onClick={() => markRead(n.id)} className={styles.markBtn}>Mark read</button>}
+										<button onClick={() => remove(n.id)} className={styles.delBtn} style={{ marginLeft: 8 }}>Delete</button>
+									</div>
+								</div>
+							</div>
+						))}
 			</div>
 		</div>
 	);
