@@ -5,7 +5,7 @@ const MiscStep = ({ formData, onChange, errors }) => ( // MISC INFO STEP //
 
             <h2>Miscellaneous / Other Information</h2>
 
-            <p>Skills</p>
+            <p>Skills <span style={{ color: 'red', fontSize: '20px' }}> *</span></p>
             <input
                 type="text"
                 name='skills'
@@ -23,7 +23,7 @@ const MiscStep = ({ formData, onChange, errors }) => ( // MISC INFO STEP //
                 onChange={onChange}
             />
             {errors.certs && <p style={{ color: 'red' }}>{errors.certs}</p>}
-            <p>Languages</p>
+            <p>Languages <span style={{ color: 'red', fontSize: '20px' }}> *</span></p>
             <input
                 type="text"
                 name='languages'

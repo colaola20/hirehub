@@ -6,7 +6,7 @@ const JobComponent = ({ formData, onChange, errors }) => {
                 <input
                     type="text"
                     name='company'
-                    placeholder="Company Name"
+                    placeholder="Company Name *"
                     value={formData.company}
                     onChange={onChange}
                     required
@@ -16,7 +16,7 @@ const JobComponent = ({ formData, onChange, errors }) => {
                 <input
                     type="text"
                     name='role'
-                    placeholder="Position Title"
+                    placeholder="Position Title *"
                     value={formData.role}
                     onChange={onChange}
                     required
@@ -26,7 +26,7 @@ const JobComponent = ({ formData, onChange, errors }) => {
                 <input
                     type="text"
                     name='roleTime'
-                    placeholder="Time Period (e.g., June 2020 - August 2021)" // change this to a date picker later
+                    placeholder="Time Period *" // change this to a date picker later
                     value={formData.roleTime}
                     onChange={onChange}
                     required

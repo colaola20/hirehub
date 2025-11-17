@@ -6,7 +6,7 @@ const SchoolComponent = ({ formData, onChange, errors }) => {
                 <input
                     type="text"
                     name='school'
-                    placeholder="School Name"
+                    placeholder="School Name *"
                     value={formData.school}
                     onChange={onChange}
                     required
@@ -16,7 +16,7 @@ const SchoolComponent = ({ formData, onChange, errors }) => {
                 <input
                     type="text"
                     name='degree'
-                    placeholder="Degree"
+                    placeholder="Degree *"
                     value={formData.degree}
                     onChange={onChange}
                     required
@@ -26,7 +26,7 @@ const SchoolComponent = ({ formData, onChange, errors }) => {
                 <input
                     type="text"
                     name='gradYear'
-                    placeholder="Graduation Year (Or Estimated)"
+                    placeholder="Graduation Year * (Or Estimated)"
                     value={formData.gradYear}
                     onChange={onChange}
                     required

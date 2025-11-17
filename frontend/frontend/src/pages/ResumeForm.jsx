@@ -88,10 +88,10 @@ const ResumeForm = () => {
         fullname: Yup.string().required('Name is required'),
         email: Yup.string().email('Email is required').required('Email is required'),
         phNum: Yup.string().required('Phone Number is required'),
-        address: Yup.string().required('Address is required.'),
+        // address: Yup.string().required('Address is required.'),
         city: Yup.string().required('City is required.'),
-        state: Yup.string().required('State is required.'),
-        zip: Yup.string().required('Zip code is required.'),
+        // state: Yup.string().required('State is required.'),
+        // zip: Yup.string().required('Zip code is required.'),
     })
 
     const socialValidation = Yup.object({
@@ -128,7 +128,7 @@ const ResumeForm = () => {
         if (currentStep === 3) schema = miscValidation;
         if (currentStep === 4) schema = jobValidation;
         if (currentStep === 5) schema = schoolValidation;
-        if (currentStep === 6) schema = projectValidation;
+        if (currentStep === 6) schema = projectValidation; // need this to progress
 
         try {
             await schema.validate(formData[`step${currentStep}`], { abortEarly: false });
