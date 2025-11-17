@@ -1,6 +1,6 @@
 import './stepstyle.css'
 
-const SocialStep = ({ formData, onChange }) => ( // SOCIAL INFO STEP //
+const SocialStep = ({ formData, onChange, errors }) => ( // SOCIAL INFO STEP //
 
         <div>
             <h2>Social Links</h2>
@@ -13,6 +13,7 @@ const SocialStep = ({ formData, onChange }) => ( // SOCIAL INFO STEP //
                 value={formData.linkedIn}
                 onChange={onChange}
             />
+            {errors.linkedIn && <p style={{ color: 'red' }}>{errors.linkedIn}</p>}
             <p>GitHub</p>
             <input
                 type="url"
@@ -21,6 +22,7 @@ const SocialStep = ({ formData, onChange }) => ( // SOCIAL INFO STEP //
                 value={formData.github}
                 onChange={onChange}
             />
+            {errors.github && <p style={{ color: 'red' }}>{errors.github}</p>}
             <p>Portfolio</p>
             <input
                 type="url"
@@ -29,6 +31,7 @@ const SocialStep = ({ formData, onChange }) => ( // SOCIAL INFO STEP //
                 value={formData.portfolio}
                 onChange={onChange}
             />
+            {errors.portfolio && <p style={{ color: 'red' }}>{errors.portfolio}</p>}
         </div>
 
     );
