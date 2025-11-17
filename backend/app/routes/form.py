@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from app.models.form import Form
+# from app.models.form import Form # currently not needed
 from app.models.user import User
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
