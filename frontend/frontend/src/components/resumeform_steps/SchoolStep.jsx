@@ -11,7 +11,7 @@ const SchoolComponent = ({ formData, onChange, errors }) => {
                     onChange={onChange}
                     required
                 />
-                {errors.school && <p style={{ color: 'red' }}>{errors.school}</p>}
+                {/* {errors.school && <p style={{ color: 'red' }}>{errors.school}</p>} */}
                 {/* <p>Degree</p> */}
                 <input
                     type="text"
@@ -21,7 +21,7 @@ const SchoolComponent = ({ formData, onChange, errors }) => {
                     onChange={onChange}
                     required
                 />
-                {errors.degree && <p style={{ color: 'red' }}>{errors.degree}</p>}
+                {/* {errors.degree && <p style={{ color: 'red' }}>{errors.degree}</p>} */}
                 {/* <p>Graduation</p> */}
                 <input
                     type="text"
@@ -31,7 +31,7 @@ const SchoolComponent = ({ formData, onChange, errors }) => {
                     onChange={onChange}
                     required
                 />
-                {errors.gradYear && <p style={{ color: 'red' }}>{errors.gradYear}</p>}
+                {/* {errors.gradYear && <p style={{ color: 'red' }}>{errors.gradYear}</p>} */}
                 {/* <div className="student-cb">
                     <p>Are you currently a student?</p>
                     <input type="checkbox" name='status' I Am Currently a Student />
@@ -44,6 +44,11 @@ const SchoolComponent = ({ formData, onChange, errors }) => {
             <h2>Education</h2>
             <h3>Add Up To Three</h3>
             <SchoolComponent formData={formData} onChange={onChange} errors={errors} />
+            <div className='school-validation'>
+                {errors.school && <p style={{ color: 'red' }}>{errors.school}</p>}
+                {errors.degree && <p style={{ color: 'red' }}>{errors.degree}</p>} 
+                {/* {errors.gradYear && <p style={{ color: 'red' }}>{errors.gradYear}</p>} */}
+            </div>
             <button>+</button>
         </div>
     );

@@ -11,7 +11,7 @@ const JobComponent = ({ formData, onChange, errors }) => {
                     onChange={onChange}
                     required
                 />
-                {errors.company && <p style={{ color: 'red' }}>{errors.company}</p>}
+                {/* {errors.company && <p style={{ color: 'red' }}>{errors.company}</p>} */}
                 {/* <p>Position</p> */}
                 <input
                     type="text"
@@ -21,7 +21,7 @@ const JobComponent = ({ formData, onChange, errors }) => {
                     onChange={onChange}
                     required
                 />
-                {errors.role && <p style={{ color: 'red' }}>{errors.role}</p>}
+                {/* {errors.role && <p style={{ color: 'red' }}>{errors.role}</p>} */}
                 {/* <p>Employement Period</p> */}
                 <input
                     type="text"
@@ -31,7 +31,7 @@ const JobComponent = ({ formData, onChange, errors }) => {
                     onChange={onChange}
                     required
                 />
-                {errors.roleTime && <p style={{ color: 'red' }}>{errors.roleTime}</p>}
+                {/* {errors.roleTime && <p style={{ color: 'red' }}>{errors.roleTime}</p>} */}
             </div>
         )
     };
@@ -42,6 +42,11 @@ const JobComponent = ({ formData, onChange, errors }) => {
             <h3>Add Up To Three</h3>
             <br />
             <JobComponent formData={formData} onChange={onChange} errors={errors}/>
+            <div className='job-validation'>
+                {errors.company && <p style={{ color: 'red' }}>{errors.company}</p>}
+                {errors.role && <p style={{ color: 'red' }}>{errors.role}</p>}
+                {errors.roleTime && <p style={{ color: 'red' }}>{errors.roleTime}</p>}
+            </div>
             <button>+</button>
         </div>
     );
