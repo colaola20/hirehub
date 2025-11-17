@@ -1,4 +1,4 @@
-import React, { useState, useEffect, use } from "react";
+import React, { useState, useEffect } from "react";
 import PersonalizedNavbar from '../components/PersonalizedNavbar'
 import { Link } from "react-router-dom";
 import * as Yup from 'yup'
@@ -64,19 +64,31 @@ const ResumeForm = () => {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
             },
             body: JSON.stringify(formData),
         });
         const data = await response.json();
         console.log(data);
-        sendBackendData(data);
+        // sendBackendData(data);
     }
 
     // pull info from user profile to prefill form
     useEffect(() => {
-        fetch('/api/form')
-            .then(response => response.json())
+        fetch('/api/form', {
+            headers:{
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
+            }
+        })
+            .then(response => {
+                if (!response.ok) {
+                    console.error('Failed to fetch form data');
+                    return;
+                }   
+                return response.json();
+            })
             .then(data => setFormData(data))
+            .catch (err => console.error('Error fetching form data:', err));
     }, []);
 
 
