@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './resumeviewstep.css'
 
-const ResumeViewStep = () => {
+const ResumeViewStep = ({ backendData }) => {
     const [resumeText, setResumeText] = useState('Resume Generated Here')
     const [formData, setFormData] = useState({});
     const [loading, setLoading] = useState(true);
@@ -9,7 +9,11 @@ const ResumeViewStep = () => {
 
     const fetchData = async () => {
         try {
-            const response = await fetch('/api/form');
+            const response = await fetch('/api/form', {
+                headers:{
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                }
+            });
             const data = await response.json();
             setFormData(data);
         }
@@ -33,7 +37,7 @@ return (
         <button onClick={fetchData}> Refresh Resume Data </button>
         <h2>Resume Preview</h2> {/* DISPLAY JSON if available */}
         <div className='resume-preview'>
-            {formData ? (<pre> {JSON.stringify(formData, null, 2)} </pre>) : (<p>{resumeText}</p>)}
+            <pre>{JSON.stringify(backendData, null, 2)}</pre>
         </div>
 
     </div>

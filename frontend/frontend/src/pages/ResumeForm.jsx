@@ -78,6 +78,7 @@ const ResumeForm = () => {
         fetch('/api/form', {
             headers:{
                 Authorization: `Bearer ${localStorage.getItem('token')}`,
+
             }
         })
             .then(response => {
@@ -236,7 +237,12 @@ const ResumeForm = () => {
                     <div className={styles["progress-indicator"]}>
                         <span>Step {currentStep} of 7</span>
                     </div>
-                    {currentStep < 7 ? (<button className={styles["prog-btn-btn"]} onClick={nextStep}>Next</button>) : (<button onClick={nextStep} className={styles["submit-form-btn"]}>Generate</button>)}
+                    {currentStep < 6 && (<button className={styles["prog-btn-btn"]} onClick={nextStep}>Next</button>)}
+                    {currentStep === 6 ? (<button className={styles["submit-form-btn"]} onClick={async () => {
+                        const response = await submitForm();
+                        setFormData(prev => ({ ...prev }));
+                        setCurrentStep(7);
+                        }}>Generate</button>) : (<span className={styles.placeholder}></span>)}
                 </div>
 
 
@@ -248,7 +254,7 @@ const ResumeForm = () => {
                     {currentStep === 4 && <JobStep formData={formData.step4} onChange={handleInputChange} errors={errors} />}
                     {currentStep === 5 && <SchoolStep formData={formData.step5} onChange={handleInputChange} errors={errors} />}
                     {currentStep === 6 && <ProjectStep formData={formData.step6} onChange={handleInputChange} errors={errors} />}
-                    {currentStep === 7 && <ResumeViewStep backendData={formData}/>}
+                    {currentStep === 7 && <ResumeViewStep backendData={formData} />}
                 </div>
             </div>
         </div>
