@@ -2,18 +2,13 @@ import React, { useEffect, useState } from 'react';
 import styles from './Notifications.module.css';
 import { toast } from 'react-toastify';
 
-// Simple notifications page. Expects backend endpoints:
-// GET  /api/notifications         -> [{ id, title, body, created_at, read }]
-// POST /api/notifications/send    -> { ok: true }
-// POST /api/notifications/:id/read -> { ok: true }
-// DELETE /api/notifications/:id   -> { ok: true }
-
 export default function Notifications() {
 	const [notifications, setNotifications] = useState([]);
 	const [loading, setLoading] = useState(false);
 	const [sending, setSending] = useState(false);
 	const [title, setTitle] = useState('');
 	const [body, setBody] = useState('');
+	const [selected, setSelected] = useState(null);   // <<< ADDED
 
 	const fetchNotifications = async () => {
 		setLoading(true);
@@ -80,6 +75,11 @@ export default function Notifications() {
 		} finally { setSending(false); }
 	};
 
+	// OPEN MODAL
+	const openNotification = (n) => {
+		setSelected(n);
+	};
+
 	return (
 		<div className={styles.wrapper}>
 			<div className={styles.header}>
@@ -98,32 +98,60 @@ export default function Notifications() {
 			<div className={styles.list}>
 				{loading && <div className={styles.empty}>Loading…</div>}
 				{!loading && notifications.length === 0 && <div className={styles.empty}>No notifications</div>}
-						{notifications.map((n) => (
-							<div key={n.id} className={`${styles['gmail-row']} ${!n.read ? 'unread' : ''}`}>
-								<div className={styles['gmail-left']}>
-									<input type="checkbox" aria-label="select notification" />
-									<button className={styles['star-btn']} aria-label="star">☆</button>
-								</div>
+				
+				{notifications.map((n) => (
+					<div
+						key={n.id}
+						className={`${styles['gmail-row']} ${!n.read ? 'unread' : ''}`}
+						onClick={() => openNotification(n)}          // <<< ADDED
+						style={{ cursor: 'pointer' }}               // <<< ADDED
+					>
+						<div className={styles['gmail-left']}>
+							<input type="checkbox" aria-label="select notification" />
+							<button className={styles['star-btn']} aria-label="star">☆</button>
+						</div>
 
-								<div>
-									<div>
-										<span className={styles['gmail-sender']}>HireHub</span>
-										<span className={styles['gmail-subject']}>{n.title}</span>
-										<span className={styles['gmail-snippet']}>{' — '}{n.body.slice(0, 120)}</span>
-									</div>
-									<div style={{ marginTop: 6, color: '#bdb8d8', fontSize: 13 }}>{/* small meta row */}</div>
-								</div>
-
-								<div className={styles['gmail-time']}>
-									<div>{new Date(n.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
-									<div style={{ marginTop: 8 }}>
-										{!n.read && <button onClick={() => markRead(n.id)} className={styles.markBtn}>Mark read</button>}
-										<button onClick={() => remove(n.id)} className={styles.delBtn} style={{ marginLeft: 8 }}>Delete</button>
-									</div>
-								</div>
+						<div>
+							<div>
+								<span className={styles['gmail-sender']}>HireHub</span>
+								<span className={styles['gmail-subject']}>{n.title}</span>
+								<span className={styles['gmail-snippet']}>{' — '}{n.body.slice(0, 120)}</span>
 							</div>
-						))}
+							<div style={{ marginTop: 6, color: '#bdb8d8', fontSize: 13 }}></div>
+						</div>
+
+						<div className={styles['gmail-time']}>
+							<div>{new Date(n.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+							<div style={{ marginTop: 8 }}>
+								{!n.read && <button onClick={(e) => { e.stopPropagation(); markRead(n.id); }} className={styles.markBtn}>Mark read</button>}
+								<button onClick={(e) => { e.stopPropagation(); remove(n.id); }} className={styles.delBtn} style={{ marginLeft: 8 }}>Delete</button>
+							</div>
+						</div>
+					</div>
+				))}
 			</div>
+
+			{/* MODAL */}
+			{selected && (
+				<div className={styles.modalOverlay} onClick={() => setSelected(null)}>
+					<div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+						<h3>{selected.title}</h3>
+
+						<p style={{ whiteSpace: "pre-wrap", marginTop: 12 }}>
+							{selected.body}
+						</p>
+
+						<div className={styles.modalTime}>
+							Sent at: {new Date(selected.created_at).toLocaleString()}
+						</div>
+
+						<button className={styles.closeBtn} onClick={() => setSelected(null)}>
+							Close
+						</button>
+					</div>
+				</div>
+			)}
+
 		</div>
 	);
 }

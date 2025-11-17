@@ -158,3 +158,37 @@
     grid-template-columns: 40px 1fr auto;
   }
 }
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.modal {
+  width: min(600px, 90vw);
+  background: #1a1a29;
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+  color: #fff;
+}
+
+.modalTime {
+  margin-top: 20px;
+  opacity: 0.6;
+  font-size: 14px;
+}
+
+.closeBtn {
+  margin-top: 24px;
+  background: #6f67f0;
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  color: white;
+}
