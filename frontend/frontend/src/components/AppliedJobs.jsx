@@ -212,7 +212,7 @@ const AppliedJobs = () => {
                   border: "1px solid #555",
                   padding: "2px 4px",
                 }}
-                >
+              >
                 <option value="applied">Applied</option>
                 <option value="interviewed">Interviewed</option>
                 <option value="joboffered">Job offered</option>
