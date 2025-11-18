@@ -220,10 +220,10 @@ const ResumeForm = () => {
 
         <div className={styles["container"]}>
             {/* <PersonalizedNavbar /> */}
-            <div className={styles["back-btn"]}>
-                <p>
+            <div >
+                <button className={styles["back-btn"]}>
                     <Link to="/dev_dashboard" >Back</Link>
-                </p>
+                </button>
             </div>
 
             <div className={styles["form-box"]}>
@@ -238,11 +238,11 @@ const ResumeForm = () => {
                         <span>Step {currentStep} of 7</span>
                     </div>
                     {currentStep < 6 && (<button className={styles["prog-btn-btn"]} onClick={nextStep}>Next</button>)}
-                    {currentStep === 6 ? (<button className={styles["submit-form-btn"]} onClick={async () => {
+                    {currentStep === 6 && (<button className={styles["submit-form-btn"]} onClick={async () => {
                         const response = await submitForm();
                         setFormData(prev => ({ ...prev }));
                         setCurrentStep(7);
-                        }}>Generate</button>) : (<span className={styles.placeholder}></span>)}
+                        }}>Generate</button>)}
                 </div>
 
 
