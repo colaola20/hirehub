@@ -1,11 +1,11 @@
 import './stepstyle.css'
 
-const MiscStep = ({ formData, onChange }) => ( // MISC INFO STEP //
+const MiscStep = ({ formData, onChange, errors }) => ( // MISC INFO STEP //
         <div>
 
             <h2>Miscellaneous / Other Information</h2>
 
-            <p>Skills</p>
+            <p>Skills <span style={{ color: 'red', fontSize: '20px' }}> *</span></p>
             <input
                 type="text"
                 name='skills'
@@ -13,6 +13,7 @@ const MiscStep = ({ formData, onChange }) => ( // MISC INFO STEP //
                 value={formData.skills}
                 onChange={onChange}
             />
+            {errors.skills && <p style={{ color: 'red' }}>{errors.skills}</p>}
             <p>Certifications</p>
             <input
                 type="text"
@@ -21,7 +22,8 @@ const MiscStep = ({ formData, onChange }) => ( // MISC INFO STEP //
                 value={formData.certs}
                 onChange={onChange}
             />
-            <p>Languages</p>
+            {errors.certs && <p style={{ color: 'red' }}>{errors.certs}</p>}
+            <p>Languages <span style={{ color: 'red', fontSize: '20px' }}> *</span></p>
             <input
                 type="text"
                 name='languages'
@@ -29,6 +31,7 @@ const MiscStep = ({ formData, onChange }) => ( // MISC INFO STEP //
                 value={formData.languages}
                 onChange={onChange}
             />
+            {errors.languages && <p style={{ color: 'red' }}>{errors.languages}</p>}
             <p>Interests and Hobbies</p>
             <input
                 type="text"
@@ -37,6 +40,7 @@ const MiscStep = ({ formData, onChange }) => ( // MISC INFO STEP //
                 value={formData.interests}
                 onChange={onChange}
             />
+            {errors.interests && <p style={{ color: 'red' }}>{errors.interests}</p>}
         </div>
     );
 

@@ -13,12 +13,30 @@
     padding-bottom: 3px;
 }
 
+.location-validation{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 100px;
+}
+
 .job-form{
     display: flex;
     flex-direction: row;
     align-items: center;
+    justify-content: center;
     gap: 20px;
     height: 110px;
+    /* padding-bottom: 40px; */
+}
+
+.job-validation{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 45px;
+    margin-right: 15px;
     padding-bottom: 40px;
 }
 
@@ -28,6 +46,16 @@
     align-items: center;
     gap: 20px;
     height: 110px;
+    /* padding-bottom: 30px; */
+}
+
+.school-validation{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 70px;
+    margin-right: 15px;
     padding-bottom: 30px;
 }
 
@@ -51,10 +79,14 @@
 }
 
 @media (max-width: 1550px){
-    .location-form{
+    .location-form, .location-validation{
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
+    }
+
+    .location-validation{
+        gap: 0px;
     }
 }
