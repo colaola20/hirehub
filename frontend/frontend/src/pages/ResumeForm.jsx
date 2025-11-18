@@ -256,6 +256,7 @@ const ResumeForm = () => {
                         setFormData(prev => ({ ...prev }));
                         setCurrentStep(7);
                     }}>Generate</button>)}
+                    {currentStep === 7 && (<span className={styles.placeholder}></span>)}
                 </div>
 
 

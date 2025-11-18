@@ -70,7 +70,8 @@ const JobStep = ({ formData, onChange, errors }) => { // JOB HISTORY INFO STEP /
             <div className='job-validation'>
                 {Object.keys(errors).some(key => key.startsWith("jobs")) && (
                     <p style={{ color: "red" }}>Please fill out all required job fields.</p>
-                )}            </div>
+                )}            
+                </div>
             <button type="button" onClick={addJob}>+</button>
         </div>
     )

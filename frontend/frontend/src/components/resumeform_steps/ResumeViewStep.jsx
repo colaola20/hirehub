@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './resumeviewstep.css'
+import ResumeTemplate from './ResumeTemplate';
 
 const ResumeViewStep = ({ backendData }) => {
     const [resumeText, setResumeText] = useState('Resume Generated Here')
@@ -37,7 +38,8 @@ return (
         <button onClick={fetchData}> Refresh Resume Data </button>
         <h2>Resume Preview</h2> {/* DISPLAY JSON if available */}
         <div className='resume-preview'>
-            <pre>{JSON.stringify(backendData, null, 2)}</pre>
+            {/* <pre>{JSON.stringify(backendData, null, 2)}</pre> */}
+            <ResumeTemplate data={backendData}/>
         </div>
 
     </div>
