@@ -118,9 +118,16 @@ const ResumeForm = () => {
     })
 
     const jobValidation = Yup.object({
-        company: Yup.string().required('Company Name is required.'),
+        jobs: Yup.array().of(
+            Yup.object({
+                company: Yup.string().required('Company Name is required.'),
         role: Yup.string().required('Position name is required.'),
         roleTime: Yup.string().required('Time period is required.')
+
+            })
+        )
+        .min(1, 'At least one job is required.')
+        .max(3, "Maximum of three jobs allowed.")
     })
 
     const schoolValidation = Yup.object({

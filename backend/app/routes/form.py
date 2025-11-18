@@ -46,10 +46,14 @@ def get_resume_form():
             "certifications": [],
             "interests": []
         },
-        "step4":{
-            "companies": "",
-            "roles": "",
-            "durations": "",
+        "step4": {
+            "jobs": [
+                {
+                    "company": "",
+                    "role": "",
+                    "roleTime": ""
+                }
+            ]
         },
         "step5":{
             "school": "",
