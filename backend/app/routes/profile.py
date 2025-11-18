@@ -271,7 +271,6 @@ def analyze_job_fit():
         # Get job info from request
         data = request.get_json()
         job = data.get("job", {})
-        job_title = job.get("title", "")
         skills_extracted = job.get("skills_extracted", [])
 
         user_experience = user_experience[:400]
@@ -319,31 +318,26 @@ def analyze_job_fit():
             - Flexible matching (python = python3 = python scripting, etc.)
             - Score = matched_job_skills / total_job_skills * 100
             - If job has 1 skill and user matches → 100%
-            - If user matches 0 → 0–5%
+            - If user matches 0 → % based on users experience
             - Extra user skills DO NOT increase score
             - Experience may boost score by up to +10% if highly relevant
 
             NOTES:
             USER_SKILLS = {user_skills}
             USER_EXPERIENCE = {user_experience}
-            JOB_TITLE = {job_title}
             JOB_SKILLS = {skills_extracted}
             """
             }
             ]
 
-
             ,
             temperature= 0,
-            max_completion_tokens= 600,
+            max_completion_tokens= 300,
             response_format={"type": "json_object"}  # strict JSON response
         )
 
         raw_reply = completion.choices[0].message.content or ""
         raw_reply = raw_reply.strip()
-
-
-
 
         # Try to extract JSON safely
         try:

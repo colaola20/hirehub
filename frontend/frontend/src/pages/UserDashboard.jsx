@@ -127,12 +127,6 @@ const UserDashboard = () => {
       const data = await response.json();
       let items = data.current || [];
 
-      // // Randomize array using Fisher-Yates shuffle
-      // for (let i = items.length - 1; i > 0; i--) {
-      //   const j = Math.floor(Math.random() * (i + 1));
-      //   [items[i], items[j]] = [items[j], items[i]];
-      // }
-
       return {
         items,
         total: data.total || 0,

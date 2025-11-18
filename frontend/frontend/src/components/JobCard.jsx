@@ -4,6 +4,7 @@ import truncate from "html-truncate";
 import { FaBuilding, FaMapMarkerAlt, FaCalendarAlt } from "react-icons/fa";
 import styles from "./JobCard.module.css";
 import FavoriteButton from "./FavoriteButton.jsx";
+import JobAnalysisPanel from "./JobAnalysisPanel.jsx";
 
 const JobCard = ({ job, onClick , cardForLikedJobs = false}) => {
   const [analysis, setAnalysis] = useState(null);
@@ -94,63 +95,16 @@ return (
 
         <p>  <FaMapMarkerAlt style={{ marginRight: "10px", color: "#a3bffa",fontSize: "20px" }} /> <strong>Location:</strong> {job.location || "Unspecified"}</p> 
 
-          </div>
+        </div>
 
           {/* Right side: analysis section */}
-          <div className={styles.rightSide} onClick={(e) => e.stopPropagation()}>
-            {!analysis && (
-              <div className={styles.analysisPlaceholder}>
-                "Analyzed Match" Will apper Here 
-              </div>
-            )}
+        <div className={styles.rightSide} onClick={(e) => e.stopPropagation()}> 
 
-            {analysis && analysis.error && (
-              <div className={styles.analysisError}>{analysis.error}</div>
-            )}
+          <JobAnalysisPanel job={job} />
 
-            {analysis && !analysis.error && (
-              
-              <>
-                <div className={styles.pctRow}>
-                  <div className={styles.pctBig}>
-                    {analysis.percentage_match ?? 0}%
-                  </div>
-                  <div className={styles.pctLabel}>Match</div>
-                </div>
-
-              <div className={styles.analysisContentWrapper}>
-
-                <div className={styles.section}>
-                  <div className={styles.sectionTitle}>Skills in Job</div>
-                  <div className={styles.skillList}>
-                    {renderList(analysis.job_skills)}
-                  </div>
-                </div>
-
-                <div className={styles.section}>
-                  <div className={styles.sectionTitle}>Matched Skills</div>
-                  <div className={styles.skillList}>
-                    {renderList(analysis.matched_skills)}
-                  </div>
-                </div>
-
-              </div>
-              </>
-            )}
-
-          {!dataAnalized &&  (
-            <button 
-              className={styles.analyzeBtn}
-              onClick={analyzeJob}
-              onMouseDown={(e) => e.stopPropagation()}
-              disabled={loadingAnalysis}
-            >
-              {loadingAnalysis ? "Analyzing..." : "Analyze Match"}
-            </button>
-            )}
-          </div>
-          
         </div> 
+          
+      </div> 
           
     </div>
 

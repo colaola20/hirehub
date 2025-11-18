@@ -129,6 +129,7 @@
   align-items: center;
   min-height: 100%;
   margin-right: 9%;
+
  
 }
 
@@ -205,6 +206,11 @@
   font-size: 0.85rem;
 }
 
+.error , .loading {
+  transform: translateY(20px);
+  font-weight: bold;
+
+}
 
 
 
