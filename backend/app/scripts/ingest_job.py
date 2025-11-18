@@ -399,7 +399,7 @@ def ingest_source_with_upsert(fetch_fn, normalize_fn, *, page_arg_name="page", s
                     # print(job_data)
                     # print("API data")
                     # print(api_job)
-                    # print("Job saved")
+                    print("Job saved")
                     logger.debug("Upserting job %s from %s", api_job.get("id") or api_job.get("title"), normalize_fn.__name__)
                     try:
                         with session.begin_nested():
@@ -413,8 +413,8 @@ def ingest_source_with_upsert(fetch_fn, normalize_fn, *, page_arg_name="page", s
         page +=1
 
 def run_all_sources():
-    #logger.info("Starting ingestion: adzuna")
-    #ingest_source_with_upsert(fetch_adzuna_jobs, normalize_adzuna_job)
+    logger.info("Starting ingestion: adzuna")
+    ingest_source_with_upsert(fetch_adzuna_jobs, normalize_adzuna_job)
     logger.info("Starting ingestion: findwork")
     ingest_source_with_upsert(fetch_findwork_jobs, normalize_findwork_job)
 

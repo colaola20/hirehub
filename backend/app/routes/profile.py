@@ -271,66 +271,66 @@ def analyze_job_fit():
         # Get job info from request
         data = request.get_json()
         job = data.get("job", {})
-        job_title = job.get("title", "")
-        job_description = job.get("description", "")
+        skills_extracted = job.get("skills_extracted", [])
 
-        job_description = job_description[:600]  # cut long text
         user_experience = user_experience[:400]
         
-        # promt is no in use at the moment but kept for reference
-        prompt = f"""
-            You are an expert AI job matching assistant. Analyze how well this user's profile fits the job posting.
+       # ===========================
+        #  OpenAI Model Options (2025)
+        # ===========================
 
-            User Profile:
-            - Skills: {user_skills}
-            - Experience: {user_experience}
+        # -- GPT-4.1 Series 
+        # "gpt-4.1"        – ~ $2/M input, $8/M output – Deep reasoning, slower, expensive.
+        # "gpt-4.1-mini"   – ~ $0.40/M input, $1.60/M output – Best balance of quality + cost.
 
-            Job Posting:
-            - Title: {job_title}
-            - Description: {job_description}
+        # -- GPT-4o Family 
+        # "gpt-4o"         – ~ $0.50/M input, $1.50/M output – High performance, fast.
+        # "gpt-4o-mini"    – ~ $0.20/M input, $0.80/M output – Very fast & cheap, great for backend calls.
+        # "gpt-4o-audio-preview"   – Same pricing tier – Audio/voice optimized.
+        # "gpt-4o-realtime-preview" – Same pricing – Low latency streaming model.
 
-            Your task:
-            1. Compare the user's skills and experience to the job requirements.
-            2. Identify skills mentioned in the job description.
-            3. Determine which of the user's skills match the job skills.
-            4. Assign a percentage match (0-100) representing overall fit.
-            5. Only output **valid JSON** with this exact structure:
+        # -- GPT-3.5 Turbo 
+        # "gpt-3.5-turbo"  – ~ $0.50/M input, $1.50/M output – Very fast but weakest reasoning.
 
-            Return a JSON object with exactly this format (no extra text):
-            {{
-            "percentage_match": integer (0–100),
-            "job_skills": [list of short skill strings found in the job description],
-            "matched_skills": [skills present in both job_skills and user_skills]
-            
-            }}
-            Constraints:
-            - Do NOT include explanations, comments, or extra text.
-            - Be concise and accurate.
+        # Recommended 
+        #  "gpt-4o-mini"      – fast + cheap + accurate enough
+        # "gpt-4.1-mini"     – if you need stronger reasoning
 
-            """
-        
         # Make the OpenAI call
         completion = openai.chat.completions.create(
-            model="gpt-4o-mini", #"gpt-4o-mini" or "gpt-3.5-turbo" for even faster
+            model="gpt-4.1-mini", 
             messages=[
-                {"role": "user", "content": f"""
-                    Compare this user's skills and experience with the job posting. 
-                    Return valid JSON only, no explanations.
+            {
+                "role": "user",
+                "content": f"""
+            TASK:
+            Match the USER to a JOB based ONLY on JOB_SKILLS.
 
-                    User skills: {user_skills}
-                    User experience: {user_experience}
+            OUTPUT:
+            Return ONLY this JSON:
+            {{
+            "percentage_match": number,
+            "job_skills": [...],
+            "matched_skills": [...]
+            }}
 
-                    Job title: {job_title}
-                    Job description: {job_description}
+            OBJECTIVE:
+            - Flexible matching (python = python3 = python scripting, etc.)
+            - Score = matched_job_skills / total_job_skills * 100
+            - If job has 1 skill and user matches → 100%
+            - If user matches 0 → % based on users experience
+            - Extra user skills DO NOT increase score
+            - Experience may boost score by up to +10% if highly relevant
 
-                    Format:
-                    {{
-                    "percentage_match": integer (0–100),
-                    "job_skills": [strings],
-                    "matched_skills": [strings]
-                    }}
-                """}
-            ],
+            NOTES:
+            USER_SKILLS = {user_skills}
+            USER_EXPERIENCE = {user_experience}
+            JOB_SKILLS = {skills_extracted}
+            """
+            }
+            ]
+
+            ,
             temperature= 0,
             max_completion_tokens= 300,
             response_format={"type": "json_object"}  # strict JSON response
@@ -338,9 +338,6 @@ def analyze_job_fit():
 
         raw_reply = completion.choices[0].message.content or ""
         raw_reply = raw_reply.strip()
-
-
-
 
         # Try to extract JSON safely
         try:

@@ -71,6 +71,11 @@
     border-radius: 10px;
 }
 
+.back-btn:hover{
+    background-color: rgba(69, 41, 131, 0.65);
+    transition: background-color 0.05s ease;
+}
+
 .back-btn a{
     text-decoration: none;
     color: white;

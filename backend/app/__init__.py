@@ -17,6 +17,7 @@ from app.routes.applications import applications_bp
 from app.routes.skills import skills_bp
 from app.routes.profile import profile_bp
 from app.routes.documents import documents_bp
+from app.routes.form import form_bp
 from datetime import timedelta
 
 
@@ -95,7 +96,26 @@ def create_app():
     app.register_blueprint(linkedin_bp)
     app.register_blueprint(applications_bp)
     app.register_blueprint(documents_bp)
+    app.register_blueprint(form_bp)
     app.register_blueprint(chat_bp, url_prefix="/api") 
+    # Notifications blueprint
+    try:
+        from app.routes.notifications import notifications_bp
+        app.register_blueprint(notifications_bp)
+    except Exception:
+        app.logger.debug('Notifications blueprint not available')
+
+    # Start optional background notification worker (best-effort)
+    # Configure via environment or app.config: RUN_NOTIFICATION_WORKER (bool) and NOTIFICATION_INTERVAL_SECONDS (int)
+    try:
+        run_worker = os.getenv('RUN_NOTIFICATION_WORKER', str(app.config.get('RUN_NOTIFICATION_WORKER', False))).lower() in ('1','true','yes')
+        if run_worker:
+            interval = int(os.getenv('NOTIFICATION_INTERVAL_SECONDS', app.config.get('NOTIFICATION_INTERVAL_SECONDS', 86400)))
+            from app.tasks.notifications_task import send_periodic_notifications
+            send_periodic_notifications(app, interval_seconds=interval)
+            app.logger.info('Notification worker configured (interval=%s)', interval)
+    except Exception:
+        app.logger.exception('Failed to start notification worker')
 
     
    

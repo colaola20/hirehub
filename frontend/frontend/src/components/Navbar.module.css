@@ -48,37 +48,45 @@ body {
   padding: 0 16px;
 }
 
-/* hamburger button (hidden on desktop) */
-.menu-toggle {
-  display: none;
-  background: transparent;
-  border: none;
-  color: inherit;
-  padding: 8px;
-  cursor: pointer;
-  align-items: center;
-  justify-content: center;
-}
 
-/* mobile menu (hidden by default) */
-.mobileMenu {
-  display: none;
-  position: absolute;
-  top: var(--nav-h);
-  left: 0;
-  right: 0;
-  background: rgba(3,6,23,0.94);
-  padding: 12px 16px;
-  box-shadow: 0 12px 30px rgba(2,6,23,0.6);
-  z-index: 60;
-  flex-direction: column;
-  gap: 10px;
-}
 
 /* open state */
 .mobileMenuOpen {
   display: flex;
+  position: absolute;
+  top: var(--nav-h);
+  right: 0;
+  background: rgba(3,6,23,0.8);
+  padding: 12px 16px;
+  box-shadow: 0 12px 30px rgba(2,6,23,1);
+  z-index: 60;
+  flex-direction: column;
+  gap: 10px;
+  height: auto;
+  width: 150px;
+  border-radius: 15px;
+  
+
 }
+
+.mobileLink{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background:  #2d2b55;
+  border: 1px solid #6f67f0;
+  color: #ffffff;
+  border-radius: 8px;
+  z-index: 9999;         
+  pointer-events: auto; 
+  
+}
+
+.mobileLink:hover {
+  box-shadow: 0 6px 16px rgba(142, 197, 252, 0.4);
+  background: linear-gradient(90deg, #ff66c4, #6f67f0, #4839eb);
+}
+
 
 .angle2-nav .angle2-btn--small {
   margin-left: 8px;          /* slight breathing room after links */
@@ -176,17 +184,6 @@ body {
 }
 .angle2-btn--small { padding: 8px 12px; }
 
-/* -------- Responsive tweaks -------- */
-@media (max-width: 980px) {
-  .angle2-links { display: none; }
-  .angle2-hero__title::before { filter: blur(22px); }
-  .menu-toggle {
-    display: inline-flex; /* show hamburger */
-  }
-  .nav-actions {
-    margin-left: 8px;
-  }
-}
 
 /* extra tightening for very small screens */
 @media (max-width: 480px) {
@@ -196,6 +193,41 @@ body {
 }
 
 
+/* Container for hamburger on mobile only */
+.navRight {
+  display: none; /* hidden by default on desktop */
+  align-items: center;
+   /* dropdown positions relative to hamburger */
+  
+}
 
 
+
+/* Mobile media query */
+@media (max-width: 980px) {
+
+  .angle2-links { display: none; }
+
+  .navTitle,
+  .angle2Links,.angle2-container h2 {
+    display: none; /* hide desktop links */
+  }
+
+  .navRight {
+    display: flex; /* show hamburger container */
+    margin-left: auto; /* push to right */
+  }
+
+  .menuToggle {
+    display: flex; /* show hamburger */
+    background: rgba(255,255,255,0.06); 
+    border: 1px solid rgba(255,255,255,0.06);
+    align-items: center;  
+    justify-content: center; 
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    padding: 0;
+  }
+}
 
