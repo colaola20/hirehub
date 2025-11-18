@@ -73,8 +73,8 @@ const SchoolStep = ({ formData, onChange, errors }) => { // SCHOOL HISTORY INFO 
             ))}
             <div className='school-validation'>
                 {Object.keys(errors).some(key => key.startsWith("education")) && (
-        <p style={{ color: "red" }}>Please fill out all required education fields.</p>
-    )}
+                    <p style={{ color: "red" }}>Please fill out all required education fields.</p>
+                )}
             </div>
             <button type="button" onClick={addSchool}>+</button>
         </div>
