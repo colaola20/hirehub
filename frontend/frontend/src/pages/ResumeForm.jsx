@@ -19,7 +19,7 @@ import styles from './resumeform.module.css';
 const ResumeForm = () => {
 
     const [currentStep, setCurrentStep] = useState(1);
-    const [errors, setErrors] = useState({});   
+    const [errors, setErrors] = useState({});
 
     const [formData, setFormData] = useState({
         /* ---PERSONAL INFO--- */
@@ -42,19 +42,19 @@ const ResumeForm = () => {
         /* ---MAIN SECTIONS--- */
         step4: { // maybe split each part into its own steps? 
 
-            jobs: [{company: '', role: '', roleTime: ''}]
+            jobs: [{ company: '', role: '', roleTime: '' }]
 
         },
 
         step5: {
 
-            education: [{school: '', degree: '', gradYear: ''}]
+            education: [{ school: '', degree: '', gradYear: '' }]
 
         },
 
         step6: {
 
-            projects: [{projTitle: '', projDesc: '', projLink: ''}]
+            projects: [{ projTitle: '', projDesc: '', projLink: '' }]
 
         }
     })
@@ -76,7 +76,7 @@ const ResumeForm = () => {
     // pull info from user profile to prefill form
     useEffect(() => {
         fetch('/api/form', {
-            headers:{
+            headers: {
                 Authorization: `Bearer ${localStorage.getItem('token')}`,
 
             }
@@ -85,11 +85,11 @@ const ResumeForm = () => {
                 if (!response.ok) {
                     console.error('Failed to fetch form data');
                     return;
-                }   
+                }
                 return response.json();
             })
             .then(data => setFormData(data))
-            .catch (err => console.error('Error fetching form data:', err));
+            .catch(err => console.error('Error fetching form data:', err));
     }, []);
 
 
@@ -121,24 +121,30 @@ const ResumeForm = () => {
         jobs: Yup.array().of(
             Yup.object({
                 company: Yup.string().required('Company Name is required.'),
-        role: Yup.string().required('Position name is required.'),
-        roleTime: Yup.string().required('Time period is required.')
+                role: Yup.string().required('Position name is required.'),
+                roleTime: Yup.string().required('Time period is required.')
 
             })
         )
-        .min(1, 'At least one job is required.')
-        .max(3, "Maximum of three jobs allowed.")
+            .min(1, 'At least one job is required.')
+            .max(3, "Maximum of three jobs allowed.")
     })
 
     const schoolValidation = Yup.object({
-        school: Yup.string().required('School name is required'),
-        degree: Yup.string().required('Degree is required.')
+        education: Yup.array().of(
+            Yup.object({
+                school: Yup.string().required('School name is required'),
+                degree: Yup.string().required('Degree is required.')
+            })
+        )
+            .min(1, "At least one school is required.")
+            .max(3, "Maximum of three schools allowed.")
     })
 
     const projectValidation = Yup.object({ // none (even tho highly recommended to have at least one proj)
     })
 
-    
+
 
     const validateStep = async () => {
         let schema;
@@ -185,7 +191,7 @@ const ResumeForm = () => {
     const nextStep = async () => {
         if (currentStep < 7) {
             const isValid = await validateStep();
-            if (!isValid) 
+            if (!isValid)
                 return;
             setCurrentStep(currentStep + 1);
         }
@@ -249,14 +255,14 @@ const ResumeForm = () => {
                         const response = await submitForm();
                         setFormData(prev => ({ ...prev }));
                         setCurrentStep(7);
-                        }}>Generate</button>)}
+                    }}>Generate</button>)}
                 </div>
 
 
 
                 <div className={styles["resume-form-container"]}>
                     {currentStep === 1 && <PersonalStep formData={formData.step1} onChange={handleInputChange} errors={errors} />}
-                    {currentStep === 2 && <SocialStep formData={formData.step2} onChange={handleInputChange} errors={errors}/>}
+                    {currentStep === 2 && <SocialStep formData={formData.step2} onChange={handleInputChange} errors={errors} />}
                     {currentStep === 3 && <MiscStep formData={formData.step3} onChange={handleInputChange} errors={errors} />}
                     {currentStep === 4 && <JobStep formData={formData.step4} onChange={handleInputChange} errors={errors} />}
                     {currentStep === 5 && <SchoolStep formData={formData.step5} onChange={handleInputChange} errors={errors} />}

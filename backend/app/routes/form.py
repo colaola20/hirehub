@@ -56,14 +56,22 @@ def get_resume_form():
             ]
         },
         "step5":{
-            "school": "",
-            "degree": "",
-            "gradYear": ""
+            "education": [
+                {
+                    "school": "",
+                    "degree": "",
+                    "gradYear": ""
+                }
+            ]
         },
         "step6":{
-            "projTitle":"",
-            "projDesc":"",
-            "projLink":""
+            "projects": [
+                {
+                    "projTitle": "",
+                    "projDesc": "",
+                    "projLink": ""
+                }
+            ]
         }
     }
     return jsonify(data), 200
