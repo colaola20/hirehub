@@ -42,19 +42,19 @@ const ResumeForm = () => {
         /* ---MAIN SECTIONS--- */
         step4: { // maybe split each part into its own steps? 
 
-            company: '', role: '', roleTime: ''
+            jobs: [{company: '', role: '', roleTime: ''}]
 
         },
 
         step5: {
 
-            school: '', degree: '', gradYear: ''
+            education: [{school: '', degree: '', gradYear: ''}]
 
         },
 
         step6: {
 
-            projTitle: '', projDesc: '', projLink: ''
+            projects: [{projTitle: '', projDesc: '', projLink: ''}]
 
         }
     })
