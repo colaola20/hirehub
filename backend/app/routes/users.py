@@ -1,6 +1,14 @@
 from flask import Blueprint, jsonify, request
 from app.services.database import DatabaseService
 from app.models.user import User
+from app.models.profile import Profile
+from app.models.application import Application
+from app.models.cover_letter import CoverLetter
+from app.models.document import Document
+from app.models.resume import Resume
+from app.models.skill import Skill
+from app.models.notification import Notification
+from app.models.favorite import Favorite
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, unset_jwt_cookies
 from flask_mail import Message
 from app.extensions import mail
@@ -387,7 +395,7 @@ def get_user_info():
 @jwt_required()
 def delete_user():
     try:
-        user_id = get_jwt_identity()
+        user_id = int(get_jwt_identity())
         user = User.query.get(user_id)
         if not user:
             return jsonify({"status": "error", "message": "User not found"}), 404
@@ -398,6 +406,25 @@ def delete_user():
                 "status": "error",
                 "message": "Provide confirm=true or confirm='DELETE' in request body to delete account"
             }), 400
+        
+        # Use set-based deletes (faster) and avoid loading objects into memory.
+        # Adjust filters to match your FK fields (user_id or user_email).
+        profile = Profile.query.filter_by(user_email=user.email).first()
+        if profile:
+            db.session.query(Skill).filter_by(profile_id=profile.profile_id).delete(synchronize_session=False)
+        if Profile is not None:
+            db.session.query(Profile).filter(getattr(Profile, "user_email") == user.email).delete(synchronize_session=False)
+        if Application is not None:
+            db.session.query(Application).filter(getattr(Application, "user_id") == user_id).delete(synchronize_session=False)
+        if Favorite is not None:
+            if hasattr(Favorite, "user_id"):
+                db.session.query(Favorite).filter(getattr(Favorite, "user_id") == user_id).delete(synchronize_session=False)
+        # Documents / CoverLetters may reference user by email
+        if Document is not None:
+            if hasattr(Document, "user_id"):
+                db.session.query(Document).filter(getattr(Document, "user_id") == user_id).delete(synchronize_session=False)
+
+
         try:
             db.session.delete(user)
             db.session.commit()
