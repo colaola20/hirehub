@@ -1,10 +1,12 @@
 import styles from './Setting.module.css'
 import { useState, useEffect} from "react"
 import { useNavigate } from "react-router-dom";
+
 import PasswordReset from '../components/settingPage/PasswordReset'
 import Confirmation from '../components/UsersMessages/Confirmation'
 import Success from '../components/UsersMessages/Success'
 import Error from '../components/UsersMessages/Error'
+import Switch from '../components/buttons/Switch'
 
 const Settings = () => {
     const [error, setError] = useState(null);
@@ -104,10 +106,8 @@ const Settings = () => {
         }
     }
 
-    const handleToggle = () => {
-        const newState = !isJobAlerts
-        setIsJobAlerts(newState)
-        onChange?.(newState)
+    const handleChange = () => {
+        setIsJobAlerts(!isJobAlerts)
     }
 
     return (
@@ -138,10 +138,7 @@ const Settings = () => {
                     <div className={styles.jobAlerts}>
                         <h5 className={styles.label}>Enable Instant Job Alerts</h5>
                         <p className={styles.description}>Be the first to apply - get fresh, tailored job alerts within an hour of posting.</p>
-                        <button type="button" role="switch" aria-checked={isJobAlerts} className={`${styles.switch} ${isJobAlerts ? styles.on : ""}`} onClick={handleToggle}> 
-                            <div className={styles.switchHandle}>
-                            </div>
-                        </button>
+                        <Switch onChange={handleChange}/>
                     </div>
                 </div>
             </div>
