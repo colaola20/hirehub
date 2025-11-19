@@ -62,27 +62,36 @@ const ResumeForm = () => {
     })
 
     const submitForm = async () => {
-    const payload = {
-        ...formData,
-        step3: {
-            skills: formData.step3.skills.split(',').map(s => s.trim()).filter(Boolean),
-            languages: formData.step3.languages.split(',').map(s => s.trim()).filter(Boolean),
-            certs: formData.step3.certs.split(',').map(s => s.trim()).filter(Boolean),
-            interests: formData.step3.interests.split(',').map(s => s.trim()).filter(Boolean),
-        }
-    };
 
-    const response = await fetch('/api/form', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
-        body: JSON.stringify(payload),
-    });
-    const data = await response.json();
-    console.log(data);
-}
+        const safe3 = formData.step3 || [];
+
+        const toArray = (val) => {
+        if (!val) return [];
+        if (Array.isArray(val)) return val;
+        if (typeof val === 'string') return val.split(',').map(s => s.trim()).filter(Boolean);
+        return [];
+    }
+        const payload = {
+            ...formData,
+            step3: {
+                skills: toArray(safe3.skills),
+                languages: toArray(safe3.languages),
+                certs: toArray(safe3.certs),
+                interests: toArray(safe3.interests),
+            }
+        };
+
+        const response = await fetch('/api/form', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+            body: JSON.stringify(payload),
+        });
+        const data = await response.json();
+        console.log(data);
+    }
 
     // pull info from user profile to prefill form
     useEffect(() => {
@@ -100,11 +109,12 @@ const ResumeForm = () => {
                 return response.json();
             })
             .then(data => {
-                if (data.step3){
+                if (data.step3) {
                     data.step3.skills = Array.isArray(data.step3.skills) ? data.step3.skills.join(', ') : data.step3.skills
                     data.step3.languages = Array.isArray(data.step3.languages) ? data.step3.languages.join(', ') : data.step3.languages
                 }
-                setFormData(data)})
+                setFormData(data)
+            })
             .catch(err => console.error('Error fetching form data:', err));
     }, []);
 
@@ -122,7 +132,8 @@ const ResumeForm = () => {
     }, [currentStep,
         formData.step4?.jobs?.length,
         formData.step5?.education?.length,
-        formData.step6?.projects?.length
+        formData.step6?.projects?.length,
+        errors
     ])
 
 
@@ -146,19 +157,19 @@ const ResumeForm = () => {
     })
 
     const miscValidation = Yup.object({
-    skills: Yup.string().required('Skills cannot be empty.').test(
-        'is-array',
-        'At least one skill required',
-        val => val.split(',').filter(s => s.trim()).length > 0
-    ),
-    languages: Yup.string().required('Languages cannot be empty.').test(
-        'is-array',
-        'At least one language required',
-        val => val.split(',').filter(s => s.trim()).length > 0
-    ),
-    interests: Yup.array(),
-    certs: Yup.array(),
-});
+        skills: Yup.string().required('Skills cannot be empty.').test(
+            'is-array',
+            'At least one skill required',
+            val => val.split(',').filter(s => s.trim()).length > 0
+        ),
+        languages: Yup.string().required('Languages cannot be empty.').test(
+            'is-array',
+            'At least one language required',
+            val => val.split(',').filter(s => s.trim()).length > 0
+        ),
+        interests: Yup.array(),
+        certs: Yup.array(),
+    });
 
     const jobValidation = Yup.object({
         jobs: Yup.array().of(
@@ -216,28 +227,28 @@ const ResumeForm = () => {
 
 
     const handleInputChange = (e) => {
-    const { name, value } = e.target;
+        const { name, value } = e.target;
 
-    setFormData(prev => ({
-        ...prev,
-        [`step${currentStep}`]: {
-            ...prev[`step${currentStep}`],
-            [name]: value
-        }
-    }));
-};
+        setFormData(prev => ({
+            ...prev,
+            [`step${currentStep}`]: {
+                ...prev[`step${currentStep}`],
+                [name]: value
+            }
+        }));
+    };
 
-const handleMiscChange = (e) => {
+    const handleMiscChange = (e) => {
 
-    const {name, value} = e.target;
-    setFormData(prev => ({
-        ...prev,
-        step3: {
-            ...prev.step3,
-            [name]: value
-        }
-    }));
-};
+        const { name, value } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            step3: {
+                ...prev.step3,
+                [name]: value
+            }
+        }));
+    };
 
     const prevStep = () => {
         if (currentStep > 1) setCurrentStep(currentStep - 1);
@@ -308,6 +319,7 @@ const handleMiscChange = (e) => {
                     {currentStep < 6 && (<button className={styles["prog-btn-btn"]} onClick={nextStep}>Next</button>)}
                     {currentStep === 6 && (<button className={styles["submit-form-btn"]} onClick={async () => {
                         const response = await submitForm();
+                        // if (!response) return;
                         setFormData(prev => ({ ...prev }));
                         setCurrentStep(7);
                     }}>Generate</button>)}
