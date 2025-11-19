@@ -113,6 +113,9 @@
     backdrop-filter: blur(10px);
     box-shadow: 0px 8px 24px rgba(0,0,0,0.15);
 
+    transition: height 0.35s ease;
+    overflow: hidden; 
+
     padding: 15px;
     display: flex;
     flex-direction: column;

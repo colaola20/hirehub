@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import PersonalizedNavbar from '../components/PersonalizedNavbar'
 import { Link } from "react-router-dom";
 import * as Yup from 'yup'
@@ -20,6 +20,8 @@ const ResumeForm = () => {
 
     const [currentStep, setCurrentStep] = useState(1);
     const [errors, setErrors] = useState({});
+    const contentRef = useRef(null);
+    const [containerHeight, setContainerHeight] = useState("auto");
 
     const [formData, setFormData] = useState({
         /* ---PERSONAL INFO--- */
@@ -91,6 +93,23 @@ const ResumeForm = () => {
             .then(data => setFormData(data))
             .catch(err => console.error('Error fetching form data:', err));
     }, []);
+
+    useEffect(() => {
+        if (contentRef.current) {
+            if (currentStep === 7){
+                setContainerHeight("1000px");
+                return;
+            }
+            
+            const newHeight = contentRef.current.scrollHeight;
+            const padding = 65;
+            setContainerHeight(newHeight + padding);
+        }
+    }, [currentStep,
+        formData.step4?.jobs?.length,
+        formData.step5?.education?.length,
+        formData.step6?.projects?.length
+    ])
 
 
 
@@ -261,14 +280,16 @@ const ResumeForm = () => {
 
 
 
-                <div className={styles["resume-form-container"]}>
-                    {currentStep === 1 && <PersonalStep formData={formData.step1} onChange={handleInputChange} errors={errors} />}
-                    {currentStep === 2 && <SocialStep formData={formData.step2} onChange={handleInputChange} errors={errors} />}
-                    {currentStep === 3 && <MiscStep formData={formData.step3} onChange={handleInputChange} errors={errors} />}
-                    {currentStep === 4 && <JobStep formData={formData.step4} onChange={handleInputChange} errors={errors} />}
-                    {currentStep === 5 && <SchoolStep formData={formData.step5} onChange={handleInputChange} errors={errors} />}
-                    {currentStep === 6 && <ProjectStep formData={formData.step6} onChange={handleInputChange} errors={errors} />}
-                    {currentStep === 7 && <ResumeViewStep backendData={formData} />}
+                <div className={styles["resume-form-container"]} style={{ height: containerHeight }}>
+                    <div ref={contentRef}>
+                        {currentStep === 1 && <PersonalStep formData={formData.step1} onChange={handleInputChange} errors={errors} />}
+                        {currentStep === 2 && <SocialStep formData={formData.step2} onChange={handleInputChange} errors={errors} />}
+                        {currentStep === 3 && <MiscStep formData={formData.step3} onChange={handleInputChange} errors={errors} />}
+                        {currentStep === 4 && <JobStep formData={formData.step4} onChange={handleInputChange} errors={errors} />}
+                        {currentStep === 5 && <SchoolStep formData={formData.step5} onChange={handleInputChange} errors={errors} />}
+                        {currentStep === 6 && <ProjectStep formData={formData.step6} onChange={handleInputChange} errors={errors} />}
+                        {currentStep === 7 && <ResumeViewStep backendData={formData} />}
+                    </div>
                 </div>
             </div>
         </div>
