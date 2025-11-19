@@ -138,8 +138,10 @@ const Settings = () => {
                     <div className={styles.separator}></div>
                     <div className={styles.jobAlerts}>
                         <h5 className={styles.label}>Enable Instant Job Alerts</h5>
-                        <p className={styles.description}>Be the first to apply - get fresh, tailored job alerts within an hour of posting.</p>
-                        <Switch onChange={handleChange}/>
+                        <div className={styles.infoContainer}>
+                            <p className={styles.description}>Be the first to apply - get fresh, tailored job alerts within an hour of posting.</p>
+                            <Switch onChange={handleChange}/>
+                        </div>
                     </div>
                 </div>
             </div>
