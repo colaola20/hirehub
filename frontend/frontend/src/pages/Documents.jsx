@@ -1,6 +1,7 @@
-import {useState} from 'react'
+import {useState, useRef} from 'react'
 import Error from '../components/UsersMessages/Error'
 import styles from './Documents.module.css'
+import { Plus } from 'lucide-react';
 
 const Documents = () => {
     const [file, setFile] = useState(null);
@@ -11,12 +12,34 @@ const Documents = () => {
     const [showError, setShowError] = useState(false)
     const [errorTitle, seetErrorTitle] = useState("")
     const [errorDescription, setErrorDescription] = useState("")
+    const fileInputRef = useRef(null);
 
-    const handleFileChange = (e) => {
-        setShowError(false)
+    const handleFileChange = async (e) => {
+        const selectedFile = e.target.files?.[0];
+        if (!selectedFile) return;
+        
+        setShowError(false);
         setResult(null);
-        setFile(e.target.files?.[0] || null);
+        setFile(selectedFile);
         setProgress(0);
+        
+        // Automatically upload after file selection
+        setUploading(true);
+        try {
+            const res = await upload(selectedFile);
+            setResult(res);
+        } catch (err) {
+            seetErrorTitle("Upload failed");
+            setErrorDescription("");
+            setShowError(true);
+        } finally {
+            setUploading(false);
+            setProgress(0);
+            // Reset file input
+            if (fileInputRef.current) {
+                fileInputRef.current.value = '';
+            }
+        }
     }
 
     const upload = (fileToUpload) => {
@@ -62,49 +85,32 @@ const Documents = () => {
     };
  
     const handleUploadClick = async (e) => {
-        e.preventDefault();
-        if (!file) {
-            seetErrorTitle("You didn't select the file!")
-            setErrorDescription("Please select a file first.")
-            setShowError(true)
-            return;
-        }
-        setUploading(true);
-        setShowError(false)
-        setResult(null);
-        try {
-            const res = await upload(file);
-            setResult(res);
-            onUploaded?.(res);
-        } catch (err) {
-            seetErrorTitle("Upload failed")
-            setErrorDescription("")
-            setShowError(true)
-        } finally {
-            setUploading(false);
-            setProgress(0);
-        }
+        fileInputRef.current?.click()
     };
 
     return (
         <div className={styles.container}>
             <div className={styles.documentsContainer}>
-            <label>
-                Select file
-                <input
-                    type="file"
-                    accept="*/*"
-                    onChange={handleFileChange}
-                />
-            </label>
-            <button onClick={handleUploadClick}>Upload</button>
-            {result && (
-                <div>
-                <div>Uploaded:</div>
-                <div><strong>{result.filename}</strong></div>
-                <div><a href={result.url} target="_blank" rel="noopener noreferrer">Open file</a></div>
+                <div className={styles.docsUploading}>
+                    <input
+                        ref={fileInputRef}
+                        type="file"
+                        accept="*/*"
+                        onChange={handleFileChange}
+                        style={{ display: 'none' }}
+                    />
+                    <button onClick={handleUploadClick} disabled={uploading}><Plus size={20}/> Add Document</button>
+                    {result && (
+                        <div>
+                            <div>Uploaded:</div>
+                            <div><strong>{result.filename}</strong></div>
+                            <div><a href={result.url} target="_blank" rel="noopener noreferrer">Open file</a></div>
+                        </div>
+                    )}
                 </div>
-            )}
+                <div className={styles.columns}>
+                    <span></span>
+                </div>
             </div>
             {showError && (
                 <Error title={errorTitle} description={errorDescription} handleClose={() => {setShowError(false)}}/>
