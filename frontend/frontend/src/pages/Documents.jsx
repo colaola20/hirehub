@@ -1,7 +1,7 @@
 import {useState, useRef} from 'react'
 import Error from '../components/UsersMessages/Error'
 import styles from './Documents.module.css'
-import { Plus } from 'lucide-react';
+import { Plus, Info } from 'lucide-react';
 
 const Documents = () => {
     const [file, setFile] = useState(null);
@@ -92,24 +92,37 @@ const Documents = () => {
         <div className={styles.container}>
             <div className={styles.documentsContainer}>
                 <div className={styles.docsUploading}>
-                    <input
-                        ref={fileInputRef}
-                        type="file"
-                        accept="*/*"
-                        onChange={handleFileChange}
-                        style={{ display: 'none' }}
-                    />
-                    <button onClick={handleUploadClick} disabled={uploading}><Plus size={20}/> Add Document</button>
-                    {result && (
-                        <div>
-                            <div>Uploaded:</div>
-                            <div><strong>{result.filename}</strong></div>
-                            <div><a href={result.url} target="_blank" rel="noopener noreferrer">Open file</a></div>
-                        </div>
-                    )}
+                    <div className={styles.info}>
+                        <Info />
+                        <p> You have 0 documents saved out of 5 available.</p>
+                    </div>
+                    <div>
+                        <input
+                            ref={fileInputRef}
+                            type="file"
+                            accept="*/*"
+                            onChange={handleFileChange}
+                            style={{ display: 'none' }}
+                        />
+                        <button onClick={handleUploadClick} disabled={uploading} className={styles.btn}><Plus size={20}/> Add Document</button>
+                        {result && (
+                            <div>
+                                <div>Uploaded:</div>
+                                <div><strong>{result.filename}</strong></div>
+                                <div><a href={result.url} target="_blank" rel="noopener noreferrer">Open file</a></div>
+                            </div>
+                        )}
+                    </div>
                 </div>
-                <div className={styles.columns}>
-                    <span></span>
+                <div className={styles.navigationBtns}>
+
+                </div>
+                <div className={styles.tableContainer}>
+                    <div className={styles.columns}>
+                        <span>Name</span>
+                        <span>Last Modified</span>
+                        <span>Created</span>
+                    </div>
                 </div>
             </div>
             {showError && (
