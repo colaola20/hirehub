@@ -11,6 +11,8 @@ return (
             {/* <pre>{JSON.stringify(backendData, null, 2)}</pre> */}
             <ResumeTemplate data={backendData}/>
         </div>
+        
+            <button>Export As PDF</button>
 
     </div>
 );

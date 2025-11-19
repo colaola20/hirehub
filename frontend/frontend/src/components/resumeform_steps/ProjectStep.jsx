@@ -15,7 +15,7 @@ const ProjectComponent = ({ project, index, updateProj, removeProj, removeable }
             <input
                 type="text"
                 name='projDesc'
-                placeholder="Project Description"
+                placeholder="Paste Short Description"
                 value={project.projDesc}
                 onChange={(e) => updateProj(index, e.target.name, e.target.value)}
             />
