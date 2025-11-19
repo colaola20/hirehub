@@ -121,7 +121,7 @@ const ResumeForm = () => {
     useEffect(() => {
         if (contentRef.current) {
             if (currentStep === 7) {
-                setContainerHeight("1000px");
+                setContainerHeight("12500px");
                 return;
             }
 
