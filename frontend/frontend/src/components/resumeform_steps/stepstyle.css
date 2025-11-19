@@ -49,6 +49,7 @@
     flex-direction: row;
     align-items: center;
     gap: 20px;
+    min-height: 110px;
     height: auto;
     /* padding-bottom: 30px; */
 }
@@ -68,6 +69,7 @@
     flex-direction: row;
     align-items: center;
     gap: 20px;
+    min-height: 110px;
     height: auto;;
     padding-top: 25px;
     padding-bottom: 40px;

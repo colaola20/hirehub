@@ -1,6 +1,6 @@
 import './stepstyle.css'
 
-const SchoolComponent = ({ school, index, updateSchools }) => {
+const SchoolComponent = ({ school, index, updateSchools, removeSchool, removeable }) => {
     return (
         <div className="school-form">
             <input
@@ -31,11 +31,9 @@ const SchoolComponent = ({ school, index, updateSchools }) => {
                 onChange={(e) => updateSchools(index, e.target.name, e.target.value)}
                 required
             />
-            {/* {errors.gradYear && <p style={{ color: 'red' }}>{errors.gradYear}</p>} */}
-            {/* <div className="student-cb">
-                    <p>Are you currently a student?</p>
-                    <input type="checkbox" name='status' I Am Currently a Student />
-                </div> */}
+            {removeable && (
+                <button type="button" onClick={() => removeSchool(index)}>Remove</button>
+            )}
         </div>
     )
 };
@@ -57,7 +55,15 @@ const SchoolStep = ({ formData, onChange, errors }) => { // SCHOOL HISTORY INFO 
         onChange({ target: { name: 'education', value: newSchools } });
     }
 
-    const removeSchool = (index) => { }; // implement later
+    const removeSchool = (index) => {
+        const currentEd = formData.education || [];
+        if (currentEd.length === 1) {
+            return;
+        }
+
+        const newEd = currentEd.filter((_, i) => i !== index);
+        onChange({ target: { name: 'education', value: newEd } })
+    };
 
     return (
         <div>
@@ -69,6 +75,8 @@ const SchoolStep = ({ formData, onChange, errors }) => { // SCHOOL HISTORY INFO 
                     school={school}
                     index={index}
                     updateSchools={updateSchools}
+                    removeSchool={removeSchool}
+                    removeable={schools.length > 1}
                 />
             ))}
             <div className='school-validation'>
@@ -76,7 +84,8 @@ const SchoolStep = ({ formData, onChange, errors }) => { // SCHOOL HISTORY INFO 
                     <p style={{ color: "red" }}>Please fill out all required education fields.</p>
                 )}
             </div>
-            <button type="button" onClick={addSchool}>+</button>
+            {schools.length < 3 && 
+            <button type="button" onClick={addSchool}>+</button>}
         </div>
     )
 };

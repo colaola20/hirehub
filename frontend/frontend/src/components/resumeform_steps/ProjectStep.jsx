@@ -1,6 +1,6 @@
 import './stepstyle.css'
 
-const ProjectComponent = ({ projects, index, updateProj }) => {
+const ProjectComponent = ({ project, index, updateProj, removeProj, removeable }) => {
     return (
         <div className="project-form">
 
@@ -8,7 +8,7 @@ const ProjectComponent = ({ projects, index, updateProj }) => {
                 type="text"
                 name='projTitle'
                 placeholder="Project Title"
-                value={projects.projTitle}
+                value={project.projTitle}
                 onChange={(e) => updateProj(index, e.target.name, e.target.value)}
             />
             {/* {errors.projTitle && <p style={{ color: 'red' }}>{errors.projTitle}</p>} */}
@@ -16,7 +16,7 @@ const ProjectComponent = ({ projects, index, updateProj }) => {
                 type="text"
                 name='projDesc'
                 placeholder="Project Description"
-                value={projects.projDesc}
+                value={project.projDesc}
                 onChange={(e) => updateProj(index, e.target.name, e.target.value)}
             />
             {/* {errors.projDesc && <p style={{ color: 'red' }}>{errors.projDesc}</p>} */}
@@ -24,10 +24,13 @@ const ProjectComponent = ({ projects, index, updateProj }) => {
                 type="url"
                 name='projLink'
                 placeholder="Project Link"
-                value={projects.projLink}
+                value={project.projLink}
                 onChange={(e) => updateProj(index, e.target.name, e.target.value)}
             />
-            {/* {errors.projLink && <p style={{ color: 'red' }}>{errors.projLink}</p>} */}
+            {removeable &&
+                <button type="button" onClick={() => removeProj(index)}>Remove</button>
+            }
+
         </div >
     )
 };
@@ -48,19 +51,32 @@ const ProjectStep = ({ formData, onChange, errors }) => { // PROJECT INFO STEP /
         onChange({ target: { name: 'projects', value: newProj } });
     }
 
+    const removeProj = (index) => {
+        const currentProj = formData.projects || [];
+        if (projects.length === 1) {
+            return;
+        }
+
+        const newProj = currentProj.filter((_, i) => i !== index);
+        onChange({ target: { name: 'projects', value: newProj } });
+    }
+
     return (
         <div>
             <h2>Projects</h2>
             <h3>Add Any, Up To Three</h3>
-            {projects.map((projects, index) => (
+            {projects.map((project, index) => (
                 <ProjectComponent
                     key={index}
-                    projects={projects}
+                    project={project}
                     index={index}
                     updateProj={updateProj}
+                    removeProj={removeProj}
+                    removeable={projects.length > 1}
                 />
             ))}
-            <button onClick={addProj}>+</button>
+            {projects.length < 3 &&
+                <button type='button' onClick={addProj}>+</button>}
         </div>
     )
 };
