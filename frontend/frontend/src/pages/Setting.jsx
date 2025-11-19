@@ -15,6 +15,7 @@ const Settings = () => {
     const [showSuccess, setShowSuccess] = useState(false)
     const [showError, setShowError] = useState(false)
     const navigate = useNavigate();
+    const [isJobAlerts, setIsJobAlerts] = useState(true)
 
     useEffect(() => {
         const fetchUserEmail = async () => {
@@ -103,6 +104,12 @@ const Settings = () => {
         }
     }
 
+    const handleToggle = () => {
+        const newState = !isJobAlerts
+        setIsJobAlerts(newState)
+        onChange?.(newState)
+    }
+
     return (
         <div className={styles.container}>
             <div className={styles.settingContainer}>
@@ -111,7 +118,7 @@ const Settings = () => {
                     <div className={styles.separator}></div>
                     <div className={styles.email}>
                         <h5 className={styles.label}>Email</h5>
-                        <p>{email}</p>
+                        <p className={styles.description}>{email}</p>
                     </div>
                     <div className={styles.password} >
                         <h5 className={styles.label}>Password</h5>
@@ -120,7 +127,7 @@ const Settings = () => {
                     <div className={styles.deleteAccount}>
                         <div>
                             <h5 className={styles.label}>Delete my acount</h5>
-                            <p>Permanently delete your HireHub account and all associated data</p>
+                            <p className={styles.description}>Permanently delete your HireHub account and all associated data</p>
                         </div>
                         <button className={styles.setBtn} onClick={handleDeletion}>Delete my account</button>
                     </div>
@@ -128,6 +135,14 @@ const Settings = () => {
                 <div className={styles.alertsPreference}>
                     <h3 className={styles.title}>Job Alerts Preference</h3>
                     <div className={styles.separator}></div>
+                    <div className={styles.jobAlerts}>
+                        <h5 className={styles.label}>Enable Instant Job Alerts</h5>
+                        <p className={styles.description}>Be the first to apply - get fresh, tailored job alerts within an hour of posting.</p>
+                        <button type="button" role="switch" aria-checked={isJobAlerts} className={`${styles.switch} ${isJobAlerts ? styles.on : ""}`} onClick={handleToggle}> 
+                            <div className={styles.switchHandle}>
+                            </div>
+                        </button>
+                    </div>
                 </div>
             </div>
             {isOpenPasswordReset && (

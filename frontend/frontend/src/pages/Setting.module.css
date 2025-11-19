@@ -30,7 +30,8 @@
 
 .email,
 .password,
-.deleteAccount {
+.deleteAccount,
+.jobAlerts {
   margin:1.2rem 0 0 0;
 }
 
@@ -58,7 +59,8 @@
 
 .email,
 .password,
-.deleteAccount p {
+.deleteAccount,
+.jobAlerts .description {
   margin: 0;
   color: #9aa4b2;
 }
@@ -90,4 +92,40 @@
 .setBtn:hover {
   box-shadow: 0 6px 16px rgba(142, 197, 252, 0.4);
   background: linear-gradient(90deg, #ff66c4, #6f67f0, #4839eb);
+}
+
+.switch{
+  width: 50px;
+  height: 28px;
+  background: #ccc;
+  border-radius: 999px;
+  border: none;
+  padding: 2px;
+  cursor: pointer;
+  position: relative;
+  transition: background 0.25s ease;
+}
+
+.switch.on {
+  background: #4ade80; /* green */
+}
+
+.switchHandle {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 24px;
+  height: 24px;
+  background: white;
+  border-radius: 50%;
+  transition: transform 0.25s ease;
+}
+
+/* Move handle when ON */
+.switch.on .switchHandle {
+  transform: translateX(22px);
+}
+
+.switchInner {
+  display: none;
 }
