@@ -2,6 +2,9 @@ import { useState, useEffect } from "react";
 import styles from "./Profile.module.css";
 import { School } from "lucide-react";
 
+import Btn from '../components/buttons/Btn'
+import CancelBtn from "../components/buttons/CancelBtn";
+
 const Profile = () => {
     const [profileData, setProfileData] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -344,9 +347,7 @@ const Profile = () => {
                         )}
                     </div>
                     {!isEditing && (
-                        <button onClick={handleEditClick} className={styles.editButton}>
-                            Edit Profile
-                        </button>
+                        <Btn icon={null} onClick={handleEditClick} label="Edit Profile"/>
                     )}
                 </div>
 
@@ -445,20 +446,22 @@ const Profile = () => {
 
                 {isEditing && (
                     <div className={styles.actionButtons}>
-                        <button
+                        <Btn icon={null} onClick={handleSaveProfile} label="Save Changes"/>
+                        {/* <button
                             onClick={handleSaveProfile}
                             className={styles.saveButton}
                             disabled={saving}
                         >
                             {saving ? 'Saving...' : 'Save Changes'}
-                        </button>
-                        <button
+                        </button> */}
+                        <CancelBtn icon={null} onClick={handleCancelEdit} label="Cancel" disabled={saving}/>
+                        {/* <button
                             onClick={handleCancelEdit}
                             className={styles.cancelButton}
                             disabled={saving}
                         >
                             Cancel
-                        </button>
+                        </button> */}
                     </div>
                 )}
             </div>

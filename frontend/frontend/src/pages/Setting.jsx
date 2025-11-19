@@ -7,6 +7,7 @@ import Confirmation from '../components/UsersMessages/Confirmation'
 import Success from '../components/UsersMessages/Success'
 import Error from '../components/UsersMessages/Error'
 import Switch from '../components/buttons/Switch'
+import Btn from '../components/buttons/Btn'
 
 const Settings = () => {
     const [error, setError] = useState(null);
@@ -122,14 +123,14 @@ const Settings = () => {
                     </div>
                     <div className={styles.password} >
                         <h5 className={styles.label}>Password</h5>
-                        <button className={styles.setBtn} onClick={handleResetPassword}>Reset password</button>
+                        <Btn icon={null} label="Reset password" onClick={handleResetPassword}/>
                     </div>
                     <div className={styles.deleteAccount}>
                         <div>
                             <h5 className={styles.label}>Delete my acount</h5>
                             <p className={styles.description}>Permanently delete your HireHub account and all associated data</p>
                         </div>
-                        <button className={styles.setBtn} onClick={handleDeletion}>Delete my account</button>
+                        <Btn icon={null} label="Delete my account" onClick={handleDeletion}/>
                     </div>
                 </div>
                 <div className={styles.alertsPreference}>
