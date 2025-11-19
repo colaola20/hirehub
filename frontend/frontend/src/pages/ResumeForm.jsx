@@ -62,18 +62,27 @@ const ResumeForm = () => {
     })
 
     const submitForm = async () => {
-        const response = await fetch('/api/form', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${localStorage.getItem('token')}`,
-            },
-            body: JSON.stringify(formData),
-        });
-        const data = await response.json();
-        console.log(data);
-        // sendBackendData(data);
-    }
+    const payload = {
+        ...formData,
+        step3: {
+            skills: formData.step3.skills.split(',').map(s => s.trim()).filter(Boolean),
+            languages: formData.step3.languages.split(',').map(s => s.trim()).filter(Boolean),
+            certs: formData.step3.certs.split(',').map(s => s.trim()).filter(Boolean),
+            interests: formData.step3.interests.split(',').map(s => s.trim()).filter(Boolean),
+        }
+    };
+
+    const response = await fetch('/api/form', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+        body: JSON.stringify(payload),
+    });
+    const data = await response.json();
+    console.log(data);
+}
 
     // pull info from user profile to prefill form
     useEffect(() => {
@@ -90,17 +99,22 @@ const ResumeForm = () => {
                 }
                 return response.json();
             })
-            .then(data => setFormData(data))
+            .then(data => {
+                if (data.step3){
+                    data.step3.skills = Array.isArray(data.step3.skills) ? data.step3.skills.join(', ') : data.step3.skills
+                    data.step3.languages = Array.isArray(data.step3.languages) ? data.step3.languages.join(', ') : data.step3.languages
+                }
+                setFormData(data)})
             .catch(err => console.error('Error fetching form data:', err));
     }, []);
 
     useEffect(() => {
         if (contentRef.current) {
-            if (currentStep === 7){
+            if (currentStep === 7) {
                 setContainerHeight("1000px");
                 return;
             }
-            
+
             const newHeight = contentRef.current.scrollHeight;
             const padding = 65;
             setContainerHeight(newHeight + padding);
@@ -132,9 +146,19 @@ const ResumeForm = () => {
     })
 
     const miscValidation = Yup.object({
-        skills: Yup.string().required('Skills are required.'),
-        languages: Yup.string().required('Languages is required.')
-    })
+    skills: Yup.string().required('Skills cannot be empty.').test(
+        'is-array',
+        'At least one skill required',
+        val => val.split(',').filter(s => s.trim()).length > 0
+    ),
+    languages: Yup.string().required('Languages cannot be empty.').test(
+        'is-array',
+        'At least one language required',
+        val => val.split(',').filter(s => s.trim()).length > 0
+    ),
+    interests: Yup.array(),
+    certs: Yup.array(),
+});
 
     const jobValidation = Yup.object({
         jobs: Yup.array().of(
@@ -192,16 +216,28 @@ const ResumeForm = () => {
 
 
     const handleInputChange = (e) => {
-        const { name, value } = e.target;
+    const { name, value } = e.target;
 
-        setFormData({
-            ...formData,
-            [`step${currentStep}`]: {
-                ...formData[`step${currentStep}`],
-                [name]: value
-            }
-        });
-    };
+    setFormData(prev => ({
+        ...prev,
+        [`step${currentStep}`]: {
+            ...prev[`step${currentStep}`],
+            [name]: value
+        }
+    }));
+};
+
+const handleMiscChange = (e) => {
+
+    const {name, value} = e.target;
+    setFormData(prev => ({
+        ...prev,
+        step3: {
+            ...prev.step3,
+            [name]: value
+        }
+    }));
+};
 
     const prevStep = () => {
         if (currentStep > 1) setCurrentStep(currentStep - 1);
@@ -284,7 +320,7 @@ const ResumeForm = () => {
                     <div ref={contentRef}>
                         {currentStep === 1 && <PersonalStep formData={formData.step1} onChange={handleInputChange} errors={errors} />}
                         {currentStep === 2 && <SocialStep formData={formData.step2} onChange={handleInputChange} errors={errors} />}
-                        {currentStep === 3 && <MiscStep formData={formData.step3} onChange={handleInputChange} errors={errors} />}
+                        {currentStep === 3 && <MiscStep formData={formData.step3} onChange={handleMiscChange} errors={errors} />}
                         {currentStep === 4 && <JobStep formData={formData.step4} onChange={handleInputChange} errors={errors} />}
                         {currentStep === 5 && <SchoolStep formData={formData.step5} onChange={handleInputChange} errors={errors} />}
                         {currentStep === 6 && <ProjectStep formData={formData.step6} onChange={handleInputChange} errors={errors} />}
