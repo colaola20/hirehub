@@ -1,0 +1,25 @@
+.container {
+  width: 100%;
+  min-height: calc(100vh - var(--nav-h) - 120px);
+  border-radius: 10px;
+
+}
+
+.documentsContainer {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 1rem;
+    box-sizing: border-box;
+    align-items: center;
+    padding: 3rem;
+    background: rgba(20, 15, 40, 0.75);
+    height: 100vh;
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+    color: #ffffff;
+    transition: all 0.3s ease;
+}
