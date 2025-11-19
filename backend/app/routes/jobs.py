@@ -1,6 +1,9 @@
 from flask import Blueprint, jsonify, request
 from app.models.job import Job
 from flask_jwt_extended import jwt_required
+from app.models.favorite import Favorite
+from flask_jwt_extended import get_jwt_identity
+
 from app.extensions import db
 from sqlalchemy import or_
 
@@ -71,7 +74,21 @@ def get_jobs():
         total_limit = limit + preload
         jobs = q.offset(offset).limit(total_limit).all()
 
-        jobs_data = [job.to_dict() for job in jobs]
+        # Get logged-in user
+        user_id = int(get_jwt_identity())
+
+        # Fetch all job IDs the user has favorited (1 query only)
+        favorite_rows = Favorite.query.filter_by(user_id=user_id).all()
+        favorite_ids = {fav.job_id for fav in favorite_rows}
+
+        # Convert jobs to dict + add "is_favorited"
+        jobs_data = []
+        for job in jobs:
+            jd = job.to_dict()
+            jd["is_favorited"] = job.id in favorite_ids
+            jobs_data.append(jd)
+
+
         current_jobs = jobs_data[:limit]
         preloaded_jobs = jobs_data[limit:]
 

@@ -14,33 +14,29 @@ import JobCard from "../components/JobCard.jsx";
 import AppliedJobs from "../components/AppliedJobs.jsx";
 
 
-
-
-
 const UserDashboard = () => {
   const navigate = useNavigate();
   const { username } = useParams();
   const [searchParams] = useSearchParams();
   const [showLiked, setShowLiked] = useState(false);
   const [showApplied, setShowApplied] = useState(false);
-  const [selectedJob, setSelectedJob] = useState(null);
+  const [showRecommended, setShowRecommended] = useState(false);
+
   const [likedJobs, setLikedJobs] = useState([]);
 
   const location = useLocation();
 
-   const handleJobClick = (job) => {
+  const handleJobClick = (job) => {
     try {
-    // make the job available to the new window
-    localStorage.setItem("job_dashboard_payload", JSON.stringify(job));
-  } catch (e) {
-    console.warn("Could not store job payload:", e);
-  }
-  window.open("/job_dashboard", "_blank", "noopener");
-    //setSelectedJob(job); // open modal
-  }
-    const closeModal = () => {
-    setSelectedJob(null); // close modal
-  }
+      localStorage.setItem("job_dashboard_payload", JSON.stringify(job));
+    } catch (e) {
+      console.warn("Could not store job payload:", e);
+    }
+
+    navigate("/job_dashboard"); // same tab navigation
+  };
+
+
 
   // Handle token + username from query params
   useEffect(() => {
@@ -131,12 +127,6 @@ const UserDashboard = () => {
       const data = await response.json();
       let items = data.current || [];
 
-      // 🔀 Randomize array using Fisher-Yates shuffle
-      for (let i = items.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [items[i], items[j]] = [items[j], items[i]];
-      }
-
       return {
         items,
         total: data.total || 0,
@@ -171,34 +161,16 @@ const UserDashboard = () => {
     }
   };
 
-  // Fetch applied jobs
-  const fetchAppliedJobs = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const res = await axios.get("/api/applications", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      const appliedList = res.data.applied.map(app => ({
-        ...app.job,
-        dateApplied: app.created_at,
-      }));
-
-      console.log("Fetched applied jobs:", appliedList);
-      setApplied(appliedList);
-    } catch (err) {
-      console.error("Failed to fetch applied jobs:", err);
-    }
-  };
 
   const handleShowLiked = () => {
     setShowLiked(true);
     setShowApplied(false);
+    setShowRecommended(false);
     fetchLikedJobs();
   };
 
   const handleShowRecommended = () => {
-
+      setShowRecommended(true);
       setShowLiked(false);
       setShowApplied(false);
   };
@@ -206,6 +178,7 @@ const UserDashboard = () => {
   const handleShowApplied = () => {
     setShowApplied(true);
     setShowLiked(false);
+    setShowRecommended(false);
     
   };
 
@@ -222,8 +195,7 @@ const UserDashboard = () => {
             onReset = {() => {
               setShowLiked(false);
               setShowApplied(false);
-              console.log(showApplied)
-              console.log(showLiked)
+             
             }}
           />
           <main className={styles["dashboard-container"]} role="main">
@@ -246,8 +218,7 @@ const UserDashboard = () => {
         </div>
       </div>
 
-      {/* Modal */}
-      {selectedJob && <JobDetailsModal job={selectedJob} onClose={closeModal} />}
+      
     </>
   )
 };

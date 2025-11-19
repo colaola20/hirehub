@@ -1,7 +1,7 @@
 import {useState} from "react";
 import {Link, useNavigate, useParams} from 'react-router-dom'
 import styles from "./sideBard.module.css"
-import { Home, Briefcase, Bell, Settings, LogOut, User } from "lucide-react";
+import { Home, Briefcase, Bell, Settings, LogOut, User, Files } from "lucide-react";
 
 const SideBar = ( {showRandomJob, onReset}  ) => {
   const navigate = useNavigate()
@@ -97,6 +97,9 @@ const SideBar = ( {showRandomJob, onReset}  ) => {
                 </Link>
                 <Link to={`/${username}`} onClick={() => { showRandomJob(); onReset(); }}>
                 <div className={styles.navItem}><Briefcase size={20}/> Jobs</div>
+                </Link>
+                <Link to={`/${username}/documents`} onClick={() => { onReset() }}>
+                  <div className={styles.navItem}> <Files size={20}/> Documents</div>
                 </Link>
                 <Link to={`/${username}/notifications`} onClick={() => { onReset() }}>
                 <div className={styles.navItem}><Bell size={20}/> Notifications</div>

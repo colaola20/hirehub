@@ -7,6 +7,8 @@ from app.models.user import User
 from datetime import datetime
 from werkzeug.utils import secure_filename
 import os
+import openai
+import json
 
 profile_bp = Blueprint('profile', __name__, url_prefix='/api/profile')
 
@@ -236,3 +238,124 @@ def get_profile_image(filename):
             'error': 'Image not found',
             'message': str(e)
         }), 404
+
+
+
+
+@profile_bp.route('/analyze', methods=['POST'])
+@jwt_required()
+def analyze_job_fit():
+    import json
+    from flask import request, jsonify
+    import openai
+
+    openai.api_key = current_app.config["OPENAI_API_KEY"]
+
+    try:
+       # Get current user and profile
+        current_user_id = int(get_jwt_identity())
+        user = User.query.get(current_user_id)
+        if not user:
+            return jsonify({"error": "User not found"}), 404
+
+        profile = Profile.query.filter_by(user_email=user.email).first()
+        if not profile:
+            return jsonify({"error": "No profile found for user"}), 400
+
+        # Pull skills from the skills table
+        user_skills = [skill.skill_name for skill in profile.skills]
+
+        # Pull experience from the profile
+        user_experience = profile.experience or ""
+
+        # Get job info from request
+        data = request.get_json()
+        job = data.get("job", {})
+        skills_extracted = job.get("skills_extracted", [])
+
+        user_experience = user_experience[:400]
+        
+       # ===========================
+        #  OpenAI Model Options (2025)
+        # ===========================
+
+        # -- GPT-4.1 Series 
+        # "gpt-4.1"        – ~ $2/M input, $8/M output – Deep reasoning, slower, expensive.
+        # "gpt-4.1-mini"   – ~ $0.40/M input, $1.60/M output – Best balance of quality + cost.
+
+        # -- GPT-4o Family 
+        # "gpt-4o"         – ~ $0.50/M input, $1.50/M output – High performance, fast.
+        # "gpt-4o-mini"    – ~ $0.20/M input, $0.80/M output – Very fast & cheap, great for backend calls.
+        # "gpt-4o-audio-preview"   – Same pricing tier – Audio/voice optimized.
+        # "gpt-4o-realtime-preview" – Same pricing – Low latency streaming model.
+
+        # -- GPT-3.5 Turbo 
+        # "gpt-3.5-turbo"  – ~ $0.50/M input, $1.50/M output – Very fast but weakest reasoning.
+
+        # Recommended 
+        #  "gpt-4o-mini"      – fast + cheap + accurate enough
+        # "gpt-4.1-mini"     – if you need stronger reasoning
+
+        # Make the OpenAI call
+        completion = openai.chat.completions.create(
+            model="gpt-4.1-mini", 
+            messages=[
+            {
+                "role": "user",
+                "content": f"""
+            TASK:
+            Match the USER to a JOB based ONLY on JOB_SKILLS.
+
+            OUTPUT:
+            Return ONLY this JSON:
+            {{
+            "percentage_match": number,
+            "job_skills": [...],
+            "matched_skills": [...]
+            }}
+
+            OBJECTIVE:
+            - Flexible matching (python = python3 = python scripting, etc.)
+            - Score = matched_job_skills / total_job_skills * 100
+            - If job has 1 skill and user matches → 100%
+            - If user matches 0 → % based on users experience
+            - Extra user skills DO NOT increase score
+            - Experience may boost score by up to +10% if highly relevant
+
+            NOTES:
+            USER_SKILLS = {user_skills}
+            USER_EXPERIENCE = {user_experience}
+            JOB_SKILLS = {skills_extracted}
+            """
+            }
+            ]
+
+            ,
+            temperature= 0,
+            max_completion_tokens= 300,
+            response_format={"type": "json_object"}  # strict JSON response
+        )
+
+        raw_reply = completion.choices[0].message.content or ""
+        raw_reply = raw_reply.strip()
+
+        # Try to extract JSON safely
+        try:
+            response_data = json.loads(raw_reply)
+        except json.JSONDecodeError:
+            # fallback: remove text before/after JSON braces
+            start = raw_reply.find('{')
+            end = raw_reply.rfind('}') + 1
+            response_data = json.loads(raw_reply[start:end]) if start >= 0 else {}
+
+        # Default safe values if something went wrong
+        return jsonify({
+            "percentage_match": response_data.get("percentage_match", 0),
+            "job_skills": response_data.get("job_skills", []),
+            "matched_skills": response_data.get("matched_skills", [])
+           
+        })
+
+    except Exception as e:
+        print("❌ Error in /analyze:", e)
+        return jsonify({"error": str(e)}), 500

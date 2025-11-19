@@ -2,12 +2,13 @@ import React, { useState, useEffect } from "react";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import styles from "./FavoriteButton.module.css";
 
-const FavoriteButton = ({ jobId, onFavoriteChange }) => {
-  const [isFavorited, setIsFavorited] = useState(false);
+const FavoriteButton = ({ jobId, onFavoriteChange , initialFavorited}) => {
+  const [isFavorited, setIsFavorited] = useState(initialFavorited);
   const [isLoading, setIsLoading] = useState(false);
+ 
 
   useEffect(() => {
-    checkFavoriteStatus();
+    // checkFavoriteStatus();
   }, [jobId]);
 
   const checkFavoriteStatus = async () => {

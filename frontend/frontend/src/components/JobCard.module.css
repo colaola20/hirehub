@@ -96,3 +96,123 @@
 .apply-btn:hover {
   background-color: #4338ca;
 }
+
+.analysisPlaceholder{
+  height: 80%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
+.cardWrapper {
+  display: flex;              
+  justify-content: space-between; 
+  align-items: stretch;
+
+    
+}
+
+.leftSide {
+  flex: 2;
+
+                 
+}
+
+.rightSide {
+  flex: 1; 
+  display: flex;
+  text-align: center;  
+
+  flex-direction: column;
+  justify-content: space-between; 
+  align-items: center;
+  min-height: 100%;
+  margin-right: 9%;
+
+ 
+}
+
+.analysisContentWrapper{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 130%;
+  
+  
+
+}
+
+.analyzeBtn {
+  margin-top: 12px;
+  background-color: #667eea;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  cursor: pointer;
+  
+}
+.analyzeBtn:hover {
+  background-color: #5a67d8;
+}
+
+.analysisPlaceholder {
+  color: #888;
+  font-style: italic;
+}
+
+.pctRow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.pctBig {
+  font-size: 30px;
+  font-weight: bold;
+  color: #4c51bf;
+}
+
+.pctLabel {
+  font-size: 1rem;
+  color: #6b7280;
+}
+
+.section {
+  margin-top: 12px;
+  width: 100%;
+}
+
+.sectionTitle {
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #4a5568;
+}
+
+.skillList {
+  display: flex;
+ 
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.skillPill {
+  background-color: #d8d9dc;
+  color: #3730a3;
+  border-radius: 12px;
+  padding: 4px 10px;
+  font-size: 0.85rem;
+}
+
+.error , .loading {
+  transform: translateY(20px);
+  font-weight: bold;
+
+}
+
+
+
+
+

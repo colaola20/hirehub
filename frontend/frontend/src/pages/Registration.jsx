@@ -91,13 +91,14 @@ const RegistrationPage = () => {
       <div className={styles["register-box"]}>
         {/* Left Side: Registration Form */}
         <div className={styles["register-form-section"]}>
-          <div className={styles.brand}>
-            <div className={styles.logo}>H</div>
-            <div className={styles["brand-text"]}>
-              <h2 className={styles["brand-title"]}>ireHub</h2>
-              <p className={styles["brand-tagline"]}>Create Your Account</p>
-            </div>
+         <Link to="/" className={styles.brand} style={{ textDecoration: "none" }}>
+          <div className={styles.logo}>H</div>
+          <div className={styles["brand-text"]}>
+            <h2 className={styles["brand-title"]}>ireHub</h2>
+            <p className={styles["brand-tagline"]}>Your AI Career Companion</p>
           </div>
+        </Link>
+
 
           <form className={styles["register-form"]} onSubmit={handleSubmit}>
             <input

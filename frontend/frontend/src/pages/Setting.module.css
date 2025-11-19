@@ -30,7 +30,8 @@
 
 .email,
 .password,
-.deleteAccount {
+.deleteAccount,
+.jobAlerts {
   margin:1.2rem 0 0 0;
 }
 
@@ -58,7 +59,8 @@
 
 .email,
 .password,
-.deleteAccount p {
+.deleteAccount,
+.jobAlerts .description {
   margin: 0;
   color: #9aa4b2;
 }
@@ -91,3 +93,5 @@
   box-shadow: 0 6px 16px rgba(142, 197, 252, 0.4);
   background: linear-gradient(90deg, #ff66c4, #6f67f0, #4839eb);
 }
+
+

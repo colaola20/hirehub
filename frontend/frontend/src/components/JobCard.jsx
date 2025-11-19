@@ -1,55 +1,124 @@
 // src/components/JobCard.jsx
-import React from "react";
+import React, { useState, useEffect } from "react";
 import truncate from "html-truncate";
 import { FaBuilding, FaMapMarkerAlt, FaCalendarAlt } from "react-icons/fa";
 import styles from "./JobCard.module.css";
-import FavoriteButton from "./FavoriteButton";
+import FavoriteButton from "./FavoriteButton.jsx";
+import JobAnalysisPanel from "./JobAnalysisPanel.jsx";
 
 const JobCard = ({ job, onClick , cardForLikedJobs = false}) => {
+  const [analysis, setAnalysis] = useState(null);
+  const [loadingAnalysis, setLoadingAnalysis] = useState(false);
+  const [dataAnalized, setDataAnalized] = useState(false);
+  const token = localStorage.getItem("token");
+  
+
+  const analyzeJob = async (e) => {
+    if (e && e.stopPropagation) e.stopPropagation();
+
+    if (!token) {
+      alert("You must be signed in to analyze fit.");
+      return;
+    }
 
 
-const cleanJobDescription = (html) => {
-  if (!html) return "No description provided.";
+    setLoadingAnalysis(true);
+    try {
+      const res = await fetch("/api/profile/analyze", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+          body: JSON.stringify({
+            job: { 
+              title: job.title, 
+              skills_extracted: job.skills_extracted || [] 
+            }
+        }),
+      });
 
-  // Check if it contains "apply" (case-insensitive)
-  if (/apply/i.test(html)) {
-    return html; // skip regex, return as-is
-  }
+      const data = await res.json();
+      if (!res.ok) {
+        //console.error("Analysis error:", data);
+        setAnalysis({
+          error: data.error || data.message || "Analysis failed",
+        });
+      } else {
+        setAnalysis(data);
 
-  // Remove all HTML tags
-  let text = html.replace(/<[^>]*>/g, "");
+      }
+    } catch (err) {
+     // console.error("Network analysis error:", err);
+      setAnalysis({ error: "Network error" });
+    } finally {
+      setLoadingAnalysis(false);
+      setDataAnalized(true);
+    }
+  };
 
-  // Decode common HTML entities
-  text = text
-    .replace(/&amp;/g, "&")
-    .replace(/&lt;/g, "<")
-    .replace(/&gt;/g, ">")
-    .replace(/&quot;/g, '"')
-    .replace(/&#39;/g, "'");
+  
 
-  // Remove unwanted characters but allow letters, numbers, space, $, -, ., ,, brackets, colon, /, ?, =, &, ", '
-  text = text.replace(/[^a-zA-Z0-9\s$.,\-\[\]\(\):\/?=&"']/g, "");
+  const renderList = (arr) => {
+    if (!arr || arr.length === 0) return <em>None</em>;
+    return arr.map((s, idx) => (
+      <div key={idx} className={styles.skillPill}>
+        {s}
+      </div>
+    ));
+  };
 
-  return text || "No description provided.";
-};
+
+  
+
 
 return (
+
+  <>
+
+  { !cardForLikedJobs ? (
+
     <div className={styles["job-card"]}
      onClick={() => onClick && onClick(job)}>
         <div className={styles["card-header"]}>
           <h3>{job.title || "Untitled Position"}</h3>
-          <FavoriteButton jobId={job.id} />
+          <FavoriteButton jobId={job.id} initialFavorited={job.is_favorited}  />
         </div>
 
-      { !cardForLikedJobs ? (
-      <> 
+      
+      <div className={styles.cardWrapper}> 
+        <div className={styles.leftSide}>
         <p className={styles.date}> <FaCalendarAlt style={{ marginRight: "10px", color: "#a3bffa",fontSize: "20px" }} /><strong>Date:</strong>{" "}{
         job.date_posted ? new Date(job.date_posted).toLocaleDateString() : "No date"}</p>
 
         <p>  <FaBuilding style={{ marginRight: "10px", color: "#a3bffa",fontSize: "20px" }} /> <strong>Company:</strong> {job.company || "Unknown"}</p>
 
         <p>  <FaMapMarkerAlt style={{ marginRight: "10px", color: "#a3bffa",fontSize: "20px" }} /> <strong>Location:</strong> {job.location || "Unspecified"}</p> 
-      </>   ) :   
+
+        </div>
+
+          {/* Right side: analysis section */}
+        <div className={styles.rightSide} onClick={(e) => e.stopPropagation()}> 
+
+          <JobAnalysisPanel job={job} />
+
+        </div> 
+          
+      </div> 
+          
+    </div>
+
+       ) : (
+
+      <>
+        <div className={styles["job-card"]}
+        onClick={() => onClick && onClick(job)}>
+            <div className={styles["card-header"]}>
+              <h3>{job.title || "Untitled Position"}</h3>
+              <FavoriteButton jobId={job.id} initialFavorited={true}  />
+            </div>
+           
+        
            
           <div className={styles.jobInfo}>
             <p className={styles.date}> <FaCalendarAlt style={{ marginRight: "10px", color: "#a3bffa",fontSize: "20px" }} /><strong>Date:</strong>{" "}{
@@ -60,21 +129,10 @@ return (
             <p>  <FaMapMarkerAlt style={{ marginRight: "10px", color: "#a3bffa",fontSize: "20px" }} /> <strong>Location:</strong> {job.location || "Unspecified"}</p>
             <p> <FaCalendarAlt style={{ marginRight: "10px", color: "#a3bffa",fontSize: "20px" }} /> <strong> Date Liked: {job.dateLiked ? new Date(job.dateLiked ).toLocaleDateString() : "Unknown"} </strong></p> 
           </div>
-                       }
-
-        {/* <button
-        className={styles["apply-btn"]}
-        onClick={(e) => { 
-          e.stopPropagation(); // prevent opening modal
-          window.open(job.url, "_blank");}}
-        >
-        Apply Now
-        </button> */}
-
-        {/* Card Modifications for Liked Jobs*/}
-
-
-    </div>
+           </div>
+        </>
+       )}
+    </>
   );
 };
 

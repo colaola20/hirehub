@@ -1,5 +1,6 @@
 // job_dashboard.jsx
 import { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import styles from "./job_dashboard.module.css";
 import Chatbot from "./chat_bot";
 import SmallModal from "../components/SmallModal.jsx";
@@ -139,9 +140,9 @@ const JobDashboard = () => {
             {/* LEFT: content */}
             <div className={`${styles.card} ${isChatOpen ? styles.chatOpen : ''}`}>
   <div className={styles.titleSection}>
-    <a href="/UserDashboard" className={styles.backBtn}>
+    <Link to="/UserDashboard" className={styles.backBtn}>
       <span className={styles.backText}>Go back to home</span>
-    </a>
+    </Link>
     <h1 className={styles.title}>{job.title || "Job Details"}</h1>
   </div>
 

@@ -7,47 +7,13 @@ const PersonalizedNavbar = ({ onShowLiked, onShowRecommended,onShowApplied }) =>
     const navigate = useNavigate();
 
     const toggleMenu = () => {
+        
         setIsMenuOpen(!isMenuOpen);
     };
 
-    const handleLogout = async () => {
-        try {
-            const token = localStorage.getItem("token")
 
-            if (!token) {
-                navigate("/")
-                return
-            }
-            
-            const response = await fetch("/api/logout", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`
-                },
-            });
 
-            const data = await response.json();
-            if (response.ok) {
-                localStorage.removeItem("token");
-                localStorage.removeItem("user");
 
-                console.log("Logout successful:", data.message);
-
-                navigate('/')
-            } else {
-                console.error("Logout failed:", data.message)
-                localStorage.removeItem("token");
-                localStorage.removeItem("user");
-                navigate("/")
-            }
-        } catch (error) {
-            console.error("Logout error:", error);
-            localStorage.removeItem("token");
-            localStorage.removeItem("user");
-            navigate("/")
-        }
-    }
 
 
     return (
@@ -77,6 +43,8 @@ const PersonalizedNavbar = ({ onShowLiked, onShowRecommended,onShowApplied }) =>
                     </button>
 
                 </nav>
+
+                <div className={styles.navRight}>
                 {/* right side actions (buttons etc) */}
                 <div className={styles.navActions || styles["nav-actions"]}>
                     {/* show hamburger on small screens */}
@@ -92,6 +60,23 @@ const PersonalizedNavbar = ({ onShowLiked, onShowRecommended,onShowApplied }) =>
                         <rect y="10" width="20" height="2" rx="1" fill="currentColor"/>
                     </svg>
                     </button>
+
+                        {/* Dropdown menu */}
+                        {isMenuOpen && (
+                            <div className={styles.mobileMenuOpen}onClick={(e) => e.stopPropagation()} >
+                            <button className={styles.mobileLink} onClick={() => {onShowRecommended?.(); setIsMenuOpen(false);}}>
+                                Recommended
+                            </button>
+                            <button className={styles.mobileLink} onClick={() => {onShowLiked?.(); setIsMenuOpen(false);}}>
+                                Liked
+                            </button>
+                            <button className={styles.mobileLink} onClick={() => {onShowApplied?.(); setIsMenuOpen(false);}}>
+                                Applied
+                            </button>
+                            </div>
+                        )}
+
+                </div>
                 </div>
             </div>
         </header>

@@ -1,7 +1,7 @@
 import { X } from "lucide-react";
 import styles from './Confirmation.module.css'
 
-const Confirmation = ({title, description, onClose}) => {
+const Confirmation = ({title, description, onClose, onSubmission}) => {
     return (
         <div className={styles.overlay}>
             <div className={styles.modalContainer}>
@@ -12,8 +12,8 @@ const Confirmation = ({title, description, onClose}) => {
                 <div className={styles.separator}></div>
                 <p className={styles.text}>{description}</p>
                 <div className={styles.submissionArea}>
-                    <button className={styles.CancelBtn}>Cancel</button>
-                    <button className={styles.SubmitBtn}>Submit</button>
+                    <button className={styles.CancelBtn} onClick={onClose}>Cancel</button>
+                    <button className={styles.SubmitBtn} onClick={onSubmission}>Submit</button>
                 </div>
             </div>
         </div>

@@ -24,6 +24,8 @@ class Config:
     LINKEDIN_CLIENT_ID = os.getenv("LINKEDIN_CLIENT_ID")
     LINKEDIN_CLIENT_SECRET = os.getenv("LINKEDIN_CLIENT_SECRET")
 
+    # OpenAI
+    OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 class DevelopmentConfig(Config):
     DEBUG = True
