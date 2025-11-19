@@ -1,5 +1,9 @@
 .btn {
-    padding: 8px 20px;
+    display: flex;
+    justify-content: center;  /* centers horizontally */
+    align-items: center;
+    gap: 5px;
+    padding: 10px;
     border-radius: 8px;
     background: #2d2b55;
     border-color: #b8b8e0;

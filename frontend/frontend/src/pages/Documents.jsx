@@ -2,6 +2,7 @@ import {useState, useRef} from 'react'
 import Error from '../components/UsersMessages/Error'
 import styles from './Documents.module.css'
 import { Plus, Info } from 'lucide-react';
+import Btn from '../components/buttons/Btn'
 
 const Documents = () => {
     const [file, setFile] = useState(null);
@@ -96,22 +97,34 @@ const Documents = () => {
                         <Info />
                         <p> You have 0 documents saved out of 5 available.</p>
                     </div>
-                    <div>
-                        <input
-                            ref={fileInputRef}
-                            type="file"
-                            accept="*/*"
-                            onChange={handleFileChange}
-                            style={{ display: 'none' }}
-                        />
-                        <button onClick={handleUploadClick} disabled={uploading} className={styles.btn}><Plus size={20}/> Add Document</button>
-                        {result && (
-                            <div>
-                                <div>Uploaded:</div>
-                                <div><strong>{result.filename}</strong></div>
-                                <div><a href={result.url} target="_blank" rel="noopener noreferrer">Open file</a></div>
-                            </div>
-                        )}
+                    <div className={styles.uploadBtnContainer}>
+                        <div>
+                            <input
+                                ref={fileInputRef}
+                                type="file"
+                                accept="*/*"
+                                onChange={handleFileChange}
+                                style={{ display: 'none' }}
+                            />
+                            <Btn onClick={handleUploadClick} disabled={uploading} icon={<Plus size={20}/>} label="Add Resume"/>
+                            {result && (
+                                <div>
+                                    <div>Uploaded:</div>
+                                    <div><strong>{result.filename}</strong></div>
+                                    <div><a href={result.url} target="_blank" rel="noopener noreferrer">Open file</a></div>
+                                </div>
+                            )}
+                        </div>
+                        <div>
+                            <input
+                                ref={fileInputRef}
+                                type="file"
+                                accept="*/*"
+                                onChange={handleFileChange}
+                                style={{ display: 'none' }}
+                            />
+                            <Btn onClick={handleUploadClick} disabled={uploading} icon={<Plus size={20}/>} label="Add Cover Letter"/>
+                        </div>
                     </div>
                 </div>
                 <div className={styles.navigationBtns}>
