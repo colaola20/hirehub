@@ -1,6 +1,6 @@
 import './stepstyle.css'
 
-const JobComponent = ({ job, index, updateJobs }) => {
+const JobComponent = ({ job, index, updateJobs, removeJob, removeable }) => {
     return (
         <div className="job-form">
             <input
@@ -31,7 +31,9 @@ const JobComponent = ({ job, index, updateJobs }) => {
                 onChange={(e) => updateJobs(index, e.target.name, e.target.value)}
                 required
             />
-            {/* {errors.roleTime && <p style={{ color: 'red' }}>{errors.roleTime}</p>} */}
+            {removeable && (
+                <button type="button" onClick={() => removeJob(index)}>Remove</button>
+            )}
         </div>
     )
 };
@@ -53,26 +55,38 @@ const JobStep = ({ formData, onChange, errors }) => { // JOB HISTORY INFO STEP /
         onChange({ target: { name: 'jobs', value: newJobs } });
     }
 
-    const removeJob = (index) => { }; // implement later
+    const removeJob = (index) => {
+        const currentJobs = formData.jobs || [];
+        if (currentJobs.length === 1) {
+            return;
+        }
+
+        const newJobs = currentJobs.filter((_, i) => i !== index);
+        onChange({ target: { name: 'jobs', value: newJobs } });
+    };
 
     return (
         <div>
             <h2>Relevant Experience</h2>
             <h3>Add Up To Three</h3>
-            {jobs.map((jobs, index) => (
+            {jobs.map((job, index) => (
                 <JobComponent
                     key={index}
-                    job={jobs}
+                    job={job}
                     index={index}
                     updateJobs={updateJobs}
+                    removeJob={removeJob}
+                    removeable={jobs.length > 1}
                 />
             ))}
             <div className='job-validation'>
                 {Object.keys(errors).some(key => key.startsWith("jobs")) && (
                     <p style={{ color: "red" }}>Please fill out all required job fields.</p>
-                )}            
-                </div>
-            <button type="button" onClick={addJob}>+</button>
+                )}
+            </div>
+            {jobs.length < 3 &&
+            <button type="button" onClick={addJob}>+</button>}
+            {/* <button type='button' onClick={removeJob}>-</button> */}
         </div>
     )
 };
