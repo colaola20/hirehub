@@ -98,7 +98,7 @@ const SideBar = ( {showRandomJob, onReset}  ) => {
                 <Link to={`/${username}`} onClick={() => { showRandomJob(); onReset(); }}>
                 <div className={styles.navItem}><Briefcase size={20}/> Jobs</div>
                 </Link>
-                <Link to={`/${username}/documents`}>
+                <Link to={`/${username}/documents`} onClick={() => { onReset() }}>
                   <div className={styles.navItem}> <Files size={20}/> Documents</div>
                 </Link>
                 <Link to={`/${username}/notifications`} onClick={() => { onReset() }}>
