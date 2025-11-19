@@ -55,43 +55,74 @@ def allowed_file(filename):
 @documents_bp.route('/api/upload', methods=['POST'])
 @jwt_required()
 def upload_file():
-    user_id = get_jwt_identity()
-    user = User.query.get(user_id)
-    if 'file' not in request.files:
-        return jsonify({'error': 'No file provided'}), 400
-    
-    file = request.files['file']
-
-    if file.filename == '':
-        return jsonify({'eror': "No file selected"}), 400
-    
-    if not allowed_file(file.filename):
-        return jsonify({'error': 'File type not allowed'}), 400
-    
     try:
-        # Generate unique filename. Added prefix user_id to quickly access user's files
-        filename = secure_filename(file.filename)
-        unique_filename = f"{user.id}/{uuid.uuid4()}_{filename}"
+        user_id = get_jwt_identity()
+        user = User.query.get(user_id)
 
-        # Upload to S3
-        s3_client.upload_fileobj(
-            file,
-            BUCKET_NAME,
-            unique_filename,
-            ExtraArgs={'ContentType': file.content_type}
-        )
+        if not user:
+            return jsonify({'error': 'User not found'}), 404
+        
+        if 'file' not in request.files:
+            return jsonify({'error': 'No file provided'}), 400
+        
+        file = request.files['file']
+
+        if file.filename == '':
+            return jsonify({'eror': "No file selected"}), 400
+        
+        if not allowed_file(file.filename):
+            return jsonify({'error': 'File type not allowed'}), 400
+        
+        if not BUCKET_NAME:
+            logger.error("S3 bucket not configured (S3_BUCKET_NAME missing)")
+            return jsonify({'error': 'Storage not configured'}), 500
+        
+        
+        # Generate unique filename. Added prefix user_id to quickly access user's files
+        original_filename = secure_filename(file.filename)
+        file_extension = original_filename.rsplit('.', 1)[1].lower()
+        unique_filename = f"{user.id}/{uuid.uuid4()}.{file_extension}"
+
+        try:
+            # Upload to S3
+            s3_client.upload_fileobj(
+                file,
+                BUCKET_NAME,
+                unique_filename,
+                ExtraArgs={'ContentType': file.content_type}
+            )
+
+        except Exception as e:
+            logger.exception("S3 upload failed")
+            return jsonify({'error': 'Upload to storage failed', 'details': str(e)}), 502
+
 
         # Generate URL
         file_url = f"https://{BUCKET_NAME}.s3.{os.getenv('AWS_REGION')}.amazonaws.com/{unique_filename}"
+
+        doc = Document(
+            user_email = user.email,
+            file_path = file_url,
+            document_type = file_extension
+        )
+
+        try:
+            created_user = DatabaseService.create(doc)
+        except Exception:
+            # best-effort: remove uploaded object on DB failure? (optional)
+            logger.exception("Failed to save document record")
+            return jsonify({'error': 'Failed to save document metadata'}), 500
+
 
         return jsonify({
             'message': 'File uploaded successfully',
             'filename': unique_filename,
             'url': file_url
         }), 200
-        
+            
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        logger.exception("Unhandled upload error")
+        return jsonify({'error': 'Internal server error', 'details': str(e)}), 500
 
 
 # ------------------------
