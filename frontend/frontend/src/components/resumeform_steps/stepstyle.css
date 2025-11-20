@@ -70,9 +70,24 @@
     align-items: center;
     gap: 20px;
     min-height: 110px;
-    height: auto;;
+    height: auto;
     padding-top: 25px;
     padding-bottom: 40px;
+}
+
+.projDesc{
+    min-width: 250px;
+    max-width: 600px;
+    width: auto;
+
+    min-height: 40px;
+    max-height: 300px;
+
+    padding: 8px;
+    resize: none;
+    overflow: hidden;
+
+    transition: width 0.15s ease, height 0.15s ease;
 }
 
 @media (max-width: 1450px) {
