@@ -1,75 +1,10 @@
 // src/components/JobCard.jsx
-import React, { useState, useEffect } from "react";
-import truncate from "html-truncate";
 import { FaBuilding, FaMapMarkerAlt, FaCalendarAlt } from "react-icons/fa";
 import styles from "./JobCard.module.css";
 import FavoriteButton from "./FavoriteButton.jsx";
 import JobAnalysisPanel from "./JobAnalysisPanel.jsx";
 
 const JobCard = ({ job, onClick , cardForLikedJobs = false}) => {
-  const [analysis, setAnalysis] = useState(null);
-  const [loadingAnalysis, setLoadingAnalysis] = useState(false);
-  const [dataAnalized, setDataAnalized] = useState(false);
-  const token = localStorage.getItem("token");
-  
-
-  const analyzeJob = async (e) => {
-    if (e && e.stopPropagation) e.stopPropagation();
-
-    if (!token) {
-      alert("You must be signed in to analyze fit.");
-      return;
-    }
-
-
-    setLoadingAnalysis(true);
-    try {
-      const res = await fetch("/api/profile/analyze", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
-        },
-          body: JSON.stringify({
-            job: { 
-              title: job.title, 
-              skills_extracted: job.skills_extracted || [] 
-            }
-        }),
-      });
-
-      const data = await res.json();
-      if (!res.ok) {
-        //console.error("Analysis error:", data);
-        setAnalysis({
-          error: data.error || data.message || "Analysis failed",
-        });
-      } else {
-        setAnalysis(data);
-
-      }
-    } catch (err) {
-     // console.error("Network analysis error:", err);
-      setAnalysis({ error: "Network error" });
-    } finally {
-      setLoadingAnalysis(false);
-      setDataAnalized(true);
-    }
-  };
-
-  
-
-  const renderList = (arr) => {
-    if (!arr || arr.length === 0) return <em>None</em>;
-    return arr.map((s, idx) => (
-      <div key={idx} className={styles.skillPill}>
-        {s}
-      </div>
-    ));
-  };
-
-
-  
 
 
 return (

@@ -12,6 +12,7 @@ import ChatBot from "../components/ChatBot.jsx";
 import JobDetailsModal from "../components/JobDetailsModal.jsx"; 
 import JobCard from "../components/JobCard.jsx";
 import AppliedJobs from "../components/AppliedJobs.jsx";
+import RecommendedJobCard from "../components/RecommendedJobCard.jsx";
 
 
 const UserDashboard = () => {
@@ -21,6 +22,9 @@ const UserDashboard = () => {
   const [showLiked, setShowLiked] = useState(false);
   const [showApplied, setShowApplied] = useState(false);
   const [showRecommended, setShowRecommended] = useState(false);
+  const [recommendedJobs, setRecommendedJobs] = useState([]);
+  const [recommendedLoading, setRecommendedLoading] = useState(false);
+  const [recommendedError, setRecommendedError] = useState(null);
 
   const [likedJobs, setLikedJobs] = useState([]);
 
@@ -161,6 +165,52 @@ const UserDashboard = () => {
     }
   };
 
+  const fetchRecommendedJobs = useCallback(async () => {
+  const token = localStorage.getItem("token");
+  console.log("Fetching recommended jobs...");
+
+  try {
+    setRecommendedLoading(true);
+    setRecommendedError(null);
+
+    //  GET existing recommendations first
+    const getRes = await fetch("/api/profile/recommendations", {
+      headers: { "Authorization": `Bearer ${token}` }
+    });
+
+    const getData = await getRes.json();
+
+    if (getRes.ok && getData.recommendations) {
+      console.log("Recommended jobs:", getData.recommendations);
+
+      setRecommendedJobs(getData.recommendations);
+    }
+
+    // After a few seconds → silently update backend recommendations
+    setTimeout(async () => {
+      try {
+        await fetch("/api/profile/generate_recommendations", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          }
+        });
+        
+      } catch (err) {
+        console.warn("Background recommendation refresh failed", err);
+      }
+    }, 3000); 
+
+  } catch (err) {
+    console.error("Error loading recommended jobs:", err);
+    setRecommendedError(err.message);
+  } finally {
+    setRecommendedLoading(false);
+  }
+}, []);
+
+
 
   const handleShowLiked = () => {
     setShowLiked(true);
@@ -170,9 +220,10 @@ const UserDashboard = () => {
   };
 
   const handleShowRecommended = () => {
-      setShowRecommended(true);
-      setShowLiked(false);
-      setShowApplied(false);
+    setShowRecommended(true);
+    setShowLiked(false);
+    setShowApplied(false);
+    fetchRecommendedJobs();
   };
 
   const handleShowApplied = () => {
@@ -210,9 +261,30 @@ const UserDashboard = () => {
                 )
               ) : showApplied ? (
                   <AppliedJobs/>
-                ) : (
-              <Outlet context={{ onJobClick: handleJobClick, fetchJobs }} />
-            )}
+
+              ) : showRecommended ? (
+                    recommendedLoading ? (
+                      <p>Loading recommendations...</p>
+                    ) : recommendedError ? (
+                      <p>Error: {recommendedError}</p>
+                    ) : recommendedJobs.length > 0 ? (
+                      recommendedJobs.map(rec => {
+                        if (!rec.job) return null;
+                        return (
+                          <RecommendedJobCard 
+                            key={rec.id}
+                            job={rec.job}
+                            recommendation={rec}
+                            onClick={handleJobClick}
+                          />
+                        );
+                      })
+                    ) : (
+                      <p>No recommended jobs available.</p>
+                    )
+                  ) : (
+                    <Outlet context={{ onJobClick: handleJobClick, fetchJobs }} />
+                  )}
            </div>
           </main>
         </div>

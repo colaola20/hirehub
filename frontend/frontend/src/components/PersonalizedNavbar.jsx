@@ -24,6 +24,7 @@ const PersonalizedNavbar = ({ onShowLiked, onShowRecommended,onShowApplied }) =>
                     <button
                         type="button"
                         className={styles.linkButton}
+                        onClick={(e) => { e.preventDefault(); onShowRecommended?.(); }}
                     >
                         Recommended
                     </button>
