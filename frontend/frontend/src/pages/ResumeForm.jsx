@@ -4,6 +4,8 @@ import { Link } from "react-router-dom";
 import * as Yup from 'yup'
 
 import ProgressIndicator from "../components/ProgressIndicator";
+import Btn from "../components/buttons/Btn";
+import CancelBtn from "../components/buttons/CancelBtn";
 
 import PersonalStep from "../components/resumeform_steps/PersonalStep";
 import ResumeViewStep from "../components/resumeform_steps/ResumeViewStep";
@@ -66,11 +68,11 @@ const ResumeForm = () => {
         const safe3 = formData.step3 || [];
 
         const toArray = (val) => {
-        if (!val) return [];
-        if (Array.isArray(val)) return val;
-        if (typeof val === 'string') return val.split(',').map(s => s.trim()).filter(Boolean);
-        return [];
-    }
+            if (!val) return [];
+            if (Array.isArray(val)) return val;
+            if (typeof val === 'string') return val.split(',').map(s => s.trim()).filter(Boolean);
+            return [];
+        }
         const payload = {
             ...formData,
             step3: {
@@ -299,10 +301,13 @@ const ResumeForm = () => {
 
         <div className={styles["container"]}>
             {/* <PersonalizedNavbar /> */}
-            <div >
-                <button className={styles["back-btn"]}>
-                    <Link to="/dev_dashboard" >Back</Link>
-                </button>
+            <div className={styles['back-btn']}>
+                <Link to="/dev_dashboard">
+                    <CancelBtn
+                        label={"Back"}
+                        className={styles['back-btn']}
+                    />
+                </Link>
             </div>
 
             <div className={styles["form-box"]}>
@@ -317,15 +322,17 @@ const ResumeForm = () => {
                         <span>Step {currentStep} of 7</span>
                     </div>
                     {currentStep < 6 && (<button className={styles["prog-btn-btn"]} onClick={nextStep}>Next</button>)}
-                    {currentStep === 6 && (<button className={styles["submit-form-btn"]} onClick={async () => {
-                        const response = await submitForm();
-                        // if (!response) return;
-                        setFormData(prev => ({ ...prev }));
-                        setCurrentStep(7);
-                    }}>Generate</button>)}
+                    {currentStep === 6 && (<Btn
+                        label={"Generate"}
+                        onClick={async () => {
+                            const response = await submitForm();
+                            // if (!response) return;
+                            setFormData(prev => ({ ...prev }));
+                            setCurrentStep(7);
+                        }}
+                    />)}
                     {currentStep === 7 && (<span className={styles.placeholder}></span>)}
                 </div>
-
 
 
                 <div className={styles["resume-form-container"]} style={{ height: containerHeight }}>
