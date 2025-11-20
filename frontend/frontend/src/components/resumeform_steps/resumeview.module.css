@@ -1,13 +1,18 @@
 .resume-preview {
     width: 816px;
     height: 1056px;
-    background-color: rgba(255, 250, 224, 0.8);
+    background-color: rgb(255, 255, 255);
     color: black;
     border: 1px solid #eee;
     border-radius: 4px;
     padding: 16px;
     width: 1000px;
     margin-bottom: 20px;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+.headerName{
+    font-size: 40px;
 }
 
 .divider {
@@ -16,11 +21,17 @@
     height: 2px;
 }
 
+.dividerSmall{
+    background-color: black;
+    border: none;
+    height: 2px;
+    width: 50%;
+}
+
 .sectionTitle {
     font-size: 20px;
     font-weight: bold;
     margin-bottom: 8px;
-    border-bottom: 1px solid #ddd;
     padding-bottom: 4px;
 }
 
@@ -74,4 +85,5 @@
 .experience,
 .education {
     margin-bottom: 25px;
+    font-size: 18px;
 }
