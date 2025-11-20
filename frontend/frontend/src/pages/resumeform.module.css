@@ -71,6 +71,11 @@
     border-radius: 10px;
 }
 
+.back-btn:hover{
+    background-color: rgba(69, 41, 131, 0.65);
+    transition: background-color 0.05s ease;
+}
+
 .back-btn a{
     text-decoration: none;
     color: white;
@@ -107,6 +112,9 @@
     /* border: 1px solid rgba(255, 255, 255, 0.3); */
     backdrop-filter: blur(10px);
     box-shadow: 0px 8px 24px rgba(0,0,0,0.15);
+
+    transition: height 0.35s ease;
+    overflow: hidden; 
 
     padding: 15px;
     display: flex;

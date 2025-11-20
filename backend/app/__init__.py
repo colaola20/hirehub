@@ -4,7 +4,7 @@ from flask_jwt_extended import JWTManager
 from flask_migrate import Migrate
 import os
 from dotenv import load_dotenv
-from app.extensions import db, mail   # ✅ import mail here
+from app.extensions import db, mail   
 from app.routes.github import github_bp, init_oauth
 from app.routes.google import google_bp, init_oauth as init_google_oauth
 from app.routes.linkedin import linkedin_bp, init_linkedin_oauth

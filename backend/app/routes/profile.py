@@ -6,6 +6,8 @@ from app.models.skill import Skill
 from app.models.user import User
 from datetime import datetime
 from werkzeug.utils import secure_filename
+from app.models.recommended_job import RecommendedJob
+from app.models.job import Job
 import os
 import openai
 import json
@@ -271,66 +273,66 @@ def analyze_job_fit():
         # Get job info from request
         data = request.get_json()
         job = data.get("job", {})
-        job_title = job.get("title", "")
-        job_description = job.get("description", "")
+        skills_extracted = job.get("skills_extracted", [])
 
-        job_description = job_description[:600]  # cut long text
         user_experience = user_experience[:400]
         
-        # promt is no in use at the moment but kept for reference
-        prompt = f"""
-            You are an expert AI job matching assistant. Analyze how well this user's profile fits the job posting.
+       # ===========================
+        #  OpenAI Model Options (2025)
+        # ===========================
 
-            User Profile:
-            - Skills: {user_skills}
-            - Experience: {user_experience}
+        # -- GPT-4.1 Series 
+        # "gpt-4.1"        – ~ $2/M input, $8/M output – Deep reasoning, slower, expensive.
+        # "gpt-4.1-mini"   – ~ $0.40/M input, $1.60/M output – Best balance of quality + cost.
 
-            Job Posting:
-            - Title: {job_title}
-            - Description: {job_description}
+        # -- GPT-4o Family 
+        # "gpt-4o"         – ~ $0.50/M input, $1.50/M output – High performance, fast.
+        # "gpt-4o-mini"    – ~ $0.20/M input, $0.80/M output – Very fast & cheap, great for backend calls.
+        # "gpt-4o-audio-preview"   – Same pricing tier – Audio/voice optimized.
+        # "gpt-4o-realtime-preview" – Same pricing – Low latency streaming model.
 
-            Your task:
-            1. Compare the user's skills and experience to the job requirements.
-            2. Identify skills mentioned in the job description.
-            3. Determine which of the user's skills match the job skills.
-            4. Assign a percentage match (0-100) representing overall fit.
-            5. Only output **valid JSON** with this exact structure:
+        # -- GPT-3.5 Turbo 
+        # "gpt-3.5-turbo"  – ~ $0.50/M input, $1.50/M output – Very fast but weakest reasoning.
 
-            Return a JSON object with exactly this format (no extra text):
-            {{
-            "percentage_match": integer (0–100),
-            "job_skills": [list of short skill strings found in the job description],
-            "matched_skills": [skills present in both job_skills and user_skills]
-            
-            }}
-            Constraints:
-            - Do NOT include explanations, comments, or extra text.
-            - Be concise and accurate.
+        # Recommended 
+        #  "gpt-4o-mini"      – fast + cheap + accurate enough
+        # "gpt-4.1-mini"     – if you need stronger reasoning
 
-            """
-        
         # Make the OpenAI call
         completion = openai.chat.completions.create(
-            model="gpt-4o-mini", #"gpt-4o-mini" or "gpt-3.5-turbo" for even faster
+            model="gpt-4.1-mini", 
             messages=[
-                {"role": "user", "content": f"""
-                    Compare this user's skills and experience with the job posting. 
-                    Return valid JSON only, no explanations.
+            {
+                "role": "user",
+                "content": f"""
+            TASK:
+            Match the USER to a JOB based ONLY on JOB_SKILLS.
 
-                    User skills: {user_skills}
-                    User experience: {user_experience}
+            OUTPUT:
+            Return ONLY this JSON:
+            {{
+            "percentage_match": number,
+            "job_skills": [...],
+            "matched_skills": [...]
+            }}
 
-                    Job title: {job_title}
-                    Job description: {job_description}
+            OBJECTIVE:
+            - Flexible matching (python = python3 = python scripting, etc.)
+            - Score = matched_job_skills / total_job_skills * 100
+            - If job has 1 skill and user matches → 100%
+            - If user matches 0 → % based on users experience
+            - Extra user skills DO NOT increase score
+            - Experience may boost score by up to +10% if highly relevant
 
-                    Format:
-                    {{
-                    "percentage_match": integer (0–100),
-                    "job_skills": [strings],
-                    "matched_skills": [strings]
-                    }}
-                """}
-            ],
+            NOTES:
+            USER_SKILLS = {user_skills}
+            USER_EXPERIENCE = {user_experience}
+            JOB_SKILLS = {skills_extracted}
+            """
+            }
+            ]
+
+            ,
             temperature= 0,
             max_completion_tokens= 300,
             response_format={"type": "json_object"}  # strict JSON response
@@ -338,9 +340,6 @@ def analyze_job_fit():
 
         raw_reply = completion.choices[0].message.content or ""
         raw_reply = raw_reply.strip()
-
-
-
 
         # Try to extract JSON safely
         try:
@@ -362,3 +361,151 @@ def analyze_job_fit():
     except Exception as e:
         print("❌ Error in /analyze:", e)
         return jsonify({"error": str(e)}), 500
+
+
+@profile_bp.route('/generate_recommendations', methods=['POST'])
+@jwt_required()
+def generate_recommendations():
+    import openai
+    import json
+    from datetime import datetime, timedelta, timezone
+
+    openai.api_key = current_app.config["OPENAI_API_KEY"]
+
+    try:
+        current_user_id = int(get_jwt_identity())
+        user = User.query.get(current_user_id)
+        if not user:
+            return jsonify({"error": "User not found"}), 404
+
+        profile = Profile.query.filter_by(user_email=user.email).first()
+        if not profile:
+            return jsonify({"error": "User profile not found"}), 400
+
+        user_skills = [s.skill_name for s in profile.skills]
+        user_experience = (profile.experience or "")[:400]
+
+        # =========================
+        # Clear old recommendations if older than 2 days
+        # =========================
+        old_recs = RecommendedJob.query.filter_by(user_id=current_user_id, is_active=True).all()
+        now = datetime.now(timezone.utc)
+
+        for rec in old_recs:
+            created = rec.created_at
+            if created.tzinfo is None:
+                created = created.replace(tzinfo=timezone.utc)
+            age = now - created
+
+            if age > timedelta(days=2):
+                rec.is_active = False
+                rec.expires_at = now
+
+        db.session.commit()
+
+        # =========================
+        # Generate new recommendations if needed
+        # =========================
+        jobs = Job.query.filter(Job.is_active == True).order_by(db.func.random()).limit(50).all()
+        recommended_list = []
+
+        for job in jobs:
+            skills_extracted = job.skills_extracted or []
+
+            gpt_prompt = f"""
+            TASK:
+            Match the USER to a JOB based ONLY on JOB_SKILLS.
+
+            OUTPUT:
+            Return ONLY this JSON:
+            {{
+            "percentage_match": number,
+            "job_skills": [...],
+            "matched_skills": [...]
+            }}
+
+            OBJECTIVE:
+            - Flexible matching (python = python3 = python scripting, etc.)
+            - Score = matched_job_skills / total_job_skills * 100
+            - If job has 1 skill and user matches → 100%
+            - If user matches 0 → % based on users experience
+            - Extra user skills DO NOT increase score
+            - Experience may boost score by up to +10% if highly relevant
+
+            NOTES:
+            USER_SKILLS = {user_skills}
+            USER_EXPERIENCE = {user_experience}
+            JOB_SKILLS = {skills_extracted}
+            """ 
+
+            completion = openai.chat.completions.create(
+                model="gpt-4.1-mini",
+                messages=[{"role": "user", "content": gpt_prompt}],
+                temperature=0,
+                max_completion_tokens=400,
+                response_format={"type": "json_object"}
+            )
+
+            raw_reply = completion.choices[0].message.content or ""
+            raw_reply = raw_reply.strip()
+
+            try:
+                match = json.loads(raw_reply)
+            except json.JSONDecodeError:
+                start = raw_reply.find('{')
+                end = raw_reply.rfind('}') + 1
+                match = json.loads(raw_reply[start:end])
+
+            score = match.get("percentage_match", 0)
+
+            if score >= 85:
+                recommended_list.append((job, score))
+
+            if len(recommended_list) == 20:
+                break
+
+        for job, score in recommended_list:
+            new_rec = RecommendedJob(
+                user_id=current_user_id,
+                job_id=job.id,
+                match_score=score,
+                created_at=now,
+                is_active=True,
+                expires_at=now + timedelta(days=2),
+                matched_skills=match.get("matched_skills", [])
+            )
+            db.session.add(new_rec)
+
+        db.session.commit()
+
+        # Minimal response
+        return jsonify({"status": "ok"})
+
+    except Exception as e:
+        print("❌ Recommendation Error:", e)
+        return jsonify({"error": str(e)}), 500
+
+    
+
+@profile_bp.route('/recommendations', methods=['GET'])
+@jwt_required()
+def get_recommendations():
+    current_user_id = int(get_jwt_identity())
+
+    # Load ACTIVE recommendations only
+    active_recs = (
+        RecommendedJob.query
+        .filter_by(user_id=current_user_id, is_active=True)
+        .order_by(RecommendedJob.match_score.desc())
+        .all()
+    )
+
+    # Serialize to dicts with nested job
+    recommendations = [rec.to_dict() for rec in active_recs]
+
+    return jsonify({
+        "status": "fresh",
+        "message": "Recommendations recently generated. Using cached results.",
+        "recommended_jobs_count": len(recommendations),
+        "recommendations": recommendations,
+    })

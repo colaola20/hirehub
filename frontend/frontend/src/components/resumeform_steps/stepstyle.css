@@ -3,6 +3,9 @@
     flex-direction: column;
     align-items: center;
     gap: 2px;
+
+    transition: height 0.35s ease;
+    overflow: hidden;
 }
 
 .location-form{
@@ -24,8 +27,20 @@
     display: flex;
     flex-direction: row;
     align-items: center;
+    justify-content: center;
     gap: 20px;
-    height: 110px;
+    min-height: 110px;
+    height: auto;
+    /* padding-bottom: 40px; */
+}
+
+.job-validation{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 45px;
+    margin-right: 15px;
     padding-bottom: 40px;
 }
 
@@ -34,7 +49,18 @@
     flex-direction: row;
     align-items: center;
     gap: 20px;
-    height: 110px;
+    min-height: 110px;
+    height: auto;
+    /* padding-bottom: 30px; */
+}
+
+.school-validation{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 70px;
+    margin-right: 15px;
     padding-bottom: 30px;
 }
 
@@ -43,7 +69,8 @@
     flex-direction: row;
     align-items: center;
     gap: 20px;
-    height: 110px;;
+    min-height: 110px;
+    height: auto;;
     padding-top: 25px;
     padding-bottom: 40px;
 }

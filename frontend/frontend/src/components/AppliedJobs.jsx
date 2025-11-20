@@ -142,7 +142,7 @@ const AppliedJobs = () => {
 
  return (
     <div className={styles.container}>
-      <h2>Your Applied Jobs</h2>
+      <h2>Jobs that you had applied to</h2>
       {appliedJobs.length === 0 ? (
         <p className={styles.message}>You haven’t applied to any jobs yet.</p>
       ) : (
@@ -181,7 +181,7 @@ const AppliedJobs = () => {
                 <span>{job.company || "Unknown"}</span>
                 <span>{job.location || "Unspecified"}</span>
                 <span style={{ textAlign: "center", display: "block" }}>{job.date_posted ? new Date(job.date_posted).toLocaleDateString() : "Unknown"}</span>
-                <span style={{ textAlign: "center", display: "block" }}>{job.is_active ? "Yes" : "No"}</span>
+                <span style={{ textAlign: "center", display: "block", color: job.is_active ? "" : "#ff0000", fontWeight: job.is_active ? "" : "bold" }}>{job.is_active ? "Yes" : "No"}</span>
                 
               <select
                 value={app.status}
@@ -212,7 +212,7 @@ const AppliedJobs = () => {
                   border: "1px solid #555",
                   padding: "2px 4px",
                 }}
-                >
+              >
                 <option value="applied">Applied</option>
                 <option value="interviewed">Interviewed</option>
                 <option value="joboffered">Job offered</option>

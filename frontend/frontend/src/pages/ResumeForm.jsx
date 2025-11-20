@@ -1,4 +1,4 @@
-import React, { useState, useEffect, use } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import PersonalizedNavbar from '../components/PersonalizedNavbar'
 import { Link } from "react-router-dom";
 import * as Yup from 'yup'
@@ -19,7 +19,9 @@ import styles from './resumeform.module.css';
 const ResumeForm = () => {
 
     const [currentStep, setCurrentStep] = useState(1);
-    const [errors, setErrors] = useState({});   
+    const [errors, setErrors] = useState({});
+    const contentRef = useRef(null);
+    const [containerHeight, setContainerHeight] = useState("auto");
 
     const [formData, setFormData] = useState({
         /* ---PERSONAL INFO--- */
@@ -42,42 +44,97 @@ const ResumeForm = () => {
         /* ---MAIN SECTIONS--- */
         step4: { // maybe split each part into its own steps? 
 
-            company: '', role: '', roleTime: ''
+            jobs: [{ company: '', role: '', roleTime: '' }]
 
         },
 
         step5: {
 
-            school: '', degree: '', gradYear: ''
+            education: [{ school: '', degree: '', gradYear: '' }]
 
         },
 
         step6: {
 
-            projTitle: '', projDesc: '', projLink: ''
+            projects: [{ projTitle: '', projDesc: '', projLink: '' }]
 
         }
     })
 
     const submitForm = async () => {
+
+        const safe3 = formData.step3 || [];
+
+        const toArray = (val) => {
+        if (!val) return [];
+        if (Array.isArray(val)) return val;
+        if (typeof val === 'string') return val.split(',').map(s => s.trim()).filter(Boolean);
+        return [];
+    }
+        const payload = {
+            ...formData,
+            step3: {
+                skills: toArray(safe3.skills),
+                languages: toArray(safe3.languages),
+                certs: toArray(safe3.certs),
+                interests: toArray(safe3.interests),
+            }
+        };
+
         const response = await fetch('/api/form', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
             },
-            body: JSON.stringify(formData),
+            body: JSON.stringify(payload),
         });
         const data = await response.json();
         console.log(data);
-        sendBackendData(data);
     }
 
     // pull info from user profile to prefill form
     useEffect(() => {
-        fetch('/api/form')
-            .then(response => response.json())
-            .then(data => setFormData(data))
+        fetch('/api/form', {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
+
+            }
+        })
+            .then(response => {
+                if (!response.ok) {
+                    console.error('Failed to fetch form data');
+                    return;
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.step3) {
+                    data.step3.skills = Array.isArray(data.step3.skills) ? data.step3.skills.join(', ') : data.step3.skills
+                    data.step3.languages = Array.isArray(data.step3.languages) ? data.step3.languages.join(', ') : data.step3.languages
+                }
+                setFormData(data)
+            })
+            .catch(err => console.error('Error fetching form data:', err));
     }, []);
+
+    useEffect(() => {
+        if (contentRef.current) {
+            if (currentStep === 7) {
+                setContainerHeight("1250px");
+                return;
+            }
+
+            const newHeight = contentRef.current.scrollHeight;
+            const padding = 65;
+            setContainerHeight(newHeight + padding);
+        }
+    }, [currentStep,
+        formData.step4?.jobs?.length,
+        formData.step5?.education?.length,
+        formData.step6?.projects?.length,
+        errors
+    ])
 
 
 
@@ -88,10 +145,10 @@ const ResumeForm = () => {
         fullname: Yup.string().required('Name is required'),
         email: Yup.string().email('Email is required').required('Email is required'),
         phNum: Yup.string().required('Phone Number is required'),
-        address: Yup.string().required('Address is required.'),
+        // address: Yup.string().required('Address is required.'),
         city: Yup.string().required('City is required.'),
-        state: Yup.string().required('State is required.'),
-        zip: Yup.string().required('Zip code is required.'),
+        // state: Yup.string().required('State is required.'),
+        // zip: Yup.string().required('Zip code is required.'),
     })
 
     const socialValidation = Yup.object({
@@ -100,25 +157,48 @@ const ResumeForm = () => {
     })
 
     const miscValidation = Yup.object({
-        skills: Yup.string().required('Skills are required.'),
-        languages: Yup.string().required('Languages is required.')
-    })
+        skills: Yup.string().required('Skills cannot be empty.').test(
+            'is-array',
+            'At least one skill required',
+            val => val.split(',').filter(s => s.trim()).length > 0
+        ),
+        languages: Yup.string().required('Languages cannot be empty.').test(
+            'is-array',
+            'At least one language required',
+            val => val.split(',').filter(s => s.trim()).length > 0
+        ),
+        interests: Yup.array(),
+        certs: Yup.array(),
+    });
 
     const jobValidation = Yup.object({
-        company: Yup.string().required('Company Name is required.'),
-        role: Yup.string().required('Position name is required.'),
-        roleTime: Yup.string().required('Time period is required.')
+        jobs: Yup.array().of(
+            Yup.object({
+                company: Yup.string().required('Company Name is required.'),
+                role: Yup.string().required('Position name is required.'),
+                roleTime: Yup.string().required('Time period is required.')
+
+            })
+        )
+            .min(1, 'At least one job is required.')
+            .max(3, "Maximum of three jobs allowed.")
     })
 
     const schoolValidation = Yup.object({
-        school: Yup.string().required('School name is required'),
-        degree: Yup.string().required('Degree is required.')
+        education: Yup.array().of(
+            Yup.object({
+                school: Yup.string().required('School name is required'),
+                degree: Yup.string().required('Degree is required.')
+            })
+        )
+            .min(1, "At least one school is required.")
+            .max(3, "Maximum of three schools allowed.")
     })
 
     const projectValidation = Yup.object({ // none (even tho highly recommended to have at least one proj)
     })
 
-    
+
 
     const validateStep = async () => {
         let schema;
@@ -128,7 +208,7 @@ const ResumeForm = () => {
         if (currentStep === 3) schema = miscValidation;
         if (currentStep === 4) schema = jobValidation;
         if (currentStep === 5) schema = schoolValidation;
-        if (currentStep === 6) schema = projectValidation;
+        if (currentStep === 6) schema = projectValidation; // need this to progress
 
         try {
             await schema.validate(formData[`step${currentStep}`], { abortEarly: false });
@@ -149,13 +229,25 @@ const ResumeForm = () => {
     const handleInputChange = (e) => {
         const { name, value } = e.target;
 
-        setFormData({
-            ...formData,
+        setFormData(prev => ({
+            ...prev,
             [`step${currentStep}`]: {
-                ...formData[`step${currentStep}`],
+                ...prev[`step${currentStep}`],
                 [name]: value
             }
-        });
+        }));
+    };
+
+    const handleMiscChange = (e) => {
+
+        const { name, value } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            step3: {
+                ...prev.step3,
+                [name]: value
+            }
+        }));
     };
 
     const prevStep = () => {
@@ -165,7 +257,7 @@ const ResumeForm = () => {
     const nextStep = async () => {
         if (currentStep < 7) {
             const isValid = await validateStep();
-            if (!isValid) 
+            if (!isValid)
                 return;
             setCurrentStep(currentStep + 1);
         }
@@ -207,10 +299,10 @@ const ResumeForm = () => {
 
         <div className={styles["container"]}>
             {/* <PersonalizedNavbar /> */}
-            <div className={styles["back-btn"]}>
-                <p>
+            <div >
+                <button className={styles["back-btn"]}>
                     <Link to="/dev_dashboard" >Back</Link>
-                </p>
+                </button>
             </div>
 
             <div className={styles["form-box"]}>
@@ -224,19 +316,28 @@ const ResumeForm = () => {
                     <div className={styles["progress-indicator"]}>
                         <span>Step {currentStep} of 7</span>
                     </div>
-                    {currentStep < 7 ? (<button className={styles["prog-btn-btn"]} onClick={nextStep}>Next</button>) : (<button onClick={nextStep} className={styles["submit-form-btn"]}>Generate</button>)}
+                    {currentStep < 6 && (<button className={styles["prog-btn-btn"]} onClick={nextStep}>Next</button>)}
+                    {currentStep === 6 && (<button className={styles["submit-form-btn"]} onClick={async () => {
+                        const response = await submitForm();
+                        // if (!response) return;
+                        setFormData(prev => ({ ...prev }));
+                        setCurrentStep(7);
+                    }}>Generate</button>)}
+                    {currentStep === 7 && (<span className={styles.placeholder}></span>)}
                 </div>
 
 
 
-                <div className={styles["resume-form-container"]}>
-                    {currentStep === 1 && <PersonalStep formData={formData.step1} onChange={handleInputChange} errors={errors} />}
-                    {currentStep === 2 && <SocialStep formData={formData.step2} onChange={handleInputChange} errors={errors}/>}
-                    {currentStep === 3 && <MiscStep formData={formData.step3} onChange={handleInputChange} errors={errors} />}
-                    {currentStep === 4 && <JobStep formData={formData.step4} onChange={handleInputChange} errors={errors} />}
-                    {currentStep === 5 && <SchoolStep formData={formData.step5} onChange={handleInputChange} errors={errors} />}
-                    {currentStep === 6 && <ProjectStep formData={formData.step6} onChange={handleInputChange} errors={errors} />}
-                    {currentStep === 7 && <ResumeViewStep backendData={formData}/>}
+                <div className={styles["resume-form-container"]} style={{ height: containerHeight }}>
+                    <div ref={contentRef}>
+                        {currentStep === 1 && <PersonalStep formData={formData.step1} onChange={handleInputChange} errors={errors} />}
+                        {currentStep === 2 && <SocialStep formData={formData.step2} onChange={handleInputChange} errors={errors} />}
+                        {currentStep === 3 && <MiscStep formData={formData.step3} onChange={handleMiscChange} errors={errors} />}
+                        {currentStep === 4 && <JobStep formData={formData.step4} onChange={handleInputChange} errors={errors} />}
+                        {currentStep === 5 && <SchoolStep formData={formData.step5} onChange={handleInputChange} errors={errors} />}
+                        {currentStep === 6 && <ProjectStep formData={formData.step6} onChange={handleInputChange} errors={errors} />}
+                        {currentStep === 7 && <ResumeViewStep backendData={formData} />}
+                    </div>
                 </div>
             </div>
         </div>
