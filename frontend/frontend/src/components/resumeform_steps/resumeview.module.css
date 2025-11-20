@@ -11,9 +11,19 @@
     font-family: Georgia, 'Times New Roman', Times, serif;
 }
 
+.viewBtn{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ~~~~~~~~~~~~~~~~ RESUMETEMPLATE STYLES BELOW ~~~~~~~~~~~~~~~~ */
+
 .headerName{
     font-size: 40px;
 }
+
 
 .divider {
     background-color: black;
@@ -25,18 +35,20 @@
     background-color: black;
     border: none;
     height: 2px;
-    width: 50%;
+    width: 95%;
 }
 
 .sectionTitle {
     font-size: 20px;
     font-weight: bold;
     margin-bottom: 8px;
+    margin-left: 40px;
     padding-bottom: 4px;
+    text-align: left;
 }
 
 .entry {
-    margin-bottom: 15px;
+    margin: 0 25px 25px 50px;
 }
 
 .entryHeader {
@@ -71,19 +83,11 @@
     margin-top: 5px;
 }
 
-.bulletList {
-    margin: 8px 0 0 18px;
-    padding: 0;
-}
-
-.bulletList li {
-    margin-bottom: 4px;
-    line-height: 1.4;
-}
 
 .projects,
 .experience,
-.education {
+.education,
+.misc {
     margin-bottom: 25px;
     font-size: 18px;
 }
