@@ -11,15 +11,28 @@ const ProjectComponent = ({ project, index, updateProj, removeProj, removeable }
                 value={project.projTitle}
                 onChange={(e) => updateProj(index, e.target.name, e.target.value)}
             />
-            {/* {errors.projTitle && <p style={{ color: 'red' }}>{errors.projTitle}</p>} */}
+
             <input
                 type="text"
                 name='projDesc'
                 placeholder="Paste Short Description"
                 value={project.projDesc}
-                onChange={(e) => updateProj(index, e.target.name, e.target.value)}
+                onChange={(e) => {
+                    const el = e.target;
+
+                    updateProj(index, el.name, el.value);
+
+                    const maxWidth = 300; 
+                    el.style.width = "20px";  // reset to minimum width
+                    const newWidth = Math.min(el.scrollWidth, maxWidth);
+                    el.style.width = newWidth + "px";
+
+                    el.style.height = "auto"; // reset
+                    el.style.height = el.scrollHeight + "px"; // grow vertically
+                }
+                }
             />
-            {/* {errors.projDesc && <p style={{ color: 'red' }}>{errors.projDesc}</p>} */}
+
             <input
                 type="url"
                 name='projLink'
