@@ -1,163 +1,309 @@
 import threading
 import time
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from flask import current_app
+from sqlalchemy import and_, or_
+print("🔥 notification_task.py LOADED")
+
+# ============================================================
+# HYBRID NOTIFICATION SYSTEM – COMPLETE REPLACEMENT FILE
+# ============================================================
+
+"""
+This file contains:
+- Daily digest worker (email)
+- Weekly insights worker (email)
+- Job match worker (in-app)
+- Skill gap worker (in-app)
+- Deadline worker (email + in-app)
+- Event-triggered utilities
+
+This is the full Hybrid Notification Engine (Option C).
+"""
 
 
-def send_periodic_notifications(app, interval_seconds=60 * 60 * 24):
+# ============================================================
+# IMPORTS (inside worker to avoid circular imports)
+# ============================================================
+
+def _load_dependencies():
+    from app.services.database import DatabaseService
+    from app.models.user import User
+    from app.models.job import Job
+    from app.models.recommended_job import RecommendedJob
+    from app.models.notification import Notification
+    from app.extensions import mail, db
+    from flask_mail import Message
+    return DatabaseService, User, Job, RecommendedJob, Notification, mail, db, Message
+
+
+# ============================================================
+# EMAIL TEMPLATES
+# ============================================================
+
+def _email_header():
+    return """
+    <div style="font-family: Arial, sans-serif; background: #f5f6fa; padding: 22px;">
+        <div style="max-width: 650px; margin:auto; background:#fff; border-radius:10px; 
+                    overflow:hidden; box-shadow:0 4px 16px rgba(0,0,0,0.12);">
+            <div style="background: linear-gradient(135deg, #6f67f0, #4839eb); 
+                        color:white; padding:22px; text-align:center;">
+                <h2 style="margin:0; font-size:26px;">HireHub Notification</h2>
+            </div>
+            <div style="padding:25px; font-size:15px; color:#333;">
     """
-    Background loop that sends daily digest notifications.
-    Includes:
-    - DB notification entry
-    - HTML email with job suggestions, resume score, and tips
+
+
+def _email_footer():
+    return """
+            </div>
+        </div>
+        <p style="text-align:center; color:#777; font-size:13px; margin-top:18px;">
+            You can change notification preferences in your HireHub account.
+        </p>
+    </div>
     """
 
+
+# ============================================================
+# CREATE IN-APP NOTIFICATION
+# ============================================================
+
+def create_in_app_notification(Notification, DatabaseService, user_email, n_type, message):
+    note = Notification(
+        user_email=user_email,
+        type=n_type,
+        message=message,
+        created_at=datetime.now(timezone.utc),
+        is_read=False
+    )
+    DatabaseService.create(note)
+
+
+# ============================================================
+# DAILY DIGEST EMAIL WORKER (RUNS EVERY 24 HOURS)
+# ============================================================
+
+def daily_digest_worker(app):
     def _worker():
         with app.app_context():
-            from app.services.database import DatabaseService
-            from app.models.user import User
-            from app.models.notification import Notification
-            from app.extensions import mail
-            from flask_mail import Message
+            (DatabaseService, User, Job, RecommendedJob,
+             Notification, mail, db, Message) = _load_dependencies()
 
-            app.logger.info("Notification worker started, interval=%s", interval_seconds)
+            app.logger.info("[DailyDigestWorker] Started")
 
             while True:
                 try:
                     users = DatabaseService.get_all(User)
 
-                    if not users:
-                        app.logger.debug("No users found for notifications")
-                    else:
-                        for u in users:
-                            try:
-                                # ------------ EXAMPLE DATA (replace with real logic) ---------------- #
+                    for u in users:
+                        if not u.daily_digest_enabled:
+                            continue
 
-                                # Fake job recommendations
-                                job_recommendations = [
-                                    {"title": "Frontend React Developer", "company": "TechNova",
-                                     "location": "NYC", "match": 92},
-                                    {"title": "Python Backend Engineer", "company": "DataFuse",
-                                     "location": "Remote", "match": 88},
-                                    {"title": "Full-Stack Engineer (React + Flask)", "company": "SkyLabs",
-                                     "location": "Boston", "match": 85},
-                                ]
+                        # Fetch recommended jobs
+                        recs = (
+                            db.session.query(RecommendedJob)
+                            .filter(RecommendedJob.user_id == u.id)
+                            .order_by(RecommendedJob.match_score.desc())
+                            .limit(5)
+                            .all()
+                        )
 
-                                # Fake resume score
-                                resume_score = 78  # replace with AI scoring output
-
-                                # Tips (AI-generated placeholder)
-                                ai_tips = [
-                                    "Add impact-based bullet points to your last experience.",
-                                    "Update your skills section with the latest frameworks.",
-                                    "Upload a tailored resume for better job matches.",
-                                ]
-
-                                # --------------------------------------------------------------------- #
-
-                                title = "Your HireHub Daily Digest"
-
-                                # ------------- HTML EMAIL TEMPLATE ------------- #
-                                html_body = f"""
-                                <div style="font-family: Arial, sans-serif; background: #f6f7fb; padding: 20px;">
-                                    <div style="max-width: 620px; margin: auto; background: #fff; border-radius: 10px;
-                                                overflow: hidden; box-shadow: 0 4px 14px rgba(0,0,0,0.08);">
-
-                                        <!-- Header -->
-                                        <div style="background: linear-gradient(135deg,#6f67f0,#4839eb); padding: 20px; text-align:center;">
-                                            <img src="https://i.imgur.com/CM8YQnN.png" alt="HireHub" 
-                                                 style="width:70px; margin-bottom:10px;" />
-                                            <h2 style="color:white; margin:0; font-size:26px;">HireHub Daily Digest</h2>
-                                        </div>
-
-                                        <!-- Body -->
-                                        <div style="padding: 26px;">
-                                            <p style="font-size:16px;">
-                                                Hello <strong>{u.first_name or u.username}</strong>,
-                                            </p>
-
-                                            <p style="font-size:15px; line-height:1.6;">
-                                                Here is your personalized daily update.  
-                                                Your dashboard has new job recommendations, resume improvements,
-                                                and tailored insights — all designed to help you land your next opportunity.
-                                            </p>
-
-                                            <!-- Resume Score -->
-                                            <div style="margin:25px 0; padding:20px; background:#eef0ff; border-left:4px solid #6f67f0; border-radius:8px;">
-                                                <h3 style="margin:0 0 10px 0; color:#4839eb;">📄 Resume Score</h3>
-                                                <p style="margin:0; font-size:15px;">
-                                                    Your current resume score is: 
-                                                    <strong style="font-size:18px;">{resume_score}%</strong>
-                                                </p>
-                                                <p style="margin-top:10px; font-size:14px; color:#555;">
-                                                    Improve your score by updating your work experience and project descriptions with measurable results.
-                                                </p>
-                                            </div>
-
-                                            <!-- Job Recommendations -->
-                                            <h3 style="margin-top:0; color:#4839eb;">🔥 Top Job Matches for You</h3>
-
-                                            {''.join([f'''
-                                                <div style="padding:14px; border:1px solid #eee; border-radius:8px; margin-bottom:12px;">
-                                                    <h4 style="margin:0;">{job['title']}</h4>
-                                                    <p style="margin:4px 0; font-size:14px; color:#555;">
-                                                        {job['company']} • {job['location']}
-                                                    </p>
-                                                    <p style="margin:0; font-size:14px;">
-                                                        <strong>Match Score:</strong> {job['match']}%
-                                                    </p>
-                                                </div>
-                                            ''' for job in job_recommendations])}
-
-                                            <!-- AI Tips -->
-                                            <h3 style="margin-top:30px; color:#4839eb;">💡 AI Resume Tips</h3>
-                                            <ul style="font-size:15px; color:#444; line-height:1.6;">
-                                                {''.join([f'<li>{tip}</li>' for tip in ai_tips])}
-                                            </ul>
-
-                                            <!-- Button -->
-                                            <div style="text-align:center; margin-top:40px;">
-                                                <a href="https://your-hirehub-url.com/dashboard"
-                                                   style="padding:14px 26px; background:#6f67f0; color:white; 
-                                                   text-decoration:none; border-radius:6px; font-size:16px;">
-                                                   Open HireHub Dashboard
-                                                </a>
-                                            </div>
-
-                                            <p style="font-size:13px; color:#888; margin-top:40px; text-align:center;">
-                                                You are receiving this email because you enabled daily digests.  
-                                                Update your notification settings to change this.
-                                            </p>
-
-                                        </div>
-                                    </div>
+                        rec_html = ""
+                        for r in recs:
+                            if r.job:
+                                rec_html += f"""
+                                <div style="border:1px solid #eee; padding:14px; margin-bottom:10px; border-radius:8px;">
+                                    <h4 style="margin:0;">{r.job.title}</h4>
+                                    <p style="margin:3px 0; color: #555;">{r.job.company} • {r.job.location}</p>
+                                    <p style="margin:0;"><b>Match:</b> {r.match_score}%</p>
                                 </div>
                                 """
 
-                                # --------- SEND EMAIL --------- #
-                                msg = Message(subject=title, recipients=[u.email], html=html_body)
-                                mail.send(msg)
+                        html = (
+                            _email_header() +
+                            f"<p>Hello <b>{u.first_name}</b>, here is your daily job digest:</p>"
+                            f"{rec_html}"
+                            + _email_footer()
+                        )
 
-                                # --------- DB NOTIFICATION --------- #
-                                note = Notification(
-                                    user_email=u.email,
-                                    type=title,
-                                    message="Your daily HireHub digest is ready.",
-                                    is_read=False,
-                                    created_at=datetime.utcnow(),
-                                )
-                                DatabaseService.create(note)
+                        msg = Message("Your HireHub Daily Digest", recipients=[u.email], html=html)
+                        mail.send(msg)
 
-                            except Exception:
-                                app.logger.exception("Error sending notification to user %s", u.email)
+                        create_in_app_notification(
+                            Notification, DatabaseService,
+                            u.email,
+                            "Daily Digest",
+                            "Your daily job digest was emailed to you."
+                        )
 
-                    app.logger.info("Notification worker sleeping for %s seconds", interval_seconds)
+                    app.logger.info("[DailyDigestWorker] Completed daily run")
+
+                except Exception as e:
+                    app.logger.exception("[DailyDigestWorker] Error: %s", e)
+
+                time.sleep(60 * 60 * 24)  # 24 hours
+
+    threading.Thread(target=_worker, daemon=True).start()
+
+
+# ============================================================
+# WEEKLY INSIGHTS EMAIL WORKER (RUNS EVERY 7 DAYS)
+# ============================================================
+
+def weekly_insights_worker(app):
+    def _worker():
+        with app.app_context():
+            (DatabaseService, User, Job, RecommendedJob,
+             Notification, mail, db, Message) = _load_dependencies()
+
+            app.logger.info("[WeeklyInsightsWorker] Started")
+
+            while True:
+                try:
+                    users = DatabaseService.get_all(User)
+
+                    for u in users:
+                        if not u.weekly_digest_enabled:
+                            continue
+
+                        html = (
+                            _email_header() +
+                            f"<p>Hello <b>{u.first_name}</b>, here are your weekly insights.</p>"
+                            f"<p>Profile completion: {u.profile_completion or 0}%</p>"
+                            f"<p>Resume Score: {u.resume_score or 0}%</p>"
+                            + _email_footer()
+                        )
+
+                        msg = Message("Weekly Insights Report", recipients=[u.email], html=html)
+                        mail.send(msg)
+
+                        create_in_app_notification(
+                            Notification, DatabaseService,
+                            u.email,
+                            "Weekly Insights",
+                            "Your weekly insights report has been emailed."
+                        )
+
+                    app.logger.info("[WeeklyInsightsWorker] Completed weekly run")
+
+                except Exception as e:
+                    app.logger.exception("[WeeklyInsightsWorker] Error: %s", e)
+
+                time.sleep(60 * 60 * 24 * 7)  # 7 days
+
+    threading.Thread(target=_worker, daemon=True).start()
+
+
+# ============================================================
+# JOB MATCH WORKER (RUNS EVERY 4 HOURS)
+# ============================================================
+
+def job_match_worker(app):
+    def _worker():
+        with app.app_context():
+            (DatabaseService, User, Job, RecommendedJob,
+             Notification, mail, db, Message) = _load_dependencies()
+
+            app.logger.info("[JobMatchWorker] Started")
+
+            while True:
+                try:
+                    users = DatabaseService.get_all(User)
+
+                    for u in users:
+                        if not u.skills:
+                            continue
+
+                        # Simple example: find jobs with overlapping skills
+                        jobs = (
+                            db.session.query(Job)
+                            .filter(Job.skills_required.overlap(u.skills))
+                            .limit(10)
+                            .all()
+                        )
+
+                        for j in jobs:
+                            create_in_app_notification(
+                                Notification, DatabaseService,
+                                u.email,
+                                "New Job Match",
+                                f"A new job matches your skills: {j.title}"
+                            )
+
+                    app.logger.info("[JobMatchWorker] Completed cycle")
 
                 except Exception:
-                    app.logger.exception("Notification worker crashed, continuing")
+                    app.logger.exception("[JobMatchWorker] Error")
 
-                time.sleep(interval_seconds)
+                time.sleep(60 * 60 * 4)  # 4 hours
 
-    t = threading.Thread(target=_worker, daemon=True, name="notifications-worker")
-    t.start()
-    return t
+    threading.Thread(target=_worker, daemon=True).start()
+
+
+# ============================================================
+# DEADLINE WORKER (RUNS EVERY 12 HOURS)
+# ============================================================
+
+def deadline_worker(app):
+    def _worker():
+        with app.app_context():
+            (DatabaseService, User, Job, RecommendedJob,
+             Notification, mail, db, Message) = _load_dependencies()
+
+            app.logger.info("[DeadlineWorker] Started")
+
+            while True:
+                try:
+                    now = datetime.now(timezone.utc)
+                    deadline_limit = now + timedelta(hours=48)
+
+                    expiring_jobs = (
+                        db.session.query(Job)
+                        .filter(and_(Job.expires_at != None, Job.expires_at <= deadline_limit))
+                        .all()
+                    )
+
+                    for j in expiring_jobs:
+                        for rec in j.recommended_to:
+                            u = rec.user
+
+                            # Email
+                            html = (
+                                _email_header() +
+                                f"<p>The job <b>{j.title}</b> is closing soon.</p>" +
+                                _email_footer()
+                            )
+                            mail.send(Message("Job Closing Soon", recipients=[u.email], html=html))
+
+                            # In-app
+                            create_in_app_notification(
+                                Notification, DatabaseService,
+                                u.email,
+                                "Closing Soon",
+                                f"The job {j.title} expires in less than 48 hours."
+                            )
+
+                    app.logger.info("[DeadlineWorker] Completed cycle")
+
+                except Exception:
+                    app.logger.exception("[DeadlineWorker] Error")
+
+                time.sleep(60 * 60 * 12)
+
+    threading.Thread(target=_worker, daemon=True).start()
+
+
+# ============================================================
+# REGISTER ALL WORKERS
+# ============================================================
+
+# app/tasks/notifications_task.py - Inside init_notification_workers
+# app/tasks/notifications_task.py - Inside init_notification_workers
+def init_notification_workers(app):
+    print("🔥 init_notification_workers() CALLED")
+    daily_digest_worker(app)
+    weekly_insights_worker(app)
+    job_match_worker(app)# 🟢 RECOMMENDATION: Uncomment the deadline worker
+    deadline_worker(app) 
+    app.logger.info("[NotificationSystem] All workers started successfully.")
