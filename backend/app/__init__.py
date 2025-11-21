@@ -4,7 +4,8 @@ from flask_jwt_extended import JWTManager
 from flask_migrate import Migrate
 import os
 from dotenv import load_dotenv
-from app.extensions import db, mail   # ✅ import mail here
+from app.routes.notifications import notifications_bp
+from app.extensions import db, mail   
 from app.routes.github import github_bp, init_oauth
 from app.routes.google import google_bp, init_oauth as init_google_oauth
 from app.routes.linkedin import linkedin_bp, init_linkedin_oauth
@@ -20,7 +21,6 @@ from app.routes.documents import documents_bp
 from app.routes.form import form_bp
 from datetime import timedelta
 
-
 from app.routes.chat_bot import chat_bp
 from flask_cors import CORS
 from .config import Config
@@ -35,6 +35,7 @@ from app.models.profile import Profile
 from app.models.skill import Skill
 from app.routes.chat_bot import chat_bp
 from datetime import timedelta
+
 
 load_dotenv()
 
@@ -69,7 +70,7 @@ def create_app():
     app.config["MAIL_USERNAME"] = os.getenv("MAIL_USERNAME", "harisakber21@gmail.com")
     app.config["MAIL_PASSWORD"] = os.getenv("MAIL_PASSWORD", "xqzw mvej cyxb pkuw")
     app.config["MAIL_DEFAULT_SENDER"] = os.getenv("MAIL_DEFAULT_SENDER", "harisakber21@gmail.com")
-    # ✅ Suppress sending in dev mode if placeholder password is used
+
     if app.config["MAIL_PASSWORD"] == "xqzw mvej cyxb pkuw":
         app.config["MAIL_SUPPRESS_SEND"] = False
 
@@ -77,7 +78,7 @@ def create_app():
     db.init_app(app)
     jwt.init_app(app)
     migrate.init_app(app, db)
-    mail.init_app(app)   # ✅ initialize mail
+    mail.init_app(app)
 
     # Register OAuth providers
     init_oauth(app)
@@ -97,27 +98,33 @@ def create_app():
     app.register_blueprint(applications_bp)
     app.register_blueprint(documents_bp)
     app.register_blueprint(form_bp)
-    app.register_blueprint(chat_bp, url_prefix="/api") 
-    # Notifications blueprint
-    try:
-        from app.routes.notifications import notifications_bp
-        app.register_blueprint(notifications_bp)
-    except Exception:
-        app.logger.debug('Notifications blueprint not available')
-
-    # Start optional background notification worker (best-effort)
-    # Configure via environment or app.config: RUN_NOTIFICATION_WORKER (bool) and NOTIFICATION_INTERVAL_SECONDS (int)
-    try:
-        run_worker = os.getenv('RUN_NOTIFICATION_WORKER', str(app.config.get('RUN_NOTIFICATION_WORKER', False))).lower() in ('1','true','yes')
-        if run_worker:
-            interval = int(os.getenv('NOTIFICATION_INTERVAL_SECONDS', app.config.get('NOTIFICATION_INTERVAL_SECONDS', 86400)))
-            from app.tasks.notifications_task import send_periodic_notifications
-            send_periodic_notifications(app, interval_seconds=interval)
-            app.logger.info('Notification worker configured (interval=%s)', interval)
-    except Exception:
-        app.logger.exception('Failed to start notification worker')
-
-    
+    app.register_blueprint(notifications_bp, url_prefix="/api") 
+    app.register_blueprint(chat_bp, url_prefix="/api")
    
+
+       # ---------------------------------------
+    # Notification Workers (Safe Initialization)
+    # ---------------------------------------
+    init_notification_workers = None
+
+    try:
+        # Use relative import for clean structure if possible
+        from app.tasks.notifications_task import init_notification_workers as worker_func
+        init_notification_workers = worker_func
+    except Exception as e:
+        # You should see this if the import fails
+        app.logger.error(f"❌ Failed to import notification workers: {e}")
+        init_notification_workers = None
+
+    # 🟢 DEBUG FIX: Remove the 'os.environ.get("WERKZEUG_RUN_MAIN") == "true"' check
+    if init_notification_workers is not None:
+        try:
+            init_notification_workers(app)
+            # You should see this in your console/logs now!
+            app.logger.info("✔ Notification workers started (DEBUG mode).") 
+        except Exception as e:
+            app.logger.error(f"❌ Failed to start notification workers: {e}")
+    else:
+        app.logger.info("ℹ Workers unavailable — workers not started.")
 
     return app

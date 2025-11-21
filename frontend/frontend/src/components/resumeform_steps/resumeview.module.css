@@ -1,0 +1,93 @@
+.resume-preview {
+    width: 816px;
+    height: 1056px;
+    background-color: rgb(255, 255, 255);
+    color: black;
+    border: 1px solid #eee;
+    border-radius: 4px;
+    padding: 16px;
+    width: 1000px;
+    margin-bottom: 20px;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+.viewBtn{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ~~~~~~~~~~~~~~~~ RESUMETEMPLATE STYLES BELOW ~~~~~~~~~~~~~~~~ */
+
+.headerName{
+    font-size: 40px;
+}
+
+
+.divider {
+    background-color: black;
+    border: none;
+    height: 2px;
+}
+
+.dividerSmall{
+    background-color: black;
+    border: none;
+    height: 2px;
+    width: 95%;
+}
+
+.sectionTitle {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 8px;
+    margin-left: 40px;
+    padding-bottom: 4px;
+    text-align: left;
+}
+
+.entry {
+    margin: 0 25px 25px 50px;
+}
+
+.entryHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.entryTitle {
+    font-weight: bold;
+    display: flex;
+    flex-direction: row;
+    align-items: start;
+}
+
+.entryLink a {
+    font-size: 0.9em;
+    color: #007bff;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.entryLink a:hover {
+    text-decoration: underline;
+}
+
+.entryDescription {
+    display: flex;
+    flex-direction: row;
+    align-items: start;
+
+    margin-top: 5px;
+}
+
+
+.projects,
+.experience,
+.education,
+.misc {
+    margin-bottom: 25px;
+    font-size: 18px;
+}

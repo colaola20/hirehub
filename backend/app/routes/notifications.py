@@ -10,7 +10,8 @@ from datetime import datetime
 notifications_bp = Blueprint('notifications', __name__)
 
 
-@notifications_bp.route('/api/notifications', methods=['GET'])
+
+@notifications_bp.route('/notifications', methods=['GET'])
 @jwt_required()
 def list_notifications():
     try:
@@ -28,11 +29,11 @@ def list_notifications():
             'read': bool(n.is_read)
         } for n in notes]), 200
     except Exception as e:
-        current_app.logger.exception('Failed to list notifications')
+        current_app.logger.exception('Failed to list notifications')    
         return jsonify({'error': 'Failed to list notifications', 'detail': str(e)}), 500
 
 
-@notifications_bp.route('/api/notifications/send', methods=['POST'])
+@notifications_bp.route('/notifications/send', methods=['POST'])
 @jwt_required()
 def send_notification():
     """Send notification(s). Body: { title, body, to } where `to` is optional email or array; if absent send to all users."""
@@ -77,7 +78,7 @@ def send_notification():
         return jsonify({'error': 'Failed to send notifications', 'detail': str(e)}), 500
 
 
-@notifications_bp.route('/api/notifications/<int:note_id>/read', methods=['POST'])
+@notifications_bp.route('/notifications/<int:note_id>/read', methods=['POST'])
 @jwt_required()
 def mark_notification_read(note_id):
     try:
@@ -96,7 +97,7 @@ def mark_notification_read(note_id):
         return jsonify({'error': 'Failed to mark read', 'detail': str(e)}), 500
 
 
-@notifications_bp.route('/api/notifications/<int:note_id>', methods=['DELETE'])
+@notifications_bp.route('/notifications/<int:note_id>', methods=['DELETE'])
 @jwt_required()
 def delete_notification(note_id):
     try:
