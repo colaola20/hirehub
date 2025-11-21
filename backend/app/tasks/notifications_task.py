@@ -97,6 +97,9 @@ def daily_digest_worker(app):
 
             app.logger.info("[DailyDigestWorker] Started")
 
+            # 24 hours * 60 minutes/hour * 60 seconds/minute
+            SLEEP_TIME_SECONDS = 24 * 60 * 60
+
             while True:
                 try:
                     users = DatabaseService.get_all(User)
@@ -147,7 +150,7 @@ def daily_digest_worker(app):
                 except Exception as e:
                     app.logger.exception("[DailyDigestWorker] Error: %s", e)
 
-                time.sleep(10)  # 24 hours
+                time.sleep(SLEEP_TIME_SECONDS)  # 24 hours
 
     threading.Thread(target=_worker, daemon=True).start()
 
@@ -163,6 +166,9 @@ def weekly_insights_worker(app):
              Notification, mail, db, Message) = _load_dependencies()
 
             app.logger.info("[WeeklyInsightsWorker] Started")
+
+            # 7 days * 24 hours/day * 60 minutes/hour * 60 seconds/minute
+            SLEEP_TIME_SECONDS = 7 * 24 * 60 * 60
 
             while True:
                 try:
@@ -195,7 +201,7 @@ def weekly_insights_worker(app):
                 except Exception as e:
                     app.logger.exception("[WeeklyInsightsWorker] Error: %s", e)
 
-                time.sleep(10)  # 7 days
+                time.sleep(SLEEP_TIME_SECONDS)  # 7 days
 
     threading.Thread(target=_worker, daemon=True).start()
 
@@ -211,6 +217,9 @@ def job_match_worker(app):
              Notification, mail, db, Message) = _load_dependencies()
 
             app.logger.info("[JobMatchWorker] Started")
+
+            # 4 hours * 60 minutes/hour * 60 seconds/minute
+            SLEEP_TIME_SECONDS = 4 * 60 * 60
 
             while True:
                 try:
@@ -241,7 +250,7 @@ def job_match_worker(app):
                 except Exception:
                     app.logger.exception("[JobMatchWorker] Error")
 
-                time.sleep(10)  # 4 hours
+                time.sleep(SLEEP_TIME_SECONDS)  # 4 hours
 
     threading.Thread(target=_worker, daemon=True).start()
 
@@ -257,6 +266,9 @@ def deadline_worker(app):
              Notification, mail, db, Message) = _load_dependencies()
 
             app.logger.info("[DeadlineWorker] Started")
+
+            # 12 hours * 60 minutes/hour * 60 seconds/minute
+            SLEEP_TIME_SECONDS = 12 * 60 * 60
 
             while True:
                 try:
@@ -294,7 +306,7 @@ def deadline_worker(app):
                 except Exception:
                     app.logger.exception("[DeadlineWorker] Error")
 
-                time.sleep(10)
+                time.sleep(SLEEP_TIME_SECONDS) # 12 hours
 
     threading.Thread(target=_worker, daemon=True).start()
 
@@ -303,12 +315,10 @@ def deadline_worker(app):
 # REGISTER ALL WORKERS
 # ============================================================
 
-# app/tasks/notifications_task.py - Inside init_notification_workers
-# app/tasks/notifications_task.py - Inside init_notification_workers
 def init_notification_workers(app):
     print("🔥 init_notification_workers() CALLED")
     daily_digest_worker(app)
     weekly_insights_worker(app)
-    job_match_worker(app)# 🟢 RECOMMENDATION: Uncomment the deadline worker
+    job_match_worker(app)
     deadline_worker(app) 
     app.logger.info("[NotificationSystem] All workers started successfully.")
