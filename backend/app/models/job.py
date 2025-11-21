@@ -20,7 +20,7 @@ class Job(db.Model):
     employment_type = db.Column(db.String(), nullable=True)
     skills_extracted = db.Column(db.JSON, nullable=True)
     skills_by_category = db.Column(db.JSON, nullable=True)
-
+    expires_at = db.Column(db.DateTime, nullable=True)
 
 
     __table_args__ = (

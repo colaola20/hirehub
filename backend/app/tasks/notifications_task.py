@@ -77,7 +77,12 @@ def create_in_app_notification(Notification, DatabaseService, user_email, n_type
         created_at=datetime.now(timezone.utc),
         is_read=False
     )
-    DatabaseService.create(note)
+    try:
+        # Assuming DatabaseService.create commits. If not, you need db.session.commit()
+        DatabaseService.create(note)
+        current_app.logger.info(f"Notification created for {user_email}")
+    except Exception as e:
+        current_app.logger.error(f"Failed to commit notification for {user_email}: {e}")
 
 
 # ============================================================
@@ -142,7 +147,7 @@ def daily_digest_worker(app):
                 except Exception as e:
                     app.logger.exception("[DailyDigestWorker] Error: %s", e)
 
-                time.sleep(60 * 60 * 24)  # 24 hours
+                time.sleep(10)  # 24 hours
 
     threading.Thread(target=_worker, daemon=True).start()
 
@@ -190,7 +195,7 @@ def weekly_insights_worker(app):
                 except Exception as e:
                     app.logger.exception("[WeeklyInsightsWorker] Error: %s", e)
 
-                time.sleep(60 * 60 * 24 * 7)  # 7 days
+                time.sleep(10)  # 7 days
 
     threading.Thread(target=_worker, daemon=True).start()
 
@@ -236,7 +241,7 @@ def job_match_worker(app):
                 except Exception:
                     app.logger.exception("[JobMatchWorker] Error")
 
-                time.sleep(60 * 60 * 4)  # 4 hours
+                time.sleep(10)  # 4 hours
 
     threading.Thread(target=_worker, daemon=True).start()
 
@@ -289,7 +294,7 @@ def deadline_worker(app):
                 except Exception:
                     app.logger.exception("[DeadlineWorker] Error")
 
-                time.sleep(60 * 60 * 12)
+                time.sleep(10)
 
     threading.Thread(target=_worker, daemon=True).start()
 

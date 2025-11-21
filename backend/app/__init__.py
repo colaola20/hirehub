@@ -105,22 +105,26 @@ def create_app():
        # ---------------------------------------
     # Notification Workers (Safe Initialization)
     # ---------------------------------------
-    init_notification_workers = None  # <-- ALWAYS define it first
+    init_notification_workers = None
 
     try:
+        # Use relative import for clean structure if possible
         from app.tasks.notifications_task import init_notification_workers as worker_func
         init_notification_workers = worker_func
     except Exception as e:
+        # You should see this if the import fails
         app.logger.error(f"❌ Failed to import notification workers: {e}")
         init_notification_workers = None
 
-    # Start workers ONLY once (avoid Flask reloader duplication)
-    if init_notification_workers is not None and os.environ.get("WERKZEUG_RUN_MAIN") == "true":
+    # 🟢 DEBUG FIX: Remove the 'os.environ.get("WERKZEUG_RUN_MAIN") == "true"' check
+    if init_notification_workers is not None:
         try:
             init_notification_workers(app)
-            app.logger.info("✔ Notification workers started (safe mode).")
+            # You should see this in your console/logs now!
+            app.logger.info("✔ Notification workers started (DEBUG mode).") 
         except Exception as e:
             app.logger.error(f"❌ Failed to start notification workers: {e}")
     else:
-        app.logger.info("ℹ Reloader detected OR workers unavailable — workers not started.")
+        app.logger.info("ℹ Workers unavailable — workers not started.")
+
     return app
