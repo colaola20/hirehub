@@ -11,13 +11,17 @@ const Documents = () => {
     const [error, setError] = useState("");
     const [result, setResult] = useState(null);
     const [showError, setShowError] = useState(false)
-    const [errorTitle, seetErrorTitle] = useState("")
+    const [errorTitle, setErrorTitle] = useState("")
     const [errorDescription, setErrorDescription] = useState("")
-    const fileInputRef = useRef(null);
 
-    const handleFileChange = async (e) => {
+    const [loadingFileType, setLoadingFileType] = useState("")
+    const coverInputRef = useRef(null);
+    const resumeInputRef = useRef(null);
+
+    const handleFileChange = async (e, type) => {
+        setLoadingFileType(type)
         const selectedFile = e.target.files?.[0];
-        if (!selectedFile) return;
+        if (!selectedFile) return
         
         setShowError(false);
         setResult(null);
@@ -27,23 +31,22 @@ const Documents = () => {
         // Automatically upload after file selection
         setUploading(true);
         try {
-            const res = await upload(selectedFile);
+            const res = await upload(selectedFile, type);
             setResult(res);
         } catch (err) {
-            seetErrorTitle("Upload failed");
-            setErrorDescription("");
+            setErrorTitle("Upload failed");
+            setErrorDescription(err?.message || String(err) || "Unknown error");
             setShowError(true);
         } finally {
             setUploading(false);
             setProgress(0);
             // Reset file input
-            if (fileInputRef.current) {
-                fileInputRef.current.value = '';
-            }
+            if (type === "resume" && resumeInputRef.current) resumeInputRef.current.value = "";
+            if (type === "cover" && coverInputRef.current) coverInputRef.current.value = "";
         }
     }
 
-    const upload = (fileToUpload) => {
+    const upload = (fileToUpload, type) => {
         return new Promise((resolve, reject) => {
         const token = localStorage.getItem("token");
         if (!token) {
@@ -53,6 +56,7 @@ const Documents = () => {
 
         const form = new FormData();
         form.append("file", fileToUpload);
+        if (type) form.append("type", type);
 
         const xhr = new XMLHttpRequest();
         xhr.open("POST", "/api/upload", true);
@@ -84,10 +88,26 @@ const Documents = () => {
         xhr.send(form);
         });
     };
- 
-    const handleUploadClick = async (e) => {
-        fileInputRef.current?.click()
-    };
+
+
+    const handleOpenDocs = async (documentId) => {
+        const token = localStorage.getItem('token');
+        try {
+            const viewDocs = await fetch(`/api/documents/${documentId}/view`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+
+            const data = await viewDocs.json();
+
+            window.open(data.url, '_blank')
+        } catch (err) {
+            setErrorTitle("Failed to open document");
+            setErrorDescription(err.message || "");
+            setShowError(true);
+        }
+    }
+
+    
 
     return (
         <div className={styles.container}>
@@ -100,30 +120,30 @@ const Documents = () => {
                     <div className={styles.uploadBtnContainer}>
                         <div>
                             <input
-                                ref={fileInputRef}
+                                ref={resumeInputRef}
                                 type="file"
                                 accept="*/*"
-                                onChange={handleFileChange}
+                                onChange={(e) => {handleFileChange(e, "resume")}}
                                 style={{ display: 'none' }}
                             />
-                            <Btn onClick={handleUploadClick} disabled={uploading} icon={<Plus size={20}/>} label="Add Resume"/>
+                            <Btn onClick={() => resumeInputRef.current?.click()} disabled={uploading} icon={<Plus size={20}/>} label="Add Resume"/>
                             {result && (
                                 <div>
                                     <div>Uploaded:</div>
-                                    <div><strong>{result.filename}</strong></div>
-                                    <div><a href={result.url} target="_blank" rel="noopener noreferrer">Open file</a></div>
+                                    <div><strong>{result.original_filename}</strong></div>
+                                    <div onClick={() => handleOpenDocs(result.document_id)}>Open file</div>
                                 </div>
                             )}
                         </div>
                         <div>
                             <input
-                                ref={fileInputRef}
+                                ref={coverInputRef}
                                 type="file"
                                 accept="*/*"
-                                onChange={handleFileChange}
+                                onChange={(e) => {handleFileChange(e, "cover_letter")}}
                                 style={{ display: 'none' }}
                             />
-                            <Btn onClick={handleUploadClick} disabled={uploading} icon={<Plus size={20}/>} label="Add Cover Letter"/>
+                            <Btn onClick={() => coverInputRef.current?.click()} disabled={uploading} icon={<Plus size={20}/>} label="Add Cover Letter"/>
                         </div>
                     </div>
                 </div>
