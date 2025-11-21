@@ -62,6 +62,7 @@ def upload_file():
     try:
         user_id = get_jwt_identity()
         user = User.query.get(user_id)
+        type = request.form.get('type') 
 
         if not user:
             return jsonify({'error': 'User not found'}), 404
@@ -107,7 +108,8 @@ def upload_file():
         doc = Document(
             user_email = user.email,
             file_path = unique_filename,
-            document_type = file_extension
+            document_type = type,
+            original_filename = original_filename
         )
 
         try:
