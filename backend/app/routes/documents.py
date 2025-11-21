@@ -52,6 +52,10 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'pdf', 'txt', 'doc'}
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+
+# ------------------------
+# Saving docs in s3
+# ------------------------
 @documents_bp.route('/api/upload', methods=['POST'])
 @jwt_required()
 def upload_file():
@@ -102,7 +106,7 @@ def upload_file():
 
         doc = Document(
             user_email = user.email,
-            file_path = file_url,
+            file_path = unique_filename,
             document_type = file_extension
         )
 
@@ -116,14 +120,90 @@ def upload_file():
 
         return jsonify({
             'message': 'File uploaded successfully',
+            'original_filename': original_filename,
             'filename': unique_filename,
-            'url': file_url
+            'document_id': created_user.document_id
         }), 200
             
     except Exception as e:
         logger.exception("Unhandled upload error")
         return jsonify({'error': 'Internal server error', 'details': str(e)}), 500
+    
 
+# ------------------------
+# Download a doc using doc's id
+# ------------------------
+@documents_bp.route('/api/documents/<int:document_id>/download', methods=["GET"])
+@jwt_required()
+def get_document_url(document_id):
+    try:
+        user_id = get_jwt_identity()
+        user = User.query.get(user_id)
+
+        # Get document from database
+        document = Document.query.get(document_id)
+
+        if not document:
+            return jsonify({'error': "Document not found"}), 404
+        
+        if document.user_email != user.email:
+            return jsonify({'error': 'Unauthorized'}), 403
+        
+        # generate pre-signed URL (valid for 1 hr)
+        presigned_url = s3_client.generate_presigned_url(
+            'get_object',
+            Params={
+                'Bucket': BUCKET_NAME,
+                'Key': document.fille_path
+            },
+            ExpiresIn=3600
+        )
+
+        return jsonify({
+            'url': presigned_url,
+            'filename': document.file_path.split('/')[-1],
+            'expires_in': 3600
+        }), 200
+    except Exception as e:
+        logger.exception("Failed to generate download URL")
+        return jsonify({'error': 'Failed to generate download link'}), 500
+    
+# ------------------------
+# Viewing a doc using doc's id
+# ------------------------
+@documents_bp.route('/api/documents/<int:document_id>/view', methods=['GET'])
+@jwt_required()
+def view_document(document_id):
+    try:
+        user_id = get_jwt_identity()
+        user = User.query.get(user_id)
+
+        document = Document.query.get(document_id)
+
+        if not document:
+            return jsonify({'error': 'Document not found'}), 404
+        
+        if document.user_email != user.email:
+            return jsonify({'error': 'Unauthorized'}), 403
+        
+        presigned_url = s3_client.generate_presigned_url(
+            'get_object',
+            Params={
+                'Bucket': BUCKET_NAME,
+                'Key': document.file_path,
+                'ResponseContentDisposition': 'inline'  # Opens in browser instead of downloading
+            },
+            ExpiresIn=3600
+        )
+
+        return jsonify({
+            'url': presigned_url,
+            'document_type': document.document_type
+        }), 200
+        
+    except Exception as e:
+        logger.exception("Failed to generate view URL")
+        return jsonify({'error': 'Failed to generate view link'}), 500
 
 # ------------------------
 # Get all documents for signed-in user
