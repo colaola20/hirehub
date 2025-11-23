@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-import PersonalizedNavbar from '../components/PersonalizedNavbar'
 import { Link } from "react-router-dom";
 import * as Yup from 'yup'
 
@@ -15,7 +14,6 @@ import JobStep from "../components/resumeform_steps/JobStep";
 import SchoolStep from "../components/resumeform_steps/SchoolStep";
 import ProjectStep from "../components/resumeform_steps/ProjectStep";
 
-// import './resumeform.css';
 import styles from './resumeform.module.css';
 
 const ResumeForm = () => {
@@ -34,7 +32,7 @@ const ResumeForm = () => {
         },
 
         /* ---SOCIAL INFO--- */
-        step2: { // could combine this and misc into personal, decide later
+        step2: {
             linkedIn: '', github: '', portfolio: '',
         },
 
@@ -44,7 +42,7 @@ const ResumeForm = () => {
         },
 
         /* ---MAIN SECTIONS--- */
-        step4: { // maybe split each part into its own steps? 
+        step4: {
 
             jobs: [{ company: '', role: '', roleTime: '' }]
 
@@ -169,8 +167,27 @@ const ResumeForm = () => {
             'At least one language required',
             val => val.split(',').filter(s => s.trim()).length > 0
         ),
-        interests: Yup.array(),
-        certs: Yup.array(),
+        interests: Yup.string().transform(value => {
+            if (!value || value.trim() === ""){
+                return undefined;
+            }
+            return value
+                .split (',')
+                .map(v=> v.trim())
+                .filter(Boolean);
+        })
+        .notRequired(),
+
+        certs: Yup.string().transform(value => {
+            if (!value || value.trim() === ""){
+                return undefined;
+            }
+            return value
+                .split (',')
+                .map(v=> v.trim())
+                .filter(Boolean);
+        })
+        .notRequired(),
     });
 
     const jobValidation = Yup.object({
@@ -266,41 +283,24 @@ const ResumeForm = () => {
     }
 
 
-
-
-
-
     /*
         TODO -------------------------------------------- 
-        Add + option for work experience, school and projects (just need to add functionality)
-        fix heights per step and/or make smooth transition when height changes
 
-        make form more consistent with styling
         fix spacing between elements
         look at other resume forms to get ideas
 
         fix fields - styling and layout
-        add validation and error messages
-        connect to backend (generate resume at the end)
-        add functionality to dynamically add multiple entries for work experience, education, and projects
         save progress functionality?
         -----------------------------------------------
     */
 
 
     // ---------------------------------Step Components---------------------------------
-    // Currently 6 steps
-    // add 7th to view resume
+    // Currently 7 steps, 7th is to view the resume
 
-
-
-
-    //  Change the style of the form later, this is just a basic layout for now
-    // currently here just to see how form will be styled before i fully implement each step
     return (
 
         <div className={styles["container"]}>
-            {/* <PersonalizedNavbar /> */}
             <div className={styles['back-btn']}>
                 <Link to="/dev_dashboard">
                     <CancelBtn
@@ -312,21 +312,18 @@ const ResumeForm = () => {
 
             <div className={styles["form-box"]}>
                 <h1>Let's Build Your Resume!</h1>
-                <br />
 
-                {/* Debug Progress bar component later on */}
                 <ProgressIndicator currentStep={currentStep} />
                 <div className={styles["prog-btn"]}>
-                    {currentStep > 1 ? (<button className={styles["prog-btn-btn"]} onClick={prevStep}>Previous</button>) : (<span className={styles.placeholder}></span>)}
+                    {currentStep > 1 ? (<CancelBtn label={"Back"} onClick={prevStep}/>) : (<span className={styles.placeholder}></span>)}
                     <div className={styles["progress-indicator"]}>
                         <span>Step {currentStep} of 7</span>
                     </div>
-                    {currentStep < 6 && (<button className={styles["prog-btn-btn"]} onClick={nextStep}>Next</button>)}
+                    {currentStep < 6 && (<CancelBtn label={"Next"} onClick={nextStep}/>)}
                     {currentStep === 6 && (<Btn
                         label={"Generate"}
                         onClick={async () => {
                             const response = await submitForm();
-                            // if (!response) return;
                             setFormData(prev => ({ ...prev }));
                             setCurrentStep(7);
                         }}
