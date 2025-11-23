@@ -195,3 +195,25 @@ def update_application_notes(application_id):
         db.session.rollback()
         print("Update Notes Error:", e)
         return jsonify({'error': 'Failed to update notes', 'details': str(e)}), 500
+
+
+@applications_bp.route('/count', methods=['GET'])
+@jwt_required()
+def get_application_count():
+    """Get total number of applications for current user"""
+    try:
+        user_id = int(get_jwt_identity())
+        user = User.query.get(user_id)
+
+        if not user:
+            return jsonify({'error': 'User not found'}), 404
+
+        total = Application.query.filter_by(user_id=user.id).count()
+
+        return jsonify({
+            'count': total
+        }), 200
+
+    except Exception as e:
+        print("Get Application Count Error:", e)
+        return jsonify({'error': 'Failed to get application count', 'details': str(e)}), 500

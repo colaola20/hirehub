@@ -79,28 +79,49 @@ def register_user():
         if existing_email:
             return jsonify({'status': 'error', 'message': 'Email already exists'}), 409
 
-        # Create new user
-        new_user = User(
-            username=data['username'],
-            email=data['email'],
-            first_name=data['first_name'],
-            last_name=data['last_name']
-        )
-        new_user.set_password(data['password'])
+        try:
+            # Create user
+            new_user = User(
+                username=data['username'],
+                email=data['email'],
+                first_name=data['first_name'],
+                last_name=data['last_name']
+            )
+            new_user.set_password(data['password'])
+            db.session.add(new_user)
+            db.session.flush()  # ensures new_user.id exists
 
-        created_user = DatabaseService.create(new_user)
+            # Create profile
+            new_profile = Profile(
+                user_email=new_user.email,
+                headline="",
+                education="",
+                experience="",
+                profile_image=None
+            )
+            db.session.add(new_profile)
+
+            # Commit the whole transaction
+            db.session.commit()
+
+        except Exception as e:
+            db.session.rollback()   # IMPORTANT
+            return jsonify({'status': 'error', 'message': str(e)}), 500
 
         # Create access token
-        access_token = create_access_token(identity=str(created_user.id))
+        access_token = create_access_token(identity=str(new_user.id))
 
         return jsonify({
             'status': 'success',
             'message': 'User registered successfully',
-            'data': created_user.to_dict(),
+            'data': new_user.to_dict(),
             'access_token': access_token
         }), 201
 
     except Exception as e:
+        import traceback
+        print("\n❌ Registration Error:", e)
+        traceback.print_exc()
         return jsonify({
             'status': 'error',
             'message': 'Failed to register user',

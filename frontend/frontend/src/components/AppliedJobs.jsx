@@ -168,7 +168,7 @@ const AppliedJobs = () => {
             <span><StickyNote size={16} /> Notes</span>
             <span><ExternalLink size={16} /> URL</span>
             <span onClick={() => sortJobs("applied_at")} className={styles.sortable}>
-              <Clock size={16} /> Applied At <span className={styles.arrow}>{getSortIcon("applied_at")}</span>
+              <Clock size={16} /> Applied on <span className={styles.arrow}>{getSortIcon("applied_at")}</span>
             </span>
           </div>
 

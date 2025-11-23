@@ -59,6 +59,20 @@ const Profile = () => {
                     favoritesCount = favoritesData.count || 0;
                 }
 
+                // Fetch applications count
+                const applicationsResponse = await fetch('/api/applications/count', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                let applicationsCount = 0;
+                if (applicationsResponse.ok) {
+                    const appsData = await applicationsResponse.json();
+                    applicationsCount = appsData.count || 0;
+                }
+
                 // Transform the data to match component structure
                 const transformedData = {
                     // User data
@@ -77,7 +91,7 @@ const Profile = () => {
                     profileImage: profileData.profile.profile_image || null,
 
                     // Computed data
-                    numberApplications: 0, // TODO: Add applications endpoint
+                    numberApplications: applicationsCount, 
                     favorites: favoritesCount
                 };
 

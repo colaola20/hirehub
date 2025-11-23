@@ -262,20 +262,26 @@ def analyze_job_fit():
 
         profile = Profile.query.filter_by(user_email=user.email).first()
         if not profile:
-            return jsonify({"error": "No profile found for user"}), 400
+            profile = Profile(
+                user_email=user.email,
+                headline="",
+                education="",
+                experience="",
+                profile_image=None
+            )
+            db.session.add(profile)
+            db.session.commit()
 
         # Pull skills from the skills table
-        user_skills = [skill.skill_name for skill in profile.skills]
+        user_skills = [skill.skill_name for skill in profile.skills] if profile.skills else []
 
         # Pull experience from the profile
-        user_experience = profile.experience or ""
+        user_experience = (profile.experience or "")[:400]
 
         # Get job info from request
         data = request.get_json()
         job = data.get("job", {})
         skills_extracted = job.get("skills_extracted", [])
-
-        user_experience = user_experience[:400]
         
        # ===========================
         #  OpenAI Model Options (2025)
