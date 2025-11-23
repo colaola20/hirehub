@@ -41,13 +41,17 @@ const ResumeTemplate = ({ data }) => {
             }
             else { setHasRoom(false) }
         }
-    })
+    }, [])
+
+
+
 
     return (
         <div ref={resumeRef}>
             <div className={style['header']}>
                 <h1 className={style['headerName']}>{step1.fullname}</h1>
-                <p>Email: {step1.email} | Phone: {step1.phNum} | <a href={step2.linkedIn}>LinkedIn</a> | <a href={step2.github}>GitHub</a></p>
+                <p>Email: {step1.email} | Phone: {step1.phNum} | {step1.city} | <a href={step2.linkedIn}>LinkedIn</a> | 
+                <a href={step2.github}> GitHub</a></p>
                 <hr className={style['divider']}></hr>
 
             </div>
@@ -58,17 +62,17 @@ const ResumeTemplate = ({ data }) => {
                         <h2 className={style.sectionTitle}>Skills</h2>
                         <hr className={style['dividerSmall']}></hr>
 
-                        <div className={style.entry}>
+                        <div className={style.miscSection}>
                             {skills.length > 0 && (
-                                <div className={style.entryDescription}>
-                                    <p style={{ wordSpacing: '8px' }}>Skills - {skills.join(", ")}</p>
-                                </div>
+                                
+                                    <p style={{ wordSpacing: '5px' }}>Skills - {skills.join(", ")}</p>
+                                
                             )}
 
                             {languages.length > 0 && (
-                                <div className={style.entryDescription}>
-                                    <p style={{ wordSpacing: '8px' }}> Languages - {languages.join(", ")}</p>
-                                </div>
+                                
+                                    <p style={{ wordSpacing: '5px' }}> Languages - {languages.join(", ")}</p>
+                                
                             )}
                         </div>
 
@@ -78,7 +82,7 @@ const ResumeTemplate = ({ data }) => {
                     <h2 className={style.sectionTitle}>Projects</h2>
                     <hr className={style['dividerSmall']}></hr>
 
-                    {step6 && step6.projects && step6.projects.length > 0 ? (
+                    {step6 && step6.projects && step6.projects.length > 0 && (
                         step6.projects.map((project, index) => {
                             const title = project.projTitle || "";
                             const desc = project.projDesc || "";
@@ -89,15 +93,15 @@ const ResumeTemplate = ({ data }) => {
                                 <div key={index} className={style.entry}>
                                     <div className={style.entryHeader}>
                                         <span className={style.entryTitle}>{title}</span>
-                                        {link && <p className={style.entryLink}><a href={link} target="_blank" rel="noopener noreferrer">{link}</a></p>}
+                                        {link && <p className={style.entryLink}><a href={link} target="_blank" rel="noopener noreferrer">Project Link</a></p>}
 
                                     </div>
                                     <p className={style.entryDescription}>{desc}</p>
 
                                 </div>
                             );
-                        })
-                    ) : (<p>No projects listed.</p>)}
+                        }))}
+                    
 
                 </div>
                 <div className={style['experience']}>
@@ -118,8 +122,8 @@ const ResumeTemplate = ({ data }) => {
                                         <p className={style.entryDescription}>{roleTime}</p>
 
                                     </div>
-                                    <p className={style.entryDescription}>{role}</p>
-                                    <p className={style.entryDescription}>~~~Description (Optional, but recommended)~~~</p>
+                                    <p className={style.entryDescription}>{role} -  ~~~Description (Optional, but recommended)~~~</p>
+                                    {/* <p className={style.entryDescription}>~~~Description (Optional, but recommended)~~~</p> */}
                                 </div>
                             );
                         })
