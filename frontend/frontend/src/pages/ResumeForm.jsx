@@ -315,11 +315,11 @@ const ResumeForm = () => {
 
                 <ProgressIndicator currentStep={currentStep} />
                 <div className={styles["prog-btn"]}>
-                    {currentStep > 1 ? (<button className={styles["prog-btn-btn"]} onClick={prevStep}>Previous</button>) : (<span className={styles.placeholder}></span>)}
+                    {currentStep > 1 ? (<CancelBtn label={"Back"} onClick={prevStep}/>) : (<span className={styles.placeholder}></span>)}
                     <div className={styles["progress-indicator"]}>
                         <span>Step {currentStep} of 7</span>
                     </div>
-                    {currentStep < 6 && (<button className={styles["prog-btn-btn"]} onClick={nextStep}>Next</button>)}
+                    {currentStep < 6 && (<CancelBtn label={"Next"} onClick={nextStep}/>)}
                     {currentStep === 6 && (<Btn
                         label={"Generate"}
                         onClick={async () => {
