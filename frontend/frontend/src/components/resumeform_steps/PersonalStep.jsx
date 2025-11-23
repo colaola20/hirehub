@@ -89,16 +89,6 @@ const PersonalStep = ({ formData, onChange, errors }) => (  // PERSONAL INFO STE
             {errors.zip && <p style={{ color: 'red' }}>{errors.zip}</p>}
         </div>
 
-        {/* <p>Summary</p>
-            <input
-                type="text"
-                name='summary'
-                placeholder="Summary Generation (separate keywords by commas)"
-                value={formData.summary}
-                onChange={onChange}
-
-            /> */}
-
     </div>
 );
 

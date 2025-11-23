@@ -11,8 +11,6 @@ const JobComponent = ({ job, index, updateJobs, removeJob, removeable }) => {
                 onChange={(e) => updateJobs(index, e.target.name, e.target.value)}
                 required
             />
-            {/* {errors.company && <p style={{ color: 'red' }}>{errors.company}</p>} */}
-            {/* <p>Position</p> */}
             <input
                 type="text"
                 name='role'
@@ -21,8 +19,6 @@ const JobComponent = ({ job, index, updateJobs, removeJob, removeable }) => {
                 onChange={(e) => updateJobs(index, e.target.name, e.target.value)}
                 required
             />
-            {/* {errors.role && <p style={{ color: 'red' }}>{errors.role}</p>} */}
-            {/* <p>Employement Period</p> */}
             <input
                 type="text"
                 name='roleTime'
@@ -86,7 +82,6 @@ const JobStep = ({ formData, onChange, errors }) => { // JOB HISTORY INFO STEP /
             </div>
             {jobs.length < 3 &&
             <button type="button" onClick={addJob}>+</button>}
-            {/* <button type='button' onClick={removeJob}>-</button> */}
         </div>
     )
 };

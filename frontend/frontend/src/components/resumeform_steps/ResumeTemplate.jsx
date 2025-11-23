@@ -6,9 +6,7 @@ const ResumeTemplate = ({ data }) => {
 
     const resumeRef = useRef(null);
     const [hasRoom, setHasRoom] = useState(false);
-    // const [hasMoreRoom, setHasMoreRoom] = useState(false);
     const { step1, step2, step3, step4, step5, step6 } = data;
-    // const tooSmall = true; // regular boolean for debugging purposes rn
 
     const preSkills = Array.isArray(step3.skills)
         ? step3.skills
@@ -35,9 +33,6 @@ const ResumeTemplate = ({ data }) => {
 
             if (height < maxHeight - 123) {
                 setHasRoom(true)
-                // if (height < maxHeight - 300) {
-                //     setHasMoreRoom(true)
-                // }
             }
             else { setHasRoom(false) }
         }
@@ -123,7 +118,6 @@ const ResumeTemplate = ({ data }) => {
 
                                     </div>
                                     <p className={style.entryDescription}>{role} -  ~~~Description (Optional, but recommended)~~~</p>
-                                    {/* <p className={style.entryDescription}>~~~Description (Optional, but recommended)~~~</p> */}
                                 </div>
                             );
                         })
@@ -145,11 +139,9 @@ const ResumeTemplate = ({ data }) => {
                                 <div key={index} className={style.entry}>
                                     <div className={style.entryHeader}>
                                         <span className={style.entryTitle}>{school}</span>
-                                        {/* <p className={style.entryDescription}>{degree}</p> */}
                                         <p className={style.entryLink}>{gradYear}</p>
 
                                     </div>
-                                    {/* <span className={style.entryTitle}>{school}</span> */}
                                     <p className={style.entryDescription}>Degree in {degree}</p>
 
                                 </div>
