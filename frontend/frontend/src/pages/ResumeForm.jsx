@@ -169,8 +169,27 @@ const ResumeForm = () => {
             'At least one language required',
             val => val.split(',').filter(s => s.trim()).length > 0
         ),
-        interests: Yup.array(),
-        certs: Yup.array(),
+        interests: Yup.string().transform(value => {
+            if (!value || value.trim() === ""){
+                return undefined;
+            }
+            return value
+                .split (',')
+                .map(v=> v.trim())
+                .filter(Boolean);
+        })
+        .notRequired(),
+        
+        certs: Yup.string().transform(value => {
+            if (!value || value.trim() === ""){
+                return undefined;
+            }
+            return value
+                .split (',')
+                .map(v=> v.trim())
+                .filter(Boolean);
+        })
+        .notRequired(),
     });
 
     const jobValidation = Yup.object({
