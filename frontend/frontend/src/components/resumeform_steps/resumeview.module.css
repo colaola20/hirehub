@@ -1,17 +1,26 @@
+.resumeWrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.resumeScaler {
+    display: inline-block;
+}
+
 .resume-preview {
     width: 816px;
     height: 1056px;
-    background-color: rgb(255, 255, 255);
-    color: black;
+    background: white;
     border: 1px solid #eee;
     border-radius: 4px;
     padding: 16px;
-    width: 1000px;
     margin-bottom: 20px;
+    color: black;
     font-family: Georgia, 'Times New Roman', Times, serif;
 }
 
-.viewBtn{
+.viewBtn {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -20,7 +29,7 @@
 
 /* ~~~~~~~~~~~~~~~~ RESUMETEMPLATE STYLES BELOW ~~~~~~~~~~~~~~~~ */
 
-.headerName{
+.headerName {
     font-size: 40px;
 }
 
@@ -31,7 +40,7 @@
     height: 2px;
 }
 
-.dividerSmall{
+.dividerSmall {
     background-color: black;
     border: none;
     height: 2px;
@@ -79,9 +88,34 @@
     display: flex;
     flex-direction: row;
     align-items: start;
+    text-align: left;
 
     margin-top: 5px;
 }
+
+.miscSection {
+    margin: 0 25px 25px 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+}
+
+.miscSection p {
+    margin: 1px;
+    word-spacing: 5px;
+}
+
+/* .miscDescription{
+    display: flex;
+    flex-direction: row;
+    align-items: start;
+    gap: 2px;
+} */
+
+/* .miscDescription p {
+    margin: 0;
+    word-spacing: 5px;
+} */
 
 
 .projects,
@@ -90,4 +124,56 @@
 .misc {
     margin-bottom: 25px;
     font-size: 18px;
+}
+
+
+@media (max-width: 600px) {
+
+    .resumeScaler {
+        transform: scale(0.65);
+    }
+
+    .headerName {
+        font-size: 26px;
+        text-align: center;
+    }
+
+    .sectionTitle {
+        font-size: 16px;
+        margin-left: 10px;
+    }
+
+    .entry {
+        margin: 0 10px 15px 15px;
+    }
+
+    .entryHeader {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+
+    .entryTitle {
+        font-size: 14px;
+    }
+
+    .entryDescription,
+    .miscDescription {
+        flex-direction: column;
+        text-align: left;
+        margin-top: 4px;
+    }
+
+    .projects,
+    .experience,
+    .education,
+    .misc {
+        font-size: 15px;
+    }
+}
+
+@media (max-width: 900px) {
+    .resumeScaler {
+        transform: scale(0.85);
+    }
 }
