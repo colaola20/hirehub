@@ -33,7 +33,7 @@ const ResumeTemplate = ({ data }) => {
 
             const maxHeight = 1056; // in pixels
 
-            if (height < maxHeight - 100) {
+            if (height < maxHeight - 123) {
                 setHasRoom(true)
                 // if (height < maxHeight - 300) {
                 //     setHasMoreRoom(true)
@@ -119,7 +119,7 @@ const ResumeTemplate = ({ data }) => {
                                 <div key={index} className={style.entry}>
                                     <div className={style.entryHeader}>
                                         <span className={style.entryTitle}>{company}</span>
-                                        <p className={style.entryDescription}>{roleTime}</p>
+                                        <p className={style.entryLink}>{roleTime}</p>
 
                                     </div>
                                     <p className={style.entryDescription}>{role} -  ~~~Description (Optional, but recommended)~~~</p>
@@ -146,7 +146,7 @@ const ResumeTemplate = ({ data }) => {
                                     <div className={style.entryHeader}>
                                         <span className={style.entryTitle}>{school}</span>
                                         {/* <p className={style.entryDescription}>{degree}</p> */}
-                                        <p className={style.entryDescription}>{gradYear}</p>
+                                        <p className={style.entryLink}>{gradYear}</p>
 
                                     </div>
                                     {/* <span className={style.entryTitle}>{school}</span> */}
