@@ -1,4 +1,4 @@
-.resume-form{
+.resume-form {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -8,7 +8,7 @@
     overflow: hidden;
 }
 
-.location-form{
+.location-form {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -16,14 +16,14 @@
     padding-bottom: 3px;
 }
 
-.location-validation{
+.location-validation {
     display: flex;
     flex-direction: row;
     align-items: center;
     gap: 100px;
 }
 
-.job-form{
+.job-form {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -34,7 +34,7 @@
     /* padding-bottom: 40px; */
 }
 
-.job-validation{
+.job-validation {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -44,7 +44,7 @@
     padding-bottom: 40px;
 }
 
-.school-form{
+.school-form {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -54,7 +54,7 @@
     /* padding-bottom: 30px; */
 }
 
-.school-validation{
+.school-validation {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -64,7 +64,7 @@
     padding-bottom: 30px;
 }
 
-.project-form{
+.project-form {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -75,7 +75,7 @@
     padding-bottom: 40px;
 }
 
-.projDesc{
+.projDesc {
     min-width: 250px;
     max-width: 600px;
     width: auto;
@@ -90,24 +90,44 @@
     transition: width 0.15s ease, height 0.15s ease;
 }
 
-@media (max-width: 1450px) {
-    .school-form, .job-form, .project-form{
+@media (max-width: 1670px) {
+    
+}
+
+@media (max-width: 1000px) {
+
+    .school-form,
+    .job-form,
+    .project-form {
         display: flex;
-        flex-direction: column;
+        flex-direction: row;
         align-items: center;
         justify-content: center;
+        flex-wrap: wrap;
     }
 }
 
-@media (max-width: 1550px){
-    .location-form, .location-validation{
-        display: flex;
-        flex-direction: column;
-        align-items: center;
+@media (max-width: 1150px) {
+
+    .location-form,
+    .location-validation {
+        display: grid;
+        grid-template-columns: repeat(2, 200px);
+        grid-template-rows: repeat(2, 40px);
+        gap: 20px;
         justify-content: center;
     }
 
-    .location-validation{
+
+    .location-validation {
         gap: 0px;
+    }
+}
+
+@media (max-width: 650px){
+    .location-form,
+    .location-validation {
+        display: flex;
+        flex-direction: column;
     }
 }

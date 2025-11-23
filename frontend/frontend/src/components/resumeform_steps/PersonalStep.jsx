@@ -8,6 +8,7 @@ const PersonalStep = ({ formData, onChange, errors }) => (  // PERSONAL INFO STE
             <span style={{ color: 'red', fontSize: '20px' }}> *</span>
         </p>
         <input
+            
             type="text"
             name='fullname'
             placeholder="Full Name"
@@ -38,6 +39,7 @@ const PersonalStep = ({ formData, onChange, errors }) => (  // PERSONAL INFO STE
         <p>Location</p>
         <div className="location-form">
             <input
+                className='field-wrap'
                 type="text"
                 name='address'
                 placeholder="Address"
@@ -48,6 +50,7 @@ const PersonalStep = ({ formData, onChange, errors }) => (  // PERSONAL INFO STE
 
             {/* City */}
             <input
+                className='field-wrap'
                 type="text"
                 name='city'
                 placeholder="City Name *"
@@ -58,6 +61,7 @@ const PersonalStep = ({ formData, onChange, errors }) => (  // PERSONAL INFO STE
 
             {/* State */}
             <input
+                className='field-wrap'
                 type="text"
                 name='state'
                 placeholder="State Name"
@@ -68,6 +72,7 @@ const PersonalStep = ({ formData, onChange, errors }) => (  // PERSONAL INFO STE
 
             {/* Zip */}
             <input
+                className='field-wrap'
                 type="text"
                 name='zip'
                 placeholder="Zip Code"
