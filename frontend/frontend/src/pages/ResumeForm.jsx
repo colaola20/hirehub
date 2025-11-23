@@ -179,7 +179,7 @@ const ResumeForm = () => {
                 .filter(Boolean);
         })
         .notRequired(),
-        
+
         certs: Yup.string().transform(value => {
             if (!value || value.trim() === ""){
                 return undefined;
@@ -331,7 +331,6 @@ const ResumeForm = () => {
 
             <div className={styles["form-box"]}>
                 <h1>Let's Build Your Resume!</h1>
-                <br />
 
                 {/* Debug Progress bar component later on */}
                 <ProgressIndicator currentStep={currentStep} />
