@@ -66,7 +66,7 @@
 
 .columns {
     display: grid;
-    grid-template-columns: 3fr 1fr 1fr;
+    grid-template-columns: 3fr 1fr 1fr 0.5fr;
     width: 100%;
     gap: 23px;
     padding: 10px;
@@ -81,7 +81,7 @@
 
 .dataRow {
   display: grid;
-  grid-template-columns: 3fr 1fr 1fr;
+  grid-template-columns: 3fr 1fr 1fr 0.5fr;
   gap: 23px;
   padding: 8px;
   border-bottom: 1px solid rgba(255,255,255,0.05);

@@ -19,6 +19,7 @@ const Documents = () => {
     const resumeInputRef = useRef(null);
 
     const [documents, setDocuments] = useState([])
+    const [documentsCount, setDocumentsCount] = useState(0)
 
     const handleFileChange = async (e, type) => {
         setLoadingFileType(type)
@@ -128,6 +129,7 @@ const Documents = () => {
 
                 const data = await response.json()
                 setDocuments(data.data)
+                setDocumentsCount(data.data.length)
                 console.log(data.data)
             } catch (err) {
                 console.error("Error fetching applied jobs:", err);
@@ -141,7 +143,9 @@ const Documents = () => {
         fetchDocuments()
     }, [])
 
-    
+    const handleDropdown = () => {
+        
+    }
 
     return (
         <div className={styles.container}>
@@ -149,7 +153,7 @@ const Documents = () => {
                 <div className={styles.docsUploading}>
                     <div className={styles.info}>
                         <Info />
-                        <p> You have 0 documents saved out of 5 available.</p>
+                        <p> You have {5-documentsCount} documents saved out of 5 available.</p>
                     </div>
                     <div className={styles.uploadBtnContainer}>
                         <div>
@@ -182,6 +186,7 @@ const Documents = () => {
                         <span>Name</span>
                         <span>Last Modified</span>
                         <span>Created</span>
+                        <span></span>
                     </div>
                     {documents.map((doc) => {
                         return (
@@ -189,6 +194,7 @@ const Documents = () => {
                                 <span>{doc.original_filename}</span>
                                 <span>{new Date(doc.updated_at).toLocaleString()}</span>
                                 <span>{new Date(doc.created_at).toLocaleString()}</span>
+                                <span><button onCLick={handleDropdown}>...</button></span>
                             </div>
                         )
                     })}

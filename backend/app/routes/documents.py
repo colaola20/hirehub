@@ -166,7 +166,7 @@ def get_document_url(document_id):
 
         return jsonify({
             'url': presigned_url,
-            'filename': document.file_path.split('/')[-1],
+            'filename': document.original_filename,
             'expires_in': 3600
         }), 200
     except Exception as e:
