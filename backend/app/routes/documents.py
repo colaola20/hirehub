@@ -47,7 +47,7 @@ s3_client = boto3.client(
 
 
 BUCKET_NAME = os.getenv('S3_BUCKET_NAME') #fix this
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'pdf', 'txt', 'doc'}
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'pdf', 'txt', 'doc', 'docx'}
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -124,7 +124,10 @@ def upload_file():
             'message': 'File uploaded successfully',
             'original_filename': original_filename,
             'filename': unique_filename,
-            'document_id': created_user.document_id
+            'document_id': created_user.document_id,
+            'created_at': doc.created_at.isoformat(),
+            'updated_at': doc.updated_at.isoformat(),
+
         }), 200
             
     except Exception as e:
@@ -229,7 +232,7 @@ def get_user_documents():
         for doc in documents:
             documents_list.append({
                 'id': doc.document_id,
-                'filename': doc.original_filename,
+                'original_filename': doc.original_filename,
                 'document_type': doc.document_type,
                 'created_at': doc.created_at.isoformat(),
                 'updated_at': doc.updated_at.isoformat(),

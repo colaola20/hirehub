@@ -35,6 +35,9 @@ const Documents = () => {
         try {
             const res = await upload(selectedFile, type);
             setResult(res);
+            setDocuments(prevDocuments=> {
+                return [...prevDocuments, res]
+            })
         } catch (err) {
             setErrorTitle("Upload failed");
             setErrorDescription(err?.message || String(err) || "Unknown error");
@@ -110,8 +113,7 @@ const Documents = () => {
         
     }
 
-    useEffect(() => {
-        const fetchDocuments = async () => {
+    const fetchDocuments = async () => {
             try {
                 const token = localStorage.getItem("token")
                 const response = await fetch ("/api/documents", {
@@ -129,8 +131,13 @@ const Documents = () => {
                 console.log(data.data)
             } catch (err) {
                 console.error("Error fetching applied jobs:", err);
+                setErrorTitle("Failed to load documents");
+                setErrorDescription(err.message || "Please try again.");
+                setShowError(true);
             }
         }
+
+    useEffect(() => {
         fetchDocuments()
     }, [])
 
@@ -154,13 +161,6 @@ const Documents = () => {
                                 style={{ display: 'none' }}
                             />
                             <Btn onClick={() => resumeInputRef.current?.click()} disabled={uploading} icon={<Plus size={20}/>} label="Add Resume"/>
-                            {result && (
-                                <div>
-                                    <div>Uploaded:</div>
-                                    <div><strong>{result.original_filename}</strong></div>
-                                    <div onClick={() => handleOpenDocs(result.document_id)}>Open file</div>
-                                </div>
-                            )}
                         </div>
                         <div>
                             <input
@@ -185,8 +185,8 @@ const Documents = () => {
                     </div>
                     {documents.map((doc) => {
                         return (
-                            <div key={doc.id} className={styles.dataRow}>
-                                <span>{doc.filename}</span>
+                            <div key={doc.id} className={styles.dataRow} onClick={() => handleOpenDocs(doc.id)}>
+                                <span>{doc.original_filename}</span>
                                 <span>{new Date(doc.updated_at).toLocaleString()}</span>
                                 <span>{new Date(doc.created_at).toLocaleString()}</span>
                             </div>
