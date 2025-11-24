@@ -11,11 +11,13 @@
 
 .progress-bar {
     display: flex;
+    align-items: start;
     justify-content: space-between;
     gap: 30px;
 }
 
 .progress-segment {
+    min-width: 12px;
     flex: 1;
     height: 10px;
     background-color: #a9a9a9;

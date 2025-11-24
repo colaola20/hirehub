@@ -262,20 +262,26 @@ def analyze_job_fit():
 
         profile = Profile.query.filter_by(user_email=user.email).first()
         if not profile:
-            return jsonify({"error": "No profile found for user"}), 400
+            profile = Profile(
+                user_email=user.email,
+                headline="",
+                education="",
+                experience="",
+                profile_image=None
+            )
+            db.session.add(profile)
+            db.session.commit()
 
         # Pull skills from the skills table
-        user_skills = [skill.skill_name for skill in profile.skills]
+        user_skills = [skill.skill_name for skill in profile.skills] if profile.skills else []
 
         # Pull experience from the profile
-        user_experience = profile.experience or ""
+        user_experience = (profile.experience or "")[:400]
 
         # Get job info from request
         data = request.get_json()
         job = data.get("job", {})
         skills_extracted = job.get("skills_extracted", [])
-
-        user_experience = user_experience[:400]
         
        # ===========================
         #  OpenAI Model Options (2025)
@@ -385,31 +391,55 @@ def generate_recommendations():
         user_skills = [s.skill_name for s in profile.skills]
         user_experience = (profile.experience or "")[:400]
 
-        # =========================
-        # Clear old recommendations if older than 2 days
-        # =========================
-        old_recs = RecommendedJob.query.filter_by(user_id=current_user_id, is_active=True).all()
-        now = datetime.now(timezone.utc)
+        now = datetime.now()
 
-        for rec in old_recs:
-            created = rec.created_at
-            if created.tzinfo is None:
-                created = created.replace(tzinfo=timezone.utc)
-            age = now - created
+        # ----------------------------------------------------
+        # Check newest recommendation age
+        # ----------------------------------------------------
+        latest_rec = RecommendedJob.query.filter_by(
+            user_id=current_user_id
+        ).order_by(RecommendedJob.created_at.desc()).first()
 
-            if age > timedelta(days=2):
-                rec.is_active = False
-                rec.expires_at = now
+        should_generate = (
+            latest_rec is None or
+            (now - latest_rec.created_at) >= timedelta(days=7)
+        )
 
+        if not should_generate:
+            print(">>> generate_recommendations: SKIPPED")
+            return jsonify({"status": "ok", "skipped": True})
+
+        # ----------------------------------------------------
+        # Disable old active recommendations
+        # ----------------------------------------------------
+        RecommendedJob.query.filter_by(
+            user_id=current_user_id,
+            is_active=True
+        ).update({"is_active": False, "expires_at": now})
         db.session.commit()
 
-        # =========================
-        # Generate new recommendations if needed
-        # =========================
-        jobs = Job.query.filter(Job.is_active == True).order_by(db.func.random()).limit(50).all()
+        # ----------------------------------------------------
+        # Get all job_ids already recommended to avoid duplicates
+        # ----------------------------------------------------
+        existing_ids = {
+            r.job_id for r in RecommendedJob.query.filter_by(
+                user_id=current_user_id
+            ).all()
+        }
+
+        # ----------------------------------------------------
+        # Fetch random jobs & score them
+        # ----------------------------------------------------
+        jobs = Job.query.filter(Job.is_active == True).order_by(
+            db.func.random()
+        ).limit(50).all()
+
         recommended_list = []
 
         for job in jobs:
+            if job.id in existing_ids:
+                continue  # prevent unique constraint violation
+
             skills_extracted = job.skills_extracted or []
 
             gpt_prompt = f"""
@@ -425,18 +455,14 @@ def generate_recommendations():
             }}
 
             OBJECTIVE:
-            - Flexible matching (python = python3 = python scripting, etc.)
+            - Flexible matching (python = python3 = python scripting)
             - Score = matched_job_skills / total_job_skills * 100
-            - If job has 1 skill and user matches → 100%
-            - If user matches 0 → % based on users experience
-            - Extra user skills DO NOT increase score
-            - Experience may boost score by up to +10% if highly relevant
+            - User experience can increase score +10% max
 
-            NOTES:
             USER_SKILLS = {user_skills}
             USER_EXPERIENCE = {user_experience}
             JOB_SKILLS = {skills_extracted}
-            """ 
+            """
 
             completion = openai.chat.completions.create(
                 model="gpt-4.1-mini",
@@ -446,9 +472,7 @@ def generate_recommendations():
                 response_format={"type": "json_object"}
             )
 
-            raw_reply = completion.choices[0].message.content or ""
-            raw_reply = raw_reply.strip()
-
+            raw_reply = completion.choices[0].message.content.strip()
             try:
                 match = json.loads(raw_reply)
             except json.JSONDecodeError:
@@ -464,22 +488,25 @@ def generate_recommendations():
             if len(recommended_list) == 20:
                 break
 
+        # ----------------------------------------------------
+        # Insert new recommendations safely
+        # ----------------------------------------------------
         for job, score in recommended_list:
             new_rec = RecommendedJob(
                 user_id=current_user_id,
                 job_id=job.id,
                 match_score=score,
                 created_at=now,
+                expires_at=now + timedelta(days=7),
                 is_active=True,
-                expires_at=now + timedelta(days=2),
                 matched_skills=match.get("matched_skills", [])
             )
             db.session.add(new_rec)
 
         db.session.commit()
-
-        # Minimal response
-        return jsonify({"status": "ok"})
+        
+        print(">>> generate_recommendations: GENERATED")
+        return jsonify({"status": "ok", "generated": True})
 
     except Exception as e:
         print("❌ Recommendation Error:", e)

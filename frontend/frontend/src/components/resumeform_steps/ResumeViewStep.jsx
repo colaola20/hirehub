@@ -8,10 +8,12 @@ const ResumeViewStep = ({ backendData }) => {
     return (
         <div>
             <h2>Resume Preview</h2> {/* DISPLAY JSON if available */}
-            <div className={style['resume-preview']}>
-                {/* <pre>{JSON.stringify(backendData, null, 2)}</pre> */}
-                <ResumeTemplate data={backendData} />
-            </div>
+                <div className={style.resumeScaler}>
+                    <div className={style['resume-preview']}>
+                        {/* <pre>{JSON.stringify(backendData, null, 2)}</pre> */}
+                        <ResumeTemplate data={backendData} />
+                    </div>
+                </div>
 
             <div className={style.viewBtn}>
                 <Btn
