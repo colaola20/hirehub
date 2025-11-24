@@ -218,21 +218,28 @@ def get_user_documents():
         current_user_id = int(get_jwt_identity())
 
         # Get user's email from user ID
-        from app.models.user import User
-        user = DatabaseService.get_by_id(User, current_user_id)
+        user = User.query.get(current_user_id)
         if not user:
             return jsonify({'status': 'error', 'message': 'User not found'}), 404
 
         # Get all documents for this user
-        documents = DatabaseService.filter_by(Document, user_email=user.email)
+        documents = Document.query.filter_by(user_email=user.email).all()
 
-        documents_data = [doc.to_dict() for doc in documents]
+        documents_list = []
+        for doc in documents:
+            documents_list.append({
+                'id': doc.document_id,
+                'filename': doc.original_filename,
+                'document_type': doc.document_type,
+                'created_at': doc.created_at.isoformat(),
+                'updated_at': doc.updated_at.isoformat(),
+            })
 
         return jsonify({
             'status': 'success',
-            'message': f'Retrieved {len(documents)} documents',
-            'data': documents_data,
-            'count': len(documents)
+            'message': f'Retrieved {len(documents_list)} documents',
+            'data': documents_list,
+            'count': len(documents_list)
         }), 200
 
     except Exception as e:

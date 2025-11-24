@@ -1,4 +1,4 @@
-import {useState, useRef} from 'react'
+import {useState, useRef, useEffect} from 'react'
 import Error from '../components/UsersMessages/Error'
 import styles from './Documents.module.css'
 import { Plus, Info } from 'lucide-react';
@@ -17,6 +17,8 @@ const Documents = () => {
     const [loadingFileType, setLoadingFileType] = useState("")
     const coverInputRef = useRef(null);
     const resumeInputRef = useRef(null);
+
+    const [documents, setDocuments] = useState([])
 
     const handleFileChange = async (e, type) => {
         setLoadingFileType(type)
@@ -105,7 +107,32 @@ const Documents = () => {
             setErrorDescription(err.message || "");
             setShowError(true);
         }
+        
     }
+
+    useEffect(() => {
+        const fetchDocuments = async () => {
+            try {
+                const token = localStorage.getItem("token")
+                const response = await fetch ("/api/documents", {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                })
+                if (!response.ok) {
+                    const text = await response.text().catch(() => "");
+                    throw new Error(text || `Server returned ${response.status}`);
+                }
+
+                const data = await response.json()
+                setDocuments(data.data)
+                console.log(data.data)
+            } catch (err) {
+                console.error("Error fetching applied jobs:", err);
+            }
+        }
+        fetchDocuments()
+    }, [])
 
     
 
@@ -156,6 +183,15 @@ const Documents = () => {
                         <span>Last Modified</span>
                         <span>Created</span>
                     </div>
+                    {documents.map((doc) => {
+                        return (
+                            <div key={doc.id} className={styles.dataRow}>
+                                <span>{doc.filename}</span>
+                                <span>{new Date(doc.updated_at).toLocaleString()}</span>
+                                <span>{new Date(doc.created_at).toLocaleString()}</span>
+                            </div>
+                        )
+                    })}
                 </div>
             </div>
             {showError && (
