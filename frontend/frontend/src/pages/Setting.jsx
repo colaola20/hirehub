@@ -8,6 +8,8 @@ import Success from '../components/UsersMessages/Success'
 import Error from '../components/UsersMessages/Error'
 import Switch from '../components/buttons/Switch'
 import Btn from '../components/buttons/Btn'
+import DropDown from '../components/buttons/DropDown';
+import { ChevronDown } from "lucide-react";
 
 const Settings = () => {
     const [error, setError] = useState(null);
@@ -19,6 +21,8 @@ const Settings = () => {
     const [showError, setShowError] = useState(false)
     const navigate = useNavigate();
     const [isJobAlerts, setIsJobAlerts] = useState(true)
+    const [alertFrequency, setAlertsFrequency] = useState("Up to 1 alert /day")
+    const [isOnGeneralNotification, setIsOnGeneralNotification] = useState(true)
 
     useEffect(() => {
         const fetchUserEmail = async () => {
@@ -107,8 +111,12 @@ const Settings = () => {
         }
     }
 
-    const handleChange = () => {
-        setIsJobAlerts(!isJobAlerts)
+    const handleGeneralNotificationSwitch = () => {
+        setIsOnGeneralNotification(!isOnGeneralNotification)
+    }
+
+    const handleDropdownClick = () => {
+        
     }
 
     return (
@@ -134,13 +142,24 @@ const Settings = () => {
                     </div>
                 </div>
                 <div className={styles.alertsPreference}>
-                    <h3 className={styles.title}>Job Alerts Preference</h3>
+                    <h3 className={styles.title}>General Notifications Settings</h3>
                     <div className={styles.separator}></div>
                     <div className={styles.jobAlerts}>
-                        <h5 className={styles.label}>Enable Instant Job Alerts</h5>
+                        <h5 className={styles.label}>Enable/Disable Instant HireHub Notifications</h5>
                         <div className={styles.infoContainer}>
-                            <p className={styles.description}>Be the first to apply - get fresh, tailored job alerts within an hour of posting.</p>
-                            <Switch onChange={handleChange}/>
+                            <p className={styles.description}>Toggle the switch to receive updates about your account, platform announcements, and promotional offers.</p>
+                            <Switch onChange={handleGeneralNotificationSwitch}/>
+                        </div>
+                    </div>
+                    <div className={styles.alertsFrequency}>
+                        <h5 className={styles.label}>Notification Frequency</h5>
+                        <div className={styles.infoContainer}>
+                            <p className={styles.description}>Choose how often you want to receive these notifications:</p>
+                            <DropDown label={alertFrequency} icon={<ChevronDown size={16}/>} disabled={!isOnGeneralNotification}>
+                                <span className={styles.dropdownItems} onClick={handleDropdownClick}>Up to 1 alert /day</span>
+                                <span className={styles.dropdownItems} onClick={handleDropdownClick}>Up to 3 alert /week</span>
+                                <span className={styles.dropdownItems} onClick={handleDropdownClick}>Unlimited</span>
+                            </DropDown>
                         </div>
                     </div>
                 </div>
