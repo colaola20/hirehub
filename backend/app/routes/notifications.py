@@ -6,6 +6,7 @@ from app.models.user import User
 from app.extensions import mail
 from flask_mail import Message
 from datetime import datetime
+from datetime import datetime, timezone
 
 notifications_bp = Blueprint('notifications', __name__)
 
@@ -123,3 +124,112 @@ def debug_email():
         "MAIL_USERNAME": current_app.config['MAIL_USERNAME'],
         "MAIL_DEFAULT_SENDER": str(current_app.config['MAIL_DEFAULT_SENDER'])
     }
+
+@notifications_bp.route("/notifications/test/digest", methods=["POST"])
+def test_digest():
+    from app.models.user import User
+    from app.models.job import Job
+    from flask_mail import Message
+    from app.extensions import mail, db
+
+    users = User.query.all()
+    jobs = Job.query.limit(5).all()
+
+    if not users:
+        return {"error": "No users in database"}, 500
+
+    html = "<h3>Your Job Digest</h3>"
+    for j in jobs:
+        html += f"<p><b>{j.title}</b> – {j.company} ({j.location})</p>"
+
+    sent = []
+    for user in users:
+        try:
+            msg = Message(
+                subject="TEST DIGEST",
+                recipients=[user.email],
+                html=html
+            )
+            mail.send(msg)
+
+            user.last_digest_sent = datetime.now(timezone.utc)
+            db.session.commit()
+
+            sent.append(user.email)
+        except Exception as e:
+            current_app.logger.exception("Failed sending digest to %s", user.email)
+
+    return {"ok": True, "sent_to": sent}
+
+@notifications_bp.route("/notifications/test/inactivity", methods=["POST"])
+def test_inactivity():
+    from app.models.user import User
+    from flask_mail import Message
+    from app.extensions import mail
+
+    users = User.query.all()
+
+    if not users:
+        return {"error": "No users found"}, 500
+
+    sent = []
+
+    for user in users:
+        try:
+            msg = Message(
+                "TEST Inactivity",
+                recipients=[user.email],
+                body="This is a test inactivity email."
+            )
+            mail.send(msg)
+            sent.append(user.email)
+        except:
+            current_app.logger.exception("Failed to send inactivity email")
+
+    return {"ok": True, "sent_to": sent}
+
+@notifications_bp.route("/notifications/test/jobmatch", methods=["POST"])
+def test_jobmatch():
+    from app.models.user import User
+    from app.models.job import Job
+    from app.services.database import DatabaseService
+    from app.models.notification import Notification
+
+    users = User.query.all()
+    if not users:
+        return {"error": "No users in database"}, 500
+
+    jobs = Job.query.limit(5).all()
+    if not jobs:
+        return {"error": "No jobs available"}, 500
+
+    results = {}
+
+    for user in users:
+        matched = []
+
+        # match by skills (if available)
+        if user.skills:
+            matched_jobs = (
+                Job.query.filter(Job.skills_required.overlap(user.skills))
+                .limit(5)
+                .all()
+            )
+        else:
+            matched_jobs = jobs
+
+        # create in-app notifications
+        for j in matched_jobs:
+            note = Notification(
+                user_email=user.email,
+                type="New Job Match",
+                message=f"New job matches your skills: {j.title}",
+                is_read=False,
+                created_at=datetime.now(timezone.utc)
+            )
+            DatabaseService.create(note)
+            matched.append(j.title)
+
+        results[user.email] = matched
+
+    return {"ok": True, "job_matches": results}
