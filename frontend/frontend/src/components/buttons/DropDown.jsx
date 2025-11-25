@@ -19,13 +19,13 @@ const DropDown = ({label, icon, children, disabled}) => {
                 className={styles.dropDownBtn}
                 onClick={() => {
                     console.log(disabled)
-                    if (disabled) setOpen((prev) => !prev)}}
-                disable={disabled}
+                    if (!disabled) setOpen((prev) => !prev)}}
+                disabled={disabled}
             >
                 {label} {icon && <span className={styles.dropDownBtnIcon}>{icon}</span>}
             </button>
 
-            <div className={`${styles.dropDownMenu} ${open ? styles.open : ""}`}>
+            <div className={`${styles.dropDownMenu} ${open && !disabled ? styles.open : ""}`}>
                 {children}
             </div>
         </div>

@@ -21,7 +21,8 @@ const Settings = () => {
     const [showError, setShowError] = useState(false)
     const navigate = useNavigate();
     const [isJobAlerts, setIsJobAlerts] = useState(true)
-    const [alertFrequency, setAlertsFrequency] = useState("Up to 1 alert /day")
+    const [alertFrequency, setAlertsFrequency] = useState("Immediately")
+    const [jobAlertsFrequency, setJobAlerstFrequency] = useState("Up to 1 alert/day")
     const [isOnGeneralNotification, setIsOnGeneralNotification] = useState(true)
 
     useEffect(() => {
@@ -115,6 +116,10 @@ const Settings = () => {
         setIsOnGeneralNotification(!isOnGeneralNotification)
     }
 
+    const handleJobAlertsSwitch = () => {
+        setIsJobAlerts(!isJobAlerts)
+    }
+
     const handleDropdownClick = () => {
         
     }
@@ -145,10 +150,10 @@ const Settings = () => {
                     <h3 className={styles.title}>General Notifications Settings</h3>
                     <div className={styles.separator}></div>
                     <div className={styles.jobAlerts}>
-                        <h5 className={styles.label}>Enable/Disable Instant HireHub Notifications</h5>
+                        <h5 className={styles.label}>Enable Instant HireHub Notifications</h5>
                         <div className={styles.infoContainer}>
                             <p className={styles.description}>Toggle the switch to receive updates about your account, platform announcements, and promotional offers.</p>
-                            <Switch onChange={handleGeneralNotificationSwitch}/>
+                            <Switch checked={isOnGeneralNotification} onChange={handleGeneralNotificationSwitch}/>
                         </div>
                     </div>
                     <div className={styles.alertsFrequency}>
@@ -156,8 +161,30 @@ const Settings = () => {
                         <div className={styles.infoContainer}>
                             <p className={styles.description}>Choose how often you want to receive these notifications:</p>
                             <DropDown label={alertFrequency} icon={<ChevronDown size={16}/>} disabled={!isOnGeneralNotification}>
-                                <span className={styles.dropdownItems} onClick={handleDropdownClick}>Up to 1 alert /day</span>
-                                <span className={styles.dropdownItems} onClick={handleDropdownClick}>Up to 3 alert /week</span>
+                                <span className={styles.dropdownItems} onClick={handleDropdownClick}>Immediately</span>
+                                <span className={styles.dropdownItems} onClick={handleDropdownClick}>Daily summary</span>
+                                <span className={styles.dropdownItems} onClick={handleDropdownClick}>Weekly summary</span>
+                            </DropDown>
+                        </div>
+                    </div>
+                </div>
+                <div className={styles.alertsPreference}>
+                    <h3 className={styles.title}>Job Recommendation Notifications</h3>
+                    <div className={styles.separator}></div>
+                    <div className={styles.jobAlerts}>
+                        <h5 className={styles.label}>Enable Instant Job Alerst</h5>
+                        <div className={styles.infoContainer}>
+                            <p className={styles.description}>Turn this on to receive personalized job alerts based on your profile, preferences, and activity.</p>
+                            <Switch checked={isJobAlerts} onChange={handleJobAlertsSwitch}/>
+                        </div>
+                    </div>
+                    <div className={styles.alertsFrequency}>
+                        <h5 className={styles.label}>Job Alerts Frequency</h5>
+                        <div className={styles.infoContainer}>
+                            <p className={styles.description}>Select how often you want job recommendations delivered:</p>
+                            <DropDown label={jobAlertsFrequency} icon={<ChevronDown size={16}/>} disabled={!isJobAlerts}>
+                                <span className={styles.dropdownItems} onClick={handleDropdownClick}>Up to 1 alert/day</span>
+                                <span className={styles.dropdownItems} onClick={handleDropdownClick}>Up to 3 alerts/week</span>
                                 <span className={styles.dropdownItems} onClick={handleDropdownClick}>Unlimited</span>
                             </DropDown>
                         </div>

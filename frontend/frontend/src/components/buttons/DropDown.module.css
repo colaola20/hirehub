@@ -29,6 +29,18 @@
     box-shadow: 0 3px 10px rgba(142, 197, 252, 0.22);
 }
 
+.dropDownBtn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: #2d2b55;
+    border-color: #6f67f0;
+}
+
+.dropDownBtn:disabled:hover {
+    background: #2d2b55;
+    box-shadow: none;
+}
+
 .dropDownMenu{
     display: flex;
     flex-direction: column;
