@@ -31,9 +31,9 @@ class Config:
     MAIL_SERVER = 'smtp.gmail.com'
     MAIL_PORT = 587
     MAIL_USE_TLS = True
-    MAIL_USERNAME = 'H1r3Hub@gmail.com'
+    MAIL_USERNAME = 'h1r3hub@gmail.com'
     MAIL_PASSWORD = 'jlep ysje dcvf kmuz'
-    MAIL_DEFAULT_SENDER = ('HireHub', 'H1r3Hub@gmail.com')
+    MAIL_DEFAULT_SENDER = ('HireHub', 'h1r3hub@gmail.com')
 
 
 class DevelopmentConfig(Config):

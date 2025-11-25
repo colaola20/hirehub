@@ -35,12 +35,15 @@ def list_notifications():
 
 @notifications_bp.route('/notifications/send', methods=['POST'])
 @jwt_required()
+
 def send_notification():
     """Send notification(s). Body: { title, body, to } where `to` is optional email or array; if absent send to all users."""
     data = request.get_json() or {}
     title = data.get('title') or data.get('subject') or 'Notification'
     body = data.get('body') or data.get('message') or ''
     recipients = data.get('to')
+    print("MAIL_USERNAME =", current_app.config.get("MAIL_USERNAME"))
+    print("MAIL_DEFAULT_SENDER =", current_app.config.get("MAIL_DEFAULT_SENDER"))
 
     try:
         # resolve recipients list
@@ -64,9 +67,9 @@ def send_notification():
                 current_app.logger.exception('Failed to create notification for %s', email)
                 # continue to try sending email to others
 
-            # attempt to send email (best-effort)
             try:
-                msg = Message(subject=title, recipients=[email],sender=current_app.config.get("MAIL_DEFAULT_SENDER"))
+                print("SENDING AS:", sender=current_app.config['MAIL_USERNAME'])
+                msg = Message(subject=title, recipients=[email],sender=current_app.config['MAIL_USERNAME'])
                 msg.body = body
                 mail.send(msg)
             except Exception:
@@ -113,3 +116,10 @@ def delete_notification(note_id):
     except Exception as e:
         current_app.logger.exception('Failed to delete notification')
         return jsonify({'error': 'Failed to delete', 'detail': str(e)}), 500
+    
+@notifications_bp.route("/debug-email")
+def debug_email():
+    return {
+        "MAIL_USERNAME": current_app.config['MAIL_USERNAME'],
+        "MAIL_DEFAULT_SENDER": str(current_app.config['MAIL_DEFAULT_SENDER'])
+    }
