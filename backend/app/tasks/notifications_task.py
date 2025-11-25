@@ -1,324 +1,163 @@
+
 import threading
 import time
 from datetime import datetime, timedelta, timezone
 from flask import current_app
-from sqlalchemy import and_, or_
-print("🔥 notification_task.py LOADED")
 
-# ============================================================
-# HYBRID NOTIFICATION SYSTEM – COMPLETE REPLACEMENT FILE
-# ============================================================
-
-"""
-This file contains:
-- Daily digest worker (email)
-- Weekly insights worker (email)
-- Job match worker (in-app)
-- Skill gap worker (in-app)
-- Deadline worker (email + in-app)
-- Event-triggered utilities
-
-This is the full Hybrid Notification Engine (Option C).
-"""
-
-
-# ============================================================
-# IMPORTS (inside worker to avoid circular imports)
-# ============================================================
 
 def _load_dependencies():
     from app.services.database import DatabaseService
     from app.models.user import User
     from app.models.job import Job
-    from app.models.recommended_job import RecommendedJob
     from app.models.notification import Notification
     from app.extensions import mail, db
     from flask_mail import Message
-    return DatabaseService, User, Job, RecommendedJob, Notification, mail, db, Message
+    return DatabaseService, User, Job, Notification, mail, db, Message
 
 
-# ============================================================
-# EMAIL TEMPLATES
-# ============================================================
-
-def _email_header():
-    return """
-    <div style="font-family: Arial, sans-serif; background: #f5f6fa; padding: 22px;">
-        <div style="max-width: 650px; margin:auto; background:#fff; border-radius:10px; 
-                    overflow:hidden; box-shadow:0 4px 16px rgba(0,0,0,0.12);">
-            <div style="background: linear-gradient(135deg, #6f67f0, #4839eb); 
-                        color:white; padding:22px; text-align:center;">
-                <h2 style="margin:0; font-size:26px;">HireHub Notification</h2>
-            </div>
-            <div style="padding:25px; font-size:15px; color:#333;">
-    """
-
-
-def _email_footer():
-    return """
-            </div>
-        </div>
-        <p style="text-align:center; color:#777; font-size:13px; margin-top:18px;">
-            You can change notification preferences in your HireHub account.
-        </p>
-    </div>
-    """
-
-
-# ============================================================
-# CREATE IN-APP NOTIFICATION
-# ============================================================
-
-def create_in_app_notification(Notification, DatabaseService, user_email, n_type, message):
+# ---------------------------------------------------------
+# Helper: create in-app notification
+# ---------------------------------------------------------
+def push_in_app(Notification, DatabaseService, user_email, n_type, message):
     note = Notification(
         user_email=user_email,
         type=n_type,
         message=message,
-        created_at=datetime.now(timezone.utc),
-        is_read=False
+        is_read=False,
+        created_at=datetime.now(timezone.utc)
     )
-    try:
-        # Assuming DatabaseService.create commits. If not, you need db.session.commit()
-        DatabaseService.create(note)
-        current_app.logger.info(f"Notification created for {user_email}")
-    except Exception as e:
-        current_app.logger.error(f"Failed to commit notification for {user_email}: {e}")
+    DatabaseService.create(note)
 
 
-# ============================================================
-# DAILY DIGEST EMAIL WORKER (RUNS EVERY 24 HOURS)
-# ============================================================
+# ---------------------------------------------------------
+# The unified worker (runs every 10 minutes)
+# ---------------------------------------------------------
+def unified_notification_worker(app):
 
-def daily_digest_worker(app):
     def _worker():
         with app.app_context():
-            (DatabaseService, User, Job, RecommendedJob,
-             Notification, mail, db, Message) = _load_dependencies()
+            (DatabaseService, User, Job, Notification,
+             mail, db, Message) = _load_dependencies()
 
-            app.logger.info("[DailyDigestWorker] Started")
+            app.logger.info("🔥 Unified Notification Worker started.")
 
-            # 24 hours * 60 minutes/hour * 60 seconds/minute
-            SLEEP_TIME_SECONDS = 24 * 60 * 60
-
-            while True:
-                try:
-                    users = DatabaseService.get_all(User)
-
-                    for u in users:
-                        if not u.daily_digest_enabled:
-                            continue
-
-                        # Fetch recommended jobs
-                        recs = (
-                            db.session.query(RecommendedJob)
-                            .filter(RecommendedJob.user_id == u.id)
-                            .order_by(RecommendedJob.match_score.desc())
-                            .limit(5)
-                            .all()
-                        )
-
-                        rec_html = ""
-                        for r in recs:
-                            if r.job:
-                                rec_html += f"""
-                                <div style="border:1px solid #eee; padding:14px; margin-bottom:10px; border-radius:8px;">
-                                    <h4 style="margin:0;">{r.job.title}</h4>
-                                    <p style="margin:3px 0; color: #555;">{r.job.company} • {r.job.location}</p>
-                                    <p style="margin:0;"><b>Match:</b> {r.match_score}%</p>
-                                </div>
-                                """
-
-                        html = (
-                            _email_header() +
-                            f"<p>Hello <b>{u.first_name}</b>, here is your daily job digest:</p>"
-                            f"{rec_html}"
-                            + _email_footer()
-                        )
-
-                        msg = Message("Your HireHub Daily Digest", recipients=[u.email], html=html)
-                        mail.send(msg)
-
-                        create_in_app_notification(
-                            Notification, DatabaseService,
-                            u.email,
-                            "Daily Digest",
-                            "Your daily job digest was emailed to you."
-                        )
-
-                    app.logger.info("[DailyDigestWorker] Completed daily run")
-
-                except Exception as e:
-                    app.logger.exception("[DailyDigestWorker] Error: %s", e)
-
-                time.sleep(SLEEP_TIME_SECONDS)  # 24 hours
-
-    threading.Thread(target=_worker, daemon=True).start()
-
-
-# ============================================================
-# WEEKLY INSIGHTS EMAIL WORKER (RUNS EVERY 7 DAYS)
-# ============================================================
-
-def weekly_insights_worker(app):
-    def _worker():
-        with app.app_context():
-            (DatabaseService, User, Job, RecommendedJob,
-             Notification, mail, db, Message) = _load_dependencies()
-
-            app.logger.info("[WeeklyInsightsWorker] Started")
-
-            # 7 days * 24 hours/day * 60 minutes/hour * 60 seconds/minute
-            SLEEP_TIME_SECONDS = 7 * 24 * 60 * 60
-
-            while True:
-                try:
-                    users = DatabaseService.get_all(User)
-
-                    for u in users:
-                        if not u.weekly_digest_enabled:
-                            continue
-
-                        html = (
-                            _email_header() +
-                            f"<p>Hello <b>{u.first_name}</b>, here are your weekly insights.</p>"
-                            f"<p>Profile completion: {u.profile_completion or 0}%</p>"
-                            f"<p>Resume Score: {u.resume_score or 0}%</p>"
-                            + _email_footer()
-                        )
-
-                        msg = Message("Weekly Insights Report", recipients=[u.email], html=html)
-                        mail.send(msg)
-
-                        create_in_app_notification(
-                            Notification, DatabaseService,
-                            u.email,
-                            "Weekly Insights",
-                            "Your weekly insights report has been emailed."
-                        )
-
-                    app.logger.info("[WeeklyInsightsWorker] Completed weekly run")
-
-                except Exception as e:
-                    app.logger.exception("[WeeklyInsightsWorker] Error: %s", e)
-
-                time.sleep(SLEEP_TIME_SECONDS)  # 7 days
-
-    threading.Thread(target=_worker, daemon=True).start()
-
-
-# ============================================================
-# JOB MATCH WORKER (RUNS EVERY 4 HOURS)
-# ============================================================
-
-def job_match_worker(app):
-    def _worker():
-        with app.app_context():
-            (DatabaseService, User, Job, RecommendedJob,
-             Notification, mail, db, Message) = _load_dependencies()
-
-            app.logger.info("[JobMatchWorker] Started")
-
-            # 4 hours * 60 minutes/hour * 60 seconds/minute
-            SLEEP_TIME_SECONDS = 4 * 60 * 60
-
-            while True:
-                try:
-                    users = DatabaseService.get_all(User)
-
-                    for u in users:
-                        if not u.skills:
-                            continue
-
-                        # Simple example: find jobs with overlapping skills
-                        jobs = (
-                            db.session.query(Job)
-                            .filter(Job.skills_required.overlap(u.skills))
-                            .limit(10)
-                            .all()
-                        )
-
-                        for j in jobs:
-                            create_in_app_notification(
-                                Notification, DatabaseService,
-                                u.email,
-                                "New Job Match",
-                                f"A new job matches your skills: {j.title}"
-                            )
-
-                    app.logger.info("[JobMatchWorker] Completed cycle")
-
-                except Exception:
-                    app.logger.exception("[JobMatchWorker] Error")
-
-                time.sleep(SLEEP_TIME_SECONDS)  # 4 hours
-
-    threading.Thread(target=_worker, daemon=True).start()
-
-
-# ============================================================
-# DEADLINE WORKER (RUNS EVERY 12 HOURS)
-# ============================================================
-
-def deadline_worker(app):
-    def _worker():
-        with app.app_context():
-            (DatabaseService, User, Job, RecommendedJob,
-             Notification, mail, db, Message) = _load_dependencies()
-
-            app.logger.info("[DeadlineWorker] Started")
-
-            # 12 hours * 60 minutes/hour * 60 seconds/minute
-            SLEEP_TIME_SECONDS = 12 * 60 * 60
+            CHECK_INTERVAL_SECONDS = 10 * 60  # 10 minutes
+            INACTIVITY_LIMIT = timedelta(hours=72)  # 3 days
 
             while True:
                 try:
                     now = datetime.now(timezone.utc)
-                    deadline_limit = now + timedelta(hours=48)
+                    users = DatabaseService.get_all(User)
 
-                    expiring_jobs = (
-                        db.session.query(Job)
-                        .filter(and_(Job.expires_at != None, Job.expires_at <= deadline_limit))
-                        .all()
-                    )
+                    for u in users:
 
-                    for j in expiring_jobs:
-                        for rec in j.recommended_to:
-                            u = rec.user
+                        # ---------------------------------------------------------
+                        # 1. USER-CONTROLLED DIGEST (job recommendations only)
+                        # ---------------------------------------------------------
+                        if u.digest_interval_minutes:
 
-                            # Email
-                            html = (
-                                _email_header() +
-                                f"<p>The job <b>{j.title}</b> is closing soon.</p>" +
-                                _email_footer()
+                            if not u.last_digest_sent or \
+                               now - u.last_digest_sent >= timedelta(minutes=u.digest_interval_minutes):
+
+                                # Fetch recommended jobs (basic version)
+                                jobs = Job.query.limit(5).all()
+
+                                if jobs:
+                                    html = "<h3>Your Job Digest</h3>"
+                                    for j in jobs:
+                                        html += f"<p><b>{j.title}</b> – {j.company} ({j.location})</p>"
+
+                                    msg = Message("Your HireHub Digest", recipients=[u.email], html=html)
+                                    mail.send(msg)
+
+                                    push_in_app(
+                                        Notification, DatabaseService,
+                                        u.email, "Digest", "Your latest job digest is ready."
+                                    )
+
+                                u.last_digest_sent = now
+                                db.session.commit()
+
+                        # ---------------------------------------------------------
+                        # 2. LAST LOGIN INACTIVITY NOTIFICATION (72 hours)
+                        # ---------------------------------------------------------
+                        if u.last_login:
+
+                            inactive_for = now - u.last_login
+
+                            if inactive_for >= INACTIVITY_LIMIT:
+                                if not u.last_login_notification_sent or \
+                                   (now - u.last_login_notification_sent >= INACTIVITY_LIMIT):
+
+                                    msg = Message(
+                                        "We Miss You at HireHub",
+                                        recipients=[u.email],
+                                        body="You haven’t logged in for a few days. New job matches are waiting!"
+                                    )
+                                    mail.send(msg)
+
+                                    push_in_app(
+                                        Notification, DatabaseService,
+                                        u.email, "Inactivity",
+                                        "You haven't logged in recently. Check out new job opportunities!"
+                                    )
+
+                                    u.last_login_notification_sent = now
+                                    db.session.commit()
+
+                        # ---------------------------------------------------------
+                        # 3. NEW JOB MATCHES BASED ON SKILLS
+                        # ---------------------------------------------------------
+                        if u.skills:
+                            # Fetch jobs requiring ANY overlapping skills
+                            matched_jobs = (
+                                Job.query
+                                .filter(Job.skills_required.overlap(u.skills))
+                                .limit(5)
+                                .all()
                             )
-                            mail.send(Message("Job Closing Soon", recipients=[u.email], html=html))
 
-                            # In-app
-                            create_in_app_notification(
-                                Notification, DatabaseService,
-                                u.email,
-                                "Closing Soon",
-                                f"The job {j.title} expires in less than 48 hours."
-                            )
+                            if matched_jobs:
+                                if not u.last_job_match_sent or \
+                                   now - u.last_job_match_sent >= timedelta(hours=1):  # minimum 1 hour gap
 
-                    app.logger.info("[DeadlineWorker] Completed cycle")
+                                    for j in matched_jobs:
+                                        push_in_app(
+                                            Notification, DatabaseService,
+                                            u.email, "New Job Match",
+                                            f"New job matches your skills: {j.title}"
+                                        )
 
-                except Exception:
-                    app.logger.exception("[DeadlineWorker] Error")
+                                    u.last_job_match_sent = now
+                                    db.session.commit()
 
-                time.sleep(SLEEP_TIME_SECONDS) # 12 hours
+                        # ---------------------------------------------------------
+                        # 4. PROFILE COMPLETION REMINDER (< 60%)
+                        # ---------------------------------------------------------
+                        if u.profile_completion is not None and u.profile_completion < 60:
+
+                            if not u.last_profile_reminder_sent or \
+                               now - u.last_profile_reminder_sent >= timedelta(hours=24):
+
+                                msg = Message(
+                                    "Improve Your HireHub Profile",
+                                    recipients=[u.email],
+                                    body="Your profile is below 60%. Completing it improves your job matches!"
+                                )
+                                mail.send(msg)
+
+                                push_in_app(
+                                    Notification, DatabaseService,
+                                    u.email, "Profile Reminder",
+                                    "Your profile is incomplete. Update it to improve your job matches."
+                                )
+
+                                u.last_profile_reminder_sent = now
+                                db.session.commit()
+
+                except Exception as e:
+                    current_app.logger.exception("UnifiedWorker ERROR: %s", e)
+
+                time.sleep(CHECK_INTERVAL_SECONDS)
 
     threading.Thread(target=_worker, daemon=True).start()
-
-
-# ============================================================
-# REGISTER ALL WORKERS
-# ============================================================
-
-def init_notification_workers(app):
-    print("🔥 init_notification_workers() CALLED")
-    daily_digest_worker(app)
-    weekly_insights_worker(app)
-    job_match_worker(app)
-    deadline_worker(app) 
-    app.logger.info("[NotificationSystem] All workers started successfully.")
