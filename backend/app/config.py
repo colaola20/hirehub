@@ -27,6 +27,15 @@ class Config:
     # OpenAI
     OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
+
+    MAIL_SERVER = 'smtp.gmail.com'
+    MAIL_PORT = 587
+    MAIL_USE_TLS = True
+    MAIL_USERNAME = 'H1r3Hub@gmail.com'
+    MAIL_PASSWORD = 'jlep ysje dcvf kmuz'
+    MAIL_DEFAULT_SENDER = ('HireHub', 'H1r3Hub@gmail.com')
+
+
 class DevelopmentConfig(Config):
     DEBUG = True
 

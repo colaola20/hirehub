@@ -66,7 +66,7 @@ def send_notification():
 
             # attempt to send email (best-effort)
             try:
-                msg = Message(subject=title, recipients=[email])
+                msg = Message(subject=title, recipients=[email],sender=current_app.config.get("MAIL_DEFAULT_SENDER"))
                 msg.body = body
                 mail.send(msg)
             except Exception:
