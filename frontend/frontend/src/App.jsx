@@ -22,6 +22,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import ResetPassword from './pages/reset_password.jsx';
 import Settings from './pages/Setting.jsx'
 import Notifications from './pages/Notifications.jsx'
+import Documents from './pages/Documents.jsx'
 
 
 
@@ -63,6 +64,7 @@ function App() {
           <Route path="profile" element={<Profile/>} />
           <Route path="notifications" element={<Notifications/>} />
           <Route path="settings" element={<Settings/>} />
+          <Route path="documents" element={<Documents/>} />
         </Route>
         <Route path="*" element={<div>Not Found</div>} />
       </Routes>

@@ -13,7 +13,7 @@ class Notification(db.Model):
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
 
     # Relationship
-    user = db.relationship('User', backref=db.backref('notifications', lazy=True))
+    user = db.relationship('User', backref=db.backref('notifications', lazy=True, cascade='all, delete-orphan'))
 
     def __repr__(self):
         return f'<Notification {self.notification_id} - {self.type}>'

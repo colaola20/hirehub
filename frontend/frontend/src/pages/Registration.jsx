@@ -2,7 +2,9 @@
 // Registration page for HireHub
 import React, { useState } from "react";
 import styles from "./Registration_Page.module.css"; // ⬅️ CSS Module
-import { Link } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
+import ErrorMessage from "../components/UsersMessages/Error.jsx";
+import SuccessMessage from "../components/UsersMessages/Success.jsx";
 import placeholderImg from "../assets/login_reg_Place_holder1.png";
 
 const RegistrationPage = () => {
@@ -12,6 +14,11 @@ const RegistrationPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [errorTitle, setErrorTitle] = useState("");
+  const [errorDescription, setErrorDescription] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -19,42 +26,40 @@ const RegistrationPage = () => {
     // Regex patterns
     const usernameRegex = /^[a-zA-Z0-9_]{3,15}$/;
     const nameRegex = /^[A-Za-z]{2,30}$/;
-    // const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     const passwordRegex =
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\w\s]).{8,}$/;
 
     // Disallow spaces in username
     if (/\s/.test(username)) {
-      alert("Username cannot contain spaces!");
+      setInfoForModal("Invalid Username","Username cannot contain spaces!");
       return;
     }
     // Validation checks
     if (!usernameRegex.test(username)) {
-      alert(
-        "Username must be 3-15 characters and only contain letters, numbers, and underscores."
-      );
+      setInfoForModal("Invalid Username","Username must be 3-15 characters and only contain letters, numbers, and underscores.");
+    
       return;
     }
     if (!nameRegex.test(firstName)) {
-      alert("First name must be 2-30 alphabetic characters.");
+       setInfoForModal("Invalid First Name","Last name must be 2-30 alphabetic characters.");
       return;
     }
+
     if (!nameRegex.test(lastName)) {
-      alert("Last name must be 2-30 alphabetic characters.");
+      setInfoForModal("Invalid Last Name","Last name must be 2-30 alphabetic characters.");
       return;
     }
-    // if (!emailRegex.test(email)) {
-    //   alert("Please enter a valid email address.");
-    //   return;
-    // }
+    if (!emailRegex.test(email)) { // The <input> tag already implemented email regex but just as a double check
+      setInfoForModal("Invalid Email","Please enter a valid email address.");
+      return;
+    }
     if (!passwordRegex.test(password)) {
-      alert(
-        "Password must be at least 8 characters, include an uppercase letter, lowercase letter, number, and special character."
-      );
+      setInfoForModal("Weak Password","Password must be at least 8 characters, include an uppercase letter, lowercase letter, number, and special character.");
       return;
     }
     if (password !== confirmPassword) {
-      alert("Passwords do not match!");
+      setInfoForModal("Password Mismatch","Passwords do not match!");
       return;
     }
     try {
@@ -74,30 +79,45 @@ const RegistrationPage = () => {
 
       const data = await response.json();
       if (response.ok) {
-        console.error("Backend error:", data.error);
-        alert("Account created! You can now login.");
-        window.location.href = "/login";
+        setSuccess(true);
+
       } else {
-        alert(data.message || "Registration failed. Try again.");
-      }
+        setInfoForModal("Registration Failed", data.message ||"Registration failed. Try again.");
+             }
     } catch (error) {
-      console.error("Registration error:", error);
-      alert("Something went wrong. Please try again.");
-    }
+      setInfoForModal("Registration Error", "Unable to register at this time. Please try again later.");
+      }
   };
+
+const setInfoForModal = (title ,description) => {
+    setErrorTitle(title);
+    setErrorDescription(description);
+    setError(true);
+  }
+
+  const handleCloseError = () => {
+    setError(false);
+  };
+
+  const handleCloseSuccessAndNavigateToLogin = () => {
+    setSuccess(false);
+     navigate("/login"); 
+  };
+
 
   return (
     <div className={styles.container}>
       <div className={styles["register-box"]}>
         {/* Left Side: Registration Form */}
         <div className={styles["register-form-section"]}>
-          <div className={styles.brand}>
-            <div className={styles.logo}>H</div>
-            <div className={styles["brand-text"]}>
-              <h2 className={styles["brand-title"]}>ireHub</h2>
-              <p className={styles["brand-tagline"]}>Create Your Account</p>
-            </div>
+         <Link to="/" className={styles.brand} style={{ textDecoration: "none" }}>
+          <div className={styles.logo}>H</div>
+          <div className={styles["brand-text"]}>
+            <h2 className={styles["brand-title"]}>ireHub</h2>
+            <p className={styles["brand-tagline"]}>Your AI Career Companion</p>
           </div>
+        </Link>
+
 
           <form className={styles["register-form"]} onSubmit={handleSubmit}>
             <input
@@ -166,7 +186,22 @@ const RegistrationPage = () => {
           </div>
         </div>
       </div>
+      {error && (
+        <ErrorMessage
+          title={errorTitle}
+          description={errorDescription}
+          handleClose={handleCloseError}
+        />
+      )} {success && (
+        <SuccessMessage
+          title="Registration Successful"
+          description="You can now login with your credentials."
+          handleClose={handleCloseSuccessAndNavigateToLogin}
+          />)}
+
     </div>
+
+
   );
 };
 

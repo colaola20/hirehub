@@ -6,6 +6,10 @@ from app.models.cover_letter import CoverLetter
 from flask_jwt_extended import jwt_required, get_jwt_identity
 import os
 import logging
+import boto3
+from werkzeug.utils import secure_filename
+import uuid
+from app.models.user import User
 
 # from groq import Groq
 
@@ -33,6 +37,175 @@ except Exception as exc:
 
 documents_bp = Blueprint('documents', __name__)
 
+# S3 Configuration
+s3_client = boto3.client(
+    's3',
+    aws_access_key_id=os.getenv('AWS_ACCESS_KEY_ID'),
+    aws_secret_access_key=os.getenv('AWS_SECRET_ACCESS_KEY'),
+    region_name=os.getenv('AWS_REGION')
+)
+
+
+BUCKET_NAME = os.getenv('S3_BUCKET_NAME') #fix this
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'pdf', 'txt', 'doc'}
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+# ------------------------
+# Saving docs in s3
+# ------------------------
+@documents_bp.route('/api/upload', methods=['POST'])
+@jwt_required()
+def upload_file():
+    try:
+        user_id = get_jwt_identity()
+        user = User.query.get(user_id)
+        type = request.form.get('type') 
+
+        if not user:
+            return jsonify({'error': 'User not found'}), 404
+        
+        if 'file' not in request.files:
+            return jsonify({'error': 'No file provided'}), 400
+        
+        file = request.files['file']
+
+        if file.filename == '':
+            return jsonify({'eror': "No file selected"}), 400
+        
+        if not allowed_file(file.filename):
+            return jsonify({'error': 'File type not allowed'}), 400
+        
+        if not BUCKET_NAME:
+            logger.error("S3 bucket not configured (S3_BUCKET_NAME missing)")
+            return jsonify({'error': 'Storage not configured'}), 500
+        
+        
+        # Generate unique filename. Added prefix user_id to quickly access user's files
+        original_filename = secure_filename(file.filename)
+        file_extension = original_filename.rsplit('.', 1)[1].lower()
+        unique_filename = f"{user.id}/{uuid.uuid4()}.{file_extension}"
+
+        try:
+            # Upload to S3
+            s3_client.upload_fileobj(
+                file,
+                BUCKET_NAME,
+                unique_filename,
+                ExtraArgs={'ContentType': file.content_type}
+            )
+
+        except Exception as e:
+            logger.exception("S3 upload failed")
+            return jsonify({'error': 'Upload to storage failed', 'details': str(e)}), 502
+
+
+        # Generate URL
+        file_url = f"https://{BUCKET_NAME}.s3.{os.getenv('AWS_REGION')}.amazonaws.com/{unique_filename}"
+
+        doc = Document(
+            user_email = user.email,
+            file_path = unique_filename,
+            document_type = type,
+            original_filename = original_filename
+        )
+
+        try:
+            created_user = DatabaseService.create(doc)
+        except Exception:
+            # best-effort: remove uploaded object on DB failure? (optional)
+            logger.exception("Failed to save document record")
+            return jsonify({'error': 'Failed to save document metadata'}), 500
+
+
+        return jsonify({
+            'message': 'File uploaded successfully',
+            'original_filename': original_filename,
+            'filename': unique_filename,
+            'document_id': created_user.document_id
+        }), 200
+            
+    except Exception as e:
+        logger.exception("Unhandled upload error")
+        return jsonify({'error': 'Internal server error', 'details': str(e)}), 500
+    
+
+# ------------------------
+# Download a doc using doc's id
+# ------------------------
+@documents_bp.route('/api/documents/<int:document_id>/download', methods=["GET"])
+@jwt_required()
+def get_document_url(document_id):
+    try:
+        user_id = get_jwt_identity()
+        user = User.query.get(user_id)
+
+        # Get document from database
+        document = Document.query.get(document_id)
+
+        if not document:
+            return jsonify({'error': "Document not found"}), 404
+        
+        if document.user_email != user.email:
+            return jsonify({'error': 'Unauthorized'}), 403
+        
+        # generate pre-signed URL (valid for 1 hr)
+        presigned_url = s3_client.generate_presigned_url(
+            'get_object',
+            Params={
+                'Bucket': BUCKET_NAME,
+                'Key': document.fille_path
+            },
+            ExpiresIn=3600
+        )
+
+        return jsonify({
+            'url': presigned_url,
+            'filename': document.file_path.split('/')[-1],
+            'expires_in': 3600
+        }), 200
+    except Exception as e:
+        logger.exception("Failed to generate download URL")
+        return jsonify({'error': 'Failed to generate download link'}), 500
+    
+# ------------------------
+# Viewing a doc using doc's id
+# ------------------------
+@documents_bp.route('/api/documents/<int:document_id>/view', methods=['GET'])
+@jwt_required()
+def view_document(document_id):
+    try:
+        user_id = get_jwt_identity()
+        user = User.query.get(user_id)
+
+        document = Document.query.get(document_id)
+
+        if not document:
+            return jsonify({'error': 'Document not found'}), 404
+        
+        if document.user_email != user.email:
+            return jsonify({'error': 'Unauthorized'}), 403
+        
+        presigned_url = s3_client.generate_presigned_url(
+            'get_object',
+            Params={
+                'Bucket': BUCKET_NAME,
+                'Key': document.file_path,
+                'ResponseContentDisposition': 'inline'  # Opens in browser instead of downloading
+            },
+            ExpiresIn=3600
+        )
+
+        return jsonify({
+            'url': presigned_url,
+            'document_type': document.document_type
+        }), 200
+        
+    except Exception as e:
+        logger.exception("Failed to generate view URL")
+        return jsonify({'error': 'Failed to generate view link'}), 500
 
 # ------------------------
 # Get all documents for signed-in user

@@ -12,9 +12,7 @@ import ChatBot from "../components/ChatBot.jsx";
 import JobDetailsModal from "../components/JobDetailsModal.jsx"; 
 import JobCard from "../components/JobCard.jsx";
 import AppliedJobs from "../components/AppliedJobs.jsx";
-
-
-
+import RecommendedJobCard from "../components/RecommendedJobCard.jsx";
 
 
 const UserDashboard = () => {
@@ -23,24 +21,26 @@ const UserDashboard = () => {
   const [searchParams] = useSearchParams();
   const [showLiked, setShowLiked] = useState(false);
   const [showApplied, setShowApplied] = useState(false);
-  const [selectedJob, setSelectedJob] = useState(null);
+  const [showRecommended, setShowRecommended] = useState(false);
+  const [recommendedJobs, setRecommendedJobs] = useState([]);
+  const [recommendedLoading, setRecommendedLoading] = useState(false);
+  const [recommendedError, setRecommendedError] = useState(null);
+
   const [likedJobs, setLikedJobs] = useState([]);
 
   const location = useLocation();
 
-   const handleJobClick = (job) => {
+  const handleJobClick = (job) => {
     try {
-    // make the job available to the new window
-    localStorage.setItem("job_dashboard_payload", JSON.stringify(job));
-  } catch (e) {
-    console.warn("Could not store job payload:", e);
-  }
-  window.open("/job_dashboard", "_blank", "noopener");
-    //setSelectedJob(job); // open modal
-  }
-    const closeModal = () => {
-    setSelectedJob(null); // close modal
-  }
+      localStorage.setItem("job_dashboard_payload", JSON.stringify(job));
+    } catch (e) {
+      console.warn("Could not store job payload:", e);
+    }
+
+    navigate("/job_dashboard"); // same tab navigation
+  };
+
+
 
   // Handle token + username from query params
   useEffect(() => {
@@ -131,12 +131,6 @@ const UserDashboard = () => {
       const data = await response.json();
       let items = data.current || [];
 
-      // 🔀 Randomize array using Fisher-Yates shuffle
-      for (let i = items.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [items[i], items[j]] = [items[j], items[i]];
-      }
-
       return {
         items,
         total: data.total || 0,
@@ -171,41 +165,71 @@ const UserDashboard = () => {
     }
   };
 
-  // Fetch applied jobs
-  const fetchAppliedJobs = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const res = await axios.get("/api/applications", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+  const fetchRecommendedJobs = useCallback(async () => {
+  const token = localStorage.getItem("token");
+  console.log("Fetching recommended jobs...");
 
-      const appliedList = res.data.applied.map(app => ({
-        ...app.job,
-        dateApplied: app.created_at,
-      }));
+  try {
+    setRecommendedLoading(true);
+    setRecommendedError(null);
 
-      console.log("Fetched applied jobs:", appliedList);
-      setApplied(appliedList);
-    } catch (err) {
-      console.error("Failed to fetch applied jobs:", err);
+    //  GET existing recommendations first
+    const getRes = await fetch("/api/profile/recommendations", {
+      headers: { "Authorization": `Bearer ${token}` }
+    });
+
+    const getData = await getRes.json();
+
+    if (getRes.ok && getData.recommendations) {
+      console.log("Recommended jobs:", getData.recommendations);
+
+      setRecommendedJobs(getData.recommendations);
     }
-  };
+
+    // After a few seconds → silently update backend recommendations
+    setTimeout(async () => {
+      try {
+        await fetch("/api/profile/generate_recommendations", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          }
+        });
+        
+      } catch (err) {
+        console.warn("Background recommendation refresh failed", err);
+      }
+    }, 3000); 
+
+  } catch (err) {
+    console.error("Error loading recommended jobs:", err);
+    setRecommendedError(err.message);
+  } finally {
+    setRecommendedLoading(false);
+  }
+}, []);
+
+
 
   const handleShowLiked = () => {
     setShowLiked(true);
     setShowApplied(false);
+    setShowRecommended(false);
     fetchLikedJobs();
   };
 
   const handleShowRecommended = () => {
-
-      setShowLiked(false);
-      setShowApplied(false);
+    setShowRecommended(true);
+    setShowLiked(false);
+    setShowApplied(false);
+    fetchRecommendedJobs();
   };
 
   const handleShowApplied = () => {
     setShowApplied(true);
     setShowLiked(false);
+    setShowRecommended(false);
     
   };
 
@@ -222,8 +246,7 @@ const UserDashboard = () => {
             onReset = {() => {
               setShowLiked(false);
               setShowApplied(false);
-              console.log(showApplied)
-              console.log(showLiked)
+             
             }}
           />
           <main className={styles["dashboard-container"]} role="main">
@@ -238,16 +261,36 @@ const UserDashboard = () => {
                 )
               ) : showApplied ? (
                   <AppliedJobs/>
-                ) : (
-              <Outlet context={{ onJobClick: handleJobClick, fetchJobs }} />
-            )}
+
+              ) : showRecommended ? (
+                    recommendedLoading ? (
+                      <p>Loading recommendations...</p>
+                    ) : recommendedError ? (
+                      <p>Error: {recommendedError}</p>
+                    ) : recommendedJobs.length > 0 ? (
+                      recommendedJobs.map(rec => {
+                        if (!rec.job) return null;
+                        return (
+                          <RecommendedJobCard 
+                            key={rec.id}
+                            job={rec.job}
+                            recommendation={rec}
+                            onClick={handleJobClick}
+                          />
+                        );
+                      })
+                    ) : (
+                      <p>No recommended jobs available.</p>
+                    )
+                  ) : (
+                    <Outlet context={{ onJobClick: handleJobClick, fetchJobs }} />
+                  )}
            </div>
           </main>
         </div>
       </div>
 
-      {/* Modal */}
-      {selectedJob && <JobDetailsModal job={selectedJob} onClose={closeModal} />}
+      
     </>
   )
 };

@@ -1,10 +1,13 @@
 import styles from './Setting.module.css'
 import { useState, useEffect} from "react"
 import { useNavigate } from "react-router-dom";
+
 import PasswordReset from '../components/settingPage/PasswordReset'
 import Confirmation from '../components/UsersMessages/Confirmation'
 import Success from '../components/UsersMessages/Success'
 import Error from '../components/UsersMessages/Error'
+import Switch from '../components/buttons/Switch'
+import Btn from '../components/buttons/Btn'
 
 const Settings = () => {
     const [error, setError] = useState(null);
@@ -15,6 +18,7 @@ const Settings = () => {
     const [showSuccess, setShowSuccess] = useState(false)
     const [showError, setShowError] = useState(false)
     const navigate = useNavigate();
+    const [isJobAlerts, setIsJobAlerts] = useState(true)
 
     useEffect(() => {
         const fetchUserEmail = async () => {
@@ -103,6 +107,10 @@ const Settings = () => {
         }
     }
 
+    const handleChange = () => {
+        setIsJobAlerts(!isJobAlerts)
+    }
+
     return (
         <div className={styles.container}>
             <div className={styles.settingContainer}>
@@ -111,23 +119,30 @@ const Settings = () => {
                     <div className={styles.separator}></div>
                     <div className={styles.email}>
                         <h5 className={styles.label}>Email</h5>
-                        <p>{email}</p>
+                        <p className={styles.description}>{email}</p>
                     </div>
                     <div className={styles.password} >
                         <h5 className={styles.label}>Password</h5>
-                        <button className={styles.setBtn} onClick={handleResetPassword}>Reset password</button>
+                        <Btn icon={null} label="Reset password" onClick={handleResetPassword}/>
                     </div>
                     <div className={styles.deleteAccount}>
                         <div>
                             <h5 className={styles.label}>Delete my acount</h5>
-                            <p>Permanently delete your HireHub account and all associated data</p>
+                            <p className={styles.description}>Permanently delete your HireHub account and all associated data</p>
                         </div>
-                        <button className={styles.setBtn} onClick={handleDeletion}>Delete my account</button>
+                        <Btn icon={null} label="Delete my account" onClick={handleDeletion}/>
                     </div>
                 </div>
                 <div className={styles.alertsPreference}>
                     <h3 className={styles.title}>Job Alerts Preference</h3>
                     <div className={styles.separator}></div>
+                    <div className={styles.jobAlerts}>
+                        <h5 className={styles.label}>Enable Instant Job Alerts</h5>
+                        <div className={styles.infoContainer}>
+                            <p className={styles.description}>Be the first to apply - get fresh, tailored job alerts within an hour of posting.</p>
+                            <Switch onChange={handleChange}/>
+                        </div>
+                    </div>
                 </div>
             </div>
             {isOpenPasswordReset && (

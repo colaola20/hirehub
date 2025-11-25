@@ -17,6 +17,8 @@ import requests
 import html as _html
 import re
 
+from app.scripts.groq_skill_extraction import enhance_job_with_groq_skills
+
 import logging
 logger = logging.getLogger(__name__)
 
@@ -230,8 +232,7 @@ def normalize_findwork_job(api_job):
     else:
         location_value = api_job.get("location")
 
-
-    return {
+    job_data = {
         "api_id": api_job.get("id"),
         "source": "findwork",
         "title": api_job.get("role"),
@@ -244,6 +245,15 @@ def normalize_findwork_job(api_job):
         "is_active": True,
         "employment_type": api_job.get("employment_type")
     }
+
+    try:
+        job_data = enhance_job_with_groq_skills(job_data)
+    except Exception as e:
+        logger.warning(f"Skill extraction failed for job {job_data.get('api_id')}: {e}")
+        # Add empty skills so it doesn't break
+        job_data["skills_extracted"] = []
+    
+    return job_data
 
 def _canonicalize_employment_type(val):
     if not val:
@@ -320,7 +330,7 @@ def normalize_adzuna_job(api_job):
     )
     employment_type = _canonicalize_employment_type(raw_emp)
 
-    return {
+    job_data = {
         "api_id": str(api_job.get("id")),
         "source": "adzuna",
         "title": api_job.get("title"),
@@ -333,6 +343,15 @@ def normalize_adzuna_job(api_job):
         "is_active": True,
         "employment_type": employment_type
     }
+
+    try:
+        job_data = enhance_job_with_groq_skills(job_data)
+    except Exception as e:
+        logger.warning(f"Skill extraction failed for job {job_data.get('api_id')}: {e}")
+        # Add empty skills so it doesn't break
+        job_data["skills_extracted"] = []
+
+    return job_data
 
 def upsert_job(session, job_data):
     allowed = {c.key for c in Job.__table__.columns}
@@ -376,10 +395,11 @@ def ingest_source_with_upsert(fetch_fn, normalize_fn, *, page_arg_name="page", s
                     job_data = normalize_fn(api_job)
                     if not job_data:
                         continue
-                    print("Our data")
-                    print(job_data)
+                    # print("Our data")
+                    # print(job_data)
                     # print("API data")
                     # print(api_job)
+                    print("Job saved")
                     logger.debug("Upserting job %s from %s", api_job.get("id") or api_job.get("title"), normalize_fn.__name__)
                     try:
                         with session.begin_nested():
@@ -395,8 +415,8 @@ def ingest_source_with_upsert(fetch_fn, normalize_fn, *, page_arg_name="page", s
 def run_all_sources():
     logger.info("Starting ingestion: adzuna")
     ingest_source_with_upsert(fetch_adzuna_jobs, normalize_adzuna_job)
-    #logger.info("Starting ingestion: findwork")
-    #ingest_source_with_upsert(fetch_findwork_jobs, normalize_findwork_job)
+    logger.info("Starting ingestion: findwork")
+    ingest_source_with_upsert(fetch_findwork_jobs, normalize_findwork_job)
 
 if __name__=="__main__":
     run_all_sources()

@@ -18,6 +18,9 @@ class Job(db.Model):
     applications = db.relationship("Application", backref='job', lazy=True)
     favorites = db.relationship('Favorite', backref='job', lazy=True, cascade='all, delete-orphan')
     employment_type = db.Column(db.String(), nullable=True)
+    skills_extracted = db.Column(db.JSON, nullable=True)
+    skills_by_category = db.Column(db.JSON, nullable=True)
+    expires_at = db.Column(db.DateTime, nullable=True)
 
 
     __table_args__ = (
@@ -35,7 +38,10 @@ class Job(db.Model):
             'date_posted': self.date_posted.isoformat() if self.date_posted else None,
             'is_active': self.is_active,
             'source': self.source,
-            'employment_type': self.employment_type
+            'employment_type': self.employment_type,
+            'skills_extracted': self.skills_extracted or [],
+            'skills_by_category': self.skills_by_category or []
+            
         }
 
     

@@ -1,12 +1,14 @@
-.container{
-    padding: 150px;
-    padding-left: 275px;
-    padding-right: 275px;   
+.container {
+    padding: 150px 275px 50px 275px;
     position: relative;
     width: 100%;
     min-width: 300px;
     height: 100%;
-/* ------------copy and pasted from login_Page.css------------ */
+    display: flex;
+    justify-content: center;
+    position: relative;
+    box-sizing: border-box;
+    /* ------------copy and pasted from login_Page.css------------ */
     /* display: flex;
     justify-content: center;
     align-items: center;         
@@ -24,89 +26,73 @@
     inset: 0;
     z-index: -2;
     background:
-    /* lighter global veil */
-    linear-gradient(0deg, rgba(0,0,0,0.28), rgba(0,0,0,0.28)),
+        /* lighter global veil */
+        linear-gradient(0deg, rgba(0, 0, 0, 0.28), rgba(0, 0, 0, 0.28)),
 
-    /* soft pink/purple accents (unchanged) */
-    radial-gradient(380px 240px at 92% 10%, rgba(255, 120, 170, 0.20), transparent 62%),
-    radial-gradient(180px 120px at 96% 6%,  rgba(255, 155, 195, 0.26), transparent 70%),
+        /* soft pink/purple accents (unchanged) */
+        radial-gradient(380px 240px at 92% 10%, rgba(255, 120, 170, 0.20), transparent 62%),
+        radial-gradient(180px 120px at 96% 6%, rgba(255, 155, 195, 0.26), transparent 70%),
 
-    radial-gradient(460px 300px at 8% 12%,  rgba(255, 120, 170, 0.22), transparent 64%),
-    radial-gradient(220px 150px at 5% 8%,   rgba(255, 155, 195, 0.30), transparent 72%),
+        radial-gradient(460px 300px at 8% 12%, rgba(255, 120, 170, 0.22), transparent 64%),
+        radial-gradient(220px 150px at 5% 8%, rgba(255, 155, 195, 0.30), transparent 72%),
 
-    radial-gradient(520px 320px at 10% 86%, rgba(255, 130, 185, 0.16), transparent 66%),
-    radial-gradient(240px 160px at 6% 94%,  rgba(255, 170, 210, 0.20), transparent 74%),
+        radial-gradient(520px 320px at 10% 86%, rgba(255, 130, 185, 0.16), transparent 66%),
+        radial-gradient(240px 160px at 6% 94%, rgba(255, 170, 210, 0.20), transparent 74%),
 
-    /* slightly stronger neutral highlights */
-    radial-gradient(900px 480px at 75% 12%, rgba(255,255,255,0.12), transparent 60%),
-    radial-gradient(760px 420px at 16% 8%,  rgba(255,255,255,0.08), transparent 62%),
+        /* slightly stronger neutral highlights */
+        radial-gradient(900px 480px at 75% 12%, rgba(255, 255, 255, 0.12), transparent 60%),
+        radial-gradient(760px 420px at 16% 8%, rgba(255, 255, 255, 0.08), transparent 62%),
 
-    /* purple wash + warmth */
-    radial-gradient(900px 520px at 22% 70%, rgba(120, 60, 255, 0.12), transparent 62%),
-    radial-gradient(820px 480px at 52% 38%, rgba(255,200,140,0.05), transparent 60%),
+        /* purple wash + warmth */
+        radial-gradient(900px 520px at 22% 70%, rgba(120, 60, 255, 0.12), transparent 62%),
+        radial-gradient(820px 480px at 52% 38%, rgba(255, 200, 140, 0.05), transparent 60%),
 
-    /* softer vignette */
-    radial-gradient(140% 120% at 50% 115%, rgba(0,0,0,0.54), transparent 55%),
+        /* softer vignette */
+        radial-gradient(140% 120% at 50% 115%, rgba(0, 0, 0, 0.54), transparent 55%),
 
-    /* brighter base gradient */
-    linear-gradient(90deg, #7fa0ee 0%, #4a2a86 100%);
+        /* brighter base gradient */
+        linear-gradient(90deg, #7fa0ee 0%, #4a2a86 100%);
     background-attachment: fixed;
 }
 
-.back-btn{
+.back-btn {
     position: absolute;
-    top: 40px;
-    left: 75px;
+    top: 60px;
+    left: 85px;
     font-size: 1.2rem;
-    
-    height: 50px;
-    width: 100px;
-    min-height: 50px;
-    min-width: 100px;
-    background: rgba(20, 15, 40, 0.65);
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 10px;
-}
-
-.back-btn a{
-    text-decoration: none;
-    color: white;
 }
 
 
-/* ----------------------------------------------------------- */
-
-
-.form-box{
+.form-box {
     background: rgba(20, 15, 40, 0.65);
-    border: px solid rgba(255, 255, 255, 0.3);
     backdrop-filter: blur(10px);
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 20px;
     border-radius: 20px;
-    /* max-height: 1000px; */
-    min-width: 400px;
+    min-width: 1125px;
+    max-width: 1350px;
     width: 100%;
-    box-shadow: 0px 8px 24px rgba(0,0,0,0.3);
+    /* margin: 0 auto; */
+    box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.3);
     color: white;
 }
 
-.form-box h2{
+.form-box h2 {
     font-size: 2rem;
     font-weight: 700;
 }
 
-.resume-form-container{
+.resume-form-container {
     /* same color and blur styling as navbar */
-    background: rgba(20, 15, 40, 0.65);
+    /* background: rgba(20, 15, 40, 0.65); */
     /* border: 1px solid rgba(255, 255, 255, 0.3); */
     backdrop-filter: blur(10px);
-    box-shadow: 0px 8px 24px rgba(0,0,0,0.15);
+    box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.15);
+
+    transition: height 0.35s ease;
+    overflow: hidden;
 
     padding: 15px;
     display: flex;
@@ -116,6 +102,7 @@
     min-height: 100px;
     /* max-height: 1000px; */
     width: 83%;
+    max-width: 1000px;
     border-radius: 20px;
     margin: 15px 0;
     padding-bottom: 50px;
@@ -123,7 +110,7 @@
     text-align: center;
 }
 
-.resume-form-container input{
+.resume-form-container input {
     background-color: rgb(255, 255, 255);
     border-radius: 8px;
     font-size: 1rem;
@@ -132,7 +119,7 @@
     border: 1px solid #eee;
 }
 
-.resume-form-container input[placeholder="Summary Generation (separate keywords by commas)"]{
+.resume-form-container input[placeholder="Summary Generation (separate keywords by commas)"] {
     background-color: rgb(255, 255, 255);
     padding: 12px 16px;
     border: 1px solid #eee;
@@ -141,33 +128,33 @@
     height: 80px;
 }
 
-.resume-form-container input[type="checkbox"]{
+.resume-form-container input[type="checkbox"] {
     accent-color: #562fac;
 }
 
 
-.submit-btn{
+.submit-btn {
     background: linear-gradient(to right, #86bbf0, #562fac);
     color: white;
     border: 1px solid black;
     margin: 10px;
 }
 
-.prog-btn{
+.prog-btn {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    max-width: 1300px;
+    max-width: 1100px;
     height: 50px;
-    margin: 15px;
+    /* margin: 15px; */
     font-size: 1.15rem;
 }
 
-.placeholder{
-    width: 90px;
-    height: 50px;
+.placeholder {
+    width: 72.36px;
+    height: 36.8px;
 }
 
 .progress-indicator {
@@ -175,7 +162,7 @@
     font-size: 1.25rem;
 }
 
-.prog-btn-btn{
+.prog-btn-btn {
     background-color: rgba(20, 15, 40, 0.65);
     width: 100px;
     display: flex;
@@ -183,12 +170,12 @@
     justify-content: center;
 }
 
-.prog-btn-btn:hover{
+.prog-btn-btn:hover {
     background-color: rgba(69, 41, 131, 0.65);
     transition: background-color 0.05s ease;
 }
 
-.submit-form-btn{
+.submit-form-btn {
     background-color: rgba(77, 185, 211, 0.65);
     width: 90px;
     text-align: center;
@@ -197,16 +184,58 @@
     justify-content: center;
 }
 
-.submit-form-btn:hover{ 
+.submit-form-btn:hover {
     background-color: rgba(0, 204, 255, 0.748);
     transition: background-color 0.05s ease;
 }
 
-.resume-generation{
+.resume-generation {
     width: 100%;
     text-align: center;
 }
 
-.resume-text{
+.resume-text {
     background-color: antiquewhite;
+}
+
+
+@media (max-width: 1670px) {
+    .form-box{
+        min-width: 1164px;
+    }
+}
+@media (max-width: 1200px) {
+
+
+    .container {
+        padding: 40px 10px;
+    }
+
+    .back-btn {
+        position: absolute;
+        top: 20px;
+        left: 15px;
+        font-size: 1.2rem;
+    }
+
+    .form-box {
+        padding: 10px 15px;
+        margin: 40px 0 0 0;
+        min-width: 300px;
+
+    }
+
+    .resume-form-container {
+        padding: 10px 10px 30px 10px;
+        gap: 30px;
+    }
+
+    .prog-btn{
+        margin: 10px 0;
+        height: auto;
+    }
+}
+
+@media (max-width: 666px){
+
 }

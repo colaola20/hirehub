@@ -142,7 +142,7 @@ const AppliedJobs = () => {
 
  return (
     <div className={styles.container}>
-      <h2>Your Applied Jobs</h2>
+      <h2>Jobs that you had applied to</h2>
       {appliedJobs.length === 0 ? (
         <p className={styles.message}>You haven’t applied to any jobs yet.</p>
       ) : (
@@ -168,7 +168,7 @@ const AppliedJobs = () => {
             <span><StickyNote size={16} /> Notes</span>
             <span><ExternalLink size={16} /> URL</span>
             <span onClick={() => sortJobs("applied_at")} className={styles.sortable}>
-              <Clock size={16} /> Applied At <span className={styles.arrow}>{getSortIcon("applied_at")}</span>
+              <Clock size={16} /> Applied on <span className={styles.arrow}>{getSortIcon("applied_at")}</span>
             </span>
           </div>
 
@@ -180,15 +180,48 @@ const AppliedJobs = () => {
                 <span>{job.title || "Untitled Position"}</span>
                 <span>{job.company || "Unknown"}</span>
                 <span>{job.location || "Unspecified"}</span>
-                <span>{job.date_posted ? new Date(job.date_posted).toLocaleDateString() : "Unknown"}</span>
-                <span>{job.is_active ? "Yes" : "No"}</span>
-                <select value={app.status} onChange={(e) => handleStatusChange(app.application_id, e.target.value)}>
-                  <option value="applied">Applied</option>
-                  <option value="interviewed">Interviewed</option>
-                  <option value="offer">Offer</option>
-                  <option value="rejected">Rejected</option>
-                </select>
+                <span style={{ textAlign: "center", display: "block" }}>{job.date_posted ? new Date(job.date_posted).toLocaleDateString() : "Unknown"}</span>
+                <span style={{ textAlign: "center", display: "block", color: job.is_active ? "" : "#ff0000", fontWeight: job.is_active ? "" : "bold" }}>{job.is_active ? "Yes" : "No"}</span>
+                
+              <select
+                value={app.status}
+                onChange={(e) => handleStatusChange(app.application_id, e.target.value)}
+                style={{
+                  backgroundColor:
+                    app.status.toLowerCase() === "applied"
+                      ? "#46536d33"
+                      : app.status.toLowerCase() === "interviewed"
+                      ? "#ffbf0033"
+                      : app.status.toLowerCase() === "joboffered"
+                      ? "#008f0033"
+                      : app.status.toLowerCase() === "rejected"
+                      ? "#ff000033"
+                      : "#333",
+                  color:
+                    app.status.toLowerCase() === "applied"
+                      ? "#cce0ff"
+                      : app.status.toLowerCase() === "interviewed"
+                      ? "#fff4cc"
+                      : app.status.toLowerCase() === "joboffered"
+                      ? "#ccffcc"
+                      : app.status.toLowerCase() === "rejected"
+                      ? "#ffcccc"
+                      : "#fff",
+                  fontWeight: "bold",
+                  borderRadius: "5px",
+                  border: "1px solid #555",
+                  padding: "2px 4px",
+                }}
+              >
+                <option value="applied">Applied</option>
+                <option value="interviewed">Interviewed</option>
+                <option value="joboffered">Job offered</option>
+                <option value="rejected">Rejected</option>
+              </select>
+
+
                 <span
+                
                   className={`${styles.clickableNote} ${!app.notes ? styles.noNote : ""}`}
                   onClick={() => handleOpenNotes(app)}
                 >
@@ -200,8 +233,24 @@ const AppliedJobs = () => {
                     "None"
                   )}
                 </span>
-                <span>{job.url || "Unknown"}</span>
-                <span>{app.applied_at ? new Date(app.applied_at).toLocaleDateString() : "Unknown"}</span>
+
+                <span data-label="URL">
+                  {job.url ? (
+                    <a
+                      href={job.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={styles.jobUrl}
+                      title={job.url} // shows full URL on hover
+                    >
+                      Visit Site
+                    </a>
+                  ) : (
+                    "Unknown"
+                  )}
+                </span>
+
+                <span style={{ textAlign: "center", display: "block" }} >{app.applied_at ? new Date(app.applied_at).toLocaleDateString() : "Unknown"}</span>
               </div>
             );
           })}

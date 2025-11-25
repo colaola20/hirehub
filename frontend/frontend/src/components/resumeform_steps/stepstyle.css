@@ -1,11 +1,14 @@
-.resume-form{
+.resume-form {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 2px;
+
+    transition: height 0.35s ease;
+    overflow: hidden;
 }
 
-.location-form{
+.location-form {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -13,48 +16,118 @@
     padding-bottom: 3px;
 }
 
-.job-form{
+.location-validation {
     display: flex;
     flex-direction: row;
     align-items: center;
+    gap: 100px;
+}
+
+.job-form {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
     gap: 20px;
-    height: 110px;
+    min-height: 110px;
+    height: auto;
+    /* padding-bottom: 40px; */
+}
+
+.job-validation {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 45px;
+    margin-right: 15px;
     padding-bottom: 40px;
 }
 
-.school-form{
+.school-form {
     display: flex;
     flex-direction: row;
     align-items: center;
     gap: 20px;
-    height: 110px;
+    min-height: 110px;
+    height: auto;
+    /* padding-bottom: 30px; */
+}
+
+.school-validation {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 70px;
+    margin-right: 15px;
     padding-bottom: 30px;
 }
 
-.project-form{
+.project-form {
     display: flex;
     flex-direction: row;
     align-items: center;
     gap: 20px;
-    height: 110px;;
+    min-height: 110px;
+    height: auto;
     padding-top: 25px;
     padding-bottom: 40px;
 }
 
-@media (max-width: 1450px) {
-    .school-form, .job-form, .project-form{
+.projDesc {
+    min-width: 250px;
+    max-width: 600px;
+    width: auto;
+
+    min-height: 40px;
+    max-height: 300px;
+
+    padding: 8px;
+    resize: none;
+    overflow: hidden;
+
+    transition: width 0.15s ease, height 0.15s ease;
+}
+
+@media (max-width: 1670px) {
+    
+}
+
+@media (max-width: 1000px) {
+
+    .school-form,
+    .job-form,
+    .project-form {
         display: flex;
-        flex-direction: column;
+        flex-direction: row;
         align-items: center;
         justify-content: center;
+        flex-wrap: wrap;
     }
 }
 
-@media (max-width: 1550px){
-    .location-form{
+@media (max-width: 1150px) {
+
+    .location-form,
+    .location-validation {
+        display: grid;
+        grid-template-columns: repeat(2, 200px);
+        grid-template-rows: repeat(2, 40px);
+        gap: 20px;
+        justify-content: center;
+    }
+
+
+    .location-validation {
+        gap: 0px;
+    }
+}
+
+@media (max-width: 650px){
+    .location-form,
+    .location-validation {
         display: flex;
         flex-direction: column;
-        align-items: center;
-        justify-content: center;
     }
 }
