@@ -3,14 +3,34 @@ import styles from "./JobCard.module.css";
 
 // ✅ Global cache outside component - survives remounts
 const analysisCache = new Map();
+const inFlightRequests = new Map();
 
 const JobAnalysisPanel = ({ job }) => {
   const [analysis, setAnalysis] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isVisible, setIsVisible] = useState(false);
+  const containerRef = useRef(null);
 
-
+  // ✅ Only start analysis when component is visible
   useEffect(() => {
-    if (!job?.id) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true)
+          observer.disconnect() // Stop observing once visible
+        }
+      },
+      { rootMargin: "100px" } // Start loading slightly before visible
+    )
+
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+    return () => observer.disconnect()
+  }, [])
+  useEffect(() => {
+
+    if (!job?.id || !isVisible) return; // Wait until visible
 
     // ✅ Check cache first
     if (analysisCache.has(job.id)) {
@@ -19,6 +39,7 @@ const JobAnalysisPanel = ({ job }) => {
       setLoading(false);
       return;
     }
+
 
     const controller = new AbortController();
     const signal = controller.signal;
@@ -77,13 +98,13 @@ const JobAnalysisPanel = ({ job }) => {
     return () => {
       controller.abort();
     };
-  }, [job?.id]);
+  }, [job?.id, isVisible]);
 
-  if (loading) return <div className={styles.loading}>Analyzing...</div>;
+  if (loading) return <div ref={containerRef} className={styles.loading}>Analyzing...</div>;
   if (analysis?.error) return <div className={styles.error}>{analysis.error}</div>;
 
   return (
-    <div className={styles.wrapper}>
+    <div ref={containerRef} className={styles.wrapper}>
       <div className={styles.pctRow}>
         <div className={styles.pctBig}>
         {(() => {
