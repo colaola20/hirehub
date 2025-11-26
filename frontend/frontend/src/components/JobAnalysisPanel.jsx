@@ -3,6 +3,7 @@ import styles from "./JobCard.module.css";
 
 // ✅ Global cache outside component - survives remounts
 const analysisCache = new Map();
+const CACHE_DURATION = 30 * 60 * 1000; // 30 minutes
 const inFlightRequests = new Map();
 
 const JobAnalysisPanel = ({ job }) => {
@@ -10,6 +11,25 @@ const JobAnalysisPanel = ({ job }) => {
   const [loading, setLoading] = useState(true);
   const [isVisible, setIsVisible] = useState(false);
   const containerRef = useRef(null);
+
+  const getCachedAnalysis = (jobId) => {
+  const cached = analysisCache.get(jobId);
+  if (!cached) return null;
+  
+  if (Date.now() - cached.timestamp > CACHE_DURATION) {
+    analysisCache.delete(jobId);
+    return null;
+  }
+  
+  return cached.data;
+};
+
+const setCachedAnalysis = (jobId, data) => {
+  analysisCache.set(jobId, {
+    data,
+    timestamp: Date.now()
+  });
+};
 
   // ✅ Only start analysis when component is visible
   useEffect(() => {
@@ -28,6 +48,8 @@ const JobAnalysisPanel = ({ job }) => {
     }
     return () => observer.disconnect()
   }, [])
+
+
   useEffect(() => {
 
     if (!job?.id || !isVisible) return; // Wait until visible
@@ -35,7 +57,7 @@ const JobAnalysisPanel = ({ job }) => {
     // ✅ Check cache first
     if (analysisCache.has(job.id)) {
       console.log(`Using cached analysis for job ${job.id}`);
-      setAnalysis(analysisCache.get(job.id));
+      setAnalysis(getCachedAnalysis(job.id));
       setLoading(false);
       return;
     }
@@ -68,7 +90,7 @@ const JobAnalysisPanel = ({ job }) => {
         
         // Prevent setting state if the component has already unmounted
         if (!signal.aborted) {
-            analysisCache.set(job.id, data);
+            setCachedAnalysis(job.id, data);
             setAnalysis(data);
         }
       } catch (err) {
@@ -81,7 +103,7 @@ const JobAnalysisPanel = ({ job }) => {
         // Only set error state if not aborted
         if (!signal.aborted) {
           const errorData = { error: "Unable to calculate" };
-          analysisCache.set(job.id, errorData);
+          setCachedAnalysis(job.id, errorData);
           setAnalysis(errorData);
         }
       } finally {
