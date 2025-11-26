@@ -246,6 +246,7 @@ const UserDashboard = () => {
             onReset = {() => {
               setShowLiked(false);
               setShowApplied(false);
+              setShowRecommended(false)
              
             }}
           />
