@@ -73,7 +73,7 @@ def upload_file():
         file = request.files['file']
 
         if file.filename == '':
-            return jsonify({'eror': "No file selected"}), 400
+            return jsonify({'error': "No file selected"}), 400
         
         if not allowed_file(file.filename):
             return jsonify({'error': 'File type not allowed'}), 400
@@ -159,7 +159,7 @@ def get_document_url(document_id):
             'get_object',
             Params={
                 'Bucket': BUCKET_NAME,
-                'Key': document.fille_path
+                'Key': document.file_path
             },
             ExpiresIn=3600
         )
