@@ -7,6 +7,7 @@ import JobAnalysisPanel from "./JobAnalysisPanel.jsx";
 const JobCard = ({ job, onClick , cardForLikedJobs = false}) => {
 
 
+
 return (
 
   <>

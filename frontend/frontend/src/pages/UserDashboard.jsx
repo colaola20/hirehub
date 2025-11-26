@@ -26,11 +26,14 @@ const UserDashboard = () => {
   const [recommendedLoading, setRecommendedLoading] = useState(false);
   const [recommendedError, setRecommendedError] = useState(null);
 
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
   const [likedJobs, setLikedJobs] = useState([]);
 
   const location = useLocation();
 
-  const handleJobClick = (job) => {
+  const handleJobClick = useCallback((job) => {
     try {
       localStorage.setItem("job_dashboard_payload", JSON.stringify(job));
     } catch (e) {
@@ -38,7 +41,7 @@ const UserDashboard = () => {
     }
 
     navigate("/job_dashboard"); // same tab navigation
-  };
+  }, [navigate]);
 
 
 
@@ -146,7 +149,7 @@ const UserDashboard = () => {
 
 
     // Fetch liked jobs
-  const fetchLikedJobs = async () => {
+  const fetchLikedJobs = useCallback(async () => {
     try {
       const token = localStorage.getItem("token");
       const res = await axios.get("/api/favorites", {
@@ -163,7 +166,7 @@ const UserDashboard = () => {
     } catch (err) {
       console.error("Failed to fetch liked jobs:", err);
     }
-  };
+  }, []);
 
   const fetchRecommendedJobs = useCallback(async () => {
   const token = localStorage.getItem("token");
