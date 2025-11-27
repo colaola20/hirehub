@@ -12,4 +12,4 @@ from app.models.favorite import Favorite
 from app.models.recommended_job import RecommendedJob
 
 
-__all__ = ['User', 'Job', 'Application', 'Profile', 'Skill', 'Notification', 'AIAssistantLog', 'CoverLetter', 'Resume', 'Favorite','RecommendedJob']
+__all__ = ['User', 'Job', 'Application', 'Profile', 'Skill', 'Notification', 'AIAssistantLog', 'CoverLetter', 'Resume', 'ResumeForm', 'Favorite','RecommendedJob']
