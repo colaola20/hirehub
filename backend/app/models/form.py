@@ -1,8 +1,10 @@
 from app.extensions import db
+# from app.model.user import User
 
 class ResumeForm(db.model):
     _table_name_ = "resume_form"
     id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
 
     personalInfo = db.Column(db.JSON)
     socialInfo = db.Column(db.JSON)
@@ -11,3 +13,15 @@ class ResumeForm(db.model):
     edHistory = db.Column(db.JSON)
     projInfo = db.Column(db.JSON)
 
+    # if needed for debugging
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "user_id": self.user_id,
+            "personalInfo": self.personalInfo,
+            "socialInfo": self.socialInfo,
+            "miscInfo": self.miscInfo,
+            "jobHistory": self.jobHistory,
+            "edHistory": self.edHistory,
+            "projInfo": self.projInfo
+        }
