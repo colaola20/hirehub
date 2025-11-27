@@ -1,8 +1,8 @@
 from app.extensions import db
 # from app.model.user import User
 
-class ResumeForm(db.model):
-    _table_name_ = "resume_form"
+class ResumeForm(db.Model):
+    _tablename_ = "resume_form"
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
 
