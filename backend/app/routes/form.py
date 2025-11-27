@@ -88,6 +88,7 @@ def get_resume_form():
 @form_bp.route('/api/form', methods=['POST'])
 @jwt_required()
 def submit_form():
+    current_user_id = get_jwt_identity()
     form_data = request.get_json()
 
     if not form_data:
@@ -95,18 +96,32 @@ def submit_form():
             "error": "No form data provided"
         }), 400
 
-    resume_form = ResumeForm(
 
-        user_id = current_user_id,
-        personalInfo = form_data.get("step1"),
-        socialInfo = form_data.get("step2"),
-        miscInfo = form_data.get("step3"),
-        jobHistory = form_data.get("step4"),
-        edHistory = form_data.get("step5"),
-        projInfo = form_data.get("step6")
-    )
 
-    db.session.add(resume_form)
+    # update table
+    resume_form = ResumeForm.query.filter_by(user_id=current_user_id).first()
+    
+    if resume_form:
+        resume_form.personalInfo = form_data.get("step1")
+        resume_form.socialInfo = form_data.get("step2")
+        resume_form.miscInfo = form_data.get("step3")
+        resume_form.jobHistory = form_data.get("step4")
+        resume_form.edHistory = form_data.get("step5")
+        resume_form.projInfo = form_data.get("step6")
+
+    # or create
+    else: 
+        resume_form = ResumeForm(
+            user_id = current_user_id,
+            personalInfo = form_data.get("step1"),
+            socialInfo = form_data.get("step2"),
+            miscInfo = form_data.get("step3"),
+            jobHistory = form_data.get("step4"),
+            edHistory = form_data.get("step5"),
+            projInfo = form_data.get("step6")
+        )
+        db.session.add(resume_form)
+
     db.session.commit()
 
     # result = generate_resume(form_data) #to be implemented
