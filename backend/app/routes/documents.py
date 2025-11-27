@@ -47,7 +47,7 @@ s3_client = boto3.client(
 
 
 BUCKET_NAME = os.getenv('S3_BUCKET_NAME') #fix this
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'pdf', 'txt', 'doc'}
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'pdf', 'txt', 'doc', 'docx'}
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -73,7 +73,7 @@ def upload_file():
         file = request.files['file']
 
         if file.filename == '':
-            return jsonify({'eror': "No file selected"}), 400
+            return jsonify({'error': "No file selected"}), 400
         
         if not allowed_file(file.filename):
             return jsonify({'error': 'File type not allowed'}), 400
@@ -124,7 +124,10 @@ def upload_file():
             'message': 'File uploaded successfully',
             'original_filename': original_filename,
             'filename': unique_filename,
-            'document_id': created_user.document_id
+            'document_id': created_user.document_id,
+            'created_at': doc.created_at.isoformat(),
+            'updated_at': doc.updated_at.isoformat(),
+
         }), 200
             
     except Exception as e:
@@ -156,14 +159,14 @@ def get_document_url(document_id):
             'get_object',
             Params={
                 'Bucket': BUCKET_NAME,
-                'Key': document.fille_path
+                'Key': document.file_path
             },
             ExpiresIn=3600
         )
 
         return jsonify({
             'url': presigned_url,
-            'filename': document.file_path.split('/')[-1],
+            'filename': document.original_filename,
             'expires_in': 3600
         }), 200
     except Exception as e:
@@ -218,21 +221,28 @@ def get_user_documents():
         current_user_id = int(get_jwt_identity())
 
         # Get user's email from user ID
-        from app.models.user import User
-        user = DatabaseService.get_by_id(User, current_user_id)
+        user = User.query.get(current_user_id)
         if not user:
             return jsonify({'status': 'error', 'message': 'User not found'}), 404
 
         # Get all documents for this user
-        documents = DatabaseService.filter_by(Document, user_email=user.email)
+        documents = Document.query.filter_by(user_email=user.email).all()
 
-        documents_data = [doc.to_dict() for doc in documents]
+        documents_list = []
+        for doc in documents:
+            documents_list.append({
+                'id': doc.document_id,
+                'original_filename': doc.original_filename,
+                'document_type': doc.document_type,
+                'created_at': doc.created_at.isoformat(),
+                'updated_at': doc.updated_at.isoformat(),
+            })
 
         return jsonify({
             'status': 'success',
-            'message': f'Retrieved {len(documents)} documents',
-            'data': documents_data,
-            'count': len(documents)
+            'message': f'Retrieved {len(documents_list)} documents',
+            'data': documents_list,
+            'count': len(documents_list)
         }), 200
 
     except Exception as e:

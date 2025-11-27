@@ -227,9 +227,10 @@ def forgot_password_token():
         reset_link = f"{FRONTEND_URL}/reset-password?token={urllib.parse.quote(token)}"
 
         try:
-            msg = Message("HireHub Password Reset", recipients=[email])
+            msg = Message("HireHub Password Reset",recipients=[email],sender=current_app.config['MAIL_USERNAME'])
             msg.body = f"Hello {user.username}, reset link: {reset_link}"
             mail.send(msg)
+
         except Exception as e:
             print(f"[DEBUG] Could not send email. Reset link: {reset_link}")
             print(f"[DEBUG] Error: {e}")

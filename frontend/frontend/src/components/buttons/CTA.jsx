@@ -1,4 +1,4 @@
-import styles from './CTA.css'
+import styles from './CTA.module.css'
 
 const CTA = ({icon, label, onClick, disabled}) => {
     return (
