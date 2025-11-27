@@ -3,6 +3,7 @@ from flask import Blueprint, request, jsonify
 from app.models.user import User
 from app.models.skill import Skill
 from app.models.profile import Profile
+from app.models.form import ResumeForm
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
 form_bp = Blueprint('form', __name__)
@@ -16,6 +17,13 @@ def get_resume_form():
 
     if not user:
         return jsonify({"error": "User not found"}), 404
+
+
+    # fetch existing form if it can
+    resume_form = ResumeForm.query.filter_by(user_id=current_user_id).first()
+
+    if resume_form:
+        return jsonify(resume_form.to_dict()), 200
 
     # getting skills from profile
     profile = Profile.query.filter_by(user_email=user.email).first()
@@ -86,6 +94,20 @@ def submit_form():
         return jsonify({
             "error": "No form data provided"
         }), 400
+
+    resume_form = ResumeForm(
+
+        user_id = current_user_id,
+        personalInfo = form_data.get("step1"),
+        socialInfo = form_data.get("step2"),
+        miscInfo = form_data.get("step3"),
+        jobHistory = form_data.get("step4"),
+        edHistory = form_data.get("step5"),
+        projInfo = form_data.get("step6")
+    )
+
+    db.session.add(resume_form)
+    db.session.commit()
 
     # result = generate_resume(form_data) #to be implemented
 
