@@ -1,7 +1,7 @@
 import {useState, useRef, useEffect} from 'react'
 import Error from '../components/UsersMessages/Error'
 import styles from './Documents.module.css'
-import { Plus, Info } from 'lucide-react';
+import { Plus, Info, MoreVertical, Eye, Download, Trash2 } from 'lucide-react';
 import Btn from '../components/buttons/Btn'
 
 const Documents = () => {
@@ -18,8 +18,12 @@ const Documents = () => {
     const coverInputRef = useRef(null);
     const resumeInputRef = useRef(null);
 
+    const dropdownRef = useRef(null);
+
     const [documents, setDocuments] = useState([])
     const [documentsCount, setDocumentsCount] = useState(0)
+
+    const [openDropdownId, setOpenDropdownId] = useState(null)
 
     const handleFileChange = async (e, type) => {
         setLoadingFileType(type)
@@ -143,8 +147,21 @@ const Documents = () => {
         fetchDocuments()
     }, [])
 
-    const handleDropdown = () => {
-        
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setOpenDropdownId(null);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
+    const toggleDropDown = (e, docId) => {
+        e.preventDefault()
+        e.stopPropagation()
+        setOpenDropdownId(prev => (prev === docId ? null : docId))
     }
 
     return (
@@ -194,7 +211,32 @@ const Documents = () => {
                                 <span>{doc.original_filename}</span>
                                 <span>{new Date(doc.updated_at).toLocaleString()}</span>
                                 <span>{new Date(doc.created_at).toLocaleString()}</span>
-                                <span><button onCLick={handleDropdown}>...</button></span>
+                                <span className={styles.dropdownWrapper}><button 
+                                        className={styles.dropdown} 
+                                        onClick={(e) => toggleDropDown(e, doc.id)}
+                                        onMouseEnter={(e) => e.currentTarget.style.background = '#6f67f0'}
+                                        onMouseLeave={(e) => e.currentTarget.style.background = 'none'}
+                                        >
+                                            <MoreVertical size={20} />
+                                </button>
+                                {openDropdownId === doc.id && (
+                                    <div ref={dropdownRef} className={styles.dropdownMenu} onClick={(e) => e.stopPropagation()}>
+                                        <button 
+                                        onClick={(e) => {
+                                            e.preventDefault()
+                                            e.stopPropagation();
+                                            handleOpenDocs(doc.id)
+                                            setOpenDropdownId(null)
+                                        }}
+                                        onMouseEnter={(e) => e.currentTarget.style.background = '#6f67f0'}
+                                        onMouseLeave={(e) => e.currentTarget.style.background = 'none'}
+                                        className={styles.dropdownItem}
+                                        >
+                                            <Eye size={16} /> View
+                                        </button>
+                                    </div>
+                                )}
+                                </span>
                             </div>
                         )
                     })}
