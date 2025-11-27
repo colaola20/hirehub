@@ -1,19 +1,75 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import styles from "./JobCard.module.css";
+
+// ✅ Global cache outside component - survives remounts
+const analysisCache = new Map();
+const CACHE_DURATION = 30 * 60 * 1000; // 30 minutes
+const inFlightRequests = new Map();
 
 const JobAnalysisPanel = ({ job }) => {
   const [analysis, setAnalysis] = useState(null);
   const [loading, setLoading] = useState(true);
-  const token = localStorage.getItem("token");
+  const [isVisible, setIsVisible] = useState(false);
+  const containerRef = useRef(null);
+
+  const getCachedAnalysis = (jobId) => {
+  const cached = analysisCache.get(jobId);
+  if (!cached) return null;
+  
+  if (Date.now() - cached.timestamp > CACHE_DURATION) {
+    analysisCache.delete(jobId);
+    return null;
+  }
+  
+  return cached.data;
+};
+
+const setCachedAnalysis = (jobId, data) => {
+  analysisCache.set(jobId, {
+    data,
+    timestamp: Date.now()
+  });
+};
+
+  // ✅ Only start analysis when component is visible
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true)
+          observer.disconnect() // Stop observing once visible
+        }
+      },
+      { rootMargin: "100px" } // Start loading slightly before visible
+    )
+
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+    return () => observer.disconnect()
+  }, [])
 
 
-useEffect(() => {
-    if (!job) return;
+  useEffect(() => {
+
+    if (!job?.id || !isVisible) return; // Wait until visible
+
+    // ✅ Check cache first
+    if (analysisCache.has(job.id)) {
+      console.log(`Using cached analysis for job ${job.id}`);
+      setAnalysis(getCachedAnalysis(job.id));
+      setLoading(false);
+      return;
+    }
+
 
     const controller = new AbortController();
     const signal = controller.signal;
 
     const runAnalysis = async () => {
+      const token = localStorage.getItem("token");
+      console.log(`Running NEW analysis for job ${job.id}`)
+
       try {
         const res = await fetch("/api/profile/analyze", {
           method: "POST",
@@ -34,6 +90,7 @@ useEffect(() => {
         
         // Prevent setting state if the component has already unmounted
         if (!signal.aborted) {
+            setCachedAnalysis(job.id, data);
             setAnalysis(data);
         }
       } catch (err) {
@@ -45,7 +102,9 @@ useEffect(() => {
         
         // Only set error state if not aborted
         if (!signal.aborted) {
-             setAnalysis({ error: "Unable to calculate" });
+          const errorData = { error: "Unable to calculate" };
+          setCachedAnalysis(job.id, errorData);
+          setAnalysis(errorData);
         }
       } finally {
         // Only stop loading if not aborted
@@ -61,13 +120,13 @@ useEffect(() => {
     return () => {
       controller.abort();
     };
-  }, [job, token]);
+  }, [job?.id, isVisible]);
 
-  if (loading) return <div className={styles.loading}>Analyzing...</div>;
+  if (loading) return <div ref={containerRef} className={styles.loading}>Analyzing...</div>;
   if (analysis?.error) return <div className={styles.error}>{analysis.error}</div>;
 
   return (
-    <div className={styles.wrapper}>
+    <div ref={containerRef} className={styles.wrapper}>
       <div className={styles.pctRow}>
         <div className={styles.pctBig}>
         {(() => {

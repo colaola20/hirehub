@@ -1,4 +1,4 @@
-import {useState, useRef} from 'react'
+import {useState, useRef, useEffect} from 'react'
 import Error from '../components/UsersMessages/Error'
 import styles from './Documents.module.css'
 import { Plus, Info } from 'lucide-react';
@@ -18,6 +18,9 @@ const Documents = () => {
     const coverInputRef = useRef(null);
     const resumeInputRef = useRef(null);
 
+    const [documents, setDocuments] = useState([])
+    const [documentsCount, setDocumentsCount] = useState(0)
+
     const handleFileChange = async (e, type) => {
         setLoadingFileType(type)
         const selectedFile = e.target.files?.[0];
@@ -33,6 +36,9 @@ const Documents = () => {
         try {
             const res = await upload(selectedFile, type);
             setResult(res);
+            setDocuments(prevDocuments=> {
+                return [...prevDocuments, res]
+            })
         } catch (err) {
             setErrorTitle("Upload failed");
             setErrorDescription(err?.message || String(err) || "Unknown error");
@@ -105,9 +111,41 @@ const Documents = () => {
             setErrorDescription(err.message || "");
             setShowError(true);
         }
+        
     }
 
-    
+    const fetchDocuments = async () => {
+            try {
+                const token = localStorage.getItem("token")
+                const response = await fetch ("/api/documents", {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                })
+                if (!response.ok) {
+                    const text = await response.text().catch(() => "");
+                    throw new Error(text || `Server returned ${response.status}`);
+                }
+
+                const data = await response.json()
+                setDocuments(data.data)
+                setDocumentsCount(data.data.length)
+                console.log(data.data)
+            } catch (err) {
+                console.error("Error fetching applied jobs:", err);
+                setErrorTitle("Failed to load documents");
+                setErrorDescription(err.message || "Please try again.");
+                setShowError(true);
+            }
+        }
+
+    useEffect(() => {
+        fetchDocuments()
+    }, [])
+
+    const handleDropdown = () => {
+        
+    }
 
     return (
         <div className={styles.container}>
@@ -115,7 +153,7 @@ const Documents = () => {
                 <div className={styles.docsUploading}>
                     <div className={styles.info}>
                         <Info />
-                        <p> You have 0 documents saved out of 5 available.</p>
+                        <p> You have {5-documentsCount} documents saved out of 5 available.</p>
                     </div>
                     <div className={styles.uploadBtnContainer}>
                         <div>
@@ -127,13 +165,6 @@ const Documents = () => {
                                 style={{ display: 'none' }}
                             />
                             <Btn onClick={() => resumeInputRef.current?.click()} disabled={uploading} icon={<Plus size={20}/>} label="Add Resume"/>
-                            {result && (
-                                <div>
-                                    <div>Uploaded:</div>
-                                    <div><strong>{result.original_filename}</strong></div>
-                                    <div onClick={() => handleOpenDocs(result.document_id)}>Open file</div>
-                                </div>
-                            )}
                         </div>
                         <div>
                             <input
@@ -155,7 +186,18 @@ const Documents = () => {
                         <span>Name</span>
                         <span>Last Modified</span>
                         <span>Created</span>
+                        <span></span>
                     </div>
+                    {documents.map((doc) => {
+                        return (
+                            <div key={doc.id} className={styles.dataRow} onClick={() => handleOpenDocs(doc.id)}>
+                                <span>{doc.original_filename}</span>
+                                <span>{new Date(doc.updated_at).toLocaleString()}</span>
+                                <span>{new Date(doc.created_at).toLocaleString()}</span>
+                                <span><button onCLick={handleDropdown}>...</button></span>
+                            </div>
+                        )
+                    })}
                 </div>
             </div>
             {showError && (

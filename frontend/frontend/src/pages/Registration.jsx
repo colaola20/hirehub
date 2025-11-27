@@ -42,7 +42,7 @@ const RegistrationPage = () => {
       return;
     }
     if (!nameRegex.test(firstName)) {
-       setInfoForModal("Invalid First Name","Last name must be 2-30 alphabetic characters.");
+       setInfoForModal("Invalid First Name","First name must be 2-30 alphabetic characters.");
       return;
     }
 

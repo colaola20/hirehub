@@ -107,7 +107,6 @@ Analyze and extract:
 
 IMPORTANT:
 - If vague description, list COMMON skills for that job title
-- For non-technical roles (tester, marketing, etc.), return EMPTY arrays
 - Return ONLY valid JSON, no markdown
 
 {{
