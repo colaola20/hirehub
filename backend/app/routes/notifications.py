@@ -10,8 +10,17 @@ from datetime import datetime, timezone
 
 notifications_bp = Blueprint('notifications', __name__)
 
+# HIREHUB LOGO (small, clean SVG)
+HIREHUB_LOGO = """
+<div style="text-align:center;margin-bottom:22px;">
+  <img src="https://unsplash.com/photos/person-holding-pencil-near-laptop-computer-5fNmWej4tAA" 
+       alt="HireHub" 
+       style="width:110px;opacity:0.95;" />
+</div>
+"""
+
 # ----------------------------------------------------------
-# UNIVERSAL EMAIL TEMPLATE (HireHub + Reddit-inspired layout)
+# UNIVERSAL EMAIL TEMPLATE (modern, Reddit-inspired)
 # ----------------------------------------------------------
 BASE_EMAIL_TEMPLATE = """
 <!DOCTYPE html>
@@ -19,6 +28,8 @@ BASE_EMAIL_TEMPLATE = """
 <body style="font-family:Inter, Arial, sans-serif; background:#f4f6f9; padding:32px;">
   <div style="max-width:640px;margin:auto;background:white;border-radius:14px;padding:32px;
               box-shadow:0 4px 20px rgba(0,0,0,0.08);">
+
+    {logo}
 
     <h2 style="color:#4169E1; margin-top:0; text-align:center; font-weight:600;">
       {title}
@@ -31,7 +42,7 @@ BASE_EMAIL_TEMPLATE = """
     <hr style="border:none;border-top:1px solid #e5e7ef; margin:32px 0;">
 
     <p style="font-size:12px; color:#777; text-align:center;">
-      Sent by <strong>HireHub</strong> • Do not reply to this automated message.
+      Sent by <strong>HireHub</strong> • Do not reply to this email.
     </p>
 
   </div>
@@ -40,7 +51,7 @@ BASE_EMAIL_TEMPLATE = """
 """
 
 # ----------------------------------------------------------
-# DIGEST EMAIL TEMPLATE — Reddit feed style + HireHub blue
+# DIGEST EMAIL TEMPLATE — Reddit post feed + HireHub look
 # ----------------------------------------------------------
 DIGEST_TEMPLATE = """
 <!DOCTYPE html>
@@ -48,6 +59,8 @@ DIGEST_TEMPLATE = """
 <body style="font-family:Inter, Arial, sans-serif; background:#eef1f7; padding:36px;">
   <div style="max-width:680px;margin:auto;background:white;padding:36px;border-radius:18px;
               box-shadow:0 8px 28px rgba(0,0,0,0.08);">
+
+      {logo}
 
       <h2 style="text-align:center;color:#4169E1;margin:0;font-size:26px;font-weight:600;">
         Your Job Digest
@@ -72,7 +85,7 @@ DIGEST_TEMPLATE = """
 """
 
 # ----------------------------------------------------------
-# INACTIVITY EMAIL TEMPLATE — clean + Reddit style spacing
+# INACTIVITY EMAIL TEMPLATE
 # ----------------------------------------------------------
 INACTIVITY_TEMPLATE = """
 <!DOCTYPE html>
@@ -81,12 +94,14 @@ INACTIVITY_TEMPLATE = """
   <div style="max-width:600px;margin:auto;background:white;padding:36px;border-radius:18px;
               box-shadow:0 8px 28px rgba(0,0,0,0.08);">
 
+      {logo}
+
       <h2 style="color:#4169E1;text-align:center;margin:0;font-weight:600;">
         We Miss You!
       </h2>
 
       <p style="font-size:15px;color:#444;line-height:1.7;margin-top:18px;">
-        It looks like you haven't logged into HireHub in a while.  
+        It looks like you haven't logged into HireHub in a while.
         New job opportunities and personalized recommendations are waiting for you.
       </p>
 
@@ -101,7 +116,7 @@ INACTIVITY_TEMPLATE = """
 """
 
 # ----------------------------------------------------------
-# JOB MATCH TEMPLATE — Reddit-style job cards + accents
+# JOB MATCH TEMPLATE
 # ----------------------------------------------------------
 JOB_MATCH_TEMPLATE = """
 <!DOCTYPE html>
@@ -109,6 +124,8 @@ JOB_MATCH_TEMPLATE = """
 <body style="font-family:Inter, Arial, sans-serif; background:#f2f7f2; padding:36px;">
   <div style="max-width:660px;margin:auto;background:white;padding:36px;border-radius:18px;
               box-shadow:0 8px 28px rgba(0,0,0,0.08);">
+
+      {logo}
 
       <h2 style="text-align:center;color:#2E8B57;margin:0;font-weight:600;">
         New Job Matches Found!
@@ -189,7 +206,7 @@ def send_notification():
                 current_app.logger.exception('Failed to create notification for %s', email)
 
             try:
-                html_email = BASE_EMAIL_TEMPLATE.format(title=title, body=body)
+                html_email = BASE_EMAIL_TEMPLATE.format(title=title, body=body, logo=HIREHUB_LOGO)
                 msg = Message(subject=title, recipients=[email], sender=current_app.config['MAIL_USERNAME'])
                 msg.html = html_email
                 mail.send(msg)
@@ -270,23 +287,32 @@ def test_digest():
 
     job_html = ""
     for j in jobs:
+        img = getattr(j, "image_url", "https://i.imgur.com/qB3M9QH.png")  
+
         job_html += f"""
-          <div style='padding:18px 0;border-bottom:1px solid #eceff5;'>
-              <div style="font-size:13px;color:#777;margin-bottom:4px;">
-                  🏢 {j.company} • 📍 {j.location}
+          <div style='padding:20px 0;border-bottom:1px solid #eceff5;display:flex;gap:18px;'>
+
+              <div style="flex:1;">
+                  <div style="font-size:13px;color:#777;margin-bottom:4px;">
+                      🏢 {j.company} • 📍 {j.location}
+                  </div>
+
+                  <div style="font-weight:600;color:#111;font-size:18px;margin-bottom:6px;">
+                      {j.title}
+                  </div>
+
+                  <a href="{j.url}" style="display:inline-block;margin-top:10px;
+                         background:#4169E1;color:white;padding:8px 14px;
+                         border-radius:6px;font-size:13px;text-decoration:none;">
+                      View Job →
+                  </a>
               </div>
 
-              <div style="font-weight:600;color:#111;font-size:17px;margin-bottom:6px;">
-                  {j.title}
-              </div>
-
-              <div style="font-size:12px;color:#999;">
-                  💼 Job Opportunity
-              </div>
+              <img src="{img}" style="width:82px;height:82px;border-radius:10px;object-fit:cover;" />
           </div>
         """
 
-    html = DIGEST_TEMPLATE.format(jobs=job_html)
+    html = DIGEST_TEMPLATE.format(jobs=job_html, logo=HIREHUB_LOGO)
 
     sent = []
     for user in users:
@@ -324,7 +350,7 @@ def test_inactivity():
             msg = Message(
                 "TEST Inactivity",
                 recipients=[user.email],
-                html=INACTIVITY_TEMPLATE
+                html=INACTIVITY_TEMPLATE.format(logo=HIREHUB_LOGO)
             )
             mail.send(msg)
             sent.append(user.email)
@@ -367,19 +393,29 @@ def test_jobmatch():
 
         job_match_html = ""
         for j in matched_jobs:
+
+            img = getattr(j, "image_url", "https://i.imgur.com/ETfurrP.png")
+
             job_match_html += f"""
-              <div style='padding:18px 0;border-bottom:1px solid #e3e9e3;'>
-                  <div style="font-size:13px;color:#6b8e6b;margin-bottom:4px;">
-                      🏢 {j.company} • 📍 {j.location}
+              <div style='padding:20px 0;border-bottom:1px solid #e3e9e3;display:flex;gap:18px;'>
+
+                  <div style="flex:1;">
+                      <div style="font-size:13px;color:#6b8e6b;margin-bottom:4px;">
+                          🏢 {j.company} • 📍 {j.location}
+                      </div>
+
+                      <div style="font-weight:600;color:#2E8B57;font-size:18px;margin-bottom:6px;">
+                          {j.title}
+                      </div>
+
+                      <a href="{j.url}" style="display:inline-block;margin-top:10px;
+                             background:#2E8B57;color:white;padding:8px 14px;
+                             border-radius:6px;font-size:13px;text-decoration:none;">
+                          View Job →
+                      </a>
                   </div>
 
-                  <div style="font-weight:600;color:#2E8B57;font-size:17px;margin-bottom:6px;">
-                      {j.title}
-                  </div>
-
-                  <div style="font-size:12px;color:#7fa17f;">
-                      🎯 Skill Match
-                  </div>
+                  <img src="{img}" style="width:82px;height:82px;border-radius:10px;object-fit:cover;" />
               </div>
             """
 
@@ -393,7 +429,7 @@ def test_jobmatch():
             DatabaseService.create(note)
             matched.append(j.title)
 
-        msg_html = JOB_MATCH_TEMPLATE.format(matches=job_match_html)
+        msg_html = JOB_MATCH_TEMPLATE.format(matches=job_match_html, logo=HIREHUB_LOGO)
 
         results[user.email] = matched
 
