@@ -10,8 +10,131 @@ from datetime import datetime, timezone
 
 notifications_bp = Blueprint('notifications', __name__)
 
+# ----------------------------------------------------------
+# UNIVERSAL EMAIL TEMPLATE (HireHub + Reddit-inspired layout)
+# ----------------------------------------------------------
+BASE_EMAIL_TEMPLATE = """
+<!DOCTYPE html>
+<html>
+<body style="font-family:Inter, Arial, sans-serif; background:#f4f6f9; padding:32px;">
+  <div style="max-width:640px;margin:auto;background:white;border-radius:14px;padding:32px;
+              box-shadow:0 4px 20px rgba(0,0,0,0.08);">
 
+    <h2 style="color:#4169E1; margin-top:0; text-align:center; font-weight:600;">
+      {title}
+    </h2>
 
+    <div style="margin-top:24px;font-size:15px;color:#333;line-height:1.7;">
+      {body}
+    </div>
+
+    <hr style="border:none;border-top:1px solid #e5e7ef; margin:32px 0;">
+
+    <p style="font-size:12px; color:#777; text-align:center;">
+      Sent by <strong>HireHub</strong> • Do not reply to this automated message.
+    </p>
+
+  </div>
+</body>
+</html>
+"""
+
+# ----------------------------------------------------------
+# DIGEST EMAIL TEMPLATE — Reddit feed style + HireHub blue
+# ----------------------------------------------------------
+DIGEST_TEMPLATE = """
+<!DOCTYPE html>
+<html>
+<body style="font-family:Inter, Arial, sans-serif; background:#eef1f7; padding:36px;">
+  <div style="max-width:680px;margin:auto;background:white;padding:36px;border-radius:18px;
+              box-shadow:0 8px 28px rgba(0,0,0,0.08);">
+
+      <h2 style="text-align:center;color:#4169E1;margin:0;font-size:26px;font-weight:600;">
+        Your Job Digest
+      </h2>
+
+      <p style="text-align:center;color:#666;margin-top:6px;font-size:15px;">
+        Here are the latest job opportunities for you.
+      </p>
+
+      <div style="margin-top:28px;">
+        {jobs}
+      </div>
+
+      <hr style="border:none;border-top:1px solid #e2e5ee;margin:36px 0;">
+
+      <p style="text-align:center;color:#888;font-size:13px;">
+        HireHub – Smart job recommendations, automatically delivered.
+      </p>
+  </div>
+</body>
+</html>
+"""
+
+# ----------------------------------------------------------
+# INACTIVITY EMAIL TEMPLATE — clean + Reddit style spacing
+# ----------------------------------------------------------
+INACTIVITY_TEMPLATE = """
+<!DOCTYPE html>
+<html>
+<body style="font-family:Inter, Arial, sans-serif; background:#f3f5fa; padding:36px;">
+  <div style="max-width:600px;margin:auto;background:white;padding:36px;border-radius:18px;
+              box-shadow:0 8px 28px rgba(0,0,0,0.08);">
+
+      <h2 style="color:#4169E1;text-align:center;margin:0;font-weight:600;">
+        We Miss You!
+      </h2>
+
+      <p style="font-size:15px;color:#444;line-height:1.7;margin-top:18px;">
+        It looks like you haven't logged into HireHub in a while.  
+        New job opportunities and personalized recommendations are waiting for you.
+      </p>
+
+      <hr style="border:none;border-top:1px solid #e2e5ee;margin:36px 0;">
+
+      <p style="text-align:center;color:#888;font-size:13px;">
+        Hiring moves fast — return to HireHub today.
+      </p>
+  </div>
+</body>
+</html>
+"""
+
+# ----------------------------------------------------------
+# JOB MATCH TEMPLATE — Reddit-style job cards + accents
+# ----------------------------------------------------------
+JOB_MATCH_TEMPLATE = """
+<!DOCTYPE html>
+<html>
+<body style="font-family:Inter, Arial, sans-serif; background:#f2f7f2; padding:36px;">
+  <div style="max-width:660px;margin:auto;background:white;padding:36px;border-radius:18px;
+              box-shadow:0 8px 28px rgba(0,0,0,0.08);">
+
+      <h2 style="text-align:center;color:#2E8B57;margin:0;font-weight:600;">
+        New Job Matches Found!
+      </h2>
+
+      <p style="font-size:15px;color:#444;line-height:1.7;margin-top:12px;">
+        Based on your skills, these positions align strongly with your profile:
+      </p>
+
+      <div style="margin-top:26px;">
+        {matches}
+      </div>
+
+      <hr style="border:none;border-top:1px solid #dfe8df;margin:36px 0;">
+
+      <p style="text-align:center;color:#7b907b;font-size:13px;">
+        HireHub – We help match your skills with the right employers.
+      </p>
+  </div>
+</body>
+</html>
+"""
+
+# --------------------------------------------------------------------------
+# LIST NOTIFICATIONS
+# --------------------------------------------------------------------------
 @notifications_bp.route('/notifications', methods=['GET'])
 @jwt_required()
 def list_notifications():
@@ -33,12 +156,12 @@ def list_notifications():
         current_app.logger.exception('Failed to list notifications')    
         return jsonify({'error': 'Failed to list notifications', 'detail': str(e)}), 500
 
-
+# --------------------------------------------------------------------------
+# SEND NOTIFICATION (GENERIC EMAIL)
+# --------------------------------------------------------------------------
 @notifications_bp.route('/notifications/send', methods=['POST'])
 @jwt_required()
-
 def send_notification():
-    """Send notification(s). Body: { title, body, to } where `to` is optional email or array; if absent send to all users."""
     data = request.get_json() or {}
     title = data.get('title') or data.get('subject') or 'Notification'
     body = data.get('body') or data.get('message') or ''
@@ -47,14 +170,12 @@ def send_notification():
     print("MAIL_DEFAULT_SENDER =", current_app.config.get("MAIL_DEFAULT_SENDER"))
 
     try:
-        # resolve recipients list
         if recipients:
             if isinstance(recipients, str):
                 recipients = [recipients]
             elif isinstance(recipients, list):
                 recipients = [r for r in recipients if isinstance(r, str)]
         else:
-            # broadcast to all users
             users = DatabaseService.get_all(User)
             recipients = [u.email for u in users if u.email]
 
@@ -66,12 +187,11 @@ def send_notification():
                 created.append(email)
             except Exception:
                 current_app.logger.exception('Failed to create notification for %s', email)
-                # continue to try sending email to others
 
             try:
-                print("SENDING AS:", sender=current_app.config['MAIL_USERNAME'])
-                msg = Message(subject=title, recipients=[email],sender=current_app.config['MAIL_USERNAME'])
-                msg.body = body
+                html_email = BASE_EMAIL_TEMPLATE.format(title=title, body=body)
+                msg = Message(subject=title, recipients=[email], sender=current_app.config['MAIL_USERNAME'])
+                msg.html = html_email
                 mail.send(msg)
             except Exception:
                 current_app.logger.exception('Failed to send email to %s', email)
@@ -81,7 +201,9 @@ def send_notification():
         current_app.logger.exception('Failed to send notifications')
         return jsonify({'error': 'Failed to send notifications', 'detail': str(e)}), 500
 
-
+# --------------------------------------------------------------------------
+# MARK NOTIFICATION READ
+# --------------------------------------------------------------------------
 @notifications_bp.route('/notifications/<int:note_id>/read', methods=['POST'])
 @jwt_required()
 def mark_notification_read(note_id):
@@ -100,7 +222,9 @@ def mark_notification_read(note_id):
         current_app.logger.exception('Failed to mark read')
         return jsonify({'error': 'Failed to mark read', 'detail': str(e)}), 500
 
-
+# --------------------------------------------------------------------------
+# DELETE NOTIFICATION
+# --------------------------------------------------------------------------
 @notifications_bp.route('/notifications/<int:note_id>', methods=['DELETE'])
 @jwt_required()
 def delete_notification(note_id):
@@ -117,7 +241,10 @@ def delete_notification(note_id):
     except Exception as e:
         current_app.logger.exception('Failed to delete notification')
         return jsonify({'error': 'Failed to delete', 'detail': str(e)}), 500
-    
+
+# --------------------------------------------------------------------------
+# DEBUG EMAIL
+# --------------------------------------------------------------------------
 @notifications_bp.route("/debug-email")
 def debug_email():
     return {
@@ -125,6 +252,9 @@ def debug_email():
         "MAIL_DEFAULT_SENDER": str(current_app.config['MAIL_DEFAULT_SENDER'])
     }
 
+# --------------------------------------------------------------------------
+# TEST DIGEST EMAIL
+# --------------------------------------------------------------------------
 @notifications_bp.route("/notifications/test/digest", methods=["POST"])
 def test_digest():
     from app.models.user import User
@@ -138,29 +268,44 @@ def test_digest():
     if not users:
         return {"error": "No users in database"}, 500
 
-    html = "<h3>Your Job Digest</h3>"
+    job_html = ""
     for j in jobs:
-        html += f"<p><b>{j.title}</b> – {j.company} ({j.location})</p>"
+        job_html += f"""
+          <div style='padding:18px 0;border-bottom:1px solid #eceff5;'>
+              <div style="font-size:13px;color:#777;margin-bottom:4px;">
+                  🏢 {j.company} • 📍 {j.location}
+              </div>
+
+              <div style="font-weight:600;color:#111;font-size:17px;margin-bottom:6px;">
+                  {j.title}
+              </div>
+
+              <div style="font-size:12px;color:#999;">
+                  💼 Job Opportunity
+              </div>
+          </div>
+        """
+
+    html = DIGEST_TEMPLATE.format(jobs=job_html)
 
     sent = []
     for user in users:
         try:
-            msg = Message(
-                subject="TEST DIGEST",
-                recipients=[user.email],
-                html=html
-            )
+            msg = Message(subject="TEST DIGEST", recipients=[user.email], html=html)
             mail.send(msg)
 
             user.last_digest_sent = datetime.now(timezone.utc)
             db.session.commit()
 
             sent.append(user.email)
-        except Exception as e:
+        except Exception:
             current_app.logger.exception("Failed sending digest to %s", user.email)
 
     return {"ok": True, "sent_to": sent}
 
+# --------------------------------------------------------------------------
+# TEST INACTIVITY EMAIL
+# --------------------------------------------------------------------------
 @notifications_bp.route("/notifications/test/inactivity", methods=["POST"])
 def test_inactivity():
     from app.models.user import User
@@ -179,7 +324,7 @@ def test_inactivity():
             msg = Message(
                 "TEST Inactivity",
                 recipients=[user.email],
-                body="This is a test inactivity email."
+                html=INACTIVITY_TEMPLATE
             )
             mail.send(msg)
             sent.append(user.email)
@@ -188,6 +333,9 @@ def test_inactivity():
 
     return {"ok": True, "sent_to": sent}
 
+# --------------------------------------------------------------------------
+# TEST JOB MATCH EMAIL
+# --------------------------------------------------------------------------
 @notifications_bp.route("/notifications/test/jobmatch", methods=["POST"])
 def test_jobmatch():
     from app.models.user import User
@@ -208,7 +356,6 @@ def test_jobmatch():
     for user in users:
         matched = []
 
-        # match by skills (if available)
         if user.skills:
             matched_jobs = (
                 Job.query.filter(Job.skills_required.overlap(user.skills))
@@ -218,8 +365,24 @@ def test_jobmatch():
         else:
             matched_jobs = jobs
 
-        # create in-app notifications
+        job_match_html = ""
         for j in matched_jobs:
+            job_match_html += f"""
+              <div style='padding:18px 0;border-bottom:1px solid #e3e9e3;'>
+                  <div style="font-size:13px;color:#6b8e6b;margin-bottom:4px;">
+                      🏢 {j.company} • 📍 {j.location}
+                  </div>
+
+                  <div style="font-weight:600;color:#2E8B57;font-size:17px;margin-bottom:6px;">
+                      {j.title}
+                  </div>
+
+                  <div style="font-size:12px;color:#7fa17f;">
+                      🎯 Skill Match
+                  </div>
+              </div>
+            """
+
             note = Notification(
                 user_email=user.email,
                 type="New Job Match",
@@ -229,6 +392,8 @@ def test_jobmatch():
             )
             DatabaseService.create(note)
             matched.append(j.title)
+
+        msg_html = JOB_MATCH_TEMPLATE.format(matches=job_match_html)
 
         results[user.email] = matched
 
