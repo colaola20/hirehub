@@ -149,7 +149,7 @@ const Documents = () => {
 
     useEffect(() => {
         const handleClickOutside = (event) => {
-            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+            if (!event.target.closest(`.${styles.dropdownWrapper}`)) {
                 setOpenDropdownId(null);
             }
         };
@@ -161,7 +161,15 @@ const Documents = () => {
     const toggleDropDown = (e, docId) => {
         e.preventDefault()
         e.stopPropagation()
-        setOpenDropdownId(prev => (prev === docId ? null : docId))
+        console.log('=== TOGGLE DROPDOWN ===');
+        console.log('docId:', docId, 'type:', typeof docId);
+        console.log('openDropdownId BEFORE:', openDropdownId, 'type:', typeof openDropdownId);
+        
+        setOpenDropdownId(prev => {
+            const newValue = prev === docId ? null : docId;
+            console.log('Setting to:', newValue, 'type:', typeof newValue);
+            return newValue;
+        });
     }
 
     return (
@@ -206,6 +214,7 @@ const Documents = () => {
                         <span></span>
                     </div>
                     {documents.map((doc) => {
+                        console.log('Rendering doc:', doc.id, 'type:', typeof doc.id, 'openDropdownId:', openDropdownId, 'Match?:', openDropdownId === doc.id);
                         return (
                             <div key={doc.id} className={styles.dataRow} onClick={() => handleOpenDocs(doc.id)}>
                                 <span>{doc.original_filename}</span>
@@ -223,6 +232,7 @@ const Documents = () => {
                                     <div ref={dropdownRef} className={styles.dropdownMenu} onClick={(e) => e.stopPropagation()}>
                                         <button 
                                         onClick={(e) => {
+                                            console.log("Should be open")
                                             e.preventDefault()
                                             e.stopPropagation();
                                             handleOpenDocs(doc.id)

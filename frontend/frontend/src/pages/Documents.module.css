@@ -48,8 +48,8 @@
 }
 
 .tableContainer {
-    overflow-x: auto; 
-    overflow-y: auto; 
+    /* overflow-x: auto;  */
+    /* overflow-y: auto;  */
     border-radius: 8px;
     border: 1px solid #ccc;
 
@@ -88,6 +88,7 @@
   color: rgb(255, 255, 255);
   text-align: center; 
   align-items: center;
+  position: relative;
 }
 
 .dataRow:nth-child(even) {
@@ -120,6 +121,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: visible !important;
 }
 
 .dropdown {
@@ -138,13 +140,13 @@
 .dropdownMenu {
     position: absolute;
     right: 0;
-    top: 100%;
+    top: calc(100% + 4px);
     background-color: white;
     border: 1px solid #e5e7eb;
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     min-width: 160px;
-    z-index: 100;
+    z-index: 1000;
     margin-top: 0.25rem;
 }
 
@@ -159,12 +161,13 @@
     cursor: pointer;
     font-size: 0.875rem;
     text-align: left;
-    color: white;
+    color: #1f2937;
     transition: background 0.2s;
 }
 
 .dropdownItem:hover {
     background: #6f67f0;
+    color: white;
 }
 
 .dropdownItem:last-child {
