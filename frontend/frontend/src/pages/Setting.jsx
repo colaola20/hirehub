@@ -22,7 +22,9 @@ const Settings = () => {
     const navigate = useNavigate();
     const [isJobAlerts, setIsJobAlerts] = useState(true)
     const [alertFrequency, setAlertsFrequency] = useState("Immediately")
+    const [isGeneralDropdownOpen, setIsGeneralDropdownOpen] = useState(false)
     const [jobAlertsFrequency, setJobAlerstFrequency] = useState("Up to 1 alert/day")
+    const [isJobsDropdownOpen, setIsJobsDropdownOpen] = useState(false)
     const [isOnGeneralNotification, setIsOnGeneralNotification] = useState(true)
 
     useEffect(() => {
@@ -120,8 +122,14 @@ const Settings = () => {
         setIsJobAlerts(!isJobAlerts)
     }
 
-    const handleDropdownClick = () => {
-        
+    const handleDropdownClickGeneral = (label) => {
+        setAlertsFrequency(label)
+        setIsGeneralDropdownOpen(false)
+    }
+
+    const handleDropdownClickRecommendation = (label) => {
+        setJobAlerstFrequency(label)
+        setIsJobsDropdownOpen(false)
     }
 
     return (
@@ -160,10 +168,10 @@ const Settings = () => {
                         <h5 className={styles.label}>Notification Frequency</h5>
                         <div className={styles.infoContainer}>
                             <p className={styles.description}>Choose how often you want to receive these notifications:</p>
-                            <DropDown label={alertFrequency} icon={<ChevronDown size={16}/>} disabled={!isOnGeneralNotification}>
-                                <span className={styles.dropdownItems} onClick={handleDropdownClick}>Immediately</span>
-                                <span className={styles.dropdownItems} onClick={handleDropdownClick}>Daily summary</span>
-                                <span className={styles.dropdownItems} onClick={handleDropdownClick}>Weekly summary</span>
+                            <DropDown label={alertFrequency} icon={<ChevronDown size={16}/>} disabled={!isOnGeneralNotification} open={isGeneralDropdownOpen} setOpen={setIsGeneralDropdownOpen}>
+                                <span className={styles.dropdownItems} onClick={() => handleDropdownClickGeneral("Immediately")}>Immediately</span>
+                                <span className={styles.dropdownItems} onClick={() => handleDropdownClickGeneral("Daily summary")}>Daily summary</span>
+                                <span className={styles.dropdownItems} onClick={() => handleDropdownClickGeneral("Weekly summary")}>Weekly summary</span>
                             </DropDown>
                         </div>
                     </div>
@@ -182,10 +190,10 @@ const Settings = () => {
                         <h5 className={styles.label}>Job Alerts Frequency</h5>
                         <div className={styles.infoContainer}>
                             <p className={styles.description}>Select how often you want job recommendations delivered:</p>
-                            <DropDown label={jobAlertsFrequency} icon={<ChevronDown size={16}/>} disabled={!isJobAlerts}>
-                                <span className={styles.dropdownItems} onClick={handleDropdownClick}>Up to 1 alert/day</span>
-                                <span className={styles.dropdownItems} onClick={handleDropdownClick}>Up to 3 alerts/week</span>
-                                <span className={styles.dropdownItems} onClick={handleDropdownClick}>Unlimited</span>
+                            <DropDown label={jobAlertsFrequency} icon={<ChevronDown size={16}/>} disabled={!isJobAlerts} open={isJobsDropdownOpen} setOpen={setIsJobsDropdownOpen}>
+                                <span className={styles.dropdownItems} onClick={() => handleDropdownClickRecommendation("Up to 1 alert/day")}>Up to 1 alert/day</span>
+                                <span className={styles.dropdownItems} onClick={() => handleDropdownClickRecommendation("Up to 3 alerts/week")}>Up to 3 alerts/week</span>
+                                <span className={styles.dropdownItems} onClick={() => handleDropdownClickRecommendation("Unlimited")}>Unlimited</span>
                             </DropDown>
                         </div>
                     </div>
