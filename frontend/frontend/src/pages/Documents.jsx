@@ -1,7 +1,7 @@
 import {useState, useRef, useEffect} from 'react'
 import Error from '../components/UsersMessages/Error'
 import styles from './Documents.module.css'
-import { Plus, Info, MoreVertical, Eye, Download, Trash2 } from 'lucide-react';
+import { Plus, Info, MoreVertical, Eye, Download, Trash2, Pencil } from 'lucide-react';
 import Btn from '../components/buttons/Btn'
 
 const Documents = () => {
@@ -216,8 +216,8 @@ const Documents = () => {
                     {documents.map((doc) => {
                         console.log('Rendering doc:', doc.id, 'type:', typeof doc.id, 'openDropdownId:', openDropdownId, 'Match?:', openDropdownId === doc.id);
                         return (
-                            <div key={doc.id} className={styles.dataRow} onClick={() => handleOpenDocs(doc.id)}>
-                                <span>{doc.original_filename}</span>
+                            <div key={doc.id} className={styles.dataRow}>
+                                <span onClick={() => handleOpenDocs(doc.id)}>{doc.original_filename}</span>
                                 <span>{new Date(doc.updated_at).toLocaleString()}</span>
                                 <span>{new Date(doc.created_at).toLocaleString()}</span>
                                 <span className={styles.dropdownWrapper}><button 
@@ -231,8 +231,46 @@ const Documents = () => {
                                 {openDropdownId === doc.id && (
                                     <div ref={dropdownRef} className={styles.dropdownMenu} onClick={(e) => e.stopPropagation()}>
                                         <button 
-                                        onClick={(e) => {
-                                            console.log("Should be open")
+                                            onClick={(e) => {
+                                                e.preventDefault()
+                                                e.stopPropagation();
+                                                handleOpenDocs(doc.id)
+                                                setOpenDropdownId(null)
+                                            }}
+                                            onMouseEnter={(e) => e.currentTarget.style.background = '#6f67f0'}
+                                            onMouseLeave={(e) => e.currentTarget.style.background = 'none'}
+                                            className={styles.dropdownItem}
+                                        >
+                                            <Eye size={16} /> View
+                                        </button>
+                                        <button
+                                            onClick={(e) => {
+                                                e.preventDefault()
+                                                e.stopPropagation();
+                                                handleOpenDocs(doc.id)
+                                                setOpenDropdownId(null)
+                                            }}
+                                            onMouseEnter={(e) => e.currentTarget.style.background = '#6f67f0'}
+                                            onMouseLeave={(e) => e.currentTarget.style.background = 'none'}
+                                            className={styles.dropdownItem}
+                                        >
+                                            <Pencil size={16}/> Edit
+                                        </button>
+                                        <button
+                                            onClick={(e) => {
+                                                e.preventDefault()
+                                                e.stopPropagation();
+                                                handleOpenDocs(doc.id)
+                                                setOpenDropdownId(null)
+                                            }}
+                                            onMouseEnter={(e) => e.currentTarget.style.background = '#6f67f0'}
+                                            onMouseLeave={(e) => e.currentTarget.style.background = 'none'}
+                                            className={styles.dropdownItem}
+                                        >
+                                            <Download size={16}/> Download
+                                        </button>
+                                        <button
+                                            onClick={(e) => {
                                             e.preventDefault()
                                             e.stopPropagation();
                                             handleOpenDocs(doc.id)
@@ -242,7 +280,7 @@ const Documents = () => {
                                         onMouseLeave={(e) => e.currentTarget.style.background = 'none'}
                                         className={styles.dropdownItem}
                                         >
-                                            <Eye size={16} /> View
+                                            <Trash2 size={16}/> Delete
                                         </button>
                                     </div>
                                 )}

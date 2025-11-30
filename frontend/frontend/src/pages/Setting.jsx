@@ -169,9 +169,9 @@ const Settings = () => {
                         <div className={styles.infoContainer}>
                             <p className={styles.description}>Choose how often you want to receive these notifications:</p>
                             <DropDown label={alertFrequency} icon={<ChevronDown size={16}/>} disabled={!isOnGeneralNotification} open={isGeneralDropdownOpen} setOpen={setIsGeneralDropdownOpen}>
-                                <span className={styles.dropdownItems} onClick={() => handleDropdownClickGeneral("Immediately")}>Immediately</span>
-                                <span className={styles.dropdownItems} onClick={() => handleDropdownClickGeneral("Daily summary")}>Daily summary</span>
-                                <span className={styles.dropdownItems} onClick={() => handleDropdownClickGeneral("Weekly summary")}>Weekly summary</span>
+                                <span className={styles.dropdownItems} onClick={() => handleDropdownClickGeneral("Immediately")} onMouseEnter={(e) => e.currentTarget.style.background = '#6f67f0'} onMouseLeave={(e) => e.currentTarget.style.background = 'none'}>Immediately</span>
+                                <span className={styles.dropdownItems} onClick={() => handleDropdownClickGeneral("Daily summary")} onMouseEnter={(e) => e.currentTarget.style.background = '#6f67f0'} onMouseLeave={(e) => e.currentTarget.style.background = 'none'}>Daily summary</span>
+                                <span className={styles.dropdownItems} onClick={() => handleDropdownClickGeneral("Weekly summary")} onMouseEnter={(e) => e.currentTarget.style.background = '#6f67f0'} onMouseLeave={(e) => e.currentTarget.style.background = 'none'}>Weekly summary</span>
                             </DropDown>
                         </div>
                     </div>
@@ -191,9 +191,9 @@ const Settings = () => {
                         <div className={styles.infoContainer}>
                             <p className={styles.description}>Select how often you want job recommendations delivered:</p>
                             <DropDown label={jobAlertsFrequency} icon={<ChevronDown size={16}/>} disabled={!isJobAlerts} open={isJobsDropdownOpen} setOpen={setIsJobsDropdownOpen}>
-                                <span className={styles.dropdownItems} onClick={() => handleDropdownClickRecommendation("Up to 1 alert/day")}>Up to 1 alert/day</span>
-                                <span className={styles.dropdownItems} onClick={() => handleDropdownClickRecommendation("Up to 3 alerts/week")}>Up to 3 alerts/week</span>
-                                <span className={styles.dropdownItems} onClick={() => handleDropdownClickRecommendation("Unlimited")}>Unlimited</span>
+                                <span className={styles.dropdownItems} onClick={() => handleDropdownClickRecommendation("Up to 1 alert/day")} onMouseEnter={(e) => e.currentTarget.style.background = '#6f67f0'} onMouseLeave={(e) => e.currentTarget.style.background = 'none'}>Up to 1 alert/day</span>
+                                <span className={styles.dropdownItems} onClick={() => handleDropdownClickRecommendation("Up to 3 alerts/week")} onMouseEnter={(e) => e.currentTarget.style.background = '#6f67f0'} onMouseLeave={(e) => e.currentTarget.style.background = 'none'}>Up to 3 alerts/week</span>
+                                <span className={styles.dropdownItems} onClick={() => handleDropdownClickRecommendation("Unlimited")} onMouseEnter={(e) => e.currentTarget.style.background = '#6f67f0'} onMouseLeave={(e) => e.currentTarget.style.background = 'none'}>Unlimited</span>
                             </DropDown>
                         </div>
                     </div>

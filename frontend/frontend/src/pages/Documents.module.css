@@ -170,10 +170,6 @@
     color: white;
 }
 
-.dropdownItem:last-child {
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    color: #ff6b6b;
-}
 
 .dropdownItem:last-child:hover {
     background: rgba(255, 107, 107, 0.2);
