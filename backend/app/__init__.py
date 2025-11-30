@@ -21,6 +21,7 @@ from app.routes.documents import documents_bp
 from app.routes.form import form_bp
 from datetime import timedelta
 from app.routes.chat_bot import chat_bp
+from app.routes.resume_generation import resume_bp
 from flask_cors import CORS
 from .config import Config
 
@@ -91,6 +92,7 @@ def create_app():
     app.register_blueprint(form_bp)
     app.register_blueprint(notifications_bp, url_prefix="/api")
     app.register_blueprint(chat_bp, url_prefix="/api")
+    app.register_blueprint(resume_bp)
 
     # --------------------------------------------------
     # Unified notification worker integration

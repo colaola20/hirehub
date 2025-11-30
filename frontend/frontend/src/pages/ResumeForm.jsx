@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import { data, Link } from "react-router-dom";
 import * as Yup from 'yup'
 
 import ProgressIndicator from "../components/ProgressIndicator";
@@ -109,11 +109,31 @@ const ResumeForm = () => {
                 return response.json();
             })
             .then(data => {
-                if (data.step3) {
-                    data.step3.skills = Array.isArray(data.step3.skills) ? data.step3.skills.join(', ') : data.step3.skills
-                    data.step3.languages = Array.isArray(data.step3.languages) ? data.step3.languages.join(', ') : data.step3.languages
+
+                const step3 = data.step3 || {};
+                const formattedStep3 = {
+                    skills: Array.isArray(step3.skills) ? step3.skills.join(', ') : step3.skills || '',
+                    languages: Array.isArray(step3.languages) ? step3.languages.join(', ') : step3.languages || '',
+                    certs: Array.isArray(step3.certs) ? step3.certs.join(', ') : step3.certs || '',
+                    interests: Array.isArray(step3.interests) ? step3.interests.join(', ') : step3.interests || '',
+
                 }
-                setFormData(data)
+                // if (data.step3) {
+                //     data.step3.skills = Array.isArray(data.step3.skills) ? data.step3.skills.join(', ') : data.step3.skills
+                //     data.step3.languages = Array.isArray(data.step3.languages) ? data.step3.languages.join(', ') : data.step3.languages
+                // }
+                // setFormData(data)
+
+                setFormData(prev => ({
+                ...prev,
+                step1: data.step1 || prev.step1,
+                step2: data.step2 || prev.step2,
+                step3: formattedStep3,
+                step4: data.step4 || prev.step4,
+                step5: data.step5 || prev.step5,
+                step6: data.step6 || prev.step6,
+
+            }));
             })
             .catch(err => console.error('Error fetching form data:', err));
     }, []);
@@ -168,26 +188,26 @@ const ResumeForm = () => {
             val => val.split(',').filter(s => s.trim()).length > 0
         ),
         interests: Yup.string().transform(value => {
-            if (!value || value.trim() === ""){
+            if (!value || value.trim() === "") {
                 return undefined;
             }
             return value
-                .split (',')
-                .map(v=> v.trim())
+                .split(',')
+                .map(v => v.trim())
                 .filter(Boolean);
         })
-        .optional(),
+            .optional(),
 
         certs: Yup.string().transform(value => {
-            if (!value || value.trim() === ""){
+            if (!value || value.trim() === "") {
                 return undefined;
             }
             return value
-                .split (',')
-                .map(v=> v.trim())
+                .split(',')
+                .map(v => v.trim())
                 .filter(Boolean);
         })
-        .optional(),
+            .optional(),
     });
 
     const jobValidation = Yup.object({
@@ -315,16 +335,40 @@ const ResumeForm = () => {
 
                 <ProgressIndicator currentStep={currentStep} />
                 <div className={styles["prog-btn"]}>
-                    {currentStep > 1 ? (<CancelBtn label={"Prev"} onClick={prevStep}/>) : (<span className={styles.placeholder}></span>)}
+                    {currentStep > 1 ? (<CancelBtn label={"Prev"} onClick={prevStep} />) : (<span className={styles.placeholder}></span>)}
                     <div className={styles["progress-indicator"]}>
                         <span>Step {currentStep} of 7</span>
                     </div>
-                    {currentStep < 6 && (<CancelBtn label={"Next"} onClick={nextStep}/>)}
+                    {currentStep < 6 && (<CancelBtn label={"Next"} onClick={nextStep} />)}
                     {currentStep === 6 && (<Btn
                         label={"Generate"}
                         onClick={async () => {
                             const response = await submitForm();
-                            setFormData(prev => ({ ...prev }));
+
+                            console.log("Form data being sent to AI:", formData);
+
+                            try {
+                                const aiResponse = await fetch('/api/generate_resume', {
+                                    method: "POST",
+                                    headers: {
+                                        "Content-Type": "application/json",
+                                        Authorization: `Bearer ${localStorage.getItem("token")}`,
+                                    },
+                                    body: JSON.stringify(formData),
+                                });
+                                const aiData = await aiResponse.json();
+                                if (aiData.resume_text) {
+                                    setFormData(prev => ({
+                                        ...prev,
+                                        aiResumeText: aiData.resume_text
+                                    }));
+                                } else {
+                                    console.error("AI response missing resume_text:", aiData);
+                                }
+                            } catch (error) {
+                                console.error("Error generating AI resume:", error);
+                            }
+
                             setCurrentStep(7);
                         }}
                     />)}
