@@ -159,7 +159,8 @@ def get_document_url(document_id):
             'get_object',
             Params={
                 'Bucket': BUCKET_NAME,
-                'Key': document.file_path
+                'Key': document.file_path,
+                'ResponseContentDisposition': f'attachment; filename="{document.original_filename}"'
             },
             ExpiresIn=3600
         )

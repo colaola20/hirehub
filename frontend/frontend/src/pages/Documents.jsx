@@ -172,6 +172,30 @@ const Documents = () => {
         });
     }
 
+    const handleDownload = async (documentId) => {
+        const token = localStorage.getItem('token');
+        try {
+            const response = await fetch(`/api/documents/${documentId}/download`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+
+            const data = await response.json();
+
+            // Create a temporary link and click it
+            const link = document.createElement('a');
+            link.href = data.url;
+            link.download = data.filename; // Suggests filename
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        } catch (err) {
+            setErrorTitle("Failed to download document");
+            setErrorDescription(err.message || "");
+            setShowError(true);
+        }
+        
+    }
+
     return (
         <div className={styles.container}>
             <div className={styles.documentsContainer}>
@@ -260,7 +284,7 @@ const Documents = () => {
                                             onClick={(e) => {
                                                 e.preventDefault()
                                                 e.stopPropagation();
-                                                handleOpenDocs(doc.id)
+                                                handleDownload(doc.id)
                                                 setOpenDropdownId(null)
                                             }}
                                             onMouseEnter={(e) => e.currentTarget.style.background = '#6f67f0'}
@@ -273,7 +297,7 @@ const Documents = () => {
                                             onClick={(e) => {
                                             e.preventDefault()
                                             e.stopPropagation();
-                                            handleOpenDocs(doc.id)
+                                            handleDownload(doc.id)
                                             setOpenDropdownId(null)
                                         }}
                                         onMouseEnter={(e) => e.currentTarget.style.background = '#6f67f0'}
