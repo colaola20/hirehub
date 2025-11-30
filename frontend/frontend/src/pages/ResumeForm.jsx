@@ -176,7 +176,7 @@ const ResumeForm = () => {
                 .map(v=> v.trim())
                 .filter(Boolean);
         })
-        .notRequired(),
+        .optional(),
 
         certs: Yup.string().transform(value => {
             if (!value || value.trim() === ""){
@@ -187,7 +187,7 @@ const ResumeForm = () => {
                 .map(v=> v.trim())
                 .filter(Boolean);
         })
-        .notRequired(),
+        .optional(),
     });
 
     const jobValidation = Yup.object({
@@ -315,7 +315,7 @@ const ResumeForm = () => {
 
                 <ProgressIndicator currentStep={currentStep} />
                 <div className={styles["prog-btn"]}>
-                    {currentStep > 1 ? (<CancelBtn label={"Back"} onClick={prevStep}/>) : (<span className={styles.placeholder}></span>)}
+                    {currentStep > 1 ? (<CancelBtn label={"Prev"} onClick={prevStep}/>) : (<span className={styles.placeholder}></span>)}
                     <div className={styles["progress-indicator"]}>
                         <span>Step {currentStep} of 7</span>
                     </div>
