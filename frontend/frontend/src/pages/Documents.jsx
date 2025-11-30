@@ -241,6 +241,7 @@ const Documents = () => {
         }
     }
 
+
     return (
         <div className={styles.container}>
             <div className={styles.documentsContainer}>
@@ -315,7 +316,7 @@ const Documents = () => {
                                             onClick={(e) => {
                                                 e.preventDefault()
                                                 e.stopPropagation();
-                                                handleOpenDocs(doc.id)
+                                                handleEdit(doc.id)
                                                 setOpenDropdownId(null)
                                             }}
                                             onMouseEnter={(e) => e.currentTarget.style.background = '#6f67f0'}
