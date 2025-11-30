@@ -13,7 +13,7 @@ form_bp = Blueprint('form', __name__)
 @form_bp.route('/api/form', methods=['GET'])
 @jwt_required()
 def get_resume_form():
-    current_user_id = get_jwt_identity()
+    current_user_id = int(get_jwt_identity())
     user = User.query.get(current_user_id)
 
     if not user:

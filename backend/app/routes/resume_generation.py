@@ -5,7 +5,7 @@ import os
 resume = Blueprint ("resume_generation", __name__)
 
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
-GROQ_URL = "https://api.groq.ai/v1/completions"
+GROQ_URL = "https://api.groq.ai/v1/chat/completions"
 
 
 @resume.route("/api/generate_resume", methods=['POST'])
