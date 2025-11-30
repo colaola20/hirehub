@@ -10,6 +10,7 @@ import boto3
 from werkzeug.utils import secure_filename
 import uuid
 from app.models.user import User
+from app.extensions import db
 
 # from groq import Groq
 
@@ -376,6 +377,8 @@ def delete_document(document_id):
     try:
         current_user_id = int(get_jwt_identity())
 
+        logger.info(document_id)
+
         # Get user's email from user ID
         from app.models.user import User
         user = DatabaseService.get_by_id(User, current_user_id)
@@ -391,13 +394,31 @@ def delete_document(document_id):
         # Verify document belongs to the authenticated user
         if document.user_email != user.email:
             return jsonify({'status': 'error', 'message': 'Unauthorized access'}), 403
+        
+        try:
+            s3_client.delete_object(
+                Bucket=BUCKET_NAME,
+                Key=document.file_path
+            )
+            logger.info(f"Deleted file from S3: {document.file_path}")
+        except Exception as e:
+            logger.exception(f"Failed to delete from S3: {document.file_path}")
+            return jsonify({'error': 'Failed to delete file from storage'}), 500
+        
+        try:
+            db.session.delete(document)
+            db.session.commit()
+            logger.info(f"Deleted document record: {document_id}")
+        except Exception as e:
+            db.session.rollback()
+            logger.exception("Failed to delete document from database")
+            return jsonify({'error': 'Failed to delete document record'}), 500
 
-        # Delete the document
-        DatabaseService.delete(document)
 
         return jsonify({
             'status': 'success',
-            'message': 'Document deleted successfully'
+            'message': 'Document deleted successfully',
+            'document_id': document_id
         }), 200
 
     except Exception as e:
