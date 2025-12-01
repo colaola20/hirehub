@@ -8,7 +8,7 @@ from flask_mail import Message
 from datetime import datetime
 from datetime import datetime, timezone
 
-notifications_bp = Blueprint('notifications', __name__)
+notifications_bp = Blueprint('notifications', __name__, url_prefix="/api")
 
 # HIREHUB LOGO (small, clean SVG)
 HIREHUB_LOGO = """

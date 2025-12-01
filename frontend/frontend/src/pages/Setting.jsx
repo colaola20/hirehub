@@ -70,6 +70,23 @@ const Settings = () => {
         setShowError(false)
     }
 
+    const saveSettings = async () => {
+    const token = localStorage.getItem("token");
+    await fetch("/api/notifications/settings", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({
+            general_enabled: isOnGeneralNotification,
+            general_frequency: alertFrequency,
+            job_alerts_enabled: isJobAlerts,
+            job_alerts_frequency: jobAlertsFrequency
+            })
+        });
+    };
+
     const handleCloseSuccess = (event) => {
         event.preventDefault()
         localStorage.clear();
@@ -115,22 +132,25 @@ const Settings = () => {
     }
 
     const handleGeneralNotificationSwitch = () => {
-        setIsOnGeneralNotification(!isOnGeneralNotification)
-    }
-
-    const handleJobAlertsSwitch = () => {
-        setIsJobAlerts(!isJobAlerts)
-    }
+    setIsOnGeneralNotification(!isOnGeneralNotification);
+    saveSettings();
+    };
 
     const handleDropdownClickGeneral = (label) => {
         setAlertsFrequency(label)
-        setIsGeneralDropdownOpen(false)
-    }
+        saveSettings();
+    };
+
+    const handleJobAlertsSwitch = () => {
+        setIsJobAlerts(!isJobAlerts);
+        saveSettings();
+    };
 
     const handleDropdownClickRecommendation = (label) => {
         setJobAlerstFrequency(label)
-        setIsJobsDropdownOpen(false)
-    }
+        saveSettings();
+    };
+
 
     return (
         <div className={styles.container}>
