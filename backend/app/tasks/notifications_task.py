@@ -1,4 +1,3 @@
-
 import threading
 import time
 from datetime import datetime, timedelta, timezone
@@ -54,29 +53,50 @@ def unified_notification_worker(app):
                         # ---------------------------------------------------------
                         # 1. USER-CONTROLLED DIGEST (job recommendations only)
                         # ---------------------------------------------------------
-                        if u.digest_interval_minutes:
+                        # NEW: Respect user settings
+                        allow_digest = False
 
+                        if hasattr(u, "general_notifications_enabled") and u.general_notifications_enabled:
+                            freq = getattr(u, "general_notifications_frequency", "Immediately")
+
+                            if freq == "Immediately":
+                                allow_digest = True
+
+                            elif freq == "Daily summary":
+                                if not u.last_general_notification_sent or \
+                                   now - u.last_general_notification_sent >= timedelta(hours=24):
+                                    allow_digest = True
+
+                            elif freq == "Weekly summary":
+                                if not u.last_general_notification_sent or \
+                                   now - u.last_general_notification_sent >= timedelta(days=7):
+                                    allow_digest = True
+
+                        # LEGACY support: fallback to digest_interval_minutes
+                        elif u.digest_interval_minutes:
                             if not u.last_digest_sent or \
                                now - u.last_digest_sent >= timedelta(minutes=u.digest_interval_minutes):
+                                allow_digest = True
 
-                                # Fetch recommended jobs (basic version)
-                                jobs = Job.query.limit(5).all()
+                        # -------- RUN DIGEST IF ALLOWED --------
+                        if allow_digest:
+                            jobs = Job.query.limit(5).all()
+                            if jobs:
+                                html = "<h3>Your Job Digest</h3>"
+                                for j in jobs:
+                                    html += f"<p><b>{j.title}</b> – {j.company} ({j.location})</p>"
 
-                                if jobs:
-                                    html = "<h3>Your Job Digest</h3>"
-                                    for j in jobs:
-                                        html += f"<p><b>{j.title}</b> – {j.company} ({j.location})</p>"
+                                msg = Message("Your HireHub Digest", recipients=[u.email], html=html)
+                                mail.send(msg)
 
-                                    msg = Message("Your HireHub Digest", recipients=[u.email], html=html)
-                                    mail.send(msg)
+                                push_in_app(
+                                    Notification, DatabaseService,
+                                    u.email, "Digest", "Your latest job digest is ready."
+                                )
 
-                                    push_in_app(
-                                        Notification, DatabaseService,
-                                        u.email, "Digest", "Your latest job digest is ready."
-                                    )
-
-                                u.last_digest_sent = now
-                                db.session.commit()
+                            u.last_general_notification_sent = now
+                            u.last_digest_sent = now
+                            db.session.commit()
 
                         # ---------------------------------------------------------
                         # 2. LAST LOGIN INACTIVITY NOTIFICATION (72 hours)
@@ -109,7 +129,32 @@ def unified_notification_worker(app):
                         # 3. NEW JOB MATCHES BASED ON SKILLS
                         # ---------------------------------------------------------
                         if u.skills:
-                            # Fetch jobs requiring ANY overlapping skills
+
+                            # NEW: Respect job alerts user settings
+                            allow_job_alerts = False
+
+                            if hasattr(u, "job_alerts_enabled") and u.job_alerts_enabled:
+                                freq = getattr(u, "job_alerts_frequency", "Up to 1 alert/day")
+
+                                if freq == "Unlimited":
+                                    allow_job_alerts = True
+
+                                elif freq == "Up to 1 alert/day":
+                                    if not u.last_job_alert_sent or \
+                                       now - u.last_job_alert_sent >= timedelta(days=1):
+                                        allow_job_alerts = True
+
+                                elif freq == "Up to 3 alerts/week":
+                                    if not u.last_job_alert_sent or \
+                                       now - u.last_job_alert_sent >= timedelta(days=2):
+                                        allow_job_alerts = True
+
+                            # fallback (old logic)
+                            else:
+                                if not u.last_job_match_sent or \
+                                   now - u.last_job_match_sent >= timedelta(hours=1):
+                                    allow_job_alerts = True
+
                             matched_jobs = (
                                 Job.query
                                 .filter(Job.skills_required.overlap(u.skills))
@@ -117,19 +162,18 @@ def unified_notification_worker(app):
                                 .all()
                             )
 
-                            if matched_jobs:
-                                if not u.last_job_match_sent or \
-                                   now - u.last_job_match_sent >= timedelta(hours=1):  # minimum 1 hour gap
+                            if matched_jobs and allow_job_alerts:
 
-                                    for j in matched_jobs:
-                                        push_in_app(
-                                            Notification, DatabaseService,
-                                            u.email, "New Job Match",
-                                            f"New job matches your skills: {j.title}"
-                                        )
+                                for j in matched_jobs:
+                                    push_in_app(
+                                        Notification, DatabaseService,
+                                        u.email, "New Job Match",
+                                        f"New job matches your skills: {j.title}"
+                                    )
 
-                                    u.last_job_match_sent = now
-                                    db.session.commit()
+                                u.last_job_alert_sent = now
+                                u.last_job_match_sent = now
+                                db.session.commit()
 
                         # ---------------------------------------------------------
                         # 4. PROFILE COMPLETION REMINDER (< 60%)

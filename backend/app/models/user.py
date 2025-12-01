@@ -13,6 +13,20 @@ class User(db.Model):
     last_name = db.Column(db.String(50), nullable=False)
     password_hash = db.Column(db.String(255), nullable=False)
 
+    # ------------------------------------
+    # Notification Preferences (NEW)
+    # ------------------------------------
+    general_notifications_enabled = db.Column(db.Boolean, default=True)
+    general_notifications_frequency = db.Column(db.String, default="Immediately")
+        # options: "Immediately", "Daily summary", "Weekly summary"
+
+    job_alerts_enabled = db.Column(db.Boolean, default=True)
+    job_alerts_frequency = db.Column(db.String, default="Up to 1 alert/day")
+        # options: "Up to 1 alert/day", "Up to 3 alerts/week", "Unlimited"
+
+    last_general_notification_sent = db.Column(db.DateTime, nullable=True)
+    last_job_alert_sent = db.Column(db.DateTime, nullable=True)
+
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     updated_at = db.Column(
         db.DateTime,
