@@ -132,12 +132,13 @@ const Settings = () => {
     }
 
     const handleGeneralNotificationSwitch = () => {
-    setIsOnGeneralNotification(!isOnGeneralNotification);
-    saveSettings();
+        setIsOnGeneralNotification(!isOnGeneralNotification);
+        saveSettings();
     };
 
     const handleDropdownClickGeneral = (label) => {
         setAlertsFrequency(label)
+        setIsGeneralDropdownOpen(false)
         saveSettings();
     };
 
@@ -148,6 +149,7 @@ const Settings = () => {
 
     const handleDropdownClickRecommendation = (label) => {
         setJobAlerstFrequency(label)
+        setIsJobsDropdownOpen(false)
         saveSettings();
     };
 
