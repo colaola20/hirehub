@@ -5,7 +5,7 @@ from app.extensions import db
 
 settings_bp = Blueprint("settings", __name__)
 
-@settings_bp.route("/settings/notifications", methods=["POST"])
+@settings_bp.route("/notifications/settings", methods=["POST"])
 @jwt_required()
 def save_notification_settings():
     user_id = get_jwt_identity()

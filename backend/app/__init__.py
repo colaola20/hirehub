@@ -24,7 +24,7 @@ from app.routes.chat_bot import chat_bp
 from flask_cors import CORS
 from .config import Config
 
-# Import models so Flask-Migrate can detect them
+from app.models.settings_page import settings_bp
 from app.models.user import User
 from app.models.job import Job
 from app.models.application import Application
@@ -91,9 +91,10 @@ def create_app():
     app.register_blueprint(form_bp)
     app.register_blueprint(notifications_bp, url_prefix="/api")
     app.register_blueprint(chat_bp, url_prefix="/api")
+    app.register_blueprint(settings_bp, url_prefix="/api")
 
     # --------------------------------------------------
-    # Unified notification worker integration
+    # Unified notification worker integration (FIXED)
     # --------------------------------------------------
     init_notification_workers = None
 
@@ -104,17 +105,14 @@ def create_app():
         app.logger.error(f"❌ Failed to import unified worker: {e}")
         init_notification_workers = None
 
-    # Prevent workers during migrations
-    if False:
-        if init_notification_workers:
-            try:
-                init_notification_workers(app)
-                app.logger.info("✔ Unified Notification Worker started.")
-            except Exception as e:
-                app.logger.error(f"❌ Failed to start unified worker: {e}")
-        else:
-            app.logger.info("ℹ Unified worker unavailable — not started.")
+    # Start worker normally (old code had 'if False:', preventing startup)
+    if init_notification_workers:
+        try:
+            init_notification_workers(app)
+            app.logger.info("✔ Unified Notification Worker started.")
+        except Exception as e:
+            app.logger.error(f"❌ Failed to start unified worker: {e}")
     else:
-        app.logger.info("⏳ Workers disabled because RUNNING_MIGRATIONS=1")
+        app.logger.info("ℹ Unified worker unavailable — not started.")
 
     return app

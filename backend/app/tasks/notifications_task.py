@@ -14,9 +14,15 @@ def _load_dependencies():
     return DatabaseService, User, Job, Notification, mail, db, Message
 
 
-# ---------------------------------------------------------
-# Helper: create in-app notification
-# ---------------------------------------------------------
+def to_aware(dt):
+    """Ensure datetimes are timezone-aware."""
+    if dt is None:
+        return None
+    if dt.tzinfo is None:
+        return dt.replace(tzinfo=timezone.utc)
+    return dt
+
+
 def push_in_app(Notification, DatabaseService, user_email, n_type, message):
     note = Notification(
         user_email=user_email,
@@ -28,9 +34,6 @@ def push_in_app(Notification, DatabaseService, user_email, n_type, message):
     DatabaseService.create(note)
 
 
-# ---------------------------------------------------------
-# The unified worker (runs every 10 minutes)
-# ---------------------------------------------------------
 def unified_notification_worker(app):
 
     def _worker():
@@ -40,8 +43,8 @@ def unified_notification_worker(app):
 
             app.logger.info("🔥 Unified Notification Worker started.")
 
-            CHECK_INTERVAL_SECONDS = 10 * 60  # 10 minutes
-            INACTIVITY_LIMIT = timedelta(hours=72)  # 3 days
+            CHECK_INTERVAL_SECONDS = 10 
+            INACTIVITY_LIMIT = timedelta(hours=72)
 
             while True:
                 try:
@@ -50,154 +53,183 @@ def unified_notification_worker(app):
 
                     for u in users:
 
-                        # ---------------------------------------------------------
-                        # 1. USER-CONTROLLED DIGEST (job recommendations only)
-                        # ---------------------------------------------------------
-                        # NEW: Respect user settings
-                        allow_digest = False
+                        # ======================================================
+                        # GENERAL NOTIFICATIONS (Your new settings)
+                        # ======================================================
 
-                        if hasattr(u, "general_notifications_enabled") and u.general_notifications_enabled:
-                            freq = getattr(u, "general_notifications_frequency", "Immediately")
+                        last_general = to_aware(u.last_general_notification_sent)
 
-                            if freq == "Immediately":
-                                allow_digest = True
+                        allow_general = False
+                        freq = (u.general_notifications_frequency or "immediately").lower()
+                        if freq == "immediately":
+                            allow_general = True
 
-                            elif freq == "Daily summary":
-                                if not u.last_general_notification_sent or \
-                                   now - u.last_general_notification_sent >= timedelta(hours=24):
-                                    allow_digest = True
+                        elif freq == "5 minutes":
+                            if not last_general or now - last_general >= timedelta(minutes=1):
+                                allow_general = True
 
-                            elif freq == "Weekly summary":
-                                if not u.last_general_notification_sent or \
-                                   now - u.last_general_notification_sent >= timedelta(days=7):
-                                    allow_digest = True
+                        elif freq == "10 minutes":
+                            if not last_general or now - last_general >= timedelta(minutes=3):
+                                allow_general = True
 
-                        # LEGACY support: fallback to digest_interval_minutes
-                        elif u.digest_interval_minutes:
-                            if not u.last_digest_sent or \
-                               now - u.last_digest_sent >= timedelta(minutes=u.digest_interval_minutes):
-                                allow_digest = True
+                        elif freq == "15 minutes":
+                            if not last_general or now - last_general >= timedelta(minutes=15):
+                                allow_general = True
 
-                        # -------- RUN DIGEST IF ALLOWED --------
-                        if allow_digest:
-                            jobs = Job.query.limit(5).all()
-                            if jobs:
-                                html = "<h3>Your Job Digest</h3>"
-                                for j in jobs:
-                                    html += f"<p><b>{j.title}</b> – {j.company} ({j.location})</p>"
+                        elif freq == "daily summary":
+                            if not last_general or now - last_general >= timedelta(days=1):
+                                allow_general = True
 
-                                msg = Message("Your HireHub Digest", recipients=[u.email], html=html)
+                        elif freq == "weekly summary":
+                            if not last_general or now - last_general >= timedelta(days=7):
+                                allow_general = True
+
+
+                        if allow_general:
+                            msg = Message("General HireHub Notification",
+                                          recipients=[u.email],
+                                          body="This is your general notification based on your settings.")
+                            try:
                                 mail.send(msg)
+                                push_in_app(Notification, DatabaseService, u.email,
+                                            "General Notification",
+                                            "Your general notification was sent.")
+                                u.last_general_notification_sent = now
+                                db.session.commit()
+                            except Exception as e:
+                                current_app.logger.exception("General email send failed")
 
-                                push_in_app(
-                                    Notification, DatabaseService,
-                                    u.email, "Digest", "Your latest job digest is ready."
-                                )
 
-                            u.last_general_notification_sent = now
-                            u.last_digest_sent = now
-                            db.session.commit()
+                        # ======================================================
+                        # JOB ALERTS (Your new settings)
+                        # ======================================================
 
-                        # ---------------------------------------------------------
-                        # 2. LAST LOGIN INACTIVITY NOTIFICATION (72 hours)
-                        # ---------------------------------------------------------
+                        last_alert = to_aware(u.last_job_alert_sent)
+
+                        allow_job_alert = False
+                        jf = (u.job_alerts_frequency or "unlimited").lower()
+                        if jf == "5 minutes":
+                            if not last_alert or now - last_alert >= timedelta(minutes=1):
+                                allow_job_alert = True
+
+                        elif jf == "10 minutes":
+                            if not last_alert or now - last_alert >= timedelta(minutes=3):
+                                allow_job_alert = True
+
+                        elif jf == "15 minutes":
+                            if not last_alert or now - last_alert >= timedelta(minutes=15):
+                                allow_job_alert = True
+
+                        elif jf == "up to 1 alert/day":
+                            if not last_alert or now - last_alert >= timedelta(days=1):
+                                allow_job_alert = True
+
+                        elif jf == "up to 3 alerts/week":
+                            if not last_alert or now - last_alert >= timedelta(days=2):
+                                allow_job_alert = True
+
+                        elif jf == "unlimited":
+                            allow_job_alert = True
+
+
+                        if allow_job_alert and u.skills:
+                            # Job match logic
+                            matched_jobs = Job.query.filter(
+                                Job.skills_required.overlap(u.skills)
+                            ).limit(5).all()
+
+                            if matched_jobs:
+                                try:
+                                    for j in matched_jobs:
+                                        push_in_app(
+                                            Notification, DatabaseService,
+                                            u.email, "Job Match",
+                                            f"New job matches your skills: {j.title}"
+                                        )
+
+                                    u.last_job_alert_sent = now
+                                    db.session.commit()
+                                except:
+                                    current_app.logger.exception("Job alert failed")
+
+                        # ======================================================
+                        # (Original) DIGEST BASED ON digest_interval_minutes
+                        # ======================================================
+
+                        last_digest = to_aware(u.last_digest_sent)
+
+                        if u.digest_interval_minutes:
+                            if not last_digest or now - last_digest >= timedelta(minutes=u.digest_interval_minutes):
+
+                                jobs = Job.query.limit(5).all()
+
+                                if jobs:
+                                    html = "<h3>Your Job Digest</h3>"
+                                    for j in jobs:
+                                        html += f"<p><b>{j.title}</b> – {j.company} ({j.location})</p>"
+
+                                    msg = Message("Your HireHub Digest", recipients=[u.email], html=html)
+                                    try:
+                                        mail.send(msg)
+                                        push_in_app(
+                                            Notification, DatabaseService,
+                                            u.email, "Digest", "Your latest job digest is ready."
+                                        )
+                                    except:
+                                        current_app.logger.exception("Digest send failed")
+
+                                u.last_digest_sent = now
+                                db.session.commit()
+
+                        # ======================================================
+                        # (Original) INACTIVITY ALERT
+                        # ======================================================
                         if u.last_login:
+                            last_login = to_aware(u.last_login)
+                            last_inactivity = to_aware(u.last_login_notification_sent)
 
-                            inactive_for = now - u.last_login
+                            inactive_for = now - last_login
 
                             if inactive_for >= INACTIVITY_LIMIT:
-                                if not u.last_login_notification_sent or \
-                                   (now - u.last_login_notification_sent >= INACTIVITY_LIMIT):
+                                if not last_inactivity or now - last_inactivity >= INACTIVITY_LIMIT:
 
-                                    msg = Message(
-                                        "We Miss You at HireHub",
-                                        recipients=[u.email],
-                                        body="You haven’t logged in for a few days. New job matches are waiting!"
-                                    )
-                                    mail.send(msg)
+                                    msg = Message("We Miss You at HireHub",
+                                                  recipients=[u.email],
+                                                  body="You haven’t logged in for a few days.")
+                                    try:
+                                        mail.send(msg)
+                                        push_in_app(
+                                            Notification, DatabaseService,
+                                            u.email, "Inactivity",
+                                            "You haven't logged in recently."
+                                        )
+                                        u.last_login_notification_sent = now
+                                        db.session.commit()
+                                    except:
+                                        current_app.logger.exception("Inactivity email failed")
 
-                                    push_in_app(
-                                        Notification, DatabaseService,
-                                        u.email, "Inactivity",
-                                        "You haven't logged in recently. Check out new job opportunities!"
-                                    )
+                        # ======================================================
+                        # (Original) PROFILE REMINDER
+                        # ======================================================
+                        last_profile_rem = to_aware(u.last_profile_reminder_sent)
 
-                                    u.last_login_notification_sent = now
-                                    db.session.commit()
-
-                        # ---------------------------------------------------------
-                        # 3. NEW JOB MATCHES BASED ON SKILLS
-                        # ---------------------------------------------------------
-                        if u.skills:
-
-                            # NEW: Respect job alerts user settings
-                            allow_job_alerts = False
-
-                            if hasattr(u, "job_alerts_enabled") and u.job_alerts_enabled:
-                                freq = getattr(u, "job_alerts_frequency", "Up to 1 alert/day")
-
-                                if freq == "Unlimited":
-                                    allow_job_alerts = True
-
-                                elif freq == "Up to 1 alert/day":
-                                    if not u.last_job_alert_sent or \
-                                       now - u.last_job_alert_sent >= timedelta(days=1):
-                                        allow_job_alerts = True
-
-                                elif freq == "Up to 3 alerts/week":
-                                    if not u.last_job_alert_sent or \
-                                       now - u.last_job_alert_sent >= timedelta(days=2):
-                                        allow_job_alerts = True
-
-                            # fallback (old logic)
-                            else:
-                                if not u.last_job_match_sent or \
-                                   now - u.last_job_match_sent >= timedelta(hours=1):
-                                    allow_job_alerts = True
-
-                            matched_jobs = (
-                                Job.query
-                                .filter(Job.skills_required.overlap(u.skills))
-                                .limit(5)
-                                .all()
-                            )
-
-                            if matched_jobs and allow_job_alerts:
-
-                                for j in matched_jobs:
-                                    push_in_app(
-                                        Notification, DatabaseService,
-                                        u.email, "New Job Match",
-                                        f"New job matches your skills: {j.title}"
-                                    )
-
-                                u.last_job_alert_sent = now
-                                u.last_job_match_sent = now
-                                db.session.commit()
-
-                        # ---------------------------------------------------------
-                        # 4. PROFILE COMPLETION REMINDER (< 60%)
-                        # ---------------------------------------------------------
                         if u.profile_completion is not None and u.profile_completion < 60:
+                            if not last_profile_rem or now - last_profile_rem >= timedelta(hours=24):
 
-                            if not u.last_profile_reminder_sent or \
-                               now - u.last_profile_reminder_sent >= timedelta(hours=24):
-
-                                msg = Message(
-                                    "Improve Your HireHub Profile",
-                                    recipients=[u.email],
-                                    body="Your profile is below 60%. Completing it improves your job matches!"
-                                )
-                                mail.send(msg)
-
-                                push_in_app(
-                                    Notification, DatabaseService,
-                                    u.email, "Profile Reminder",
-                                    "Your profile is incomplete. Update it to improve your job matches."
-                                )
-
-                                u.last_profile_reminder_sent = now
-                                db.session.commit()
+                                msg = Message("Improve Your HireHub Profile",
+                                              recipients=[u.email],
+                                              body="Your profile is below 60%. Complete it!")
+                                try:
+                                    mail.send(msg)
+                                    push_in_app(
+                                        Notification, DatabaseService,
+                                        u.email, "Profile Reminder",
+                                        "Your profile is incomplete."
+                                    )
+                                    u.last_profile_reminder_sent = now
+                                    db.session.commit()
+                                except:
+                                    current_app.logger.exception("Profile reminder failed")
 
                 except Exception as e:
                     current_app.logger.exception("UnifiedWorker ERROR: %s", e)
