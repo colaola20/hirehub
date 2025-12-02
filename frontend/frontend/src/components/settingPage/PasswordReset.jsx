@@ -11,6 +11,8 @@ const PasswordReset = ({email, onClose}) => {
     const navigate = useNavigate();
     const [showSuccess, setShowSuccess] = useState(false)
     const [showError, setShowError] = useState(false)
+    const [errorTitle, setErrorTitle] = useState('')
+    const [errorDescription, setErrorDescription] = useState('')
 
     const handleClick = async (event) => {
         event.preventDefault();
@@ -23,11 +25,10 @@ const PasswordReset = ({email, onClose}) => {
                 navigate("/login");
                 return
             }
-            const response = await fetch("/api/forgot-password-token", {
+            const response = await fetch("/api/forgot-password", {
                 method: "POST",
                 headers: { 
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json"
                 },
                 body: JSON.stringify({ newEmail }),
             });
@@ -35,11 +36,16 @@ const PasswordReset = ({email, onClose}) => {
             if (response.ok) {
                 setShowSuccess(true)
             } else {
+                console.log(data)
+                setErrorTitle('Failed to send reset link!')
+                setErrorDescription(data.message)
                 setShowError(true)
             }
         } catch (error) {
             console.error("Error sending reset request:", error);
-            alert("Something went wrong. Please try again.");
+            setErrorTitle('Failed to send reset link!')
+            setErrorDescription(error)
+            setShowError(true)
         } finally {
             setLoading(false);
         }
@@ -47,6 +53,8 @@ const PasswordReset = ({email, onClose}) => {
 
     const handleClose = () => {
         setShowSuccess(false)
+        setErrorTitle('')
+        setErrorDescription('')
         setShowError(false)
         onClose()
     }
@@ -76,7 +84,7 @@ const PasswordReset = ({email, onClose}) => {
             )}
 
             {showError && (
-                <Error title="Failed to send reset link!" description="Please try again later." handleClose={handleClose}/>
+                <Error title={errorTitle} description={errorDescription} handleClose={handleClose}/>
             )}
         </div>
     )

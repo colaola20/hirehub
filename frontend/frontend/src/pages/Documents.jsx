@@ -1,8 +1,9 @@
 import {useState, useRef, useEffect} from 'react'
 import Error from '../components/UsersMessages/Error'
 import styles from './Documents.module.css'
-import { Plus, Info, MoreVertical, Eye, Download, Trash2 } from 'lucide-react';
+import { Plus, Info, MoreVertical, Eye, Download, Trash2, Pencil } from 'lucide-react';
 import Btn from '../components/buttons/Btn'
+import Confirmation from'../components/UsersMessages/Confirmation'
 
 const Documents = () => {
     const [file, setFile] = useState(null);
@@ -24,6 +25,9 @@ const Documents = () => {
     const [documentsCount, setDocumentsCount] = useState(0)
 
     const [openDropdownId, setOpenDropdownId] = useState(null)
+
+    const [showConfirmation, setShowConfirmation] = useState(false)
+    const [deleteDocumentId, setDeleteDocumentId] = useState(null)
 
     const handleFileChange = async (e, type) => {
         setLoadingFileType(type)
@@ -161,9 +165,6 @@ const Documents = () => {
     const toggleDropDown = (e, docId) => {
         e.preventDefault()
         e.stopPropagation()
-        console.log('=== TOGGLE DROPDOWN ===');
-        console.log('docId:', docId, 'type:', typeof docId);
-        console.log('openDropdownId BEFORE:', openDropdownId, 'type:', typeof openDropdownId);
         
         setOpenDropdownId(prev => {
             const newValue = prev === docId ? null : docId;
@@ -171,6 +172,75 @@ const Documents = () => {
             return newValue;
         });
     }
+
+    const handleDownload = async (documentId) => {
+        const token = localStorage.getItem('token');
+        try {
+            const response = await fetch(`/api/documents/${documentId}/download`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+
+            const data = await response.json();
+
+            // Create a temporary link and click it
+            const link = document.createElement('a');
+            link.href = data.url;
+            link.download = data.filename; // Suggests filename
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        } catch (err) {
+            setErrorTitle("Failed to download document");
+            setErrorDescription(err.message || "");
+            setShowError(true);
+        }
+        
+    }
+
+    const handleDelete = (documentId) => {
+        setShowConfirmation(true)
+        setDeleteDocumentId(documentId)
+    }
+
+    const deleteDocument = async () => {
+        const token = localStorage.getItem('token')
+        console.log(deleteDocumentId)
+
+        try {
+            const response = await fetch(`/api/documents/${deleteDocumentId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+
+            if (!response.ok) {
+                setErrorTitle('Failed to delete document.')
+                setErrorDescription('')
+                setShowError(true)
+                return
+            }
+
+            const data = await response.json()
+
+            setDocuments(prevDocuments => 
+                prevDocuments.filter(doc => doc.id !== deleteDocumentId) 
+            )
+            setDocumentsCount(prev => prev -1)
+
+            setDeleteDocumentId(null)
+            setShowConfirmation(false)
+            
+            // Close dropdown
+            setOpenDropdownId(null);
+        } catch (err) {
+            setErrorTitle("Failed to delete document");
+            setErrorDescription(err.message || "");
+            setShowError(true);
+        }
+    }
+
 
     return (
         <div className={styles.container}>
@@ -214,10 +284,9 @@ const Documents = () => {
                         <span></span>
                     </div>
                     {documents.map((doc) => {
-                        console.log('Rendering doc:', doc.id, 'type:', typeof doc.id, 'openDropdownId:', openDropdownId, 'Match?:', openDropdownId === doc.id);
                         return (
-                            <div key={doc.id} className={styles.dataRow} onClick={() => handleOpenDocs(doc.id)}>
-                                <span>{doc.original_filename}</span>
+                            <div key={doc.id} className={styles.dataRow}>
+                                <span onClick={() => handleOpenDocs(doc.id)}>{doc.original_filename}</span>
                                 <span>{new Date(doc.updated_at).toLocaleString()}</span>
                                 <span>{new Date(doc.created_at).toLocaleString()}</span>
                                 <span className={styles.dropdownWrapper}><button 
@@ -231,18 +300,56 @@ const Documents = () => {
                                 {openDropdownId === doc.id && (
                                     <div ref={dropdownRef} className={styles.dropdownMenu} onClick={(e) => e.stopPropagation()}>
                                         <button 
-                                        onClick={(e) => {
-                                            console.log("Should be open")
+                                            onClick={(e) => {
+                                                e.preventDefault()
+                                                e.stopPropagation();
+                                                handleOpenDocs(doc.id)
+                                                setOpenDropdownId(null)
+                                            }}
+                                            onMouseEnter={(e) => e.currentTarget.style.background = '#6f67f0'}
+                                            onMouseLeave={(e) => e.currentTarget.style.background = 'none'}
+                                            className={styles.dropdownItem}
+                                        >
+                                            <Eye size={16} /> View
+                                        </button>
+                                        <button
+                                            onClick={(e) => {
+                                                e.preventDefault()
+                                                e.stopPropagation();
+                                                handleEdit(doc.id)
+                                                setOpenDropdownId(null)
+                                            }}
+                                            onMouseEnter={(e) => e.currentTarget.style.background = '#6f67f0'}
+                                            onMouseLeave={(e) => e.currentTarget.style.background = 'none'}
+                                            className={styles.dropdownItem}
+                                        >
+                                            <Pencil size={16}/> Edit
+                                        </button>
+                                        <button
+                                            onClick={(e) => {
+                                                e.preventDefault()
+                                                e.stopPropagation();
+                                                handleDownload(doc.id)
+                                                setOpenDropdownId(null)
+                                            }}
+                                            onMouseEnter={(e) => e.currentTarget.style.background = '#6f67f0'}
+                                            onMouseLeave={(e) => e.currentTarget.style.background = 'none'}
+                                            className={styles.dropdownItem}
+                                        >
+                                            <Download size={16}/> Download
+                                        </button>
+                                        <button
+                                            onClick={(e) => {
                                             e.preventDefault()
                                             e.stopPropagation();
-                                            handleOpenDocs(doc.id)
+                                            handleDelete(doc.id)
                                             setOpenDropdownId(null)
                                         }}
                                         onMouseEnter={(e) => e.currentTarget.style.background = '#6f67f0'}
                                         onMouseLeave={(e) => e.currentTarget.style.background = 'none'}
                                         className={styles.dropdownItem}
                                         >
-                                            <Eye size={16} /> View
+                                            <Trash2 size={16}/> Delete
                                         </button>
                                     </div>
                                 )}
@@ -254,6 +361,16 @@ const Documents = () => {
             </div>
             {showError && (
                 <Error title={errorTitle} description={errorDescription} handleClose={() => {setShowError(false)}}/>
+            )}
+            {showConfirmation && (
+                <Confirmation 
+                    title='Are you sure you want to delete this document?' 
+                    description='Deleting this document will permanently remove it from your account. This action cannot be undone.' 
+                    onClose={() => {
+                        setShowConfirmation(false)
+                        setDeleteDocumentId(null)
+                    }} 
+                    onSubmission={deleteDocument}/>
             )}
         </div>
     )
