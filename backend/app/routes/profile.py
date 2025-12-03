@@ -476,9 +476,10 @@ def generate_recommendations():
                 match = json.loads(raw_reply[start:end])
 
             score = match.get("percentage_match", 0)
+            matched_skills = match.get("matched_skills", [])
 
             if score >= 85:
-                recommended_list.append((job, score))
+                recommended_list.append((job, score, matched_skills))
 
             if len(recommended_list) == 20:
                 break
@@ -486,7 +487,7 @@ def generate_recommendations():
         # ----------------------------------------------------
         # Insert new recommendations safely
         # ----------------------------------------------------
-        for job, score in recommended_list:
+        for job, score, matched_skills in recommended_list:
             new_rec = RecommendedJob(
                 user_id=current_user_id,
                 job_id=job.id,
@@ -494,7 +495,7 @@ def generate_recommendations():
                 created_at=now,
                 expires_at=now + timedelta(days=7),
                 is_active=True,
-                matched_skills=match.get("matched_skills", [])
+                matched_skills=matched_skills
             )
             db.session.add(new_rec)
 
