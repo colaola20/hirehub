@@ -321,7 +321,7 @@ const Profile = () => {
                     <div className={styles.avatarContainer}>
                         {profileData.profileImage ? (
                             <img
-                                src={`/api/profile/image/${profileData.profileImage}`}
+                                src={profileData.profileImage}
                                 alt="Profile"
                                 className={styles.avatar}
                             />

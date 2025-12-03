@@ -208,11 +208,13 @@ def forgot_password_token():
         data = request.get_json()
         email = data.get("email")
         if not email:
+            email = data.get("newEmail")
+        if not email:
             return jsonify({"status": "error", "message": "Email is required"}), 400
 
         users = DatabaseService.filter_by(User, email=email)
         if not users:
-            return jsonify({"status": "error", "message": "No account found with that email"}), 404
+            return jsonify({"status": "error", "message": "No account found with that email."}), 404
 
         user = users[0]
 

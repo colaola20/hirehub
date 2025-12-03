@@ -10,6 +10,7 @@ import boto3
 from werkzeug.utils import secure_filename
 import uuid
 from app.models.user import User
+from app.extensions import db
 
 # from groq import Groq
 
@@ -47,7 +48,7 @@ s3_client = boto3.client(
 
 
 BUCKET_NAME = os.getenv('S3_BUCKET_NAME') #fix this
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'pdf', 'txt', 'doc', 'docx'}
+ALLOWED_EXTENSIONS = {'pdf', 'txt', 'doc', 'docx'}
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -73,7 +74,7 @@ def upload_file():
         file = request.files['file']
 
         if file.filename == '':
-            return jsonify({'eror': "No file selected"}), 400
+            return jsonify({'error': "No file selected"}), 400
         
         if not allowed_file(file.filename):
             return jsonify({'error': 'File type not allowed'}), 400
@@ -124,7 +125,7 @@ def upload_file():
             'message': 'File uploaded successfully',
             'original_filename': original_filename,
             'filename': unique_filename,
-            'document_id': created_user.document_id,
+            'id': created_user.document_id,
             'created_at': doc.created_at.isoformat(),
             'updated_at': doc.updated_at.isoformat(),
 
@@ -159,7 +160,8 @@ def get_document_url(document_id):
             'get_object',
             Params={
                 'Bucket': BUCKET_NAME,
-                'Key': document.fille_path
+                'Key': document.file_path,
+                'ResponseContentDisposition': f'attachment; filename="{document.original_filename}"'
             },
             ExpiresIn=3600
         )
@@ -375,6 +377,8 @@ def delete_document(document_id):
     try:
         current_user_id = int(get_jwt_identity())
 
+        logger.info(document_id)
+
         # Get user's email from user ID
         from app.models.user import User
         user = DatabaseService.get_by_id(User, current_user_id)
@@ -390,13 +394,31 @@ def delete_document(document_id):
         # Verify document belongs to the authenticated user
         if document.user_email != user.email:
             return jsonify({'status': 'error', 'message': 'Unauthorized access'}), 403
+        
+        try:
+            s3_client.delete_object(
+                Bucket=BUCKET_NAME,
+                Key=document.file_path
+            )
+            logger.info(f"Deleted file from S3: {document.file_path}")
+        except Exception as e:
+            logger.exception(f"Failed to delete from S3: {document.file_path}")
+            return jsonify({'error': 'Failed to delete file from storage'}), 500
+        
+        try:
+            db.session.delete(document)
+            db.session.commit()
+            logger.info(f"Deleted document record: {document_id}")
+        except Exception as e:
+            db.session.rollback()
+            logger.exception("Failed to delete document from database")
+            return jsonify({'error': 'Failed to delete document record'}), 500
 
-        # Delete the document
-        DatabaseService.delete(document)
 
         return jsonify({
             'status': 'success',
-            'message': 'Document deleted successfully'
+            'message': 'Document deleted successfully',
+            'document_id': document_id
         }), 200
 
     except Exception as e:
