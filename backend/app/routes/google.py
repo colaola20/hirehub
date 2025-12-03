@@ -43,12 +43,29 @@ def authorize_google():
         user = User.query.filter_by(email=email).first()
         if not user:
             user = User(
-                username=username,  #uses email prefix
+                username=username,
                 email=email,
                 first_name=user_info.get("given_name", ""),
                 last_name=user_info.get("family_name", ""),
+                # Default notifications for new OAuth user
+                general_notifications_enabled=True,
+                general_notifications_frequency="immediately",
+                job_alerts_enabled=True,
+                job_alerts_frequency="2 minutes"
             )
-            # Generates a random password for the Oauth user
+        else:
+            # DO NOT override if user already has settings
+            if user.general_notifications_enabled is None:
+                user.general_notifications_enabled = True
+            if not user.general_notifications_frequency:
+                user.general_notifications_frequency = "immediately"
+
+            if user.job_alerts_enabled is None:
+                user.job_alerts_enabled = True
+            if not user.job_alerts_frequency:
+                user.job_alerts_frequency = "2 minutes"
+
+                    # Generates a random password for the Oauth user
             user.set_password(secrets.token_urlsafe(16))
             try:
                 db.session.add(user)

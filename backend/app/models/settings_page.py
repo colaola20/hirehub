@@ -10,14 +10,34 @@ settings_bp = Blueprint("settings", __name__)
 def save_notification_settings():
     user_id = get_jwt_identity()
     user = User.query.get(user_id)
+    data = request.get_json() or {}
 
-    data = request.get_json()
+    # GENERAL
+    if "general_enabled" in data:
+        user.general_notifications_enabled = data["general_enabled"]
 
-    user.general_notifications_enabled = data.get("general_enabled", True)
-    user.general_notifications_frequency = data.get("general_frequency", "Immediately")
-    user.job_alerts_enabled = data.get("job_enabled", True)
-    user.job_alerts_frequency = data.get("job_frequency", "Up to 1 alert/day")
+    if "general_frequency" in data:
+        user.general_notifications_frequency = data["general_frequency"].lower()
+
+    # JOB ALERTS
+    if "job_alerts_enabled" in data:
+        user.job_alerts_enabled = data["job_alerts_enabled"]
+
+    if "job_alerts_frequency" in data:
+        user.job_alerts_frequency = data["job_alerts_frequency"].lower()
 
     db.session.commit()
-
     return jsonify({"ok": True})
+
+@settings_bp.route("/notifications/settings", methods=["GET"])
+@jwt_required()
+def load_notification_settings():
+    user_id = get_jwt_identity()
+    u = User.query.get(user_id)
+
+    return jsonify({
+        "general_enabled": u.general_notifications_enabled,
+        "general_frequency": u.general_notifications_frequency,
+        "job_alerts_enabled": u.job_alerts_enabled,
+        "job_alerts_frequency": u.job_alerts_frequency
+    })

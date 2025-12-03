@@ -95,8 +95,23 @@ def authorize_linkedin():
                 email=email,
                 first_name=first_name,
                 last_name=last_name,
-                linkedin_id=linkedin_id
+                linkedin_id=linkedin_id,
+                general_notifications_enabled=True,
+                general_notifications_frequency="immediately",
+                job_alerts_enabled=True,
+                job_alerts_frequency="2 minutes"
             )
+        else:
+            if user.general_notifications_enabled is None:
+                user.general_notifications_enabled = True
+            if not user.general_notifications_frequency:
+                user.general_notifications_frequency = "immediately"
+
+            if user.job_alerts_enabled is None:
+                user.job_alerts_enabled = True
+            if not user.job_alerts_frequency:
+                user.job_alerts_frequency = "2 minutes"
+                
             user.set_password(secrets.token_urlsafe(32))
             db.session.add(user)
             db.session.commit()
