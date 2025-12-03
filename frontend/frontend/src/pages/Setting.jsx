@@ -88,8 +88,9 @@ const Settings = () => {
         setShowError(false)
     }
 
-    const saveSettings = async () => {
+    const saveSettings = async (overrides = {}) => {
     const token = localStorage.getItem("token");
+    console.log(jobAlertsFrequency)
     await fetch("/api/notifications/settings", {
         method: "POST",
         headers: {
@@ -97,11 +98,10 @@ const Settings = () => {
             "Authorization": `Bearer ${token}`
         },
        body: JSON.stringify({
-        general_enabled: isOnGeneralNotification,
-        general_frequency: alertFrequency.toLowerCase(),
-        job_alerts_enabled: isJobAlerts,
-        job_alerts_frequency: jobAlertsFrequency.toLowerCase()})
-
+            general_enabled: isOnGeneralNotification,
+            general_frequency: alertFrequency.toLowerCase(),
+            job_alerts_enabled: isJobAlerts,
+            job_alerts_frequency: jobAlertsFrequency.toLowerCase()})
         });
     };
 
@@ -157,7 +157,6 @@ const Settings = () => {
     const handleDropdownClickGeneral = (label) => {
         setAlertsFrequency(label)
         setIsGeneralDropdownOpen(false)
-        saveSettings();
     };
 
     const handleJobAlertsSwitch = () => {
@@ -168,8 +167,19 @@ const Settings = () => {
     const handleDropdownClickRecommendation = (label) => {
         setJobAlerstFrequency(label)
         setIsJobsDropdownOpen(false)
-        saveSettings();
     };
+
+    useEffect(() => {
+        if (alertFrequency) {
+            saveSettings();
+        }
+    }, [alertFrequency]);
+
+    useEffect(() => {
+        if (jobAlertsFrequency) {
+            saveSettings();
+        }
+    }, [jobAlertsFrequency]);
 
 
     return (
