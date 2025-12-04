@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import styles from "./Contact_Us.module.css";
 
 export default function ContactPage() {
@@ -20,73 +21,71 @@ export default function ContactPage() {
 
   return (
     <div className={styles.container}>
-      <div className={styles.contactWrapper}>
-        <h1 className={styles.title}>Contact Us</h1>
-        <p className={styles.subtitle}>
-          We're here to help you with anything related to HireHub.
-        </p>
 
-        <div className={styles.contentWrapper}>
-          {/* LEFT — FORM */}
-          <form className={styles.form} onSubmit={handleSubmit}>
-            <label className={styles.label}>Your Name</label>
+      {/* MAIN WHITE BOX IDENTICAL TO LOGIN */}
+      <div className={styles.loginBox}>
+
+        {/* LEFT PANEL (form) */}
+        <div className={styles.loginFormSection}>
+          
+          <Link to="/" className={styles.backHome}>
+            ← Back to Home
+          </Link>
+
+          <h1 className={styles.pageTitle}>Contact Us</h1>
+          <p className={styles.pageSubtitle}>
+            We're here to help you with anything related to HireHub.
+          </p>
+
+          <form className={styles.contactForm} onSubmit={handleSubmit}>
+            
+            <label>Your Name</label>
             <input
-              className={styles.input}
               name="name"
               type="text"
               value={form.name}
               onChange={handleChange}
               placeholder="Enter your name"
+              className={styles.input}
               required
             />
 
-            <label className={styles.label}>Email Address</label>
+            <label>Email Address</label>
             <input
-              className={styles.input}
               name="email"
               type="email"
               value={form.email}
               onChange={handleChange}
               placeholder="you@example.com"
+              className={styles.input}
               required
             />
 
-            <label className={styles.label}>Message</label>
+            <label>Message</label>
             <textarea
-              className={styles.textarea}
               name="message"
               value={form.message}
               onChange={handleChange}
               placeholder="Write your message..."
               rows="6"
+              className={styles.textarea}
               required
             ></textarea>
 
-            <button className={styles.submitBtn}>Send Message</button>
+            <button className={styles.loginBtn}>Send Message</button>
           </form>
-
-          {/* RIGHT — INFO BOX */}
-          <div className={styles.infoBox}>
-            <h3>HireHub Support</h3>
-            <p>Our team will respond within 24 hours.</p>
-
-            <div className={styles.infoItem}>
-              <strong>Email:</strong>
-              <span>support@hirehub.com</span>
-            </div>
-
-            <div className={styles.infoItem}>
-              <strong>Phone:</strong>
-              <span>(555) 321-9876</span>
-            </div>
-
-            <div className={styles.infoItem}>
-              <strong>Address:</strong>
-              <span>Farmingdale State College, NY</span>
-            </div>
-
-          </div>
         </div>
+
+        {/* RIGHT PANEL (support info) */}
+        <div className={styles.loginInfoSection}>
+          <h1>HireHub Support</h1>
+          <p>Our team will respond within 24 hours.</p>
+
+          <p><strong>Email:</strong> h1r3hub@gmail.com</p>
+          <p><strong>Phone:</strong> (555) 321-9876</p>
+          <p><strong>Address:</strong> Farmingdale State College, NY</p>
+        </div>
+
       </div>
     </div>
   );
