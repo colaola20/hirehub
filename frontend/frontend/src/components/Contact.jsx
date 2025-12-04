@@ -52,7 +52,7 @@ const Contact = () => {
       </div>
       <div className={styles.heroContactContent}>
         <h1 className={styles.heroContactText}>HireHub</h1>
-        <Link to="/contact" className={styles.contactButton}>
+        <Link to="/contact_us" className={styles.contactButton}>
           Contact us →
         </Link>
       </div>
