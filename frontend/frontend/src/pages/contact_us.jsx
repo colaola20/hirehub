@@ -126,7 +126,7 @@ export default function ContactPage() {
           <p>Our team will respond within 24 hours.</p>
 
           <p><strong>Email:</strong> h1r3hub@gmail.com</p>
-          <p><strong>Phone:</strong> (555) 321-9876</p>
+          <p><strong>Phone:</strong> 904-820-4696</p>
           <p><strong>Address:</strong> Farmingdale State College, NY</p>
         </div>
       </div>
