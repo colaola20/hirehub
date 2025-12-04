@@ -1,0 +1,200 @@
+/* === Shared gradient background from login page === */
+
+.container {
+  position: relative;
+  min-height: 100vh;
+  min-width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow-x: hidden;
+  padding: 40px 20px;
+}
+
+.container::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+
+  background:
+    linear-gradient(0deg, rgba(0,0,0,0.28), rgba(0,0,0,0.28)),
+    radial-gradient(380px 240px at 92% 10%, rgba(255, 120, 170, 0.20), transparent 62%),
+    radial-gradient(180px 120px at 96% 6%,  rgba(255, 155, 195, 0.26), transparent 70%),
+
+    radial-gradient(460px 300px at 8% 12%,  rgba(255, 120, 170, 0.22), transparent 64%),
+    radial-gradient(220px 150px at 5% 8%,   rgba(255, 155, 195, 0.30), transparent 72%),
+
+    radial-gradient(520px 320px at 10% 86%, rgba(255, 130, 185, 0.16), transparent 66%),
+    radial-gradient(240px 160px at 6% 94%,  rgba(255, 170, 210, 0.20), transparent 74%),
+
+    radial-gradient(900px 480px at 75% 12%, rgba(255,255,255,0.12), transparent 60%),
+    radial-gradient(760px 420px at 16% 8%,  rgba(255,255,255,0.08), transparent 62%),
+
+    radial-gradient(900px 520px at 22% 70%, rgba(120, 60, 255, 0.12), transparent 62%),
+    radial-gradient(820px 480px at 52% 38%, rgba(255,200,140,0.05), transparent 60%),
+
+    radial-gradient(140% 120% at 50% 115%, rgba(0,0,0,0.54), transparent 55%),
+
+    linear-gradient(90deg, #7fa0ee 0%, #4a2a86 100%);
+  background-attachment: fixed;
+}
+
+/* === Contact Page Layout === */
+
+.contactWrapper {
+  max-width: 1200px;
+  width: 100%;
+  color: #fff;
+}
+
+.title {
+  font-size: clamp(32px, 4vw, 56px);
+  text-align: center;
+  font-weight: 800;
+  margin-bottom: 10px;
+}
+
+.subtitle {
+  text-align: center;
+  font-size: clamp(14px, 2vw, 20px);
+  opacity: 0.8;
+  margin-bottom: 50px;
+}
+
+.contentWrapper {
+  display: flex;
+  gap: 50px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* === Form section === */
+
+.form {
+  flex: 1;
+  min-width: 330px;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 30px;
+  border-radius: 14px;
+  backdrop-filter: blur(20px);
+}
+
+.label {
+  font-size: 0.95rem;
+  margin-bottom: 6px;
+  display: block;
+  color: #e2e4ee;
+}
+
+.input,
+.textarea {
+  width: 100%;
+  padding: 14px;
+  margin-bottom: 20px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 10px;
+  color: white;
+  font-size: 1rem;
+}
+
+.input:focus,
+.textarea:focus {
+  border-color: #ff3f81;
+}
+
+/* Submit Button */
+.submitBtn {
+  width: 100%;
+  padding: 14px;
+  font-size: 1.1rem;
+  border-radius: 10px;
+  background: #ff3f81;
+  border: none;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.submitBtn:hover {
+  background: #ff5c99;
+}
+
+/* === Info Box === */
+
+.infoBox {
+  flex: 1;
+  min-width: 300px;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 30px;
+  border-radius: 14px;
+  backdrop-filter: blur(20px);
+}
+
+.infoBox h3 {
+  font-size: clamp(20px, 3vw, 34px);
+  margin-bottom: 15px;
+}
+
+.infoItem {
+  margin: 15px 0;
+}
+
+.infoItem strong {
+  color: #ff3f81;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.socials {
+  margin-top: 20px;
+  display: flex;
+  gap: 14px;
+}
+
+.socials a {
+  color: #ff3f81;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.socials a:hover {
+  text-decoration: underline;
+}
+.input,
+.textarea {
+  width: 100%;
+  padding: 14px;
+  margin-bottom: 20px;
+
+  /* MORE OPAQUE for readability */
+  background: rgba(255, 255, 255, 0.22);
+
+  /* STRONGER border */
+  border: 1px solid rgba(255, 255, 255, 0.35);
+
+  border-radius: 10px;
+  color: white;
+  font-size: 1rem;
+  outline: none;
+
+  /* Slight inner shadow for depth */
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.15);
+}
+
+/* FIX placeholder contrast */
+.input::placeholder,
+.textarea::placeholder {
+  color: rgba(240, 240, 240, 0.8); /* brighter */
+  opacity: 1; /* ensure full visibility */
+}
+
+/* Focus state: highlight clearly */
+.input:focus,
+.textarea:focus {
+  border-color: #ff3f81;
+  background: rgba(255, 255, 255, 0.30);
+  box-shadow: 0 0 10px rgba(255, 63, 129, 0.4);
+}

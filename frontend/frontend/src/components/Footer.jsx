@@ -19,31 +19,18 @@ const Footer = () => {
             <h3 className={styles.footerColumnTitle}>Navigate</h3>
             <Link to="/" className={styles.footerLink}>Home</Link>
             <Link to="/dashboard" className={styles.footerLink}>Dashboard</Link>
-            <Link to="/jobs" className={styles.footerLink}>Find Jobs</Link>
             <Link to="/profile" className={styles.footerLink}>Profile</Link>
           </div>
           
           <div className={styles.footerColumn}>
             <h3 className={styles.footerColumnTitle}>Resources</h3>
             <Link to="/resume-builder" className={styles.footerLink}>Resume Builder</Link>
-            <Link to="/cover-letter" className={styles.footerLink}>Cover Letter AI</Link>
-            <Link to="/interview-prep" className={styles.footerLink}>Interview Prep</Link>
-            <Link to="/career-advice" className={styles.footerLink}>Career Advice</Link>
+            <Link to="/jobs" className={styles.footerLink}>Find Jobs</Link>
           </div>
           
           <div className={styles.footerColumn}>
             <h3 className={styles.footerColumnTitle}>Connect</h3>
-            <a href="mailto:support@hirehub.com" className={styles.footerLink}>Email Us</a>
-            <Link to="/help" className={styles.footerLink}>Help Center</Link>
             <Link to="/about" className={styles.footerLink}>About Us</Link>
-            <div className={styles.footerSocial}>
-              <a href="https://twitter.com/hirehub" target="_blank" rel="noopener noreferrer" className={styles.socialLink}>
-                Twitter
-              </a>
-              <a href="https://linkedin.com/company/hirehub" target="_blank" rel="noopener noreferrer" className={styles.socialLink}>
-                LinkedIn
-              </a>
-            </div>
           </div>
         </div>
         
