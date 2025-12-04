@@ -162,7 +162,6 @@ const Settings = () => {
     const handleDropdownClickGeneral = (label) => {
         setAlertsFrequency(label);
         saveSettings({ general_frequency: label });
-        setIsGeneralDropdownOpen(false)
     };
 
     const handleJobAlertsSwitch = () => {
