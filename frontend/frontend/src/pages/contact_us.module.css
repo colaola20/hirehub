@@ -105,6 +105,29 @@
   color: #444;
 }
 
+/* Status Messages */
+.successMessage {
+  padding: 14px 18px;
+  background: #d4edda;
+  border: 1px solid #c3e6cb;
+  border-radius: 8px;
+  color: #155724;
+  margin-bottom: 20px;
+  font-size: clamp(13px, 2vw, 16px);
+  font-weight: 500;
+}
+
+.errorMessage {
+  padding: 14px 18px;
+  background: #f8d7da;
+  border: 1px solid #f5c6cb;
+  border-radius: 8px;
+  color: #721c24;
+  margin-bottom: 20px;
+  font-size: clamp(13px, 2vw, 16px);
+  font-weight: 500;
+}
+
 /* Contact Form - Same styling as login form */
 .contactForm label {
   display: block;
