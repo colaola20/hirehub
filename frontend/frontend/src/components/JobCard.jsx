@@ -6,7 +6,27 @@ import JobAnalysisPanel from "./JobAnalysisPanel.jsx";
 
 const JobCard = ({ job, onClick , cardForLikedJobs = false}) => {
 
+const hardcodedJob = {
+  id: 5122,
+  title: "Senior Technical Product Manager - AvaCloud",
+  company: "Ava Labs",
+  date_posted: "2025-11-30T05:00:00",
+  description:
+    "Ava Labs is looking to hire a Senior Technical Product Manager - AvaCloud to join their team. This is a full-time position that can be done remotely anywhere in North America or on-site in Brooklyn NY.",
+  employment_type: "full time",
+  is_active: true,
+  is_favorited: false,
+  location: "Remote",
+  source: "findwork",
+  skills_by_category: {
+    technical: ["python", "aws", "cloud", "databases"],
+    tools: ["git", "docker"],
+    soft_skills: ["communication", "leadership"]
+  },
+  skills_extracted: ["docker", "aws", "python", "databases", "git", "cloud"]
+};
 
+job = hardcodedJob;
 
 return (
 

@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import AppliedNotesModal from "./AppliedNotesModal.jsx";
 import styles from "./AppliedJobs.module.css";
 import { FileText, Briefcase, MapPin, Calendar, CheckCircle, Edit, StickyNote, ExternalLink, Clock } from "lucide-react";
+import JobCard from "./JobCard.jsx";
+
 
 
 const AppliedJobs = () => {
@@ -138,7 +140,15 @@ const AppliedJobs = () => {
   if (loading) return <p className={styles.message}>Loading your applied jobs...</p>;
   if (error) return <p className={styles.error}>{error}</p>;
 
-
+const job = {
+  title: "Full-Stack Engineer & Energy Modeling Engineer",
+  date: "9/1/2025",
+  company: "Maiven",
+  location: "Remote (US)",
+  match: 70,
+  skillsInJob: ["python", "typescript", "react", "aws", "postgresql"],
+  matchedSkills: ["python", "react"]
+};
 
  return (
     <div className={styles.container}>
@@ -265,6 +275,10 @@ const AppliedJobs = () => {
           onUpdateNotes={updateJobNotes} 
         />
       )}
+
+      <JobCard job={job} />
+      
+
     </div>
   );
 }

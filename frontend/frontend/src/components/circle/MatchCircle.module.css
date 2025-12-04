@@ -1,0 +1,35 @@
+.circleWrapper {
+  text-align: center;
+  display: inline-block;
+
+}
+
+.circle {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.innerCircle {
+  background: #1e1b36;
+  width: 85px;
+  height: 85px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.percentText {
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.matchLabel {
+  margin-top: 15px;
+  opacity: 0.7;
+}

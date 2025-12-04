@@ -139,23 +139,8 @@
   align-items: center;
   width: 130%;
   
-  
-
 }
 
-.analyzeBtn {
-  margin-top: 12px;
-  background-color: #667eea;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  padding: 8px 16px;
-  cursor: pointer;
-  
-}
-.analyzeBtn:hover {
-  background-color: #5a67d8;
-}
 
 .analysisPlaceholder {
   color: #888;
@@ -168,11 +153,11 @@
   align-items: center;
 }
 
-.pctBig {
+/* .pctBig {
   font-size: 30px;
   font-weight: bold;
   color: #4c51bf;
-}
+} */
 
 .pctLabel {
   font-size: 1rem;
