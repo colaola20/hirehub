@@ -23,7 +23,7 @@ import ResetPassword from './pages/reset_password.jsx';
 import Settings from './pages/Setting.jsx'
 import Notifications from './pages/Notifications.jsx'
 import Documents from './pages/Documents.jsx'
-
+import ContactPage from "./pages/contact_us.jsx";
 
 
 // Root App component that renders the Login and Registration pages
@@ -37,7 +37,7 @@ function App() {
         <Route path="/forgot_password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/resume_form" element={<ResumeForm />} />
-      
+        <Route path="/contact_us" element={<ContactPage  />} />
 
         {/* OAuth handler route: reads token & redirects */}
         <Route path="/oauth" element={<OAuthHandler />} />

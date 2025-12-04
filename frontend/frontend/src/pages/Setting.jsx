@@ -88,20 +88,24 @@ const Settings = () => {
         setShowError(false)
     }
 
-    const saveSettings = async (overrides = {}) => {
-    const token = localStorage.getItem("token");
-    console.log(jobAlertsFrequency)
-    await fetch("/api/notifications/settings", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
-        },
-       body: JSON.stringify({
-            general_enabled: isOnGeneralNotification,
-            general_frequency: alertFrequency.toLowerCase(),
-            job_alerts_enabled: isJobAlerts,
-            job_alerts_frequency: jobAlertsFrequency.toLowerCase()})
+    const saveSettings = async (updates = {}) => {
+        const token = localStorage.getItem("token");
+        
+        // Use provided updates or fall back to current state
+        const settings = {
+            general_enabled: updates.general_enabled ?? isOnGeneralNotification,
+            general_frequency: (updates.general_frequency ?? alertFrequency).toLowerCase(),
+            job_alerts_enabled: updates.job_alerts_enabled ?? isJobAlerts,
+            job_alerts_frequency: (updates.job_alerts_frequency ?? jobAlertsFrequency).toLowerCase()
+        };
+        
+        await fetch("/api/notifications/settings", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify(settings)
         });
     };
 
@@ -150,36 +154,26 @@ const Settings = () => {
     }
 
     const handleGeneralNotificationSwitch = () => {
-        setIsOnGeneralNotification(!isOnGeneralNotification);
-        saveSettings();
+        const newValue = !isOnGeneralNotification;
+        setIsOnGeneralNotification(newValue);
+        saveSettings({ general_enabled: newValue });
     };
 
     const handleDropdownClickGeneral = (label) => {
-        setAlertsFrequency(label)
-        setIsGeneralDropdownOpen(false)
+        setAlertsFrequency(label);
+        saveSettings({ general_frequency: label });
     };
 
     const handleJobAlertsSwitch = () => {
-        setIsJobAlerts(!isJobAlerts);
-        saveSettings();
+        const newValue = !isJobAlerts;
+        setIsJobAlerts(newValue);
+        saveSettings({ job_alerts_enabled: newValue });
     };
 
     const handleDropdownClickRecommendation = (label) => {
-        setJobAlerstFrequency(label)
-        setIsJobsDropdownOpen(false)
+        setJobAlerstFrequency(label);
+        saveSettings({ job_alerts_frequency: label });
     };
-
-    useEffect(() => {
-        if (alertFrequency) {
-            saveSettings();
-        }
-    }, [alertFrequency]);
-
-    useEffect(() => {
-        if (jobAlertsFrequency) {
-            saveSettings();
-        }
-    }, [jobAlertsFrequency]);
 
 
     return (

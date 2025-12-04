@@ -23,7 +23,7 @@ from datetime import timedelta
 from app.routes.chat_bot import chat_bp
 from flask_cors import CORS
 from .config import Config
-
+from app.routes.contact_us import contact_bp
 from app.models.settings_page import settings_bp
 from app.models.user import User
 from app.models.job import Job
@@ -92,7 +92,7 @@ def create_app():
     app.register_blueprint(notifications_bp, url_prefix="/api")
     app.register_blueprint(chat_bp, url_prefix="/api")
     app.register_blueprint(settings_bp, url_prefix="/api")
-
+    app.register_blueprint(contact_bp)
     # --------------------------------------------------
     # Unified notification worker integration (FIXED)
     # --------------------------------------------------
