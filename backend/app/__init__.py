@@ -60,12 +60,12 @@ def create_app():
     app.config.from_object(Config)
 
     # Email config fallbacks
-    app.config.setdefault("MAIL_SERVER", "smtp.gmail.com")
-    app.config.setdefault("MAIL_PORT", 587)
-    app.config.setdefault("MAIL_USE_TLS", True)
-    app.config["MAIL_USERNAME"] = os.getenv("MAIL_USERNAME", "harisakber21@gmail.com")
-    app.config["MAIL_PASSWORD"] = os.getenv("MAIL_PASSWORD", "xqzw mvej cyxb pkuw")
-    app.config["MAIL_DEFAULT_SENDER"] = os.getenv("MAIL_DEFAULT_SENDER", "harisakber21@gmail.com")
+    app.config.setdefault("MAIL_SERVER")
+    app.config.setdefault("MAIL_PORT")
+    app.config.setdefault("MAIL_USE_TLS")
+    app.config["MAIL_USERNAME"] = os.getenv("MAIL_USERNAME")
+    app.config["MAIL_PASSWORD"] = os.getenv("MAIL_PASSWORD")
+    app.config["MAIL_DEFAULT_SENDER"] = os.getenv("MAIL_DEFAULT_SENDER")
 
     db.init_app(app)
     jwt.init_app(app)
