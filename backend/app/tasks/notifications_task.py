@@ -30,6 +30,127 @@ def push_in_app(Notification, DatabaseService, email, n_type, msg):
     )
     DatabaseService.create(n)
 
+def generate_job_recommendation_email(user_name, matched_jobs):
+    """Generate beautiful HTML email for job recommendations"""
+    
+    # Build job cards HTML
+    job_cards = ""
+    for r in matched_jobs:
+        job = r.job
+        score = round(r.match_score, 2)
+        skills = ', '.join(r.matched_skills or []) if r.matched_skills else 'N/A'
+        
+        # Color coding based on match score
+        if score >= 90:
+            badge_color = "#00c853"
+            badge_text = "Excellent Match"
+        elif score >= 75:
+            badge_color = "#86bbf0"
+            badge_text = "Great Match"
+        else:
+            badge_color = "#7a5bbf"
+            badge_text = "Good Match"
+        
+        job_cards += f'''
+        <div style="background: #ffffff; border-radius: 12px; padding: 24px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border-left: 4px solid {badge_color};">
+            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
+                <h3 style="margin: 0; font-size: 20px; color: #1d1d1d; font-weight: 700;">{job.title}</h3>
+                <span style="background: {badge_color}; color: white; padding: 6px 12px; border-radius: 999px; font-size: 12px; font-weight: 700; white-space: nowrap; margin-left: 12px;">
+                    {score}% Match
+                </span>
+            </div>
+            
+            <div style="color: #555; font-size: 16px; margin-bottom: 8px;">
+                <strong style="color: #562fac;">📍 {job.company}</strong> • {job.location}
+            </div>
+            
+            <div style="background: #f0f4ff; padding: 12px; border-radius: 8px; margin: 12px 0;">
+                <div style="font-size: 13px; color: #666; margin-bottom: 4px;"><strong>Skills Match:</strong></div>
+                <div style="font-size: 14px; color: #333;">{skills}</div>
+            </div>
+            
+            <div style="margin-top: 16px;">
+                <a href="{job.url}" style="display: inline-block; background: linear-gradient(to right, #86bbf0, #562fac); color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 14px;">
+                    View Job Details →
+                </a>
+            </div>
+        </div>
+        '''
+    
+    # Complete email HTML
+    html = f'''
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f7fa;">
+        <div style="max-width: 600px; margin: 0 auto; background: #f5f7fa;">
+            
+            <!-- Header -->
+            <div style="background: linear-gradient(135deg, #7fa0ee 0%, #4a2a86 100%); padding: 40px 30px; text-align: center; border-radius: 0 0 20px 20px;">
+                <h1 style="margin: 0; color: white; font-size: 32px; font-weight: 800; letter-spacing: 0.5px;">
+                    HireHub
+                </h1>
+                <p style="margin: 8px 0 0; color: rgba(255,255,255,0.95); font-size: 16px;">
+                    Your Personalized Job Recommendations
+                </p>
+            </div>
+            
+            <!-- Main Content -->
+            <div style="padding: 30px 20px;">
+                
+                <div style="background: white; border-radius: 16px; padding: 30px; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.06);">
+                    <h2 style="margin: 0 0 12px; font-size: 24px; color: #1d1d1d; font-weight: 700;">
+                        Hi there! 👋
+                    </h2>
+                    <p style="margin: 0; color: #555; font-size: 16px; line-height: 1.6;">
+                        We've found <strong style="color: #562fac;">{len(matched_jobs)} job{'' if len(matched_jobs) == 1 else 's'}</strong> that match your profile and skills. These opportunities are tailored specifically for you!
+                    </p>
+                </div>
+                
+                <!-- Job Cards -->
+                {job_cards}
+                
+                <!-- Footer CTA -->
+                <div style="background: linear-gradient(135deg, #f0f4ff 0%, #e8edff 100%); border-radius: 16px; padding: 30px; text-align: center; margin-top: 30px;">
+                    <h3 style="margin: 0 0 12px; font-size: 20px; color: #1d1d1d; font-weight: 700;">
+                        Want to see more opportunities?
+                    </h3>
+                    <p style="margin: 0 0 20px; color: #555; font-size: 15px;">
+                        Visit your HireHub dashboard to explore all available positions
+                    </p>
+                    <a href="http://localhost:5173/jobs" style="display: inline-block; background: linear-gradient(to right, #86bbf0, #562fac); color: white; padding: 14px 32px; border-radius: 999px; text-decoration: none; font-weight: 700; font-size: 15px; box-shadow: 0 4px 12px rgba(86, 47, 172, 0.3);">
+                        Browse All Jobs
+                    </a>
+                </div>
+                
+            </div>
+            
+            <!-- Footer -->
+            <div style="padding: 30px 20px; text-align: center; color: #999; font-size: 13px;">
+                <p style="margin: 0 0 8px;">
+                    You're receiving this because you enabled job alerts in your HireHub settings.
+                </p>
+                <p style="margin: 0;">
+                    <a href="http://localhost:5173/settings" style="color: #562fac; text-decoration: none;">Manage your preferences</a> • 
+                    <a href="mailto:h1r3hub@gmail.com" style="color: #562fac; text-decoration: none;">Contact Support</a>
+                </p>
+                <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #e0e0e0;">
+                    <p style="margin: 0; color: #bbb; font-size: 12px;">
+                        © 2025 HireHub • Farmingdale State College, NY
+                    </p>
+                </div>
+            </div>
+            
+        </div>
+    </body>
+    </html>
+    '''
+    
+    return html
+
 # --------------------------------------------------------
 # FINAL UNIFIED WORKER — FIXED COMPLETELY
 # --------------------------------------------------------
@@ -139,33 +260,19 @@ def unified_notification_worker(app):
                                 print("RECOMMENDED JOBS FOR USER:", [r.job.title for r in matched_jobs])
 
                                 # --------------------------------------------
-                                # Send the alerts
+                                # Send the alerts with STYLED EMAIL
                                 # --------------------------------------------
                                 if matched_jobs:
                                     try:
-                                        # Build readable email
-                                        body_lines = []
-                                        for r in matched_jobs:
-                                            job = r.job
-                                            score = round(r.match_score, 2)
-
-                                            body_lines.append(
-                                                f"- {job.title} at {job.company} ({job.location}) "
-                                                f" | Match Score: {score}"
-                                                f" | Skills: {', '.join(r.matched_skills or [])}"
-                                                f"\n{job.url}\n"
-                                            )
-
-                                        email_body = (
-                                            "Here are your latest recommended jobs from HireHub:\n\n"
-                                            + "\n".join(body_lines)
-                                        )
+                                        # Generate beautiful HTML email
+                                        user_name = u.full_name if hasattr(u, 'full_name') and u.full_name else u.email.split('@')[0]
+                                        email_html = generate_job_recommendation_email(user_name, matched_jobs)
 
                                         # SEND EMAIL
                                         mail.send(Message(
-                                            "Your HireHub Job Recommendations",
+                                            "Your HireHub Job Recommendations 🎯",
                                             recipients=[u.email],
-                                            body=email_body
+                                            html=email_html
                                         ))
 
                                         # IN-APP NOTIFICATIONS
