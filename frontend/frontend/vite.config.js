@@ -11,7 +11,6 @@ export default defineConfig({
   },
   build: {
     rollupOptions: {
-      external: [/^vanta/],
       output: {
         manualChunks: undefined
       }

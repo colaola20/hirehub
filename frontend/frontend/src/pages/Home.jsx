@@ -66,7 +66,7 @@ const AngleLanding = () => {
   useEffect(() => {
     let effect;
     let cancelled = false;
-    import("vanta/dist/vanta.Net.min").then((mod) => {
+    import("vanta/dist/vanta.net.min.js").then((mod) => {
       if (cancelled) return;
       const Globe = mod.default;
       effect = Globe({
@@ -300,10 +300,10 @@ const AngleLanding = () => {
               <img
                 src={
                   active === "resume"
-                    ? "/src/assets/resume.png"
+                    ? "/assets/resume.png"
                     : active === "letters"
-                    ? "/src/assets/letter.png"
-                    : "/src/assets/portfolio.png"
+                    ? "/assets/letter.png"
+                    : "/assets/portfolio.png"
                 }
                 alt={active}
                 className={styles.caeliImage}
@@ -350,7 +350,7 @@ const AngleLanding = () => {
             <article className={styles.memberCard} data-reveal>
               <img
                 className={styles.memberAvatar}
-                src="/src/assets/H4.png"
+                src="/assets/h4.PNG"
                 alt="Alex Johnson"
                 loading="lazy"
               />
@@ -369,7 +369,7 @@ const AngleLanding = () => {
             <article className={styles.memberCard} data-reveal>
               <img
                 className={styles.memberAvatar}
-                src="/src/assets/JPR.png"
+                src="/assets/JPR.png"
                 alt="Jonatan Paulino"
                 loading="lazy"
               />
@@ -388,7 +388,7 @@ const AngleLanding = () => {
             <article className={styles.memberCard} data-reveal>
               <img
                 className={styles.memberAvatar}
-                src="/src/assets/OS.png"
+                src="/assets/OS.png"
                 alt="Olha Sorych"
                 loading="lazy"
               />
@@ -407,7 +407,7 @@ const AngleLanding = () => {
             <article className={styles.memberCard} data-reveal>
               <img
                 className={styles.memberAvatar}
-                src="/src/assets/mike.png"
+                src="/assets/mike.png"
                 alt="Mike Moradi"
                 loading="lazy"
               />
@@ -425,7 +425,7 @@ const AngleLanding = () => {
             <article className={styles.memberCard} data-reveal>
               <img
                 className={styles.memberAvatar}
-                src="/src/assets/hasim.png"
+                src="/assets/hasim.png"
                 alt="Hashim Kazmi"
                 loading="lazy"
               />
