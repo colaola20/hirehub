@@ -421,6 +421,24 @@ const AngleLanding = () => {
                 <a href="https://www.linkedin.com/in/michael-moradi/" aria-label="Mike Github">LinkedIn</a>
               </div>
             </article>
+                 {/* Card 5 */}
+            <article className={styles.memberCard} data-reveal>
+              <img
+                className={styles.memberAvatar}
+                src="/src/assets/hasim.png"
+                alt="Hashim Kazmi"
+                loading="lazy"
+              />
+              <h3 className={styles.memberName}>Hashim Kazmi</h3>
+              <p className={styles.memberRole}>QA Tester</p>
+              <p className={styles.memberBio}>
+                Specializes in end-to-end testing, catching edge cases, and ensuring stable performance across features.
+              </p>
+              <div className={styles.memberSocials}>
+                <a href="https://github.com/kazmha" aria-label="Hashim GitHub">GitHub</a>
+                {/* <a href="" aria-label="Hashim LinkedIn">LinkedIn</a> */}
+              </div>
+            </article>
 
             
           </div>

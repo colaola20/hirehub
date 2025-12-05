@@ -24,7 +24,7 @@ from app.routes.chat_bot import chat_bp
 from app.routes.resume_generation import resume_bp
 from flask_cors import CORS
 from .config import Config
-
+from app.routes.contact_us import contact_bp
 from app.models.settings_page import settings_bp
 from app.models.user import User
 from app.models.job import Job
@@ -60,12 +60,12 @@ def create_app():
     app.config.from_object(Config)
 
     # Email config fallbacks
-    app.config.setdefault("MAIL_SERVER", "smtp.gmail.com")
-    app.config.setdefault("MAIL_PORT", 587)
-    app.config.setdefault("MAIL_USE_TLS", True)
-    app.config["MAIL_USERNAME"] = os.getenv("MAIL_USERNAME", "harisakber21@gmail.com")
-    app.config["MAIL_PASSWORD"] = os.getenv("MAIL_PASSWORD", "xqzw mvej cyxb pkuw")
-    app.config["MAIL_DEFAULT_SENDER"] = os.getenv("MAIL_DEFAULT_SENDER", "harisakber21@gmail.com")
+    app.config.setdefault("MAIL_SERVER")
+    app.config.setdefault("MAIL_PORT")
+    app.config.setdefault("MAIL_USE_TLS")
+    app.config["MAIL_USERNAME"] = os.getenv("MAIL_USERNAME")
+    app.config["MAIL_PASSWORD"] = os.getenv("MAIL_PASSWORD")
+    app.config["MAIL_DEFAULT_SENDER"] = os.getenv("MAIL_DEFAULT_SENDER")
 
     db.init_app(app)
     jwt.init_app(app)
@@ -93,6 +93,7 @@ def create_app():
     app.register_blueprint(notifications_bp, url_prefix="/api")
     app.register_blueprint(chat_bp, url_prefix="/api")
     app.register_blueprint(settings_bp, url_prefix="/api")
+    app.register_blueprint(contact_bp)    
     app.register_blueprint(resume_bp)
 
     # --------------------------------------------------

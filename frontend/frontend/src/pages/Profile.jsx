@@ -327,7 +327,7 @@ const Profile = () => {
                             />
                         ) : (
                             <div className={styles.avatar}>
-                                {profileData.firstName.charAt(0)}{profileData.lastName.charAt(0)}
+                                {profileData.firstName?.charAt(0) || ''}{profileData.lastName?.charAt(0) || ''}
                             </div>
                         )}
                         <label className={styles.uploadButton}>
@@ -355,9 +355,7 @@ const Profile = () => {
                                 className={styles.input}
                             />
                         ) : (
-                            profileData.headline && (
-                                <p className={styles.headline}>{profileData.headline}</p>
-                            )
+                            <p className={styles.headline}>{profileData.headline || 'No headline added yet'}</p>
                         )}
                     </div>
                     {!isEditing && (

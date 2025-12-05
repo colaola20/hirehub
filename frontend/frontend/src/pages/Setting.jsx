@@ -60,6 +60,24 @@ const Settings = () => {
         fetchUserEmail()
     }, [])
 
+    useEffect(() => {
+        const fetchSettings = async () => {
+            const token = localStorage.getItem("token");
+            const res = await fetch("/api/notifications/settings", {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+
+            const data = await res.json();
+
+            setIsOnGeneralNotification(data.general_enabled);
+            setAlertsFrequency(data.general_frequency);
+            setIsJobAlerts(data.job_alerts_enabled);
+            setJobAlerstFrequency(data.job_alerts_frequency);
+        };
+
+        fetchSettings();
+    }, []);
+
     const handleResetPassword = () => {
         setIsOpenPasswordReset(true)
     }
@@ -70,20 +88,24 @@ const Settings = () => {
         setShowError(false)
     }
 
-    const saveSettings = async () => {
-    const token = localStorage.getItem("token");
-    await fetch("/api/notifications/settings", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
-        },
-        body: JSON.stringify({
-            general_enabled: isOnGeneralNotification,
-            general_frequency: alertFrequency,
-            job_alerts_enabled: isJobAlerts,
-            job_alerts_frequency: jobAlertsFrequency
-            })
+    const saveSettings = async (updates = {}) => {
+        const token = localStorage.getItem("token");
+        
+        // Use provided updates or fall back to current state
+        const settings = {
+            general_enabled: updates.general_enabled ?? isOnGeneralNotification,
+            general_frequency: (updates.general_frequency ?? alertFrequency).toLowerCase(),
+            job_alerts_enabled: updates.job_alerts_enabled ?? isJobAlerts,
+            job_alerts_frequency: (updates.job_alerts_frequency ?? jobAlertsFrequency).toLowerCase()
+        };
+        
+        await fetch("/api/notifications/settings", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify(settings)
         });
     };
 
@@ -132,25 +154,25 @@ const Settings = () => {
     }
 
     const handleGeneralNotificationSwitch = () => {
-        setIsOnGeneralNotification(!isOnGeneralNotification);
-        saveSettings();
+        const newValue = !isOnGeneralNotification;
+        setIsOnGeneralNotification(newValue);
+        saveSettings({ general_enabled: newValue });
     };
 
     const handleDropdownClickGeneral = (label) => {
-        setAlertsFrequency(label)
-        setIsGeneralDropdownOpen(false)
-        saveSettings();
+        setAlertsFrequency(label);
+        saveSettings({ general_frequency: label });
     };
 
     const handleJobAlertsSwitch = () => {
-        setIsJobAlerts(!isJobAlerts);
-        saveSettings();
+        const newValue = !isJobAlerts;
+        setIsJobAlerts(newValue);
+        saveSettings({ job_alerts_enabled: newValue });
     };
 
     const handleDropdownClickRecommendation = (label) => {
-        setJobAlerstFrequency(label)
-        setIsJobsDropdownOpen(false)
-        saveSettings();
+        setJobAlerstFrequency(label);
+        saveSettings({ job_alerts_frequency: label });
     };
 
 
@@ -177,7 +199,7 @@ const Settings = () => {
                     </div>
                 </div>
                 <div className={styles.alertsPreference}>
-                    <h3 className={styles.title}>General Notifications Settings</h3>
+                <h3 className={styles.title}>General Notifications Settings</h3>
                     <div className={styles.separator}></div>
                     <div className={styles.jobAlerts}>
                         <h5 className={styles.label}>Enable Instant HireHub Notifications</h5>
@@ -191,9 +213,12 @@ const Settings = () => {
                         <div className={styles.infoContainer}>
                             <p className={styles.description}>Choose how often you want to receive these notifications:</p>
                             <DropDown label={alertFrequency} icon={<ChevronDown size={16}/>} disabled={!isOnGeneralNotification} open={isGeneralDropdownOpen} setOpen={setIsGeneralDropdownOpen}>
-                                <span className={styles.dropdownItems} onClick={() => handleDropdownClickGeneral("Immediately")} onMouseEnter={(e) => e.currentTarget.style.background = '#6f67f0'} onMouseLeave={(e) => e.currentTarget.style.background = 'none'}>Immediately</span>
+                                <span className={styles.dropdownItems} onClick={() => handleDropdownClickGeneral("immediately")} onMouseEnter={(e) => e.currentTarget.style.background = '#6f67f0'} onMouseLeave={(e) => e.currentTarget.style.background = 'none'}>Immediately</span>
                                 <span className={styles.dropdownItems} onClick={() => handleDropdownClickGeneral("Daily summary")} onMouseEnter={(e) => e.currentTarget.style.background = '#6f67f0'} onMouseLeave={(e) => e.currentTarget.style.background = 'none'}>Daily summary</span>
                                 <span className={styles.dropdownItems} onClick={() => handleDropdownClickGeneral("Weekly summary")} onMouseEnter={(e) => e.currentTarget.style.background = '#6f67f0'} onMouseLeave={(e) => e.currentTarget.style.background = 'none'}>Weekly summary</span>
+                                <span className={styles.dropdownItems} onClick={() => handleDropdownClickGeneral("2 minutes")}>2 minutes (TEST)</span>
+                                <span className={styles.dropdownItems} onClick={() => handleDropdownClickGeneral("3 minutes")}>3 minutes (TEST)</span>
+                                <span className={styles.dropdownItems} onClick={() => handleDropdownClickGeneral("5 minutes")}>5 minutes (TEST)</span>
                             </DropDown>
                         </div>
                     </div>
@@ -216,6 +241,9 @@ const Settings = () => {
                                 <span className={styles.dropdownItems} onClick={() => handleDropdownClickRecommendation("Up to 1 alert/day")} onMouseEnter={(e) => e.currentTarget.style.background = '#6f67f0'} onMouseLeave={(e) => e.currentTarget.style.background = 'none'}>Up to 1 alert/day</span>
                                 <span className={styles.dropdownItems} onClick={() => handleDropdownClickRecommendation("Up to 3 alerts/week")} onMouseEnter={(e) => e.currentTarget.style.background = '#6f67f0'} onMouseLeave={(e) => e.currentTarget.style.background = 'none'}>Up to 3 alerts/week</span>
                                 <span className={styles.dropdownItems} onClick={() => handleDropdownClickRecommendation("Unlimited")} onMouseEnter={(e) => e.currentTarget.style.background = '#6f67f0'} onMouseLeave={(e) => e.currentTarget.style.background = 'none'}>Unlimited</span>
+                                <span className={styles.dropdownItems} onClick={() => handleDropdownClickRecommendation("2 minutes")}>2 minutes (TEST)</span>
+                                <span className={styles.dropdownItems} onClick={() => handleDropdownClickRecommendation("3 minutes")}>3 minutes (TEST)</span>
+                                <span className={styles.dropdownItems} onClick={() => handleDropdownClickRecommendation("5 minutes")}>5 minutes (TEST)</span>
                             </DropDown>
                         </div>
                     </div>
