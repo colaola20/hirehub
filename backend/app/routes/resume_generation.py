@@ -31,6 +31,11 @@ def generate_resume():
     - Keep all content concise and resume-appropriate.
     - Improve job descriptions with achievement-focused bullet points.
     - Ensure formatting fits a single page.
+    - No summary or objective section.
+    - No note at the bottom. Only include relevant sections with data provided.
+    - Describe jobs based on the role and the company provided.
+    - If given a short description or no description for a project, expand it into a concise bullet point.
+    - If given a very long description for a project, condense it into a concise bullet point.
     - Do NOT return JSON — return clean resume text only.
     """
 

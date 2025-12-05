@@ -95,48 +95,41 @@ const ResumeForm = () => {
 
     // pull info from user profile to prefill form
     useEffect(() => {
-        fetch('/api/form', {
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem('token')}`,
+    fetch('/api/form', {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            console.error('Failed to fetch form data');
+            return null;
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (!data) return;
 
-            }
-        })
-            .then(response => {
-                if (!response.ok) {
-                    console.error('Failed to fetch form data');
-                    return;
-                }
-                return response.json();
-            })
-            .then(data => {
+        const step3 = data.step3 || {};
+        const formattedStep3 = {
+            skills: Array.isArray(step3.skills) ? step3.skills.join(', ') : step3.skills || '',
+            languages: Array.isArray(step3.languages) ? step3.languages.join(', ') : step3.languages || '',
+            certs: Array.isArray(step3.certs) ? step3.certs.join(', ') : step3.certs || '',
+            interests: Array.isArray(step3.interests) ? step3.interests.join(', ') : step3.interests || '',
+        };
 
-                const step3 = data.step3 || {};
-                const formattedStep3 = {
-                    skills: Array.isArray(step3.skills) ? step3.skills.join(', ') : step3.skills || '',
-                    languages: Array.isArray(step3.languages) ? step3.languages.join(', ') : step3.languages || '',
-                    certs: Array.isArray(step3.certs) ? step3.certs.join(', ') : step3.certs || '',
-                    interests: Array.isArray(step3.interests) ? step3.interests.join(', ') : step3.interests || '',
-
-                }
-                // if (data.step3) {
-                //     data.step3.skills = Array.isArray(data.step3.skills) ? data.step3.skills.join(', ') : data.step3.skills
-                //     data.step3.languages = Array.isArray(data.step3.languages) ? data.step3.languages.join(', ') : data.step3.languages
-                // }
-                // setFormData(data)
-
-                setFormData(prev => ({
-                ...prev,
-                step1: data.step1 || prev.step1,
-                step2: data.step2 || prev.step2,
-                step3: formattedStep3,
-                step4: data.step4 || prev.step4,
-                step5: data.step5 || prev.step5,
-                step6: data.step6 || prev.step6,
-
-            }));
-            })
-            .catch(err => console.error('Error fetching form data:', err));
-    }, []);
+        setFormData(prev => ({
+            step1: { ...prev.step1, ...(data.step1 || {}) },
+            step2: { ...prev.step2, ...(data.step2 || {}) },
+            step3: { ...prev.step3, ...formattedStep3 },
+            step4: { ...prev.step4, ...(data.step4 || {}) },
+            step5: { ...prev.step5, ...(data.step5 || {}) },
+            step6: { ...prev.step6, ...(data.step6 || {}) },
+            aiResumeText: prev.aiResumeText || data.aiResumeText || ''
+        }));
+    })
+    .catch(err => console.error('Error fetching form data:', err));
+}, []);
 
     useEffect(() => {
         if (contentRef.current) {
@@ -321,7 +314,18 @@ const ResumeForm = () => {
     return (
 
         <div className={styles["container"]}>
-            <div className={styles['back-btn']}>
+            {/* <div className={styles['back-btn']}>
+                <Link to="/dev_dashboard">
+                    <CancelBtn
+                        label={"Back"}
+                        className={styles['back-btn']}
+                    />
+                </Link>
+            </div> */}
+
+            <div className={styles["form-box"]}>
+
+                <div className={styles['back-btn']}>
                 <Link to="/dev_dashboard">
                     <CancelBtn
                         label={"Back"}
@@ -329,8 +333,6 @@ const ResumeForm = () => {
                     />
                 </Link>
             </div>
-
-            <div className={styles["form-box"]}>
                 <h1>Let's Build Your Resume!</h1>
 
                 <ProgressIndicator currentStep={currentStep} />
