@@ -1,9 +1,10 @@
 import {useState, useRef, useEffect} from 'react'
 import Error from '../components/UsersMessages/Error'
 import styles from './Documents.module.css'
-import { Plus, Info, MoreVertical, Eye, Download, Trash2, Pencil } from 'lucide-react';
+import { Plus, Info, MoreVertical, Eye, Download, Trash2, Pencil, FilePenLine } from 'lucide-react';
 import Btn from '../components/buttons/Btn'
 import Confirmation from'../components/UsersMessages/Confirmation'
+import RenameModal from '../components/documents/RenameModal'
 
 const Documents = () => {
     const [file, setFile] = useState(null);
@@ -29,11 +30,14 @@ const Documents = () => {
     const [showConfirmation, setShowConfirmation] = useState(false)
     const [deleteDocumentId, setDeleteDocumentId] = useState(null)
 
+    const [showRenameModal, setShowRenameModal] = useState(false)
+    const [renameDoc, setRenameDoc] = useState(null)
+
     const handleFileChange = async (e, type) => {
         setLoadingFileType(type)
         const selectedFile = e.target.files?.[0];
         if (!selectedFile) return
-        
+       
         setShowError(false);
         setResult(null);
         setFile(selectedFile);
@@ -243,6 +247,21 @@ const Documents = () => {
         }
     }
 
+    const handleRename = (doc) => {
+        setRenameDoc(doc)
+        setShowRenameModal(true)
+    }
+
+    const handleRenameSuccess = (updatedDoc) => {
+        setDocuments(prevDocs => 
+            prevDocs.map(doc => 
+                doc.id === updatedDoc.id
+                ? {...doc, original_filename: updatedDoc.original_filename}
+                : doc
+            )
+        )
+    }
+
 
     return (
         <div className={styles.container}>
@@ -331,6 +350,19 @@ const Documents = () => {
                                             onClick={(e) => {
                                                 e.preventDefault()
                                                 e.stopPropagation();
+                                                handleRename(doc)
+                                                setOpenDropdownId(null)
+                                            }}
+                                            onMouseEnter={(e) => e.currentTarget.style.background = '#6f67f0'}
+                                            onMouseLeave={(e) => e.currentTarget.style.background = 'none'}
+                                            className={styles.dropdownItem}
+                                        >
+                                            <Pencil size={16}/> Rename
+                                        </button>
+                                        <button
+                                            onClick={(e) => {
+                                                e.preventDefault()
+                                                e.stopPropagation();
                                                 handleEdit(doc.id)
                                                 setOpenDropdownId(null)
                                             }}
@@ -338,7 +370,7 @@ const Documents = () => {
                                             onMouseLeave={(e) => e.currentTarget.style.background = 'none'}
                                             className={styles.dropdownItem}
                                         >
-                                            <Pencil size={16}/> Edit
+                                            <FilePenLine size={16}/> Edit
                                         </button>
                                         <button
                                             onClick={(e) => {
@@ -386,6 +418,16 @@ const Documents = () => {
                         setDeleteDocumentId(null)
                     }} 
                     onSubmission={deleteDocument}/>
+            )}
+            {showRenameModal && (
+                <RenameModal
+                    doc={renameDoc}
+                    onClose={() => {
+                        setShowRenameModal(false)
+                        setRenameDoc(null)
+                    }}
+                    onSuccess = {handleRenameSuccess}
+                />
             )}
         </div>
     )
