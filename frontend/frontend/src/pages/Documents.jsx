@@ -47,6 +47,7 @@ const Documents = () => {
             setDocuments(prevDocuments=> {
                 return [...prevDocuments, res]
             })
+            setDocumentsCount(prev => prev + 1);
         } catch (err) {
             setErrorTitle("Upload failed");
             setErrorDescription(err?.message || String(err) || "Unknown error");
@@ -137,6 +138,7 @@ const Documents = () => {
 
                 const data = await response.json()
                 setDocuments(data.data)
+                console.log(data.data.length)
                 setDocumentsCount(data.data.length)
                 console.log(data.data)
             } catch (err) {
@@ -248,7 +250,10 @@ const Documents = () => {
                 <div className={styles.docsUploading}>
                     <div className={styles.info}>
                         <Info />
-                        <p> You have {5-documentsCount} documents saved out of 5 available.</p>
+                        <p style={{ color: documentsCount >= 5 ? '#ff6b6b' : 'inherit' }}>
+                            You have {documentsCount} documents saved out of 5 available.
+                            {documentsCount >= 5 && ' Please delete a document to upload more.'}
+                        </p>
                     </div>
                     <div className={styles.uploadBtnContainer}>
                         <div>
@@ -259,7 +264,12 @@ const Documents = () => {
                                 onChange={(e) => {handleFileChange(e, "resume")}}
                                 style={{ display: 'none' }}
                             />
-                            <Btn onClick={() => resumeInputRef.current?.click()} disabled={uploading} icon={<Plus size={20}/>} label="Add Resume"/>
+                            <Btn 
+                                onClick={() => resumeInputRef.current?.click()} 
+                                disabled={uploading || documentsCount >= 5} 
+                                icon={<Plus size={20}/>} 
+                                label="Add Resume"
+                                />
                         </div>
                         <div>
                             <input
@@ -269,7 +279,12 @@ const Documents = () => {
                                 onChange={(e) => {handleFileChange(e, "cover_letter")}}
                                 style={{ display: 'none' }}
                             />
-                            <Btn onClick={() => coverInputRef.current?.click()} disabled={uploading} icon={<Plus size={20}/>} label="Add Cover Letter"/>
+                            <Btn 
+                                onClick={() => coverInputRef.current?.click()} 
+                                disabled={uploading || documentsCount >= 5} 
+                                icon={<Plus size={20}/>} 
+                                label="Add Cover Letter"
+                                />
                         </div>
                     </div>
                 </div>
