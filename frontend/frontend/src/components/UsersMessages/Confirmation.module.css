@@ -7,8 +7,10 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  /* Safari & iOS support */
+  -webkit-backdrop-filter: blur(8px);
   backdrop-filter: blur(8px);
-  z-index: 999;
+  z-index: 1000;
 } 
 
 .modalContainer {

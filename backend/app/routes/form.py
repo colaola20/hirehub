@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
 # from app.models.form import Form # currently not needed
+from app.extensions import db
 from app.models.user import User
 from app.models.skill import Skill
 from app.models.profile import Profile
@@ -12,7 +13,7 @@ form_bp = Blueprint('form', __name__)
 @form_bp.route('/api/form', methods=['GET'])
 @jwt_required()
 def get_resume_form():
-    current_user_id = get_jwt_identity()
+    current_user_id = int(get_jwt_identity())
     user = User.query.get(current_user_id)
 
     if not user:
@@ -88,7 +89,7 @@ def get_resume_form():
 @form_bp.route('/api/form', methods=['POST'])
 @jwt_required()
 def submit_form():
-    current_user_id = get_jwt_identity()
+    current_user_id = int(get_jwt_identity())
     form_data = request.get_json()
 
     if not form_data:
@@ -100,7 +101,7 @@ def submit_form():
 
     # update table
     resume_form = ResumeForm.query.filter_by(user_id=current_user_id).first()
-    
+
     if resume_form:
         resume_form.personalInfo = form_data.get("step1")
         resume_form.socialInfo = form_data.get("step2")
