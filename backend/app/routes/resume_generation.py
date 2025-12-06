@@ -1,11 +1,59 @@
 from flask import Blueprint, request, jsonify
 import requests
 import os
+import json
 
 resume_bp = Blueprint("resume_generation", __name__)
 
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
 GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
+
+HTML_TEMPLATE = """
+<div class="resume-preview">
+    <div class="header">
+        <h1 class="headerName">{{fullname}}</h1>
+        <p>
+            Email: {{email}} | Phone: {{phone}} | {{city}} |
+            <a href="{{linkedin}}">LinkedIn</a> |
+            <a href="{{github}}">GitHub</a>
+        </p>
+        <hr class="divider" />
+    </div>
+
+    <div class="body">
+
+        {{#skills_section}}
+        <div class="misc">
+            <h2 class="sectionTitle">Skills</h2>
+            <hr class="dividerSmall" />
+            <div class="miscSection">
+                {{skills_line}}
+                {{languages_line}}
+            </div>
+        </div>
+        {{/skills_section}}
+
+        <div class="projects">
+            <h2 class="sectionTitle">Projects</h2>
+            <hr class="dividerSmall" />
+            {{projects}}
+        </div>
+
+        <div class="experience">
+            <h2 class="sectionTitle">Experience</h2>
+            <hr class="dividerSmall" />
+            {{experience}}
+        </div>
+
+        <div class="education">
+            <h2 class="sectionTitle">Education</h2>
+            <hr class="dividerSmall" />
+            {{education}}
+        </div>
+
+    </div>
+</div>
+"""
 
 @resume_bp.route("/api/generate_resume", methods=['POST'])
 def generate_resume():
@@ -17,26 +65,36 @@ def generate_resume():
         return jsonify({"error": "No form data provided"}), 400
 
     system_prompt = (
-        "You are HireHub's expert resume generator. Use the given structured form to enhance the content given, "
-        "ensuring it is concise and resume-appropriate. Keep in mind that skills may be conditionally removed if "
-        "other sections are too lengthy and exceed a limit of one page."
+        "You will receive: "
+        "1. A JSON object of structured resume data. "
+        "2. An HTML resume template containing placeholders. "
+
+        "Your job: "
+        "- Fill the HTML template with the JSON data. "
+        "- Do NOT modify the structure, class names, layout, or formatting. "
+        "- Do NOT add any extra text, notes/footnotes or explanations. "
+        "- Do NOT add or remove HTML elements unless the template explicitly uses placeholders like {{skills_section}}, {{projects}}, etc. "
+        "- Remove sections whose placeholders would be empty (e.g., return an empty string for {{skills_section}} if there are no skills). "
+        "- Fit the resume content within a single page. Keep entries concise. "
+        "- Do NOT output JSX or React code. "
+        "- Return ONLY the final HTML. "
+
+        "Available placeholders: "
+        "{{fullname}}, {{email}}, {{phone}}, {{city}}, {{linkedin}}, {{github}} "
+        "{{skills_section}} "
+        "{{projects}}, {{experience}}, {{education}} "
     )
 
     prompt = f"""
-    Create a clean, one-page technical resume using this structured data:
+    Here is the resume template you must fill:
 
-    {form_data}
+    {HTML_TEMPLATE}
 
-    Requirements:
-    - Keep all content concise and resume-appropriate.
-    - Improve job descriptions with achievement-focused bullet points.
-    - Ensure formatting fits a single page.
-    - No summary or objective section.
-    - No note at the bottom. Only include relevant sections with data provided.
-    - Describe jobs based on the role and the company provided.
-    - If given a short description or no description for a project, expand it into a concise bullet point.
-    - If given a very long description for a project, condense it into a concise bullet point.
-    - Do NOT return JSON — return clean resume text only.
+    Here is the user data in JSON:
+
+    {json.dumps(form_data, indent=2)}
+
+    Return ONLY the final HTML.
     """
 
     headers = {

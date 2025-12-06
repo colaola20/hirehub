@@ -31,7 +31,7 @@ const ResumeViewStep = ({ backendData }) => {
 
         try {
             const res = await upload(selectedFile, type);
-            console.log("Upload response:", res); 
+            console.log("Upload response:", res);
 
             setDocuments(prev => [...prev, res]);
             setSuccessMessage(`File "${res.original_filename}" uploaded successfully!`);
@@ -183,15 +183,10 @@ const ResumeViewStep = ({ backendData }) => {
             <h2>Resume Preview</h2>
             <div className={style.resumeScaler}>
                 <div className={style['resume-preview']} id="resume-container">
-                    {/* <pre>{JSON.stringify(backendData, null, 2)}</pre> */}
                     {backendData.aiResumeText ?
-                        (
-                            <pre> {backendData.aiResumeText} </pre>
-                        ) :
-                        (
-                            <ResumeTemplate data={backendData} />
-                        )}
-                    {/* <ResumeTemplate data={backendData} /> */}
+                        <ResumeTemplate resumeHTML={backendData.aiResumeText} /> :
+                        <ResumeTemplate resumeHTML={null} data={backendData} /> // optional fallback if you still want the old JSX preview
+                    }
                 </div>
             </div>
 
