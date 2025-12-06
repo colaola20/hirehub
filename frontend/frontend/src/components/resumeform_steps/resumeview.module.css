@@ -6,6 +6,7 @@
 
 .resumeScaler {
     display: inline-block;
+    height: 1000px;
 }
 
 .resume-preview {
@@ -18,6 +19,7 @@
     margin-bottom: 20px;
     color: black;
     font-family: Georgia, 'Times New Roman', Times, serif;
+    text-align: left;
 }
 
 .viewBtn {
