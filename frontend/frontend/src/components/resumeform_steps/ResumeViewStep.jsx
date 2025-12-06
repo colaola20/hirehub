@@ -185,7 +185,7 @@ const ResumeViewStep = ({ backendData }) => {
                 <div className={style['resume-preview']} id="resume-container">
                     {backendData.aiResumeText ?
                         <ResumeTemplate resumeHTML={backendData.aiResumeText} /> :
-                        <ResumeTemplate resumeHTML={null} data={backendData} /> // optional fallback if you still want the old JSX preview
+                        <ResumeTemplate resumeHTML={null} data={backendData} />
                     }
                 </div>
             </div>

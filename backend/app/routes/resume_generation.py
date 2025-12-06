@@ -71,6 +71,44 @@ def generate_resume():
 
         "Your job: "
         "- Fill the HTML template with the JSON data. "
+        
+        "- Keep content concise and fit within a single page of 816px x 1056px. "
+        "- Avoid excessive padding or margins. "
+
+        "- For job experience: write 1 to 2 concise bullet points per job describing achievements or responsibilities. "
+        "Do not just repeat the role name; create realistic, professional sentences."
+        "Put role on a separate line from the company name and time period, but above the job description bullets. "
+        "- Format exactly as follows: "
+        "\"Company Name - Time Period\" (newline) "
+        "\"Role Name\" (newline) "
+        "\"- Bullet point 1\" (newline) "
+        "\"- Bullet point 2\" "
+        "Do NOT use commas to separate fields in the experience section in any circumstance. Use hyphens only. "
+        
+
+        "- For projects: summarize each project in 1 to 2 sentences describing its purpose, functionality, and impact. "
+        "Include a link if available. Do not only just copy the description from the form. "
+        "- Description should be separate from the title and the link. Insert the newly generated description as a newline after the line containing the project title and link. Example: "
+        "\"HireHub - \", at the end of the first line: \"Project Link \", then on a new link, the description: \"Project Description\" "
+        "- For any project, make sure to output links as: <a href=\"{projLink}\" target=\"_blank\" rel=\"noopener noreferrer\">Project Link</a> "
+        "Do NOT use commas to separate fields in the projects section in any circumstance. If needed, use hyphens only. "
+
+        "- For skills and languages, list them clearly and on separate bulletpoints if both are present. "
+        "Format example: \"Skills: Skill1, Skill2\" new line, then \"Languages: Language1, Language2.\" "
+        "- Do the same with certifications and interests if provided. Do NOT combine them into one line. "
+        "- Capitalize the first letter of each word in a field. Do NOT use all caps or all lowercase. "
+        "Do NOT use hyphens to separate fields in any circumstance. If needed, use commas for the skills section only. "
+
+        "For education, include school name and graduation year on one line, followed by \"- Degree in: {degree}\" on the next line. "
+        "Do NOT use commas to separate fields in education in any circumstance. If needed, use hyphens only. "
+
+        "- Replace {{skills_line}} with a comma-separated list of skills. "
+        "- Replace {{languages_line}} with a comma-separated list of languages. "
+        "- Replace {{projects}} with HTML divs for each project containing a title, description, and link. "
+        "- Replace {{experience}} with HTML divs for each job containing company, role, time, and bullets. "
+        
+        
+        "- Keep in mind that the HTML template given explicitely uses the entire line to separate different fields. "
         "- Do NOT modify the structure, class names, layout, or formatting. "
         "- Do NOT add any extra text, notes/footnotes or explanations. "
         "- Do NOT add or remove HTML elements unless the template explicitly uses placeholders like {{skills_section}}, {{projects}}, etc. "
