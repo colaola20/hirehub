@@ -49,14 +49,14 @@ const MiscStep = ({ formData, onChange, errors }) => { // MISC INFO STEP //
             </div>
             <div className="inputField">
                 <p>Interests and Hobbies</p>
-                <input
-                    type="text"
-                    name='interests'
-                    placeholder="Interests and Hobbies (separate by commas)"
-                    value={formData.interests}
-                    onChange={handleChange}
-                />
-                {errors.interests && <p style={{ color: 'red' }}>{errors.interests}</p>}
+            <input
+                type="text"
+                name='interests'
+                placeholder="Interests and Hobbies (separate by commas)"
+                value={formData.interests}
+                onChange={handleChange}
+            />
+            {errors.interests && <p style={{ color: 'red' }}>{errors.interests}</p>}
             </div>
         </div>
     )

@@ -47,7 +47,7 @@ const ResumeForm = () => {
         /* ---MAIN SECTIONS--- */
         step4: {
 
-            jobs: [{ company: '', role: '', roleTime: '' }]
+            jobs: [{ company: '', role: '', roleTime: '', jobDescription: ''}]
 
         },
 
@@ -59,7 +59,7 @@ const ResumeForm = () => {
 
         step6: {
 
-            projects: [{ projTitle: '', projDesc: '', projLink: '' }]
+            projects: [{ projTitle: '', projDesc: '', projLink: ''}]
 
         }
     })
@@ -322,9 +322,6 @@ const ResumeForm = () => {
                  <ProgressIndicator currentStep={currentStep} />
                 <div className={styles["prog-btn"]}>
                     {currentStep > 1 ? (<Btn icon={<ChevronLeft />} onClick={prevStep} />) : (<span className={styles.placeholder}></span>)}
-                    <div className={styles["progress-indicator"]}>
-                        <span>Step {currentStep} of 7</span>
-                    </div>
                     {currentStep < 6 && (<Btn icon={<ChevronRight />} onClick={nextStep} />)}
                     {currentStep === 6 && (<Btn
                         label={"Generate"}

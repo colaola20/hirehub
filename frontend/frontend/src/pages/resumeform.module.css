@@ -88,12 +88,12 @@
     width: 100%;
     max-width: 1200px;
     transition: height 0.35s ease;
-    overflow: hidden;
     margin: 0; 
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 15px;
+    padding: 30px;
     min-height: 400px;
     width: 90%;
     max-width: 1200px;
