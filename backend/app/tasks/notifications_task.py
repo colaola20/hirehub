@@ -20,6 +20,100 @@ def to_aware(dt):
         return dt.replace(tzinfo=timezone.utc)
     return dt
 
+def build_inapp_job_notification(r_jobs):
+    """Build a small styled HTML card version of job recommendations."""
+    items = ""
+    for r in r_jobs[:3]:
+        job = r.job
+        score = round(r.match_score, 2)
+
+        items += f"""
+            <div style='padding: 10px 0; border-bottom: 1px solid #eee;'>
+                <div style='font-weight: 600; color: #1d1d1d;'>{job.title}</div>
+                <div style='font-size: 14px; color: #555;'>{job.company} • {job.location}</div>
+                <div style='font-size: 12px; margin-top: 4px; color: #562fac;'>
+                    Match Score: {score}%
+                </div>
+            </div>
+        """
+
+    return f"""
+    <div style="
+        background: #ffffff;
+        border-radius: 14px;
+        padding: 20px;
+        border-left: 4px solid #562fac;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        font-family: 'Inter', sans-serif;
+    ">
+        <div style="font-size: 20px; font-weight: 700; margin-bottom: 10px;">
+            🎯 New Job Recommendations
+        </div>
+        {items}
+        <div style="margin-top: 15px; text-align:center;">
+            <a href="/jobs" style="
+                display:inline-block;
+                padding:8px 18px;
+                border-radius:999px;
+                background: linear-gradient(to right, #86bbf0, #562fac);
+                color:white;
+                text-decoration:none;
+                font-size:14px;
+                font-weight:600;
+            ">View All Matches</a>
+        </div>
+    </div>
+    """
+
+def build_inapp_general_notification():
+    return """
+    <div style="
+        background:#fff;
+        border-radius:16px;
+        padding:22px;
+        border-left:4px solid #4a2a86;
+        box-shadow:0 4px 12px rgba(0,0,0,0.07);
+        font-family:'Inter',sans-serif;
+    ">
+        <div style="font-size:20px;font-weight:700;margin-bottom:10px;">
+            🔔 General Update
+        </div>
+
+        <div style="font-size:15px;color:#444;line-height:1.5;">
+            Your HireHub settings have been updated and new features are gradually rolling out.
+        </div>
+
+        <div style="margin-top:20px;padding-top:14px;border-top:1px solid #eee;font-size:12px;color:#666;">
+            📱 Mobile app launch coming soon.<br>
+            ⭐ Tier plans coming with increased storage + advanced features.
+        </div>
+    </div>
+    """
+
+def build_inapp_inactivity_notification():
+    return """
+    <div style="
+        background:#fff;
+        border-radius:16px;
+        padding:22px;
+        border-left:4px solid #c42be2;
+        box-shadow:0 4px 12px rgba(0,0,0,0.07);
+        font-family:'Inter',sans-serif;
+    ">
+        <div style="font-size:20px;font-weight:700;margin-bottom:10px;color:#c42be2;">
+            💙 We Miss You!
+        </div>
+
+        <div style="font-size:15px;color:#444;line-height:1.5;">
+            You haven’t logged in recently. New matches and updates are waiting for you.
+        </div>
+
+        <div style="margin-top:20px;padding-top:14px;border-top:1px solid #eee;font-size:12px;color:#666;">
+            📱 HireHub mobile app coming soon for easier access.
+        </div>
+    </div>
+    """
+
 def push_in_app(Notification, DatabaseService, email, notification_type, message):
     """Create in-app notification matching your Notification model"""
     n = Notification(
@@ -152,6 +246,187 @@ def generate_job_recommendation_email(user_name, matched_jobs):
     
     return html
 
+def generate_general_notification_email(user_name):
+    """Beautiful HTML general notification template (same style as job email)"""
+
+    html = f'''
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+
+    <body style="margin: 0; padding: 0; background: #f5f7fa; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+
+        <div style="max-width: 600px; margin: 0 auto;">
+
+            <!-- HEADER -->
+            <div style="background: linear-gradient(135deg, #7fa0ee 0%, #4a2a86 100%);
+                        padding: 40px 30px; 
+                        text-align: center; 
+                        border-radius: 0 0 20px 20px;">
+                
+                <h1 style="margin: 0; color: #fff; font-size: 32px; font-weight: 800;">HireHub</h1>
+                <p style="margin: 8px 0 0; color: rgba(255,255,255,0.92); font-size: 16px;">
+                    Your HireHub Account Updates
+                </p>
+            </div>
+
+            <!-- MAIN CARD -->
+            <div style="padding: 30px 20px;">
+
+                <div style="background: #ffffff; 
+                            border-radius: 16px; 
+                            padding: 30px; 
+                            box-shadow: 0 4px 12px rgba(0,0,0,0.06);">
+
+                    <h2 style="margin: 0 0 10px; 
+                               font-size: 24px; 
+                               font-weight: 700; 
+                               color: #1d1d1d;">
+                        Hi {user_name}! 👋
+                    </h2>
+
+                    <p style="color: #555; font-size: 16px; line-height: 1.6; margin-top: 12px;">
+                        Here's your general HireHub update!  
+                        You’ll soon start seeing mobile notifications, tier features, and more advanced settings.
+                    </p>
+
+                    <div style="
+                        background: #f0f4ff; 
+                        padding: 18px; 
+                        border-radius: 12px; 
+                        margin-top: 20px;
+                        display: flex;
+                        gap: 12px;
+                    ">
+                        <div style="font-size: 24px;">🔔</div>
+                        <div style="font-size: 15px; color: #333; line-height: 1.5;">
+                            This is your **general notification** based on your preferences.  
+                            Stay tuned — more features are coming soon!
+                        </div>
+                    </div>
+
+                    <!-- CTA BUTTON -->
+                    <div style="text-align: center; margin-top: 28px;">
+                        <a href="http://localhost:5173/settings"
+                           style="display: inline-block;
+                                  background: linear-gradient(to right, #86bbf0, #562fac);
+                                  color: white;
+                                  padding: 14px 32px;
+                                  border-radius: 999px;
+                                  text-decoration: none;
+                                  font-weight: 700;
+                                  font-size: 15px;
+                                  box-shadow: 0 4px 12px rgba(86, 47, 172, 0.3);">
+                            Manage Notification Settings →
+                        </a>
+                    </div>
+
+                </div>
+
+                <!-- FOOTER -->
+                <div style="padding: 30px 20px; text-align: center; color: #999; font-size: 13px;">
+                    <p style="margin: 0;">You're receiving this because you enabled general notifications.</p>
+
+                    <p style="margin: 8px 0 0;">
+                        <a href="http://localhost:5173/settings" style="color: #562fac; text-decoration: none;">Notification Settings</a> •
+                        <a href="mailto:h1r3hub@gmail.com" style="color: #562fac; text-decoration: none;">Support</a>
+                    </p>
+
+                    <p style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #e0e0e0; color: #bbb; font-size: 12px;">
+                        © 2025 HireHub • Farmingdale State College, NY
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    </body>
+    </html>
+    '''
+
+    return html
+
+def generate_inactivity_email(user_name):
+    """Beautiful inactivity alert email"""
+
+    html = f"""
+    <!DOCTYPE html>
+    <html>
+    <body style="margin:0;padding:0;background:#f5f7fa;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;">
+
+    <div style="max-width:600px;margin:0 auto;">
+
+        <!-- HEADER -->
+        <div style="background:linear-gradient(135deg,#ff7e98,#a32cc4);
+                    padding:40px 30px;
+                    text-align:center;
+                    border-radius:0 0 20px 20px;">
+            <h1 style="color:#fff;margin:0;font-size:32px;font-weight:800;">
+                We Miss You 💙
+            </h1>
+            <p style="color:rgba(255,255,255,0.9);margin-top:8px;font-size:16px;">
+                Come back to explore fresh job opportunities!
+            </p>
+        </div>
+
+        <!-- BODY -->
+        <div style="padding:30px 20px;">
+            <div style="background:white;padding:30px;border-radius:16px;
+                        box-shadow:0 4px 12px rgba(0,0,0,0.06);">
+
+                <h2 style="margin:0;font-size:24px;font-weight:700;color:#1d1d1d;">
+                    Hi {user_name}! 👋
+                </h2>
+
+                <p style="color:#555;font-size:16px;line-height:1.6;margin-top:12px;">
+                    It looks like you haven't logged in recently.  
+                    New jobs have been added that match your skills — don’t miss out!
+                </p>
+
+                <div style="background:#fff3f4;padding:18px;border-radius:12px;
+                            margin-top:20px;display:flex;gap:12px;">
+                    <div style="font-size:22px;">⏳</div>
+                    <div style="font-size:15px;color:#333;">
+                        Log back in to refresh your recommendations and continue building your career.
+                    </div>
+                </div>
+
+                <!-- CTA BUTTON -->
+                <div style="text-align:center;margin-top:28px;">
+                    <a href="http://localhost:5173/login"
+                       style="display:inline-block;background:linear-gradient(to right,#ff8aae,#c42be2);
+                              color:white;padding:14px 32px;border-radius:999px;
+                              text-decoration:none;font-weight:700;font-size:15px;">
+                        Return to HireHub →
+                    </a>
+                </div>
+            </div>
+
+            <!-- FOOTER -->
+            <div style="padding:30px 20px;text-align:center;color:#999;font-size:13px;">
+                <p style="margin:0 0 8px;">You are receiving this inactivity alert because you signed up for a HireHub account.</p>
+
+                <p style="margin:8px 0;">
+                    <a href="http://localhost:5173/settings" style="color:#562fac;text-decoration:none;">Manage Preferences</a> •
+                    <a href="mailto:h1r3hub@gmail.com" style="color:#562fac;text-decoration:none;">Support</a>
+                </p>
+
+                <p style="margin-top:20px;color:#bbb;font-size:12px;">
+                    © 2025 HireHub • Farmingdale State College, NY
+                </p>
+            </div>
+        </div>
+    </div>
+
+    </body>
+    </html>
+    """
+
+    return html
+
+
 # --------------------------------------------------------
 # FINAL UNIFIED WORKER — MATCHING YOUR NOTIFICATION MODEL
 # --------------------------------------------------------
@@ -212,7 +487,7 @@ def unified_notification_worker(app):
                                     push_in_app(
                                         Notification, DatabaseService, u.email,
                                         "General Notification",
-                                        "This is your general notification based on your settings."
+                                        build_inapp_general_notification()
                                     )
                                     print("✔ CREATED IN-APP NOTIFICATION")
                                 except Exception as e:
@@ -220,15 +495,18 @@ def unified_notification_worker(app):
                                 
                                 # TRY TO SEND EMAIL (may fail, but won't stop in-app notifications)
                                 try:
-                                    msg = Message(
-                                        "General HireHub Notification",
+                                    user_name = u.full_name if hasattr(u, "full_name") and u.full_name else u.email.split("@")[0]
+                                    html = generate_general_notification_email(user_name)
+
+                                    mail.send(Message(
+                                        "Your HireHub Update 🔔",
                                         recipients=[u.email],
-                                        body="This is your general notification based on your settings."
-                                    )
-                                    mail.send(msg)
-                                    print("✔ SENT EMAIL")
+                                        html=html
+                                    ))
+                                    print("✔ SENT STYLED GENERAL EMAIL")
                                 except Exception as e:
-                                    current_app.logger.warning("Email failed (in-app notification still created): %s", e)
+                                    current_app.logger.warning("General email failed: %s", e)
+
 
                                 u.last_general_notification_sent = now
                                 db.session.commit()
@@ -281,7 +559,7 @@ def unified_notification_worker(app):
                                             Notification, DatabaseService,
                                             u.email,
                                             "Job Recommendation",
-                                            f"🎯 {len(matched_jobs)} New Job Match{'es' if len(matched_jobs) > 1 else ''}: {summary}. Check your email for full details!"
+                                            build_inapp_job_notification(matched_jobs)
                                         )
                                         print("✔ CREATED IN-APP JOB NOTIFICATION")
                                     except Exception as e:
@@ -362,7 +640,7 @@ def unified_notification_worker(app):
                                         push_in_app(
                                             Notification, DatabaseService, u.email,
                                             "Inactivity Alert",
-                                            "💙 We miss you! You haven't logged in recently. Come back to discover new opportunities!"
+                                            build_inapp_inactivity_notification()
                                         )
                                         print("✔ CREATED IN-APP INACTIVITY ALERT")
                                     except Exception as e:
@@ -373,7 +651,7 @@ def unified_notification_worker(app):
                                         mail.send(Message(
                                             "We Miss You at HireHub! 💙",
                                             recipients=[u.email],
-                                            body="You haven't logged in for a few days. Come back to check out new job opportunities!"
+                                            html=html
                                         ))
                                         print("✔ SENT INACTIVITY EMAIL")
                                     except Exception as e:

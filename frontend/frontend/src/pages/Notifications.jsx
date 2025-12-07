@@ -262,9 +262,10 @@ const deleteAll = async () => {
       </div>
 
       {/* Email Body */}
-      <div className={styles.emailBody}>
-        {getMessageText(selected)}
-      </div>
+      <div
+		className="emailBody"
+		dangerouslySetInnerHTML={{ __html: selected.message }}
+	></div>
     </>
   ) : (
     <div className={styles.noEmail}>
