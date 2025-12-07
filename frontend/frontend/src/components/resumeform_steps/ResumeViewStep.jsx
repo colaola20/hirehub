@@ -179,8 +179,10 @@ const ResumeViewStep = ({ backendData }) => {
     };
 
     return (
-        <div>
-            <h2>Resume Preview</h2>
+        <div className="resume-form">
+            <div className="title">
+                <h2>Resume Preview</h2>
+            </div>
             <div className={style.resumeScaler}>
                 <div className={style['resume-preview']} id="resume-container">
                     {backendData.aiResumeText ?

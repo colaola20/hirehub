@@ -314,25 +314,15 @@ const ResumeForm = () => {
     return (
 
         <div className={styles["container"]}>
-            {/* <div className={styles['back-btn']}>
-                <Link to="/dev_dashboard">
-                    <CancelBtn
-                        label={"Back"}
-                        className={styles['back-btn']}
-                    />
-                </Link>
-            </div> */}
-
             <div className={styles["form-box"]}>
-
                 <div className={styles['back-btn']}>
-                <Link to="/dev_dashboard">
-                    <CancelBtn
-                        label={"Back"}
-                        className={styles['back-btn']}
-                    />
-                </Link>
-            </div>
+                    <Link to="/dev_dashboard">
+                        <CancelBtn
+                            label={"Back"}
+                            className={styles['back-btn']}
+                        />
+                    </Link>
+                </div>
                 <h1>Let's Build Your Resume!</h1>
 
                 <ProgressIndicator currentStep={currentStep} />

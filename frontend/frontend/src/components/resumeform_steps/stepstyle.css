@@ -1,26 +1,84 @@
 .resume-form {
+    width: 100%;
+    padding: 14px 16px;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 500;
+    text-align: left;
+    box-sizing: border-box;
+    max-height: 100vh;
+
+    overflow-y: auto;      /* enables vertical scrolling */
+    overflow-x: hidden;    /* optional: hide horizontal scroll */
+}
+
+.title {
+    text-align: center;
+}
+
+.title h2 {
+    font-size: 28px;
+    margin-bottom: 20px;
+    font-weight: 600;
+    color: #e8f1ff;
+}
+
+
+.inputField {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 2px;
+    width: 100%;
+    margin-bottom: 5px;
+}
 
-    transition: height 0.35s ease;
-    overflow: hidden;
+.inputField p {
+    margin: 0 0 6px;
+    font-size: 15px;
+    font-weight: 500;
+    color: #dfe7f5;
+}
+
+.resume-form input {
+    width: 100%;
+    padding: 14px 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    color: #ffffff;
+    font-size: 15px;
+    text-align: center;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+    height: 40px; 
+}
+
+.resume-form input:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(142, 197, 252, 0.5);
+    box-shadow: 
+        0 0 0 3px rgba(142, 197, 252, 0.1),
+        0 4px 12px rgba(142, 197, 252, 0.15);
+}
+
+.resume-form input::placeholder {
+  color: rgba(255, 255, 255, 0.3);
 }
 
 .location-form {
     display: flex;
     flex-direction: row;
-    align-items: center;
-    gap: 10px;
-    padding-bottom: 3px;
+    gap: 14px;
+    width: 100%;
+    padding-bottom: 10px;
 }
 
 .location-validation {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 100px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    width: 100%;
 }
 
 .job-form {
@@ -90,10 +148,6 @@
     transition: width 0.15s ease, height 0.15s ease;
 }
 
-@media (max-width: 1670px) {
-    
-}
-
 @media (max-width: 1000px) {
 
     .school-form,
@@ -129,5 +183,8 @@
     .location-validation {
         display: flex;
         flex-direction: column;
+    }
+    .resume-form h2 {
+        font-size: 24px;
     }
 }

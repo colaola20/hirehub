@@ -1,19 +1,20 @@
+
+
+/* -------- Reset for full-bleed BG -------- */
+:global(html, body, #root) {
+  margin: 0;
+  padding: 0;
+}
+
 .container {
-    padding: 150px 275px 50px 275px;
     position: relative;
-    width: 100%;
+    min-width: 100%;
     min-width: 300px;
     height: 100%;
     display: flex;
     justify-content: center;
     position: relative;
     box-sizing: border-box;
-    /* ------------copy and pasted from login_Page.css------------ */
-    /* display: flex;
-    justify-content: center;
-    align-items: center;         
-    background: none;                  
-    overflow: hidden; */
 }
 
 /* ----------------------------------------------------------- */
@@ -55,6 +56,8 @@
     background-attachment: fixed;
 }
 
+
+
 .back-btn {
     position: absolute;
     top: 67px;
@@ -65,18 +68,22 @@
 
 .form-box {
     background: rgba(20, 15, 40, 0.65);
+    padding: 20px;
     backdrop-filter: blur(10px);
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 20px;
-    border-radius: 20px;
-    min-width: 1125px;
-    max-width: 1350px;
     width: 100%;
-    /* margin: 0 auto; */
-    box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.3);
     color: white;
+    position: relative;
+    height: 100vh;
+}
+
+.form-box h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 30px;
+    text-align: center;
 }
 
 .form-box h2 {
@@ -85,38 +92,37 @@
 }
 
 .resume-form-container {
-    /* same color and blur styling as navbar */
-    /* background: rgba(20, 15, 40, 0.65); */
-    /* border: 1px solid rgba(255, 255, 255, 0.3); */
     backdrop-filter: blur(10px);
     box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.15);
-
     transition: height 0.35s ease;
     overflow: hidden;
-
-    padding: 15px;
+    padding: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 50px;
+    gap: 25px;
     min-height: 100px;
-    /* max-height: 1000px; */
-    width: 83%;
+    width: 90%;
     max-width: 1000px;
     border-radius: 20px;
     margin: 15px 0;
-    padding-bottom: 50px;
     color: white;
     text-align: center;
 }
 
-.resume-form-container input {
-    background-color: rgb(255, 255, 255);
-    border-radius: 8px;
-    font-size: 1rem;
-    color: black;
-    padding: 5px 7.5px;
-    border: 1px solid #eee;
+.resume-form-container input,
+.resume-form textarea  {
+    width: 100%;
+    padding: 14px 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    color: #ffffff;
+    font-size: 15px;
+    text-align: center;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
 }
 
 .resume-form-container input[placeholder="Summary Generation (separate keywords by commas)"] {
