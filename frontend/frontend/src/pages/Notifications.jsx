@@ -135,7 +135,13 @@ export default function Notifications() {
   const unreadCount = notifications.filter((n) => !n.is_read).length;
   const getMessageText = (n) => n?.message || n?.body || "";
   const getNotificationType = (n) => n?.type || n?.title || "Notification";
-  
+
+  const stripHTML = (html = "") => {
+  const div = document.createElement("div");
+  div.innerHTML = html;
+  return div.textContent || div.innerText || "";
+};
+
   const formatDate = (dateStr) => {
     if (!dateStr) return "";
     const date = new Date(dateStr);
@@ -215,8 +221,9 @@ const deleteAll = async () => {
                   </span>
                   <span className={styles.emailPreview}>
                     {" "}
-                    — {getMessageText(n).slice(0, 90)}
-                    {getMessageText(n).length > 90 && "..."}
+                   — {stripHTML(getMessageText(n)).slice(0, 90)}
+					{stripHTML(getMessageText(n)).length > 90 && "..."}
+
                   </span>
                 </div>
               </div>
