@@ -231,3 +231,7 @@
 .bulkButton:hover {
   background: rgba(255,255,255,0.25);
 }
+.selectedRow {
+  background: rgba(86, 47, 172, 0.25) !important;
+  border-left: 4px solid #562fac;
+}

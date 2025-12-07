@@ -202,12 +202,26 @@ const deleteAll = async () => {
           {!loading &&
             notifications.map((n) => (
               <div
-                key={n.notification_id}
-                onClick={() => openNotification(n)}
-                className={`${styles.emailRow} ${
-                  !n.is_read ? styles.unread : ""
-                }`}
-              >
+				key={n.notification_id}
+				onClick={() => {
+					openNotification(n);
+					toggleSelect(n.notification_id);
+				}}
+				className={`
+					${styles.emailRow} 
+					${!n.is_read ? styles.unread : ""} 
+					${selectedItems.has(n.notification_id) ? styles.selectedRow : ""}
+				`}
+				>
+				<input
+				type="checkbox"
+				checked={selectedItems.has(n.notification_id)}
+				onChange={(e) => {
+					e.stopPropagation();
+					toggleSelect(n.notification_id);
+				}}
+				/>
+
                 <div className={styles.emailRowTop}>
                   <span className={styles.emailSender}>HireHub</span>
                   <span className={styles.emailDate}>
