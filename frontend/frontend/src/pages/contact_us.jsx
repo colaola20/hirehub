@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import styles from "./Contact_Us.module.css";
+import styles from "./contact_us.module.css";
 
 export default function ContactPage() {
   const [form, setForm] = useState({
