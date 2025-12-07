@@ -68,24 +68,48 @@ def build_inapp_job_notification(r_jobs):
 def build_inapp_general_notification():
     return """
     <div style="
-        background:#fff;
-        border-radius:16px;
-        padding:22px;
-        border-left:4px solid #4a2a86;
-        box-shadow:0 4px 12px rgba(0,0,0,0.07);
+        background:#ffffff;
+        border-radius:18px;
+        padding:24px;
+        border-left:5px solid #6b3fcf;
+        box-shadow:0 4px 14px rgba(0,0,0,0.08);
         font-family:'Inter',sans-serif;
     ">
-        <div style="font-size:20px;font-weight:700;margin-bottom:10px;">
-            🔔 General Update
+        <!-- Title -->
+        <div style="font-size:20px;font-weight:800;color:#2d1b55;margin-bottom:12px;">
+            🚀 Big Things Are Coming to HireHub!
         </div>
 
-        <div style="font-size:15px;color:#444;line-height:1.5;">
-            Your HireHub settings have been updated and new features are gradually rolling out.
+        <!-- Message -->
+        <div style="font-size:15px;color:#444;line-height:1.55;">
+            We're actively rolling out new upgrades to enhance your experience.  
+            Get ready for a faster, smarter, and more personalized HireHub.
         </div>
 
-        <div style="margin-top:20px;padding-top:14px;border-top:1px solid #eee;font-size:12px;color:#666;">
-            📱 Mobile app launch coming soon.<br>
-            ⭐ Tier plans coming with increased storage + advanced features.
+        <!-- Feature Highlights -->
+        <div style="
+            margin-top:18px;
+            padding:14px 16px;
+            background:#f4f0ff;
+            border-radius:10px;
+            color:#3d2a72;
+            font-size:14px;
+            line-height:1.6;
+        ">
+            <div>📱 <b>Mobile App</b> is launching soon for on-the-go job tracking.</div>
+            <div>⭐ <b>New Tier Plans</b> offering increased document storage.</div>
+            <div>⚡ <b>Smart Recommendations</b> becoming more precise with AI updates.</div>
+        </div>
+
+        <!-- Footer / marketing tagline -->
+        <div style="
+            margin-top:20px;
+            font-size:12px;
+            color:#777;
+            border-top:1px solid #eee;
+            padding-top:12px;
+        ">
+            Stay tuned — your dashboard is about to level up.
         </div>
     </div>
     """
