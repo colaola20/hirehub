@@ -5,6 +5,7 @@ import * as Yup from 'yup'
 import ProgressIndicator from "../components/ProgressIndicator";
 import Btn from "../components/buttons/Btn";
 import CancelBtn from "../components/buttons/CancelBtn";
+import CTA from "../components/buttons/CTA";
 
 import PersonalStep from "../components/resumeform_steps/PersonalStep";
 import ResumeViewStep from "../components/resumeform_steps/ResumeViewStep";
@@ -15,6 +16,8 @@ import SchoolStep from "../components/resumeform_steps/SchoolStep";
 import ProjectStep from "../components/resumeform_steps/ProjectStep";
 
 import styles from './resumeform.module.css';
+
+import {ChevronRight, ChevronLeft} from 'lucide-react'
 
 const ResumeForm = () => {
 
@@ -315,23 +318,14 @@ const ResumeForm = () => {
 
         <div className={styles["container"]}>
             <div className={styles["form-box"]}>
-                <div className={styles['back-btn']}>
-                    <Link to="/dev_dashboard">
-                        <CancelBtn
-                            label={"Back"}
-                            className={styles['back-btn']}
-                        />
-                    </Link>
-                </div>
                 <h1>Let's Build Your Resume!</h1>
-
-                <ProgressIndicator currentStep={currentStep} />
+                 <ProgressIndicator currentStep={currentStep} />
                 <div className={styles["prog-btn"]}>
-                    {currentStep > 1 ? (<CancelBtn label={"Prev"} onClick={prevStep} />) : (<span className={styles.placeholder}></span>)}
+                    {currentStep > 1 ? (<Btn icon={<ChevronLeft />} onClick={prevStep} />) : (<span className={styles.placeholder}></span>)}
                     <div className={styles["progress-indicator"]}>
                         <span>Step {currentStep} of 7</span>
                     </div>
-                    {currentStep < 6 && (<CancelBtn label={"Next"} onClick={nextStep} />)}
+                    {currentStep < 6 && (<Btn icon={<ChevronRight />} onClick={nextStep} />)}
                     {currentStep === 6 && (<Btn
                         label={"Generate"}
                         onClick={async () => {
@@ -378,7 +372,15 @@ const ResumeForm = () => {
                         {currentStep === 6 && <ProjectStep formData={formData.step6} onChange={handleInputChange} errors={errors} />}
                         {currentStep === 7 && <ResumeViewStep backendData={formData} />}
                     </div>
+                    <div className={styles['back-btn']}>
+                        <Link to="/dev_dashboard">
+                            <CTA
+                                label={"Save progress for later"}
+                            />
+                        </Link>
+                    </div>
                 </div>
+
             </div>
         </div>
     )
