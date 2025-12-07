@@ -27,8 +27,8 @@ HTML_TEMPLATE = """
             <h2 class="sectionTitle">Skills</h2>
             <hr class="dividerSmall" />
             <div class="miscSection">
-                {{skills_line}}
-                {{languages_line}}
+                {{skills_line}} <br>
+                {{languages_line}} <br>
             </div>
         </div>
         {{/skills_section}}
@@ -64,64 +64,127 @@ def generate_resume():
     if not form_data:
         return jsonify({"error": "No form data provided"}), 400
 
-    system_prompt = (
-        "You will receive: "
-        "1. A JSON object of structured resume data. "
-        "2. An HTML resume template containing placeholders. "
+    system_prompt = """
+        You will receive:
+        1. A JSON object of structured resume data.
+        2. An HTML resume template containing placeholders.
 
-        "Your job: "
-        "- Fill the HTML template with the JSON data. "
-        
-        "- Keep content concise and fit within a single page of 816px x 1056px. "
-        "- Avoid excessive padding or margins. "
+        Your job:
+        - Fill the HTML template with the JSON data.
+        - Keep content concise and fit within a single page of 816px x 1056px.
+        - Avoid excessive padding or margins.
 
-        "- For job experience: write 1 to 2 concise bullet points per job describing achievements or responsibilities. "
-        "Do not just repeat the role name; create realistic, professional sentences."
-        "Put role on a separate line from the company name and time period, but above the job description bullets. "
-        "- Format exactly as follows: "
-        "\"Company Name - Time Period\" (newline) "
-        "\"Role Name\" (newline) "
-        "\"- Bullet point 1\" (newline) "
-        "\"- Bullet point 2\" "
-        "Do NOT use commas to separate fields in the experience section in any circumstance. Use hyphens only. "
-        
+        - For job experience: write 1 to 2 concise bullet points per job describing achievements or responsibilities.
+        Do not just repeat the role name; create realistic, professional sentences.
+        Put role on a separate line from the company name and time period, but above the job description bullets.
+        Do NOT use commas to separate fields in the experience section in any circumstance. Use hyphens only.
 
-        "- For projects: summarize each project in 1 to 2 sentences describing its purpose, functionality, and impact. "
-        "Include a link if available. Do not only just copy the description from the form. "
-        "- Description should be separate from the title and the link. Insert the newly generated description as a newline after the line containing the project title and link. Example: "
-        "\"HireHub - \", at the end of the first line: \"Project Link \", then on a new link, the description: \"Project Description\" "
-        "- For any project, make sure to output links as: <a href=\"{projLink}\" target=\"_blank\" rel=\"noopener noreferrer\">Project Link</a> "
-        "Do NOT use commas to separate fields in the projects section in any circumstance. If needed, use hyphens only. "
+        - For projects: summarize each project in 1–2 sentences describing its purpose, functionality, and impact.
+        Include a link if available. Do not simply copy the form’s description.
+        Description MUST be separate from the title and link.
+        Insert the description on a NEW LINE after the title+link.
+        Output links as: <a href="{projLink}" target="_blank" rel="noopener noreferrer">Project Link</a>
+        Do NOT use commas to separate fields in projects.
 
-        "- For skills and languages, list them clearly and on separate bulletpoints if both are present. "
-        "Format example: \"Skills: Skill1, Skill2\" new line, then \"Languages: Language1, Language2.\" "
-        "- Do the same with certifications and interests if provided. Do NOT combine them into one line. "
-        "- Capitalize the first letter of each word in a field. Do NOT use all caps or all lowercase. "
-        "Do NOT use hyphens to separate fields in any circumstance. If needed, use commas for the skills section only. "
+        - For skills and languages, list them clearly and on separate lines.
+        Capitalize the first letter of each word.
 
-        "For education, include school name and graduation year on one line, followed by \"- Degree in: {degree}\" on the next line. "
-        "Do NOT use commas to separate fields in education in any circumstance. If needed, use hyphens only. "
+        - For education: school name + graduation year on one line, then “Degree in: {degree}” on the next line.
+        Do NOT use commas for education. Use hyphens only.
 
-        "- Replace {{skills_line}} with a comma-separated list of skills. "
-        "- Replace {{languages_line}} with a comma-separated list of languages. "
-        "- Replace {{projects}} with HTML divs for each project containing a title, description, and link. "
-        "- Replace {{experience}} with HTML divs for each job containing company, role, time, and bullets. "
-        
-        
-        "- Keep in mind that the HTML template given explicitely uses the entire line to separate different fields. "
-        "- Do NOT modify the structure, class names, layout, or formatting. "
-        "- Do NOT add any extra text, notes/footnotes or explanations. "
-        "- Do NOT add or remove HTML elements unless the template explicitly uses placeholders like {{skills_section}}, {{projects}}, etc. "
-        "- Remove sections whose placeholders would be empty (e.g., return an empty string for {{skills_section}} if there are no skills). "
-        "- Fit the resume content within a single page. Keep entries concise. "
-        "- Do NOT output JSX or React code. "
-        "- Return ONLY the final HTML. "
+        ----------------------------------------
+        STRUCTURE RULES
+        ----------------------------------------
 
-        "Available placeholders: "
-        "{{fullname}}, {{email}}, {{phone}}, {{city}}, {{linkedin}}, {{github}} "
-        "{{skills_section}} "
-        "{{projects}}, {{experience}}, {{education}} "
-    )
+        When replacing {{projects}}, use EXACTLY this HTML:
+
+        <div class="projectEntry">
+            <div class="projectHeader">
+                <div class="projectTitle">{Project Title}</div>
+                <div class="projectLink">
+                    <a href="{Project Link}" target="_blank" rel="noopener noreferrer">Project Link</a>
+                </div>
+            </div>
+            <div class="projectDescription">
+                {1–2 sentence description}
+            </div>
+        </div>
+
+        When replacing {{experience}}, use EXACTLY this structure:
+
+        <div class="experienceEntry">
+            <div class="experienceCompany">{Company Name}</div>
+            <div class="experienceTime">{Time Period}</div>
+            <div class="experienceRole">{Role Name}</div>
+            <div class="experienceBullets">
+                - {Bullet 1}<br>
+                - {Bullet 2}
+            </div>
+        </div>
+
+        When replacing {{education}}, use EXACTLY this structure:
+
+        <div class="educationEntry">
+            <div class="educationSchool">{School Name}</div>
+            <div class="educationGradYear">{Graduation Year}</div>
+            <div class="educationDegree">
+                Degree in: {Degree}
+            </div>
+        </div>
+
+        ----------------------------------------
+        SKILLS / LANGUAGES RULES
+        ----------------------------------------
+
+        The template contains a .misc section containing:
+
+        {{skills_line}}
+        {{languages_line}}
+
+        When replacing {{skills_line}}, output:
+
+        Skills: Skill1, Skill2, Skill3
+
+        When replacing {{languages_line}}, output:
+
+        Languages: Lang1, Lang2
+
+        These MUST be two separate lines.
+        Skills ALWAYS on its own line.
+        Languages ALWAYS directly below skills.
+        Any additional misc fields must also be separate lines.
+
+        ----------------------------------------
+        STRICT STRUCTURE ENFORCEMENT
+        ----------------------------------------
+
+        You MUST:
+        - Follow the exact HTML structures above.
+        - Put each field ONLY in its correct div.
+        - NOT merge title/link/description fields.
+        - NOT merge fields in experience.
+        - NOT add or remove divs.
+        - NOT rearrange elements.
+        - NOT combine fields into one line.
+
+        If you deviate from these structures, the output is invalid.
+
+        ----------------------------------------
+        GLOBAL RESTRICTIONS
+        ----------------------------------------
+
+        - The HTML template uses full lines to separate fields — preserve this.
+        - Do NOT modify layout, class names, or structure.
+        - Do NOT add explanations, comments, or JSX.
+        - Only fill placeholders such as {{projects}}, {{experience}}, etc.
+        - Remove sections if data is empty.
+        - Return ONLY the final HTML.
+
+        Available placeholders:
+        {{fullname}}, {{email}}, {{phone}}, {{city}}, {{linkedin}}, {{github}}
+        {{skills_section}}
+        {{projects}}, {{experience}}, {{education}}
+        """
 
     prompt = f"""
     Here is the resume template you must fill:
