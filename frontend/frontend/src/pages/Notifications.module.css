@@ -1,194 +1,229 @@
-.wrapper {
-  /* FULL WIDTH + FULL HEIGHT to match main grid */
-  width: 100%;
-  height: 100%;
-  max-width: 100%;
-  margin: 0;
-  padding: 24px;
-  box-sizing: border-box;
-
-  background: rgba(15,15,19,0.64);
-  border-radius: 12px;
-  color: #e9e9ef;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.45);
-}
-
-.header {
+.container {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 12px;
+  height: 100vh;
+  background: #ffffff;
+  font-family: "Inter", sans-serif;
 }
 
-.headerActions button {
-  padding: 8px 12px;
-  border-radius: 8px;
-}
-
-.sendForm {
-  display: grid;
-  gap: 8px;
-  grid-template-columns: 1fr minmax(180px, 320px);
-  margin-bottom: 16px;
-}
-
-.sendForm input,
-.sendForm textarea {
-  width: 100%;
-  padding: 8px 10px;
-  border-radius: 8px;
-  border: 1px solid rgba(255,255,255,0.06);
-  background: rgba(255,255,255,0.02);
-  color: inherit;
-}
-
-.sendForm textarea {
-  height: 84px;
-  resize: vertical;
-}
-
-.sendBtn {
-  grid-column: 2;
-  padding: 10px 14px;
-  border-radius: 10px;
-  background: linear-gradient(90deg,#6f67f0,#4839eb);
-  color: #fff;
-  border: none;
-  width: 100%;
-  justify-self: stretch;
-}
-
-.list {
-  border-top: 1px solid rgba(255,255,255,0.04);
-}
-
-.empty {
-  padding: 18px;
-  text-align: center;
-  opacity: 0.8;
-}
-
-.gmail-row {
-  display: grid;
-  grid-template-columns: 56px 1fr 220px;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 8px;
-  border-bottom: 1px solid rgba(255,255,255,0.03);
-}
-
-.gmail-left {
+/* LEFT PANEL */
+.listPanel {
+  width: 360px;
+  border-right: 1px solid #e5e7eb;
+  background: #f9fafb;
   display: flex;
-  gap: 8px;
-  align-items: center;
+  flex-direction: column;
 }
 
-.gmail-sender {
+.title {
+  padding: 20px;
+  font-size: 19px;
   font-weight: 600;
-  margin-right: 8px;
+  color: #111827;
+  border-bottom: 1px solid #e5e7eb;
 }
 
-.gmail-subject {
-  font-weight: 700;
+.emailList {
+  flex: 1;
+  overflow-y: auto;
 }
 
-.gmail-snippet {
-  color: #cfcde0;
-  margin-left: 6px;
-}
-
-.gmail-time {
-  text-align: right;
-  color: #bdb8d8;
-  font-size: 0.85rem;
-}
-
-.markBtn,
-.delBtn {
-  font-size: 12px;
-  padding: 6px 8px;
-  border-radius: 8px;
-  border: 1px solid rgba(255,255,255,0.06);
-  background: rgba(255,255,255,0.02);
-  color: #e9e9ef;
+.emailRow {
+  padding: 14px 20px;
+  border-bottom: 1px solid #ededed;
   cursor: pointer;
+  transition: background 0.15s;
 }
 
-.delBtn {
-  background: rgba(255,0,0,0.06);
-  border-color: rgba(255,0,0,0.12);
+.emailRow:hover {
+  background: #f1f5f9;
 }
 
-.gmail-row.unread .gmail-subject {
-  font-weight: 800;
+.unread {
+  background: #eef3ff;
+  font-weight: 600;
 }
 
-.gmail-row:hover {
-  background: rgba(255,255,255,0.015);
-}
-
-.star-btn {
-  background: transparent;
-  border: none;
-  color: rgba(255,215,0,0.85);
-  cursor: pointer;
-}
-
-.row-actions {
+.emailRowTop {
   display: flex;
-  gap: 8px;
-  justify-content: flex-end;
-}
-
-@media (max-width: 980px) {
-  .sendForm {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 900px) {
-  .wrapper {
-    margin-left: auto;
-    max-width: 980px;
-    padding: 14px;
-  }
-
-  .gmail-row {
-    grid-template-columns: 40px 1fr auto;
-  }
-}
-.modalOverlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.55);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
-}
-
-.modal {
-  width: min(600px, 90vw);
-  background: #1a1a29;
-  padding: 24px;
-  border-radius: 12px;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.4);
-  color: #fff;
-}
-
-.modalTime {
-  margin-top: 20px;
-  opacity: 0.6;
+  justify-content: space-between;
+  color: #374151;
   font-size: 14px;
 }
 
-.closeBtn {
-  margin-top: 24px;
-  background: #6f67f0;
-  padding: 10px 16px;
-  border-radius: 8px;
+.emailRowBottom {
+  margin-top: 4px;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.emailSubject {
+  font-weight: 600;
+  color: #111827;
+}
+
+.emailPreview {
+  color: #6b7280;
+}
+
+/* RIGHT PANEL */
+.contentPanel {
+  flex: 1;
+  background: white;
+  display: flex;
+  flex-direction: column;
+}
+
+.emailHeader {
+  padding: 20px;
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.emailHeader h1 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.deleteButton {
+  padding: 8px 16px;
+  background: #ef4444;
   border: none;
-  cursor: pointer;
+  border-radius: 6px;
   color: white;
+  cursor: pointer;
+}
+
+.emailMeta {
+  padding: 16px 20px;
+  border-bottom: 1px solid #e5e7eb;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.metaSender {
+  font-weight: 600;
+  color: #111827;
+}
+
+.metaDate {
+  margin-left: 12px;
+}
+
+.emailBody {
+  padding: 20px;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.noEmail {
+  padding: 40px;
+  font-size: 18px;
+  color: #6b7280;
+  text-align: center;
+}
+/* RIGHT PANEL — Outlook-style reading pane */
+.contentPanel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: #f3f4f6; /* soft gray like Outlook */
+  border-left: 1px solid #d1d5db;
+}
+
+/* Toolbar */
+.emailToolbar {
+  padding: 10px 16px;
+  background: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.toolbarButton {
+  padding: 6px 12px;
+  background: #f3f4f6;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #374151;
+  font-size: 14px;
+}
+
+.toolbarButton:hover {
+  background: #e5e7eb;
+}
+
+/* Subject Line */
+.emailSubjectBar {
+  background: #ffffff;
+  padding: 18px 24px;
+  font-size: 22px;
+  font-weight: 600;
+  color: #111827;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+/* Sender block */
+.emailHeader {
+  background: #ffffff;
+  padding: 16px 24px;
+  display: flex;
+  gap: 14px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.senderAvatar {
+  width: 42px;
+  height: 42px;
+  background: #4f46e5;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 600;
+  font-size: 18px;
+}
+
+.headerInfo {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.senderName {
+  font-weight: 600;
+  font-size: 15px;
+  color: #111827;
+}
+
+.senderEmail {
+  color: #6b7280;
+  font-size: 13px;
+}
+
+.emailTimestamp {
+  font-size: 13px;
+  color: #6b7280;
+  margin-top: 4px;
+}
+
+/* Body container */
+.emailBody {
+  padding: 28px 32px;
+  background: #ffffff;
+  margin: 24px auto;
+  width: 90%;
+  max-width: 900px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  min-height: 300px;
+  line-height: 1.7;
+  font-size: 15px;
+  color: #111827;
+  white-space: pre-wrap;
 }

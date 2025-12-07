@@ -20,11 +20,12 @@ def to_aware(dt):
         return dt.replace(tzinfo=timezone.utc)
     return dt
 
-def push_in_app(Notification, DatabaseService, email, n_type, msg):
+def push_in_app(Notification, DatabaseService, email, notification_type, message):
+    """Create in-app notification matching your Notification model"""
     n = Notification(
         user_email=email,
-        type=n_type,
-        message=msg,
+        type=notification_type,
+        message=message,
         is_read=False,
         created_at=datetime.now(timezone.utc)
     )
@@ -152,7 +153,7 @@ def generate_job_recommendation_email(user_name, matched_jobs):
     return html
 
 # --------------------------------------------------------
-# FINAL UNIFIED WORKER — FIXED COMPLETELY
+# FINAL UNIFIED WORKER — MATCHING YOUR NOTIFICATION MODEL
 # --------------------------------------------------------
 def unified_notification_worker(app):
 
@@ -206,22 +207,32 @@ def unified_notification_worker(app):
                             last = to_aware(u.last_general_notification_sent)
 
                             if not last or (now - last) >= delta:
+                                # CREATE IN-APP NOTIFICATION (always works)
                                 try:
-                                    msg = Message("General HireHub Notification",
-                                                  recipients=[u.email],
-                                                  body="This is your general notification based on your settings.")
-
+                                    push_in_app(
+                                        Notification, DatabaseService, u.email,
+                                        "General Notification",
+                                        "This is your general notification based on your settings."
+                                    )
+                                    print("✔ CREATED IN-APP NOTIFICATION")
+                                except Exception as e:
+                                    current_app.logger.exception("Failed to create in-app notification: %s", e)
+                                
+                                # TRY TO SEND EMAIL (may fail, but won't stop in-app notifications)
+                                try:
+                                    msg = Message(
+                                        "General HireHub Notification",
+                                        recipients=[u.email],
+                                        body="This is your general notification based on your settings."
+                                    )
                                     mail.send(msg)
-                                    push_in_app(Notification, DatabaseService, u.email,
-                                                "General Notification",
-                                                "General notification delivered.")
+                                    print("✔ SENT EMAIL")
+                                except Exception as e:
+                                    current_app.logger.warning("Email failed (in-app notification still created): %s", e)
 
-                                    u.last_general_notification_sent = now
-                                    db.session.commit()
-
-                                    print("✔ SENT GENERAL NOTIFICATION")
-                                except:
-                                    current_app.logger.exception("General Email Failed")
+                                u.last_general_notification_sent = now
+                                db.session.commit()
+                        
                         # ======================================================
                         # 2) JOB ALERTS (using RecommendedJob table)
                         # ======================================================
@@ -233,9 +244,7 @@ def unified_notification_worker(app):
 
                             if not last or (now - last) >= delta:
 
-                                # --------------------------------------------
                                 # Load recommended jobs for this user
-                                # --------------------------------------------
                                 recs = RecommendedJob.query.filter_by(
                                     user_id=u.id,
                                     is_active=True
@@ -244,12 +253,11 @@ def unified_notification_worker(app):
                                 matched_jobs = []
 
                                 for r in recs:
-                                   # Skip expired recommendations
+                                    # Skip expired recommendations
                                     exp = to_aware(r.expires_at)
                                     if exp and exp < now:
                                         r.is_active = False
                                         continue
-
 
                                     # Only include if the related job still exists + is active
                                     if r.job and r.job.is_active:
@@ -259,37 +267,44 @@ def unified_notification_worker(app):
 
                                 print("RECOMMENDED JOBS FOR USER:", [r.job.title for r in matched_jobs])
 
-                                # --------------------------------------------
-                                # Send the alerts with STYLED EMAIL
-                                # --------------------------------------------
+                                # Send the alerts with STYLED EMAIL + IN-APP
                                 if matched_jobs:
+                                    # ALWAYS CREATE IN-APP NOTIFICATION FIRST
                                     try:
-                                        # Generate beautiful HTML email
+                                        job_titles = [r.job.title for r in matched_jobs[:3]]
+                                        if len(matched_jobs) > 3:
+                                            summary = f"{', '.join(job_titles)}, and {len(matched_jobs) - 3} more"
+                                        else:
+                                            summary = ', '.join(job_titles)
+                                        
+                                        push_in_app(
+                                            Notification, DatabaseService,
+                                            u.email,
+                                            "Job Recommendation",
+                                            f"🎯 {len(matched_jobs)} New Job Match{'es' if len(matched_jobs) > 1 else ''}: {summary}. Check your email for full details!"
+                                        )
+                                        print("✔ CREATED IN-APP JOB NOTIFICATION")
+                                    except Exception as e:
+                                        current_app.logger.exception("Failed to create in-app notification: %s", e)
+                                    
+                                    # TRY TO SEND EMAIL (may fail)
+                                    try:
                                         user_name = u.full_name if hasattr(u, 'full_name') and u.full_name else u.email.split('@')[0]
                                         email_html = generate_job_recommendation_email(user_name, matched_jobs)
 
-                                        # SEND EMAIL
                                         mail.send(Message(
                                             "Your HireHub Job Recommendations 🎯",
                                             recipients=[u.email],
                                             html=email_html
                                         ))
-
-                                        # IN-APP NOTIFICATIONS
-                                        for r in matched_jobs:
-                                            push_in_app(
-                                                Notification, DatabaseService,
-                                                u.email, "Job Recommendation",
-                                                f"A recommended job is available: {r.job.title}"
-                                            )
-
-                                        u.last_job_alert_sent = now
-                                        db.session.commit()
-
-                                        print("✔ SENT JOB RECOMMENDATION EMAIL + IN-APP ALERTS")
-
+                                        print("✔ SENT JOB RECOMMENDATION EMAIL")
                                     except Exception as e:
-                                        current_app.logger.exception("Job Recommendation Email Failed")
+                                        current_app.logger.warning("Email failed (in-app notification still created): %s", e)
+
+                                    u.last_job_alert_sent = now
+                                    db.session.commit()
+
+                                    print("✔ JOB RECOMMENDATIONS PROCESSED")
 
                         # ======================================================
                         # 3) DIGEST (old behavior)
@@ -300,16 +315,33 @@ def unified_notification_worker(app):
                             if not last_digest or now - last_digest >= timedelta(minutes=u.digest_interval_minutes):
                                 jobs = Job.query.limit(5).all()
                                 if jobs:
-                                    html = "<h3>Your Job Digest</h3>"
-                                    for j in jobs:
-                                        html += f"<p><b>{j.title}</b> – {j.company} ({j.location})</p>"
-
+                                    job_list = [f"{j.title} at {j.company}" for j in jobs]
+                                    
+                                    # CREATE IN-APP NOTIFICATION
                                     try:
-                                        mail.send(Message("Your HireHub Digest", recipients=[u.email], html=html))
-                                        push_in_app(Notification, DatabaseService, u.email,
-                                                    "Digest", "Your job digest is ready.")
-                                    except:
-                                        current_app.logger.exception("Digest Failed")
+                                        push_in_app(
+                                            Notification, DatabaseService, u.email,
+                                            "Job Digest",
+                                            f"📬 Your digest is ready with {len(jobs)} jobs: {', '.join(job_list[:2])}{'...' if len(jobs) > 2 else ''}"
+                                        )
+                                        print("✔ CREATED IN-APP DIGEST NOTIFICATION")
+                                    except Exception as e:
+                                        current_app.logger.exception("Failed to create digest notification: %s", e)
+                                    
+                                    # TRY TO SEND EMAIL
+                                    try:
+                                        html = "<h3>Your Job Digest</h3>"
+                                        for j in jobs:
+                                            html += f"<p><b>{j.title}</b> – {j.company} ({j.location})</p>"
+
+                                        mail.send(Message(
+                                            "Your HireHub Digest",
+                                            recipients=[u.email],
+                                            html=html
+                                        ))
+                                        print("✔ SENT DIGEST EMAIL")
+                                    except Exception as e:
+                                        current_app.logger.warning("Digest email failed: %s", e)
 
                                 u.last_digest_sent = now
                                 db.session.commit()
@@ -325,18 +357,30 @@ def unified_notification_worker(app):
                             if (now - last_login) >= INACTIVITY_LIMIT:
                                 if not last_inact or (now - last_inact) >= INACTIVITY_LIMIT:
 
+                                    # CREATE IN-APP NOTIFICATION
                                     try:
-                                        mail.send(Message("We Miss You",
-                                                          recipients=[u.email],
-                                                          body="You haven't logged in for a few days."))
-
-                                        push_in_app(Notification, DatabaseService, u.email,
-                                                    "Inactivity",
-                                                    "You haven't logged in recently.")
-                                        u.last_login_notification_sent = now
-                                        db.session.commit()
-                                    except:
-                                        current_app.logger.exception("Inactivity Email Failed")
+                                        push_in_app(
+                                            Notification, DatabaseService, u.email,
+                                            "Inactivity Alert",
+                                            "💙 We miss you! You haven't logged in recently. Come back to discover new opportunities!"
+                                        )
+                                        print("✔ CREATED IN-APP INACTIVITY ALERT")
+                                    except Exception as e:
+                                        current_app.logger.exception("Failed to create inactivity notification: %s", e)
+                                    
+                                    # TRY TO SEND EMAIL
+                                    try:
+                                        mail.send(Message(
+                                            "We Miss You at HireHub! 💙",
+                                            recipients=[u.email],
+                                            body="You haven't logged in for a few days. Come back to check out new job opportunities!"
+                                        ))
+                                        print("✔ SENT INACTIVITY EMAIL")
+                                    except Exception as e:
+                                        current_app.logger.warning("Inactivity email failed: %s", e)
+                                    
+                                    u.last_login_notification_sent = now
+                                    db.session.commit()
 
                         # ======================================================
                         # 5) PROFILE REMINDER
@@ -346,19 +390,30 @@ def unified_notification_worker(app):
                         if u.profile_completion is not None and u.profile_completion < 60:
                             if not last_profile or (now - last_profile) >= timedelta(hours=24):
 
+                                # CREATE IN-APP NOTIFICATION
                                 try:
-                                    mail.send(Message("Improve Your HireHub Profile",
-                                                      recipients=[u.email],
-                                                      body="Your profile is below 60%. Complete it!"))
+                                    push_in_app(
+                                        Notification, DatabaseService, u.email,
+                                        "Profile Reminder",
+                                        f"📝 Your profile is {u.profile_completion}% complete. Add more details to get better job recommendations!"
+                                    )
+                                    print("✔ CREATED IN-APP PROFILE REMINDER")
+                                except Exception as e:
+                                    current_app.logger.exception("Failed to create profile reminder: %s", e)
+                                
+                                # TRY TO SEND EMAIL
+                                try:
+                                    mail.send(Message(
+                                        "Complete Your HireHub Profile",
+                                        recipients=[u.email],
+                                        body=f"Your profile is {u.profile_completion}% complete. Finish it to get better job matches!"
+                                    ))
+                                    print("✔ SENT PROFILE REMINDER EMAIL")
+                                except Exception as e:
+                                    current_app.logger.warning("Profile reminder email failed: %s", e)
 
-                                    push_in_app(Notification, DatabaseService, u.email,
-                                                "Profile Reminder",
-                                                "Your profile is incomplete.")
-
-                                    u.last_profile_reminder_sent = now
-                                    db.session.commit()
-                                except:
-                                    current_app.logger.exception("Profile Reminder Failed")
+                                u.last_profile_reminder_sent = now
+                                db.session.commit()
 
                 except Exception as e:
                     current_app.logger.exception("Unified Worker ERROR: %s", e)
