@@ -6,6 +6,7 @@
 
 .resumeScaler {
     display: inline-block;
+    height: 1000px;
 }
 
 .resume-preview {
@@ -18,6 +19,7 @@
     margin-bottom: 20px;
     color: black;
     font-family: Georgia, 'Times New Roman', Times, serif;
+    text-align: left;
 }
 
 .viewBtn {
@@ -25,6 +27,7 @@
     flex-direction: row;
     align-items: center;
     justify-content: center;
+    gap: 20px;
 }
 
 /* ~~~~~~~~~~~~~~~~ RESUMETEMPLATE STYLES BELOW ~~~~~~~~~~~~~~~~ */
@@ -113,6 +116,7 @@
     margin-bottom: 25px;
     font-size: 18px;
 }
+
 
 
 @media (max-width: 600px) {

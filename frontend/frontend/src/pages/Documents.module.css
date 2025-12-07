@@ -1,6 +1,6 @@
 .container {
   width: 100%;
-  min-height: calc(100vh - var(--nav-h) - 120px);
+  min-height: 100vh;
   border-radius: 10px;
 
 }
@@ -77,6 +77,8 @@
     position: sticky;
     top: 0;
     z-index: 1;
+    border-radius: 10px 10px  0px 0px;
+    align-items: center;
 }
 
 .dataRow {

@@ -199,7 +199,7 @@ const Settings = () => {
                     </div>
                 </div>
                 <div className={styles.alertsPreference}>
-                    <h3 className={styles.title}>General Notifications Settings</h3>
+                <h3 className={styles.title}>General Notifications Settings</h3>
                     <div className={styles.separator}></div>
                     <div className={styles.jobAlerts}>
                         <h5 className={styles.label}>Enable Instant HireHub Notifications</h5>

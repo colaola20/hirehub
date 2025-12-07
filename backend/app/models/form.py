@@ -13,7 +13,7 @@ class ResumeForm(db.Model):
     edHistory = db.Column(db.JSON)
     projInfo = db.Column(db.JSON)
 
-    # if needed for debugging
+
     def to_dict(self):
         return {
             "id": self.id,
