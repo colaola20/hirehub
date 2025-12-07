@@ -436,18 +436,18 @@ def delete_user():
         profile = Profile.query.filter_by(user_email=user.email).first()
         if profile:
             db.session.query(Skill).filter_by(profile_id=profile.profile_id).delete(synchronize_session=False)
-        if Profile is not None:
-            db.session.query(Profile).filter(getattr(Profile, "user_email") == user.email).delete(synchronize_session=False)
+        # Documents / CoverLetters may reference user by email
+        if Document is not None:
+             db.session.query(Document).filter(getattr(Document, "user_email") == user.email).delete(synchronize_session=False)
         if Application is not None:
             db.session.query(Application).filter(getattr(Application, "user_id") == user_id).delete(synchronize_session=False)
         if Favorite is not None:
             if hasattr(Favorite, "user_id"):
                 db.session.query(Favorite).filter(getattr(Favorite, "user_id") == user_id).delete(synchronize_session=False)
-        # Documents / CoverLetters may reference user by email
-        if Document is not None:
-            if hasattr(Document, "user_id"):
-                db.session.query(Document).filter(getattr(Document, "user_id") == user_id).delete(synchronize_session=False)
-
+        
+        if Profile is not None:
+            db.session.query(Profile).filter(getattr(Profile, "user_email") == user.email).delete(synchronize_session=False)
+        
 
         try:
             db.session.delete(user)

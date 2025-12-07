@@ -38,7 +38,8 @@
   justify-content: center;
   align-items: center;
   position: relative;
-  width: 420px;
+  width: 90%;
+  max-width: 440px;
   background: rgba(25, 20, 50, 0.9);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
@@ -47,9 +48,9 @@
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
 }
 
-h2 {
+.modalContainer h3 {
   margin: 0 0 8px 0;
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 600;
   color: #ffffff;
   letter-spacing: 0.3px;
@@ -61,14 +62,6 @@ h2 {
     font-size: 16px;
     color: #9aa4b2;
     line-height: 1.5;
-}
-
-.icon {
-  width: 4rem;
-  height: 4rem;
-  background: #6f67f0;
-  border-radius: 100px;
-  margin: 20px;
 }
 
 .closeBtn {
@@ -93,6 +86,65 @@ h2 {
   transform: rotate(90deg);
 }
 
+.pencilIcon{
+    width: 3rem;
+    height: 3rem;
+    margin: 20px;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 1rem;
+}
+
+.form input {
+  width: 100%;
+  padding: 14px 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  color: #ffffff;
+  font-size: 15px;
+  text-align: center;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.form input:focus {
+  outline: none;
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(142, 197, 252, 0.5);
+  box-shadow: 
+    0 0 0 3px rgba(142, 197, 252, 0.1),
+    0 4px 12px rgba(142, 197, 252, 0.15);
+}
+
+.form input::placeholder {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+
+.renameBtn {
+  padding: 14px 32px;
+  background: linear-gradient(135deg, #8ec5fc 0%, #e0c3fc 100%);
+  border: none;
+  border-radius: 10px;
+  color: #2b155a;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 16px rgba(142, 197, 252, 0.3);
+  letter-spacing: 0.3px;
+}
+
+.renameBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(142, 197, 252, 0.4);
+}
 
 /* Mobile responsive */
 @media (max-width: 480px) {
@@ -101,11 +153,11 @@ h2 {
     padding: 32px 24px;
   }
 
-  .modalContainer h2 {
+  .modalContainer h3 {
     font-size: 20px;
   }
 
-  .icon {
+  .pencilIcon {
     width: 3rem;
     height: 3rem;
   }
