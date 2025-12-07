@@ -5,7 +5,6 @@ from app.models.notification import Notification
 from app.models.user import User
 from app.extensions import mail
 from flask_mail import Message
-from datetime import datetime
 from datetime import datetime, timezone
 
 notifications_bp = Blueprint('notifications', __name__, url_prefix="/api")
@@ -50,107 +49,10 @@ BASE_EMAIL_TEMPLATE = """
 </html>
 """
 
-# ----------------------------------------------------------
-# DIGEST EMAIL TEMPLATE — Reddit post feed + HireHub look
-# ----------------------------------------------------------
-DIGEST_TEMPLATE = """
-<!DOCTYPE html>
-<html>
-<body style="font-family:Inter, Arial, sans-serif; background:#eef1f7; padding:36px;">
-  <div style="max-width:680px;margin:auto;background:white;padding:36px;border-radius:18px;
-              box-shadow:0 8px 28px rgba(0,0,0,0.08);">
-
-      {logo}
-
-      <h2 style="text-align:center;color:#4169E1;margin:0;font-size:26px;font-weight:600;">
-        Your Job Digest
-      </h2>
-
-      <p style="text-align:center;color:#666;margin-top:6px;font-size:15px;">
-        Here are the latest job opportunities for you.
-      </p>
-
-      <div style="margin-top:28px;">
-        {jobs}
-      </div>
-
-      <hr style="border:none;border-top:1px solid #e2e5ee;margin:36px 0;">
-
-      <p style="text-align:center;color:#888;font-size:13px;">
-        HireHub – Smart job recommendations, automatically delivered.
-      </p>
-  </div>
-</body>
-</html>
-"""
-
-# ----------------------------------------------------------
-# INACTIVITY EMAIL TEMPLATE
-# ----------------------------------------------------------
-INACTIVITY_TEMPLATE = """
-<!DOCTYPE html>
-<html>
-<body style="font-family:Inter, Arial, sans-serif; background:#f3f5fa; padding:36px;">
-  <div style="max-width:600px;margin:auto;background:white;padding:36px;border-radius:18px;
-              box-shadow:0 8px 28px rgba(0,0,0,0.08);">
-
-      {logo}
-
-      <h2 style="color:#4169E1;text-align:center;margin:0;font-weight:600;">
-        We Miss You!
-      </h2>
-
-      <p style="font-size:15px;color:#444;line-height:1.7;margin-top:18px;">
-        It looks like you haven't logged into HireHub in a while.
-        New job opportunities and personalized recommendations are waiting for you.
-      </p>
-
-      <hr style="border:none;border-top:1px solid #e2e5ee;margin:36px 0;">
-
-      <p style="text-align:center;color:#888;font-size:13px;">
-        Hiring moves fast — return to HireHub today.
-      </p>
-  </div>
-</body>
-</html>
-"""
-
-# ----------------------------------------------------------
-# JOB MATCH TEMPLATE
-# ----------------------------------------------------------
-JOB_MATCH_TEMPLATE = """
-<!DOCTYPE html>
-<html>
-<body style="font-family:Inter, Arial, sans-serif; background:#f2f7f2; padding:36px;">
-  <div style="max-width:660px;margin:auto;background:white;padding:36px;border-radius:18px;
-              box-shadow:0 8px 28px rgba(0,0,0,0.08);">
-
-      {logo}
-
-      <h2 style="text-align:center;color:#2E8B57;margin:0;font-weight:600;">
-        New Job Matches Found!
-      </h2>
-
-      <p style="font-size:15px;color:#444;line-height:1.7;margin-top:12px;">
-        Based on your skills, these positions align strongly with your profile:
-      </p>
-
-      <div style="margin-top:26px;">
-        {matches}
-      </div>
-
-      <hr style="border:none;border-top:1px solid #dfe8df;margin:36px 0;">
-
-      <p style="text-align:center;color:#7b907b;font-size:13px;">
-        HireHub – We help match your skills with the right employers.
-      </p>
-  </div>
-</body>
-</html>
-"""
+# ... (keep all your other email templates)
 
 # --------------------------------------------------------------------------
-# LIST NOTIFICATIONS
+# LIST NOTIFICATIONS - FIXED TO MATCH MODEL
 # --------------------------------------------------------------------------
 @notifications_bp.route('/notifications', methods=['GET'])
 @jwt_required()
@@ -162,29 +64,32 @@ def list_notifications():
             return jsonify({'error': 'User not found'}), 404
 
         notes = Notification.query.filter_by(user_email=user.email).order_by(Notification.created_at.desc()).all()
+        
+        # Return fields matching your Notification model structure
         return jsonify([{
-            'id': n.notification_id,
-            'title': getattr(n, 'type', 'Notification'),
-            'body': n.message,
-            'created_at': n.created_at.isoformat() if n.created_at else None,
-            'read': bool(n.is_read)
+            'notification_id': n.notification_id,
+            'user_email': n.user_email,
+            'type': n.type,
+            'message': n.message,
+            'is_read': bool(n.is_read),
+            'created_at': n.created_at.isoformat() if n.created_at else None
         } for n in notes]), 200
     except Exception as e:
         current_app.logger.exception('Failed to list notifications')    
         return jsonify({'error': 'Failed to list notifications', 'detail': str(e)}), 500
 
 # --------------------------------------------------------------------------
-# SEND NOTIFICATION (GENERIC EMAIL)
+# SEND NOTIFICATION (GENERIC EMAIL) - FIXED
 # --------------------------------------------------------------------------
 @notifications_bp.route('/notifications/send', methods=['POST'])
 @jwt_required()
 def send_notification():
     data = request.get_json() or {}
-    title = data.get('title') or data.get('subject') or 'Notification'
+    # Accept both 'title' and 'type' for backwards compatibility
+    title = data.get('title') or data.get('type') or data.get('subject') or 'Notification'
+    # Accept both 'body' and 'message' for backwards compatibility
     body = data.get('body') or data.get('message') or ''
     recipients = data.get('to')
-    print("MAIL_USERNAME =", current_app.config.get("MAIL_USERNAME"))
-    print("MAIL_DEFAULT_SENDER =", current_app.config.get("MAIL_DEFAULT_SENDER"))
 
     try:
         if recipients:
@@ -199,7 +104,14 @@ def send_notification():
         created = []
         for email in recipients:
             try:
-                note = Notification(user_email=email, type=title, message=body, is_read=False, created_at=datetime.utcnow())
+                # Create notification with correct field names
+                note = Notification(
+                    user_email=email, 
+                    type=title,           # ← 'type' field
+                    message=body,         # ← 'message' field
+                    is_read=False, 
+                    created_at=datetime.now(timezone.utc)
+                )
                 DatabaseService.create(note)
                 created.append(email)
             except Exception:
@@ -218,6 +130,7 @@ def send_notification():
         current_app.logger.exception('Failed to send notifications')
         return jsonify({'error': 'Failed to send notifications', 'detail': str(e)}), 500
 
+# ... (rest of your routes remain the same)
 # --------------------------------------------------------------------------
 # MARK NOTIFICATION READ
 # --------------------------------------------------------------------------
@@ -268,7 +181,6 @@ def debug_email():
         "MAIL_USERNAME": current_app.config['MAIL_USERNAME'],
         "MAIL_DEFAULT_SENDER": str(current_app.config['MAIL_DEFAULT_SENDER'])
     }
-
 # --------------------------------------------------------------------------
 # TEST DIGEST EMAIL
 # --------------------------------------------------------------------------
