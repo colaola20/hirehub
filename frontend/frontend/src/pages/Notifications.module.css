@@ -1,229 +1,233 @@
+/* MAIN CONTAINER — same as documents */
 .container {
   display: flex;
-  height: 100vh;
-  background: #ffffff;
-  font-family: "Inter", sans-serif;
+  width: 100%;
+  height: 100%;
+  padding: 0;           /* REMOVE GAP */
+  margin: 0;            /* REMOVE GAP */
+  border-radius: 0;     /* REMOVE ROUNDED CORNERS */
+  background: transparent !important; /* let parent gradient fill */
 }
 
-/* LEFT PANEL */
+
+
+/* LEFT PANEL — same blur + glass effect as documentsContainer */
 .listPanel {
   width: 360px;
-  border-right: 1px solid #e5e7eb;
-  background: #f9fafb;
+  height: 100%;
+  padding: 1.5rem;
+  background: rgba(20, 15, 40, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+  border: 1px solid rgba(255,255,255,0.05);
   display: flex;
   flex-direction: column;
+  color: white;
+  border-radius: 0 !important;
 }
 
+/* Inbox Title */
 .title {
-  padding: 20px;
-  font-size: 19px;
+  font-size: 20px;
   font-weight: 600;
-  color: #111827;
-  border-bottom: 1px solid #e5e7eb;
+  margin-bottom: 1rem;
 }
 
+/* Scrollable notifications list */
 .emailList {
   flex: 1;
   overflow-y: auto;
+  scrollbar-width: none;
 }
 
+.emailList::-webkit-scrollbar {
+  display: none;
+}
+
+/* Each notification row — same style as Documents table rows */
 .emailRow {
-  padding: 14px 20px;
-  border-bottom: 1px solid #ededed;
+  padding: 14px 14px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
   cursor: pointer;
-  transition: background 0.15s;
+  transition: 0.2s ease;
+  border-radius: 6px;
 }
 
 .emailRow:hover {
-  background: #f1f5f9;
+  background: rgba(255,255,255,0.08);
 }
 
 .unread {
-  background: #eef3ff;
+  background: rgba(255,255,255,0.12);
   font-weight: 600;
 }
 
 .emailRowTop {
   display: flex;
   justify-content: space-between;
-  color: #374151;
   font-size: 14px;
+  color: rgba(255,255,255,0.85);
 }
 
 .emailRowBottom {
   margin-top: 4px;
-  font-size: 14px;
-  color: #6b7280;
+  font-size: 13px;
+  color: rgba(255,255,255,0.65);
 }
 
 .emailSubject {
   font-weight: 600;
-  color: #111827;
+  color: white;
 }
 
 .emailPreview {
-  color: #6b7280;
+  color: rgba(255,255,255,0.6);
 }
 
-/* RIGHT PANEL */
+/* RIGHT PANEL — matches documentsContainer exactly */
 .contentPanel {
   flex: 1;
-  background: white;
-  display: flex;
-  flex-direction: column;
-}
-
-.emailHeader {
-  padding: 20px;
-  border-bottom: 1px solid #e5e7eb;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.emailHeader h1 {
-  margin: 0;
-  font-size: 24px;
-  font-weight: 600;
-}
-
-.deleteButton {
-  padding: 8px 16px;
-  background: #ef4444;
-  border: none;
-  border-radius: 6px;
+  padding: 2rem;
+  background: rgba(20, 15, 40, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.05);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.3);
   color: white;
-  cursor: pointer;
-}
-
-.emailMeta {
-  padding: 16px 20px;
-  border-bottom: 1px solid #e5e7eb;
-  color: #6b7280;
-  font-size: 14px;
-}
-
-.metaSender {
-  font-weight: 600;
-  color: #111827;
-}
-
-.metaDate {
-  margin-left: 12px;
-}
-
-.emailBody {
-  padding: 20px;
-  font-size: 15px;
-  line-height: 1.6;
-}
-
-.noEmail {
-  padding: 40px;
-  font-size: 18px;
-  color: #6b7280;
-  text-align: center;
-}
-/* RIGHT PANEL — Outlook-style reading pane */
-.contentPanel {
-  flex: 1;
   display: flex;
   flex-direction: column;
-  background: #f3f4f6; /* soft gray like Outlook */
-  border-left: 1px solid #d1d5db;
+  overflow-y: auto;
+  border-radius: 0 !important;
 }
 
-/* Toolbar */
+/* Toolbar buttons — styled like documents dropdown */
 .emailToolbar {
-  padding: 10px 16px;
-  background: #ffffff;
-  border-bottom: 1px solid #e5e7eb;
   display: flex;
   justify-content: flex-end;
   gap: 10px;
+  margin-bottom: 1rem;
 }
 
 .toolbarButton {
-  padding: 6px 12px;
-  background: #f3f4f6;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
-  cursor: pointer;
-  color: #374151;
+  padding: 6px 14px;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 8px;
+  color: white;
   font-size: 14px;
+  cursor: pointer;
+  transition: 0.2s;
 }
 
 .toolbarButton:hover {
-  background: #e5e7eb;
+  background: rgba(255,255,255,0.22);
 }
 
-/* Subject Line */
+/* Subject bar */
 .emailSubjectBar {
-  background: #ffffff;
+  background: rgba(255,255,255,0.08);
   padding: 18px 24px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.07);
   font-size: 22px;
   font-weight: 600;
-  color: #111827;
-  border-bottom: 1px solid #e5e7eb;
+  margin-bottom: 1rem;
 }
 
 /* Sender block */
 .emailHeader {
-  background: #ffffff;
+  background: rgba(255,255,255,0.06);
   padding: 16px 24px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.05);
   display: flex;
   gap: 14px;
-  border-bottom: 1px solid #e5e7eb;
+  margin-bottom: 1.5rem;
 }
 
 .senderAvatar {
   width: 42px;
   height: 42px;
-  background: #4f46e5;
-  color: white;
+  background: #6f67f0;
   border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
+  color: white;
   font-weight: 600;
   font-size: 18px;
 }
 
-.headerInfo {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+.headerInfo span {
+  display: block;
 }
 
 .senderName {
-  font-weight: 600;
   font-size: 15px;
-  color: #111827;
+  font-weight: 600;
+  color: white;
 }
 
-.senderEmail {
-  color: #6b7280;
-  font-size: 13px;
-}
-
+.senderEmail,
 .emailTimestamp {
   font-size: 13px;
-  color: #6b7280;
-  margin-top: 4px;
+  color: rgba(255,255,255,0.7);
 }
 
 /* Body container */
 .emailBody {
   padding: 28px 32px;
-  background: #ffffff;
-  margin: 24px auto;
-  width: 90%;
-  max-width: 900px;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  min-height: 300px;
-  line-height: 1.7;
+  background: rgba(255,255,255,0.10);
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.15);
+  color: white;
   font-size: 15px;
-  color: #111827;
+  line-height: 1.7;
   white-space: pre-wrap;
+  min-height: 300px;
+}
+
+/* Placeholder when no notification selected */
+.noEmail {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: rgba(255,255,255,0.6);
+  font-size: 18px;
+}
+.inboxHeaderRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.inboxHeaderRow h2 {
+  font-size: 20px;
+  font-weight: 600;
+  color: white;
+}
+
+.bulkActions {
+  display: flex;
+  gap: 10px;
+}
+
+.bulkButton {
+  padding: 6px 12px;
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 8px;
+  color: white;
+  font-size: 13px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.bulkButton:hover {
+  background: rgba(255,255,255,0.25);
 }

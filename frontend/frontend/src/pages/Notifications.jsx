@@ -135,7 +135,7 @@ export default function Notifications() {
   const unreadCount = notifications.filter((n) => !n.is_read).length;
   const getMessageText = (n) => n?.message || n?.body || "";
   const getNotificationType = (n) => n?.type || n?.title || "Notification";
-
+  
   const formatDate = (dateStr) => {
     if (!dateStr) return "";
     const date = new Date(dateStr);
@@ -143,13 +143,52 @@ export default function Notifications() {
       hour: "2-digit",
       minute: "2-digit",
     });
+	
   };
+const selectAll = () => {
+  const allIds = notifications.map(n => n.notification_id);
+  setSelectedItems(new Set(allIds));
+};
+
+const deleteAll = async () => {
+  if (!confirm("Delete ALL selected notifications?")) return;
+
+  try {
+    const token = localStorage.getItem("token");
+
+    for (let id of selectedItems) {
+      await fetch(`/api/notifications/${id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+    }
+
+    // remove from UI
+    setNotifications(prev =>
+      prev.filter(n => !selectedItems.has(n.notification_id))
+    );
+
+    setSelectedItems(new Set());
+    toast.success("Deleted all selected");
+    setSelected(null);
+
+  } catch (err) {
+    toast.error("Could not delete all");
+  }
+};
 
   return (
     <div className={styles.container}>
       {/* LEFT LIST */}
       <div className={styles.listPanel}>
-        <h2 className={styles.title}>Inbox ({unreadCount})</h2>
+        <div className={styles.inboxHeaderRow}>
+		<h2>Inbox ({unreadCount})</h2>
+
+		<div className={styles.bulkActions}>
+			<button onClick={selectAll} className={styles.bulkButton}>Select All</button>
+			<button onClick={deleteAll} className={styles.bulkButton}>Delete All</button>
+		</div>
+		</div>
 
         <div className={styles.emailList}>
           {loading && <div className={styles.loading}>Loading…</div>}
