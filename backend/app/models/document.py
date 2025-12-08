@@ -12,8 +12,6 @@ class Document(db.Model):
     document_type = db.Column(db.String(50), nullable=False)  # 'resume' or 'cover_letter'
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     updated_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
-    html_content = db.Column(db.Text)
-
 
     # Polymorphic discriminator
     # __mapper_args__ = {

@@ -33,8 +33,7 @@ def authorize_github():
         token = oauth.github.authorize_access_token()
         user_info = oauth.github.get("user").json()
         email_info = oauth.github.get("user/emails").json()
-        name = user_info.get("name") or ""
-        name_parts = name.split(" ", 1)
+
         primary_email = next((e["email"] for e in email_info if e.get("primary")), None)
         if not primary_email:
             return jsonify({"status": "error", "message": "No primary email found"}), 400
@@ -42,27 +41,15 @@ def authorize_github():
 
         user = User.query.filter_by(email=primary_email).first()
         if not user:
+            name = user_info.get("name") or ""
+            name_parts = name.split(" ", 1)
+
             user = User(
                 username=user_info["login"],
                 email=primary_email,
                 first_name=name_parts[0] if len(name_parts) > 0 else "",
                 last_name=name_parts[1] if len(name_parts) > 1 else "",
-                general_notifications_enabled=True,
-                general_notifications_frequency="immediately",
-                job_alerts_enabled=True,
-                job_alerts_frequency="2 minutes"
             )
-        else:
-            if user.general_notifications_enabled is None:
-                user.general_notifications_enabled = True
-            if not user.general_notifications_frequency:
-                user.general_notifications_frequency = "immediately"
-
-            if user.job_alerts_enabled is None:
-                user.job_alerts_enabled = True
-            if not user.job_alerts_frequency:
-                user.job_alerts_frequency = "2 minutes"
-
 
             user.set_password(secrets.token_urlsafe(16))
 

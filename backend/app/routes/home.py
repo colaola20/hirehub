@@ -13,27 +13,6 @@ def home():
     })
 
 
-@home_bp.route('/api/health')
-def health():
-    """Health check endpoint for Docker and monitoring"""
-    try:
-        # Quick database check
-        with db.session.connection() as conn:
-            conn.execute(text("SELECT 1;"))
-
-        return jsonify({
-            "status": "healthy",
-            "service": "hirehub-backend",
-            "database": "connected"
-        }), 200
-    except Exception as e:
-        return jsonify({
-            "status": "unhealthy",
-            "service": "hirehub-backend",
-            "error": str(e)
-        }), 500
-
-
 @home_bp.route('/pingdb')
 def ping_db():
     try:

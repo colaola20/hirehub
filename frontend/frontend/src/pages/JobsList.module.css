@@ -12,6 +12,7 @@
     width: 100%;
     box-sizing: border-box;
     padding: 8px 0;
+    width: 100%;
     box-sizing: border-box;
     padding: 8px;
     display: flex;
@@ -159,24 +160,27 @@
 }
 
 .cardList {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    height: 1100px;/* Changed from fixed 1100px */
-    width: 100%;
-    /* Spacing between cards */
+    display: grid;
+    height: 1000px;
+    grid-template-columns: 1fr;
     gap: var(--gap);
-    overflow-y: auto;
-    overflow-x: hidden;
-    /* Hide scrollbar styles  */
-    -ms-overflow-style: none;
-    scrollbar-width: none;
+    margin-top: 8px;
+    overflow: auto;
+    padding: 20px 0 0 30px ;
+     /* Hide scrollbar for IE, Edge */
+    -ms-overflow-style: none;  
+    /* Hide scrollbar for Firefox */
+    scrollbar-width: none;  
     
 }
-
 
 .cardList::-webkit-scrollbar {
     display: none;
 }
 
 
+.jobCard {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}

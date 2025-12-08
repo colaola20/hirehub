@@ -2,7 +2,7 @@
 import { useState, useRef } from "react";
 import JoditEditor from "jodit-react";
 
-import styles from "./Job_Dashboard.module.css";
+import styles from "./job_dashboard.module.css";
 
 export default function Chatbot({ job }) {
   const [messages, setMessages] = useState([

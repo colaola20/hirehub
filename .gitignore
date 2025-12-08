@@ -41,11 +41,3 @@ backend/Lib/
 backend/uploads/
 
 backend/Scripts/
-
-# Docker
-docker-compose.override.yml
-*.env.local
-.env.production
-
-# Nginx logs
-nginx/logs/

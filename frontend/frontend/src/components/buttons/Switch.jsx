@@ -1,20 +1,17 @@
 import styles from './Switch.module.css'
 import { useState } from 'react'
 
-const Switch = ({checked = true, onChange}) => {
+const Switch = (onChange) => {
+    const [on, setOn] = useState(true)
 
     const handleToggle = () => {
-        onChange?.(!checked)
+        const newState = !on
+        setOn(newState)
+        onChange?.(!on)
     }
 
     return (
-        <button 
-            type="button" 
-            role="switch" 
-            aria-checked={checked} 
-            className={`${styles.switch} ${checked ? styles.on : ""}`} 
-            onClick={handleToggle}
-            > 
+        <button type="button" role="switch" aria-checked={on} className={`${styles.switch} ${on ? styles.on : ""}`} onClick={handleToggle}> 
             <div className={styles.switchHandle}>
             </div>
         </button>

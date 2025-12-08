@@ -10,9 +10,6 @@ import boto3
 from werkzeug.utils import secure_filename
 import uuid
 from app.models.user import User
-from app.extensions import db
-
-from datetime import datetime 
 
 # from groq import Groq
 
@@ -50,7 +47,7 @@ s3_client = boto3.client(
 
 
 BUCKET_NAME = os.getenv('S3_BUCKET_NAME') #fix this
-ALLOWED_EXTENSIONS = {'pdf', 'txt', 'doc', 'docx'}
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'pdf', 'txt', 'doc'}
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -76,7 +73,7 @@ def upload_file():
         file = request.files['file']
 
         if file.filename == '':
-            return jsonify({'error': "No file selected"}), 400
+            return jsonify({'eror': "No file selected"}), 400
         
         if not allowed_file(file.filename):
             return jsonify({'error': 'File type not allowed'}), 400
@@ -127,10 +124,7 @@ def upload_file():
             'message': 'File uploaded successfully',
             'original_filename': original_filename,
             'filename': unique_filename,
-            'id': created_user.document_id,
-            'created_at': doc.created_at.isoformat(),
-            'updated_at': doc.updated_at.isoformat(),
-
+            'document_id': created_user.document_id
         }), 200
             
     except Exception as e:
@@ -162,15 +156,14 @@ def get_document_url(document_id):
             'get_object',
             Params={
                 'Bucket': BUCKET_NAME,
-                'Key': document.file_path,
-                'ResponseContentDisposition': f'attachment; filename="{document.original_filename}"'
+                'Key': document.fille_path
             },
             ExpiresIn=3600
         )
 
         return jsonify({
             'url': presigned_url,
-            'filename': document.original_filename,
+            'filename': document.file_path.split('/')[-1],
             'expires_in': 3600
         }), 200
     except Exception as e:
@@ -225,28 +218,21 @@ def get_user_documents():
         current_user_id = int(get_jwt_identity())
 
         # Get user's email from user ID
-        user = User.query.get(current_user_id)
+        from app.models.user import User
+        user = DatabaseService.get_by_id(User, current_user_id)
         if not user:
             return jsonify({'status': 'error', 'message': 'User not found'}), 404
 
         # Get all documents for this user
-        documents = Document.query.filter_by(user_email=user.email).all()
+        documents = DatabaseService.filter_by(Document, user_email=user.email)
 
-        documents_list = []
-        for doc in documents:
-            documents_list.append({
-                'id': doc.document_id,
-                'original_filename': doc.original_filename,
-                'document_type': doc.document_type,
-                'created_at': doc.created_at.isoformat(),
-                'updated_at': doc.updated_at.isoformat(),
-            })
+        documents_data = [doc.to_dict() for doc in documents]
 
         return jsonify({
             'status': 'success',
-            'message': f'Retrieved {len(documents_list)} documents',
-            'data': documents_list,
-            'count': len(documents_list)
+            'message': f'Retrieved {len(documents)} documents',
+            'data': documents_data,
+            'count': len(documents)
         }), 200
 
     except Exception as e:
@@ -255,74 +241,6 @@ def get_user_documents():
             'message': 'Failed to retrieve documents',
             'error': str(e)
         }), 500
-
-# ------------------------
-# Rename user's doc
-# ------------------------
-@documents_bp.route('/api/documents/<int:document_id>/rename', methods=['PATCH'])
-@jwt_required()
-def rename_file(document_id):
-    try:
-        user_id = int(get_jwt_identity())
-        user = User.query.get(user_id)
-
-        if not user:
-            return jsonify({'error': 'User not found'}), 404
-
-        document = Document.query.get(document_id)
-
-        if not document:
-            return jsonify({'error': 'Document not found'}), 404
-        
-        if document.user_email != user.email:
-            return jsonify({'error': 'Unauthorized'}), 403
-        
-        # Get the new filename from request
-        data = request.get_json()
-        new_filename = data.get('original_filename')
-
-        if not new_filename:
-            return jsonify({'error': 'Filename is required'}), 400
-        
-        # Validate filename
-        new_filename = new_filename.strip()
-        if not new_filename:
-            return jsonify({'error': 'Filename cannot be empty'}), 400
-        
-        # Optional: Add forbidden characters check
-        forbidden_chars = ['/', '\\', ':', '*', '?', '"', '<', '>', '|']
-        if any(char in new_filename for char in forbidden_chars):
-            return jsonify({'error': 'Filename contains invalid characters'}), 400
-        
-        # preserve original extension if present
-        original_extension = ''
-        orig_name = getattr(document, 'original_filename', '') or ''
-        if '.' in orig_name:
-            original_extension = orig_name.rsplit('.', 1)[-1]
-        if original_extension and not new_filename.lower().endswith(f'.{original_extension.lower()}'):
-            new_filename = f"{new_filename}.{original_extension}"
-        
-        
-        # Update the document
-        document.original_filename = new_filename
-        document.updated_at = datetime.utcnow()  # Update timestamp
-        
-        db.session.commit()
-        
-        return jsonify({
-            'message': 'Document renamed successfully',
-            'data': {
-                'id': document.document_id,
-                'original_filename': document.original_filename,
-                'updated_at': document.updated_at.isoformat()
-            }
-        }), 200
-        
-    except Exception as e:
-        db.session.rollback()
-        print(f"Error renaming document: {str(e)}")
-        return jsonify({'error': 'Failed to rename document'}), 500
-
 
 
 # ------------------------
@@ -447,8 +365,6 @@ def delete_document(document_id):
     try:
         current_user_id = int(get_jwt_identity())
 
-        logger.info(document_id)
-
         # Get user's email from user ID
         from app.models.user import User
         user = DatabaseService.get_by_id(User, current_user_id)
@@ -464,31 +380,13 @@ def delete_document(document_id):
         # Verify document belongs to the authenticated user
         if document.user_email != user.email:
             return jsonify({'status': 'error', 'message': 'Unauthorized access'}), 403
-        
-        try:
-            s3_client.delete_object(
-                Bucket=BUCKET_NAME,
-                Key=document.file_path
-            )
-            logger.info(f"Deleted file from S3: {document.file_path}")
-        except Exception as e:
-            logger.exception(f"Failed to delete from S3: {document.file_path}")
-            return jsonify({'error': 'Failed to delete file from storage'}), 500
-        
-        try:
-            db.session.delete(document)
-            db.session.commit()
-            logger.info(f"Deleted document record: {document_id}")
-        except Exception as e:
-            db.session.rollback()
-            logger.exception("Failed to delete document from database")
-            return jsonify({'error': 'Failed to delete document record'}), 500
 
+        # Delete the document
+        DatabaseService.delete(document)
 
         return jsonify({
             'status': 'success',
-            'message': 'Document deleted successfully',
-            'document_id': document_id
+            'message': 'Document deleted successfully'
         }), 200
 
     except Exception as e:

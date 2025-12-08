@@ -20,18 +20,22 @@ from app.routes.profile import profile_bp
 from app.routes.documents import documents_bp
 from app.routes.form import form_bp
 from datetime import timedelta
+
 from app.routes.chat_bot import chat_bp
-from app.routes.resume_generation import resume_bp
 from flask_cors import CORS
 from .config import Config
-from app.routes.contact_us import contact_bp
-from app.models.settings_page import settings_bp
+
+# Import models so Flask-Migrate can detect them
 from app.models.user import User
 from app.models.job import Job
 from app.models.application import Application
 from app.models.profile import Profile
 from app.models.skill import Skill
+from app.models.profile import Profile
+from app.models.skill import Skill
 from app.routes.chat_bot import chat_bp
+from datetime import timedelta
+
 
 load_dotenv()
 
@@ -46,33 +50,37 @@ def create_app():
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['JWT_SECRET_KEY'] = os.environ.get('JWT_SECRET_KEY') or 'jwt-secret-string'
 
-    app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=12)
+    app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=12) 
 
     # File upload configuration
     app.config['UPLOAD_FOLDER'] = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'uploads')
     app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024  # 5MB max file size
     app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg'}
 
-    # Allow frontend requests
+    # Allow requests from your frontend
     CORS(app, origins=["http://localhost:5173"])
 
-    # Load Config defaults
+    # Load any extra config (like mail settings) from Config class
     app.config.from_object(Config)
 
-    # Email config fallbacks
-    app.config.setdefault("MAIL_SERVER")
-    app.config.setdefault("MAIL_PORT")
-    app.config.setdefault("MAIL_USE_TLS")
-    app.config["MAIL_USERNAME"] = os.getenv("MAIL_USERNAME")
-    app.config["MAIL_PASSWORD"] = os.getenv("MAIL_PASSWORD")
-    app.config["MAIL_DEFAULT_SENDER"] = os.getenv("MAIL_DEFAULT_SENDER")
+    # ✅ Flask-Mail config (defaults, can be overridden via .env)
+    app.config.setdefault("MAIL_SERVER", "smtp.gmail.com")
+    app.config.setdefault("MAIL_PORT", 587)
+    app.config.setdefault("MAIL_USE_TLS", True)
+    app.config["MAIL_USERNAME"] = os.getenv("MAIL_USERNAME", "harisakber21@gmail.com")
+    app.config["MAIL_PASSWORD"] = os.getenv("MAIL_PASSWORD", "xqzw mvej cyxb pkuw")
+    app.config["MAIL_DEFAULT_SENDER"] = os.getenv("MAIL_DEFAULT_SENDER", "harisakber21@gmail.com")
 
+    if app.config["MAIL_PASSWORD"] == "xqzw mvej cyxb pkuw":
+        app.config["MAIL_SUPPRESS_SEND"] = False
+
+    # Initialize extensions
     db.init_app(app)
     jwt.init_app(app)
     migrate.init_app(app, db)
     mail.init_app(app)
 
-    # OAuth Providers
+    # Register OAuth providers
     init_oauth(app)
     init_google_oauth(app)
     init_linkedin_oauth(app)
@@ -90,32 +98,33 @@ def create_app():
     app.register_blueprint(applications_bp)
     app.register_blueprint(documents_bp)
     app.register_blueprint(form_bp)
-    app.register_blueprint(notifications_bp, url_prefix="/api")
+    app.register_blueprint(notifications_bp, url_prefix="/api") 
     app.register_blueprint(chat_bp, url_prefix="/api")
-    app.register_blueprint(settings_bp, url_prefix="/api")
-    app.register_blueprint(contact_bp)    
-    app.register_blueprint(resume_bp)
+   
 
-    # --------------------------------------------------
-    # Unified notification worker integration (FIXED)
-    # --------------------------------------------------
+       # ---------------------------------------
+    # Notification Workers (Safe Initialization)
+    # ---------------------------------------
     init_notification_workers = None
 
     try:
-        from app.tasks.notifications_task import unified_notification_worker as worker_func
+        # Use relative import for clean structure if possible
+        from app.tasks.notifications_task import init_notification_workers as worker_func
         init_notification_workers = worker_func
     except Exception as e:
-        app.logger.error(f"❌ Failed to import unified worker: {e}")
+        # You should see this if the import fails
+        app.logger.error(f"❌ Failed to import notification workers: {e}")
         init_notification_workers = None
 
-    # Start worker normally (old code had 'if False:', preventing startup)
-    if init_notification_workers:
+    # 🟢 DEBUG FIX: Remove the 'os.environ.get("WERKZEUG_RUN_MAIN") == "true"' check
+    if init_notification_workers is not None:
         try:
             init_notification_workers(app)
-            app.logger.info("✔ Unified Notification Worker started.")
+            # You should see this in your console/logs now!
+            app.logger.info("✔ Notification workers started (DEBUG mode).") 
         except Exception as e:
-            app.logger.error(f"❌ Failed to start unified worker: {e}")
+            app.logger.error(f"❌ Failed to start notification workers: {e}")
     else:
-        app.logger.info("ℹ Unified worker unavailable — not started.")
+        app.logger.info("ℹ Workers unavailable — workers not started.")
 
     return app

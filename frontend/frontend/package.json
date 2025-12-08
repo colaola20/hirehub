@@ -16,7 +16,6 @@
     "esbuild": "^0.25.10",
     "formik": "^2.4.6",
     "html-truncate": "^1.2.2",
-    "html2pdf.js": "^0.12.1",
     "jodit": "^4.7.4",
     "jodit-react": "^5.2.31",
     "jwt-decode": "^3.1.2",

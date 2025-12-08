@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { useSearchParams, useNavigate, Link } from "react-router-dom";
 import styles from "./reset_password.module.css";
-import placeholderImg from "../../public/assets/login_reg_Place_holder1.png";
+import placeholderImg from "../assets/login_reg_Place_holder1.png";
 
 const ResetPassword = () => {
   const [searchParams] = useSearchParams();

@@ -321,13 +321,13 @@ const Profile = () => {
                     <div className={styles.avatarContainer}>
                         {profileData.profileImage ? (
                             <img
-                                src={profileData.profileImage}
+                                src={`/api/profile/image/${profileData.profileImage}`}
                                 alt="Profile"
                                 className={styles.avatar}
                             />
                         ) : (
                             <div className={styles.avatar}>
-                                {profileData.firstName?.charAt(0) || ''}{profileData.lastName?.charAt(0) || ''}
+                                {profileData.firstName.charAt(0)}{profileData.lastName.charAt(0)}
                             </div>
                         )}
                         <label className={styles.uploadButton}>
@@ -355,7 +355,9 @@ const Profile = () => {
                                 className={styles.input}
                             />
                         ) : (
-                            <p className={styles.headline}>{profileData.headline || 'No headline added yet'}</p>
+                            profileData.headline && (
+                                <p className={styles.headline}>{profileData.headline}</p>
+                            )
                         )}
                     </div>
                     {!isEditing && (

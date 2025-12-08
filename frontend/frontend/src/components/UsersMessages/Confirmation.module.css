@@ -7,32 +7,9 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  /* Safari & iOS support */
-  -webkit-backdrop-filter: blur(8px);
   backdrop-filter: blur(8px);
-  z-index: 1000;
-  animation: fadeIn 0.2s ease-out;
+  z-index: 999;
 } 
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
 
 .modalContainer {
   display: flex;
@@ -47,15 +24,6 @@
   padding: 24px;
   color: white;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-}
-
-.modalContainer h2 {
-  margin: 16px 0 8px 0;
-  font-size: 22px;
-  font-weight: 600;
-  color: #ffffff;
-  letter-spacing: 0.3px;
-  text-align: center;
 }
 
 .text {
@@ -80,20 +48,13 @@
   right: 12px;
   background: transparent;
   border: none;
-  padding: 8px;
   color: #ccc;
   cursor: pointer;
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  transition: color 0.2s;
 }
 
 .closeBtn:hover {
-  background: rgba(255, 102, 102, 0.15);
-  border-color: rgba(255, 102, 102, 0.3);
   color: #ff6666;
-  transform: rotate(90deg);
 }
 
 .submissionArea {
@@ -108,31 +69,7 @@
   background: #5850bb;
 }
 
-.CancelBtn:hover {
-  border-color: rgba(255, 255, 255, 0.3);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 10px rgba(255, 255, 255, 0.2);
-}
-
 .SubmitBtn{
   width: 50%;
   border: 1px solid #6f67f0;
-}
-
-.SubmitBtn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 10px #6f67f0;
-}
-
-
-/* Mobile responsive */
-@media (max-width: 480px) {
-  .modalContainer {
-    width: 95%;
-    padding: 32px 24px;
-  }
-
-  .modalContainer h2 {
-    font-size: 20px;
-  }
 }

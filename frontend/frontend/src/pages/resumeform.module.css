@@ -1,21 +1,19 @@
-
-
-/* -------- Reset for full-bleed BG -------- */
-:global(html, body, #root) {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  overflow-x: hidden;
-}
-
 .container {
+    padding: 150px 275px 50px 275px;
     position: relative;
     width: 100%;
-    min-height: 100vh;
+    min-width: 300px;
+    height: 100%;
     display: flex;
     justify-content: center;
-    align-items: flex-start;
+    position: relative;
     box-sizing: border-box;
+    /* ------------copy and pasted from login_Page.css------------ */
+    /* display: flex;
+    justify-content: center;
+    align-items: center;         
+    background: none;                  
+    overflow: hidden; */
 }
 
 /* ----------------------------------------------------------- */
@@ -57,55 +55,90 @@
     background-attachment: fixed;
 }
 
+.back-btn {
+    position: absolute;
+    top: 60px;
+    left: 85px;
+    font-size: 1.2rem;
+}
+
 
 .form-box {
     background: rgba(20, 15, 40, 0.65);
-    padding: 20px;
     backdrop-filter: blur(10px);
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding: 20px;
+    border-radius: 20px;
+    min-width: 1125px;
+    max-width: 1350px;
     width: 100%;
+    /* margin: 0 auto; */
+    box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.3);
     color: white;
-    position: relative;
-    min-height: 100vh;
-    box-sizing: border-box;
-}
-
-.form-box h1 {
-    font-size: 2rem;
-    font-weight: 600;
-    margin-bottom: 20px;
-    text-align: center;
 }
 
 .form-box h2 {
-    font-size: 1.5rem;
-    font-weight: 500;
+    font-size: 2rem;
+    font-weight: 700;
 }
 
 .resume-form-container {
-    width: 100%;
-    max-width: 1200px;
+    /* same color and blur styling as navbar */
+    /* background: rgba(20, 15, 40, 0.65); */
+    /* border: 1px solid rgba(255, 255, 255, 0.3); */
+    backdrop-filter: blur(10px);
+    box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.15);
+
     transition: height 0.35s ease;
-    margin: 0; 
+    overflow: hidden;
+
+    padding: 15px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 15px;
-    padding: 30px;
-    min-height: 400px;
-    width: 90%;
-    max-width: 1200px;
+    gap: 50px;
+    min-height: 100px;
+    /* max-height: 1000px; */
+    width: 83%;
+    max-width: 1000px;
     border-radius: 20px;
-    padding: 30px;
-    gap: 10ps;
+    margin: 15px 0;
+    padding-bottom: 50px;
     color: white;
     text-align: center;
-    box-sizing: border-box;
-    overflow: visible;
 }
 
+.resume-form-container input {
+    background-color: rgb(255, 255, 255);
+    border-radius: 8px;
+    font-size: 1rem;
+    color: black;
+    padding: 5px 7.5px;
+    border: 1px solid #eee;
+}
+
+.resume-form-container input[placeholder="Summary Generation (separate keywords by commas)"] {
+    background-color: rgb(255, 255, 255);
+    padding: 12px 16px;
+    border: 1px solid #eee;
+    font-size: 1rem;
+    width: 400px;
+    height: 80px;
+}
+
+.resume-form-container input[type="checkbox"] {
+    accent-color: #562fac;
+}
+
+
+.submit-btn {
+    background: linear-gradient(to right, #86bbf0, #562fac);
+    color: white;
+    border: 1px solid black;
+    margin: 10px;
+}
 
 .prog-btn {
     display: flex;
@@ -114,21 +147,95 @@
     align-items: center;
     width: 100%;
     max-width: 1100px;
+    height: 50px;
+    /* margin: 15px; */
+    font-size: 1.15rem;
 }
 
+.placeholder {
+    width: 72.36px;
+    height: 36.8px;
+}
 
 .progress-indicator {
-    font-weight: 400;
-    font-size: 1rem;
+    font-weight: 600;
+    font-size: 1.25rem;
+}
+
+.prog-btn-btn {
+    background-color: rgba(20, 15, 40, 0.65);
+    width: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.prog-btn-btn:hover {
+    background-color: rgba(69, 41, 131, 0.65);
+    transition: background-color 0.05s ease;
+}
+
+.submit-form-btn {
+    background-color: rgba(77, 185, 211, 0.65);
+    width: 90px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.submit-form-btn:hover {
+    background-color: rgba(0, 204, 255, 0.748);
+    transition: background-color 0.05s ease;
+}
+
+.resume-generation {
+    width: 100%;
+    text-align: center;
+}
+
+.resume-text {
+    background-color: antiquewhite;
 }
 
 
-/* Extra small devices */
-@media (max-width: 360px) {
-    .form-box h1 {
-        font-size: 1.1rem;
+@media (max-width: 1670px) {
+    .form-box{
+        min-width: 1164px;
     }
+}
+@media (max-width: 1200px) {
+
+
+    .container {
+        padding: 40px 10px;
+    }
+
+    .back-btn {
+        position: absolute;
+        top: 20px;
+        left: 15px;
+        font-size: 1.2rem;
+    }
+
+    .form-box {
+        padding: 10px 15px;
+        margin: 40px 0 0 0;
+        min-width: 300px;
+
+    }
+
     .resume-form-container {
-        padding: 10px;
+        padding: 10px 10px 30px 10px;
+        gap: 30px;
     }
+
+    .prog-btn{
+        margin: 10px 0;
+        height: auto;
+    }
+}
+
+@media (max-width: 666px){
+
 }

@@ -5,7 +5,7 @@ import styles from "./Registration_Page.module.css"; // ⬅️ CSS Module
 import { Link,useNavigate } from "react-router-dom";
 import ErrorMessage from "../components/UsersMessages/Error.jsx";
 import SuccessMessage from "../components/UsersMessages/Success.jsx";
-import placeholderImg from "../../public/assets/login_reg_Place_holder1.png";
+import placeholderImg from "../assets/login_reg_Place_holder1.png";
 
 const RegistrationPage = () => {
   const [username, setUsername] = useState("");
@@ -42,7 +42,7 @@ const RegistrationPage = () => {
       return;
     }
     if (!nameRegex.test(firstName)) {
-       setInfoForModal("Invalid First Name","First name must be 2-30 alphabetic characters.");
+       setInfoForModal("Invalid First Name","Last name must be 2-30 alphabetic characters.");
       return;
     }
 

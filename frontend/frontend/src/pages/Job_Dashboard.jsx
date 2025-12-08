@@ -1,7 +1,7 @@
 // job_dashboard.jsx
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import styles from "./Job_Dashboard.module.css";
+import styles from "./job_dashboard.module.css";
 import Chatbot from "./chat_bot";
 import SmallModal from "../components/SmallModal.jsx";
 import { marked } from "marked";

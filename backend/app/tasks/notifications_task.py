@@ -2,724 +2,323 @@ import threading
 import time
 from datetime import datetime, timedelta, timezone
 from flask import current_app
+from sqlalchemy import and_, or_
+print("🔥 notification_task.py LOADED")
+
+# ============================================================
+# HYBRID NOTIFICATION SYSTEM – COMPLETE REPLACEMENT FILE
+# ============================================================
+
+"""
+This file contains:
+- Daily digest worker (email)
+- Weekly insights worker (email)
+- Job match worker (in-app)
+- Skill gap worker (in-app)
+- Deadline worker (email + in-app)
+- Event-triggered utilities
+
+This is the full Hybrid Notification Engine (Option C).
+"""
+
+
+# ============================================================
+# IMPORTS (inside worker to avoid circular imports)
+# ============================================================
 
 def _load_dependencies():
     from app.services.database import DatabaseService
     from app.models.user import User
     from app.models.job import Job
-    from app.models.notification import Notification
     from app.models.recommended_job import RecommendedJob
+    from app.models.notification import Notification
     from app.extensions import mail, db
     from flask_mail import Message
-    return DatabaseService, User, Job, Notification, RecommendedJob, mail, db, Message
+    return DatabaseService, User, Job, RecommendedJob, Notification, mail, db, Message
 
-def to_aware(dt):
-    if dt is None:
-        return None
-    if dt.tzinfo is None:
-        return dt.replace(tzinfo=timezone.utc)
-    return dt
 
-def build_inapp_job_notification(r_jobs):
-    """Build a small styled HTML card version of job recommendations."""
-    items = ""
-    for r in r_jobs[:3]:
-        job = r.job
-        score = round(r.match_score, 2)
+# ============================================================
+# EMAIL TEMPLATES
+# ============================================================
 
-        items += f"""
-            <div style='padding: 10px 0; border-bottom: 1px solid #eee;'>
-                <div style='font-weight: 600; color: #1d1d1d;'>{job.title}</div>
-                <div style='font-size: 14px; color: #555;'>{job.company} • {job.location}</div>
-                <div style='font-size: 12px; margin-top: 4px; color: #562fac;'>
-                    Match Score: {score}%
-                </div>
+def _email_header():
+    return """
+    <div style="font-family: Arial, sans-serif; background: #f5f6fa; padding: 22px;">
+        <div style="max-width: 650px; margin:auto; background:#fff; border-radius:10px; 
+                    overflow:hidden; box-shadow:0 4px 16px rgba(0,0,0,0.12);">
+            <div style="background: linear-gradient(135deg, #6f67f0, #4839eb); 
+                        color:white; padding:22px; text-align:center;">
+                <h2 style="margin:0; font-size:26px;">HireHub Notification</h2>
             </div>
-        """
-
-    return f"""
-    <div style="
-        background: #ffffff;
-        border-radius: 14px;
-        padding: 20px;
-        border-left: 4px solid #562fac;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        font-family: 'Inter', sans-serif;
-    ">
-        <div style="font-size: 20px; font-weight: 700; margin-bottom: 10px;">
-            🎯 New Job Recommendations
-        </div>
-        {items}
-        <div style="margin-top: 15px; text-align:center;">
-            <a href="/jobs" style="
-                display:inline-block;
-                padding:8px 18px;
-                border-radius:999px;
-                background: linear-gradient(to right, #86bbf0, #562fac);
-                color:white;
-                text-decoration:none;
-                font-size:14px;
-                font-weight:600;
-            ">View All Matches</a>
-        </div>
-    </div>
+            <div style="padding:25px; font-size:15px; color:#333;">
     """
 
-def build_inapp_general_notification():
+
+def _email_footer():
     return """
-    <div style="
-        background:#ffffff;
-        border-radius:18px;
-        padding:24px;
-        border-left:5px solid #6b3fcf;
-        box-shadow:0 4px 14px rgba(0,0,0,0.08);
-        font-family:'Inter',sans-serif;
-    ">
-        <!-- Title -->
-        <div style="font-size:20px;font-weight:800;color:#2d1b55;margin-bottom:12px;">
-            🚀 Big Things Are Coming to HireHub!
+            </div>
         </div>
-
-        <!-- Message -->
-        <div style="font-size:15px;color:#444;line-height:1.55;">
-            We're actively rolling out new upgrades to enhance your experience.  
-            Get ready for a faster, smarter, and more personalized HireHub.
-        </div>
-
-        <!-- Feature Highlights -->
-        <div style="
-            margin-top:18px;
-            padding:14px 16px;
-            background:#f4f0ff;
-            border-radius:10px;
-            color:#3d2a72;
-            font-size:14px;
-            line-height:1.6;
-        ">
-            <div>📱 <b>Mobile App</b> is launching soon for on-the-go job tracking.</div>
-            <div>⭐ <b>New Tier Plans</b> offering increased document storage.</div>
-            <div>⚡ <b>Smart Recommendations</b> becoming more precise with AI updates.</div>
-        </div>
-
-        <!-- Footer / marketing tagline -->
-        <div style="
-            margin-top:20px;
-            font-size:12px;
-            color:#777;
-            border-top:1px solid #eee;
-            padding-top:12px;
-        ">
-            Stay tuned — your dashboard is about to level up.
-        </div>
+        <p style="text-align:center; color:#777; font-size:13px; margin-top:18px;">
+            You can change notification preferences in your HireHub account.
+        </p>
     </div>
     """
 
-def build_inapp_inactivity_notification():
-    return """
-    <div style="
-        background:#fff;
-        border-radius:16px;
-        padding:22px;
-        border-left:4px solid #c42be2;
-        box-shadow:0 4px 12px rgba(0,0,0,0.07);
-        font-family:'Inter',sans-serif;
-    ">
-        <div style="font-size:20px;font-weight:700;margin-bottom:10px;color:#c42be2;">
-            💙 We Miss You!
-        </div>
 
-        <div style="font-size:15px;color:#444;line-height:1.5;">
-            You haven’t logged in recently. New matches and updates are waiting for you.
-        </div>
+# ============================================================
+# CREATE IN-APP NOTIFICATION
+# ============================================================
 
-        <div style="margin-top:20px;padding-top:14px;border-top:1px solid #eee;font-size:12px;color:#666;">
-            📱 HireHub mobile app coming soon for easier access.
-        </div>
-    </div>
-    """
-
-def push_in_app(Notification, DatabaseService, email, notification_type, message):
-    """Create in-app notification matching your Notification model"""
-    n = Notification(
-        user_email=email,
-        type=notification_type,
+def create_in_app_notification(Notification, DatabaseService, user_email, n_type, message):
+    note = Notification(
+        user_email=user_email,
+        type=n_type,
         message=message,
-        is_read=False,
-        created_at=datetime.now(timezone.utc)
+        created_at=datetime.now(timezone.utc),
+        is_read=False
     )
-    DatabaseService.create(n)
-
-def generate_job_recommendation_email(user_name, matched_jobs):
-    """Generate beautiful HTML email for job recommendations"""
-    
-    # Build job cards HTML
-    job_cards = ""
-    for r in matched_jobs:
-        job = r.job
-        score = round(r.match_score, 2)
-        skills = ', '.join(r.matched_skills or []) if r.matched_skills else 'N/A'
-        
-        # Color coding based on match score
-        if score >= 90:
-            badge_color = "#00c853"
-            badge_text = "Excellent Match"
-        elif score >= 75:
-            badge_color = "#86bbf0"
-            badge_text = "Great Match"
-        else:
-            badge_color = "#7a5bbf"
-            badge_text = "Good Match"
-        
-        job_cards += f'''
-        <div style="background: #ffffff; border-radius: 12px; padding: 24px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border-left: 4px solid {badge_color};">
-            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
-                <h3 style="margin: 0; font-size: 20px; color: #1d1d1d; font-weight: 700;">{job.title}</h3>
-                <span style="background: {badge_color}; color: white; padding: 6px 12px; border-radius: 999px; font-size: 12px; font-weight: 700; white-space: nowrap; margin-left: 12px;">
-                    {score}% Match
-                </span>
-            </div>
-            
-            <div style="color: #555; font-size: 16px; margin-bottom: 8px;">
-                <strong style="color: #562fac;">📍 {job.company}</strong> • {job.location}
-            </div>
-            
-            <div style="background: #f0f4ff; padding: 12px; border-radius: 8px; margin: 12px 0;">
-                <div style="font-size: 13px; color: #666; margin-bottom: 4px;"><strong>Skills Match:</strong></div>
-                <div style="font-size: 14px; color: #333;">{skills}</div>
-            </div>
-            
-            <div style="margin-top: 16px;">
-                <a href="{job.url}" style="display: inline-block; background: linear-gradient(to right, #86bbf0, #562fac); color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 14px;">
-                    View Job Details →
-                </a>
-            </div>
-        </div>
-        '''
-    
-    # Complete email HTML
-    html = f'''
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    </head>
-    <body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f7fa;">
-        <div style="max-width: 600px; margin: 0 auto; background: #f5f7fa;">
-            
-            <!-- Header -->
-            <div style="background: linear-gradient(135deg, #7fa0ee 0%, #4a2a86 100%); padding: 40px 30px; text-align: center; border-radius: 0 0 20px 20px;">
-                <h1 style="margin: 0; color: white; font-size: 32px; font-weight: 800; letter-spacing: 0.5px;">
-                    HireHub
-                </h1>
-                <p style="margin: 8px 0 0; color: rgba(255,255,255,0.95); font-size: 16px;">
-                    Your Personalized Job Recommendations
-                </p>
-            </div>
-            
-            <!-- Main Content -->
-            <div style="padding: 30px 20px;">
-                
-                <div style="background: white; border-radius: 16px; padding: 30px; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.06);">
-                    <h2 style="margin: 0 0 12px; font-size: 24px; color: #1d1d1d; font-weight: 700;">
-                        Hi there! 👋
-                    </h2>
-                    <p style="margin: 0; color: #555; font-size: 16px; line-height: 1.6;">
-                        We've found <strong style="color: #562fac;">{len(matched_jobs)} job{'' if len(matched_jobs) == 1 else 's'}</strong> that match your profile and skills. These opportunities are tailored specifically for you!
-                    </p>
-                </div>
-                
-                <!-- Job Cards -->
-                {job_cards}
-                
-                <!-- Footer CTA -->
-                <div style="background: linear-gradient(135deg, #f0f4ff 0%, #e8edff 100%); border-radius: 16px; padding: 30px; text-align: center; margin-top: 30px;">
-                    <h3 style="margin: 0 0 12px; font-size: 20px; color: #1d1d1d; font-weight: 700;">
-                        Want to see more opportunities?
-                    </h3>
-                    <p style="margin: 0 0 20px; color: #555; font-size: 15px;">
-                        Visit your HireHub dashboard to explore all available positions
-                    </p>
-                    <a href="http://localhost:5173/jobs" style="display: inline-block; background: linear-gradient(to right, #86bbf0, #562fac); color: white; padding: 14px 32px; border-radius: 999px; text-decoration: none; font-weight: 700; font-size: 15px; box-shadow: 0 4px 12px rgba(86, 47, 172, 0.3);">
-                        Browse All Jobs
-                    </a>
-                </div>
-                
-            </div>
-            
-            <!-- Footer -->
-            <div style="padding: 30px 20px; text-align: center; color: #999; font-size: 13px;">
-                <p style="margin: 0 0 8px;">
-                    You're receiving this because you enabled job alerts in your HireHub settings.
-                </p>
-                <p style="margin: 0;">
-                    <a href="http://localhost:5173/settings" style="color: #562fac; text-decoration: none;">Manage your preferences</a> • 
-                    <a href="mailto:h1r3hub@gmail.com" style="color: #562fac; text-decoration: none;">Contact Support</a>
-                </p>
-                <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #e0e0e0;">
-                    <p style="margin: 0; color: #bbb; font-size: 12px;">
-                        © 2025 HireHub • Farmingdale State College, NY
-                    </p>
-                </div>
-            </div>
-            
-        </div>
-    </body>
-    </html>
-    '''
-    
-    return html
-
-def generate_general_notification_email(user_name):
-    """Beautiful HTML general notification template (same style as job email)"""
-
-    html = f'''
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    </head>
-
-    <body style="margin: 0; padding: 0; background: #f5f7fa; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
-
-        <div style="max-width: 600px; margin: 0 auto;">
-
-            <!-- HEADER -->
-            <div style="background: linear-gradient(135deg, #7fa0ee 0%, #4a2a86 100%);
-                        padding: 40px 30px; 
-                        text-align: center; 
-                        border-radius: 0 0 20px 20px;">
-                
-                <h1 style="margin: 0; color: #fff; font-size: 32px; font-weight: 800;">HireHub</h1>
-                <p style="margin: 8px 0 0; color: rgba(255,255,255,0.92); font-size: 16px;">
-                    Your HireHub Account Updates
-                </p>
-            </div>
-
-            <!-- MAIN CARD -->
-            <div style="padding: 30px 20px;">
-
-                <div style="background: #ffffff; 
-                            border-radius: 16px; 
-                            padding: 30px; 
-                            box-shadow: 0 4px 12px rgba(0,0,0,0.06);">
-
-                    <h2 style="margin: 0 0 10px; 
-                               font-size: 24px; 
-                               font-weight: 700; 
-                               color: #1d1d1d;">
-                        Hi {user_name}! 👋
-                    </h2>
-
-                    <p style="color: #555; font-size: 16px; line-height: 1.6; margin-top: 12px;">
-                        Here's your general HireHub update!  
-                        You’ll soon start seeing mobile notifications, tier features, and more advanced settings.
-                    </p>
-
-                    <div style="
-                        background: #f0f4ff; 
-                        padding: 18px; 
-                        border-radius: 12px; 
-                        margin-top: 20px;
-                        display: flex;
-                        gap: 12px;
-                    ">
-                        <div style="font-size: 24px;">🔔</div>
-                        <div style="font-size: 15px; color: #333; line-height: 1.5;">
-                            This is your **general notification** based on your preferences.  
-                            Stay tuned — more features are coming soon!
-                        </div>
-                    </div>
-
-                    <!-- CTA BUTTON -->
-                    <div style="text-align: center; margin-top: 28px;">
-                        <a href="http://localhost:5173/settings"
-                           style="display: inline-block;
-                                  background: linear-gradient(to right, #86bbf0, #562fac);
-                                  color: white;
-                                  padding: 14px 32px;
-                                  border-radius: 999px;
-                                  text-decoration: none;
-                                  font-weight: 700;
-                                  font-size: 15px;
-                                  box-shadow: 0 4px 12px rgba(86, 47, 172, 0.3);">
-                            Manage Notification Settings →
-                        </a>
-                    </div>
-
-                </div>
-
-                <!-- FOOTER -->
-                <div style="padding: 30px 20px; text-align: center; color: #999; font-size: 13px;">
-                    <p style="margin: 0;">You're receiving this because you enabled general notifications.</p>
-
-                    <p style="margin: 8px 0 0;">
-                        <a href="http://localhost:5173/settings" style="color: #562fac; text-decoration: none;">Notification Settings</a> •
-                        <a href="mailto:h1r3hub@gmail.com" style="color: #562fac; text-decoration: none;">Support</a>
-                    </p>
-
-                    <p style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #e0e0e0; color: #bbb; font-size: 12px;">
-                        © 2025 HireHub • Farmingdale State College, NY
-                    </p>
-                </div>
-            </div>
-        </div>
-
-    </body>
-    </html>
-    '''
-
-    return html
-
-def generate_inactivity_email(user_name):
-    """Beautiful inactivity alert email"""
-
-    html = f"""
-    <!DOCTYPE html>
-    <html>
-    <body style="margin:0;padding:0;background:#f5f7fa;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;">
-
-    <div style="max-width:600px;margin:0 auto;">
-
-        <!-- HEADER -->
-        <div style="background:linear-gradient(135deg,#ff7e98,#a32cc4);
-                    padding:40px 30px;
-                    text-align:center;
-                    border-radius:0 0 20px 20px;">
-            <h1 style="color:#fff;margin:0;font-size:32px;font-weight:800;">
-                We Miss You 💙
-            </h1>
-            <p style="color:rgba(255,255,255,0.9);margin-top:8px;font-size:16px;">
-                Come back to explore fresh job opportunities!
-            </p>
-        </div>
-
-        <!-- BODY -->
-        <div style="padding:30px 20px;">
-            <div style="background:white;padding:30px;border-radius:16px;
-                        box-shadow:0 4px 12px rgba(0,0,0,0.06);">
-
-                <h2 style="margin:0;font-size:24px;font-weight:700;color:#1d1d1d;">
-                    Hi {user_name}! 👋
-                </h2>
-
-                <p style="color:#555;font-size:16px;line-height:1.6;margin-top:12px;">
-                    It looks like you haven't logged in recently.  
-                    New jobs have been added that match your skills — don’t miss out!
-                </p>
-
-                <div style="background:#fff3f4;padding:18px;border-radius:12px;
-                            margin-top:20px;display:flex;gap:12px;">
-                    <div style="font-size:22px;">⏳</div>
-                    <div style="font-size:15px;color:#333;">
-                        Log back in to refresh your recommendations and continue building your career.
-                    </div>
-                </div>
-
-                <!-- CTA BUTTON -->
-                <div style="text-align:center;margin-top:28px;">
-                    <a href="http://localhost:5173/login"
-                       style="display:inline-block;background:linear-gradient(to right,#ff8aae,#c42be2);
-                              color:white;padding:14px 32px;border-radius:999px;
-                              text-decoration:none;font-weight:700;font-size:15px;">
-                        Return to HireHub →
-                    </a>
-                </div>
-            </div>
-
-            <!-- FOOTER -->
-            <div style="padding:30px 20px;text-align:center;color:#999;font-size:13px;">
-                <p style="margin:0 0 8px;">You are receiving this inactivity alert because you signed up for a HireHub account.</p>
-
-                <p style="margin:8px 0;">
-                    <a href="http://localhost:5173/settings" style="color:#562fac;text-decoration:none;">Manage Preferences</a> •
-                    <a href="mailto:h1r3hub@gmail.com" style="color:#562fac;text-decoration:none;">Support</a>
-                </p>
-
-                <p style="margin-top:20px;color:#bbb;font-size:12px;">
-                    © 2025 HireHub • Farmingdale State College, NY
-                </p>
-            </div>
-        </div>
-    </div>
-
-    </body>
-    </html>
-    """
-
-    return html
+    try:
+        # Assuming DatabaseService.create commits. If not, you need db.session.commit()
+        DatabaseService.create(note)
+        current_app.logger.info(f"Notification created for {user_email}")
+    except Exception as e:
+        current_app.logger.error(f"Failed to commit notification for {user_email}: {e}")
 
 
-# --------------------------------------------------------
-# FINAL UNIFIED WORKER — MATCHING YOUR NOTIFICATION MODEL
-# --------------------------------------------------------
-def unified_notification_worker(app):
+# ============================================================
+# DAILY DIGEST EMAIL WORKER (RUNS EVERY 24 HOURS)
+# ============================================================
 
+def daily_digest_worker(app):
     def _worker():
-
         with app.app_context():
+            (DatabaseService, User, Job, RecommendedJob,
+             Notification, mail, db, Message) = _load_dependencies()
 
-            DatabaseService, User, Job, Notification, RecommendedJob, mail, db, Message = _load_dependencies()
-            current_app.logger.info("🔥 Notification Worker Running")
+            app.logger.info("[DailyDigestWorker] Started")
 
-            CHECK_INTERVAL_SECONDS = 10
-            INACTIVITY_LIMIT = timedelta(hours=72)
+            # 24 hours * 60 minutes/hour * 60 seconds/minute
+            SLEEP_TIME_SECONDS = 24 * 60 * 60
 
-            # Frequency → timedelta map
-            freq_map = {
-                "immediately": timedelta(seconds=0),
-                "2 minutes": timedelta(minutes=2),
-                "3 minutes": timedelta(minutes=3),
-                "5 minutes": timedelta(minutes=5),
-                "daily summary": timedelta(days=1),
-                "weekly summary": timedelta(days=7),
+            while True:
+                try:
+                    users = DatabaseService.get_all(User)
 
-                # job alerts
-                "up to 1 alert/day": timedelta(days=1),
-                "up to 3 alerts/week": timedelta(days=2),
-                "unlimited": timedelta(seconds=0)
-            }
+                    for u in users:
+                        if not u.daily_digest_enabled:
+                            continue
+
+                        # Fetch recommended jobs
+                        recs = (
+                            db.session.query(RecommendedJob)
+                            .filter(RecommendedJob.user_id == u.id)
+                            .order_by(RecommendedJob.match_score.desc())
+                            .limit(5)
+                            .all()
+                        )
+
+                        rec_html = ""
+                        for r in recs:
+                            if r.job:
+                                rec_html += f"""
+                                <div style="border:1px solid #eee; padding:14px; margin-bottom:10px; border-radius:8px;">
+                                    <h4 style="margin:0;">{r.job.title}</h4>
+                                    <p style="margin:3px 0; color: #555;">{r.job.company} • {r.job.location}</p>
+                                    <p style="margin:0;"><b>Match:</b> {r.match_score}%</p>
+                                </div>
+                                """
+
+                        html = (
+                            _email_header() +
+                            f"<p>Hello <b>{u.first_name}</b>, here is your daily job digest:</p>"
+                            f"{rec_html}"
+                            + _email_footer()
+                        )
+
+                        msg = Message("Your HireHub Daily Digest", recipients=[u.email], html=html)
+                        mail.send(msg)
+
+                        create_in_app_notification(
+                            Notification, DatabaseService,
+                            u.email,
+                            "Daily Digest",
+                            "Your daily job digest was emailed to you."
+                        )
+
+                    app.logger.info("[DailyDigestWorker] Completed daily run")
+
+                except Exception as e:
+                    app.logger.exception("[DailyDigestWorker] Error: %s", e)
+
+                time.sleep(SLEEP_TIME_SECONDS)  # 24 hours
+
+    threading.Thread(target=_worker, daemon=True).start()
+
+
+# ============================================================
+# WEEKLY INSIGHTS EMAIL WORKER (RUNS EVERY 7 DAYS)
+# ============================================================
+
+def weekly_insights_worker(app):
+    def _worker():
+        with app.app_context():
+            (DatabaseService, User, Job, RecommendedJob,
+             Notification, mail, db, Message) = _load_dependencies()
+
+            app.logger.info("[WeeklyInsightsWorker] Started")
+
+            # 7 days * 24 hours/day * 60 minutes/hour * 60 seconds/minute
+            SLEEP_TIME_SECONDS = 7 * 24 * 60 * 60
+
+            while True:
+                try:
+                    users = DatabaseService.get_all(User)
+
+                    for u in users:
+                        if not u.weekly_digest_enabled:
+                            continue
+
+                        html = (
+                            _email_header() +
+                            f"<p>Hello <b>{u.first_name}</b>, here are your weekly insights.</p>"
+                            f"<p>Profile completion: {u.profile_completion or 0}%</p>"
+                            f"<p>Resume Score: {u.resume_score or 0}%</p>"
+                            + _email_footer()
+                        )
+
+                        msg = Message("Weekly Insights Report", recipients=[u.email], html=html)
+                        mail.send(msg)
+
+                        create_in_app_notification(
+                            Notification, DatabaseService,
+                            u.email,
+                            "Weekly Insights",
+                            "Your weekly insights report has been emailed."
+                        )
+
+                    app.logger.info("[WeeklyInsightsWorker] Completed weekly run")
+
+                except Exception as e:
+                    app.logger.exception("[WeeklyInsightsWorker] Error: %s", e)
+
+                time.sleep(SLEEP_TIME_SECONDS)  # 7 days
+
+    threading.Thread(target=_worker, daemon=True).start()
+
+
+# ============================================================
+# JOB MATCH WORKER (RUNS EVERY 4 HOURS)
+# ============================================================
+
+def job_match_worker(app):
+    def _worker():
+        with app.app_context():
+            (DatabaseService, User, Job, RecommendedJob,
+             Notification, mail, db, Message) = _load_dependencies()
+
+            app.logger.info("[JobMatchWorker] Started")
+
+            # 4 hours * 60 minutes/hour * 60 seconds/minute
+            SLEEP_TIME_SECONDS = 4 * 60 * 60
+
+            while True:
+                try:
+                    users = DatabaseService.get_all(User)
+
+                    for u in users:
+                        if not u.skills:
+                            continue
+
+                        # Simple example: find jobs with overlapping skills
+                        jobs = (
+                            db.session.query(Job)
+                            .filter(Job.skills_required.overlap(u.skills))
+                            .limit(10)
+                            .all()
+                        )
+
+                        for j in jobs:
+                            create_in_app_notification(
+                                Notification, DatabaseService,
+                                u.email,
+                                "New Job Match",
+                                f"A new job matches your skills: {j.title}"
+                            )
+
+                    app.logger.info("[JobMatchWorker] Completed cycle")
+
+                except Exception:
+                    app.logger.exception("[JobMatchWorker] Error")
+
+                time.sleep(SLEEP_TIME_SECONDS)  # 4 hours
+
+    threading.Thread(target=_worker, daemon=True).start()
+
+
+# ============================================================
+# DEADLINE WORKER (RUNS EVERY 12 HOURS)
+# ============================================================
+
+def deadline_worker(app):
+    def _worker():
+        with app.app_context():
+            (DatabaseService, User, Job, RecommendedJob,
+             Notification, mail, db, Message) = _load_dependencies()
+
+            app.logger.info("[DeadlineWorker] Started")
+
+            # 12 hours * 60 minutes/hour * 60 seconds/minute
+            SLEEP_TIME_SECONDS = 12 * 60 * 60
 
             while True:
                 try:
                     now = datetime.now(timezone.utc)
-                    users = DatabaseService.get_all(User)
+                    deadline_limit = now + timedelta(hours=48)
 
-                    for u in users:
-                        # print("\n----------------------------")
-                        # print(f"USER: {u.email}")
-                        # print(f"GENERAL ENABLED: {u.general_notifications_enabled}")
-                        # print(f"GENERAL FREQ: {u.general_notifications_frequency}")
-                        # print(f"JOB ALERTS ENABLED: {u.job_alerts_enabled}")
-                        # print(f"JOB ALERTS FREQ: {u.job_alerts_frequency}")
-                        # print(f"SKILLS: {u.skills}")
-                        # print("----------------------------")
+                    expiring_jobs = (
+                        db.session.query(Job)
+                        .filter(and_(Job.expires_at != None, Job.expires_at <= deadline_limit))
+                        .all()
+                    )
 
-                        # ======================================================
-                        # 1) GENERAL NOTIFICATIONS
-                        # ======================================================
-                        if u.general_notifications_enabled:
+                    for j in expiring_jobs:
+                        for rec in j.recommended_to:
+                            u = rec.user
 
-                            freq = (u.general_notifications_frequency or "immediately").lower()
-                            delta = freq_map.get(freq, timedelta(seconds=0))
-                            last = to_aware(u.last_general_notification_sent)
+                            # Email
+                            html = (
+                                _email_header() +
+                                f"<p>The job <b>{j.title}</b> is closing soon.</p>" +
+                                _email_footer()
+                            )
+                            mail.send(Message("Job Closing Soon", recipients=[u.email], html=html))
 
-                            if not last or (now - last) >= delta:
-                                # CREATE IN-APP NOTIFICATION (always works)
-                                try:
-                                    push_in_app(
-                                        Notification, DatabaseService, u.email,
-                                        "General Notification",
-                                        build_inapp_general_notification()
-                                    )
-                                    print("✔ CREATED IN-APP NOTIFICATION")
-                                except Exception as e:
-                                    current_app.logger.exception("Failed to create in-app notification: %s", e)
-                                
-                                # TRY TO SEND EMAIL (may fail, but won't stop in-app notifications)
-                                try:
-                                    user_name = u.full_name if hasattr(u, "full_name") and u.full_name else u.email.split("@")[0]
-                                    html = generate_general_notification_email(user_name)
+                            # In-app
+                            create_in_app_notification(
+                                Notification, DatabaseService,
+                                u.email,
+                                "Closing Soon",
+                                f"The job {j.title} expires in less than 48 hours."
+                            )
 
-                                    mail.send(Message(
-                                        "Your HireHub Update 🔔",
-                                        recipients=[u.email],
-                                        html=html
-                                    ))
-                                    print("✔ SENT STYLED GENERAL EMAIL")
-                                except Exception as e:
-                                    current_app.logger.warning("General email failed: %s", e)
+                    app.logger.info("[DeadlineWorker] Completed cycle")
 
+                except Exception:
+                    app.logger.exception("[DeadlineWorker] Error")
 
-                                u.last_general_notification_sent = now
-                                db.session.commit()
-                        
-                        # ======================================================
-                        # 2) JOB ALERTS (using RecommendedJob table)
-                        # ======================================================
-                        if u.job_alerts_enabled:
-
-                            jf = (u.job_alerts_frequency or "unlimited").lower()
-                            delta = freq_map.get(jf, timedelta(seconds=0))
-                            last = to_aware(u.last_job_alert_sent)
-
-                            if not last or (now - last) >= delta:
-
-                                # Load recommended jobs for this user
-                                recs = RecommendedJob.query.filter_by(
-                                    user_id=u.id,
-                                    is_active=True
-                                ).all()
-
-                                matched_jobs = []
-
-                                for r in recs:
-                                    # Skip expired recommendations
-                                    exp = to_aware(r.expires_at)
-                                    if exp and exp < now:
-                                        r.is_active = False
-                                        continue
-
-                                    # Only include if the related job still exists + is active
-                                    if r.job and r.job.is_active:
-                                        matched_jobs.append(r)
-
-                                db.session.commit()
-
-                               # print("RECOMMENDED JOBS FOR USER:", [r.job.title for r in matched_jobs])
-
-                                # Send the alerts with STYLED EMAIL + IN-APP
-                                if matched_jobs:
-                                    # ALWAYS CREATE IN-APP NOTIFICATION FIRST
-                                    try:
-                                        job_titles = [r.job.title for r in matched_jobs[:3]]
-                                        if len(matched_jobs) > 3:
-                                            summary = f"{', '.join(job_titles)}, and {len(matched_jobs) - 3} more"
-                                        else:
-                                            summary = ', '.join(job_titles)
-                                        
-                                        push_in_app(
-                                            Notification, DatabaseService,
-                                            u.email,
-                                            "Job Recommendation",
-                                            build_inapp_job_notification(matched_jobs)
-                                        )
-                                      #  print("✔ CREATED IN-APP JOB NOTIFICATION")
-                                    except Exception as e:
-                                        current_app.logger.exception("Failed to create in-app notification: %s", e)
-                                    
-                                    # TRY TO SEND EMAIL (may fail)
-                                    try:
-                                        user_name = u.full_name if hasattr(u, 'full_name') and u.full_name else u.email.split('@')[0]
-                                        email_html = generate_job_recommendation_email(user_name, matched_jobs)
-
-                                        mail.send(Message(
-                                            "Your HireHub Job Recommendations 🎯",
-                                            recipients=[u.email],
-                                            html=email_html
-                                        ))
-                                    #    print("✔ SENT JOB RECOMMENDATION EMAIL")
-                                    except Exception as e:
-                                        current_app.logger.warning("Email failed (in-app notification still created): %s", e)
-
-                                    u.last_job_alert_sent = now
-                                    db.session.commit()
-
-                               #     print("✔ JOB RECOMMENDATIONS PROCESSED")
-
-                        # ======================================================
-                        # 3) DIGEST (old behavior)
-                        # ======================================================
-                        last_digest = to_aware(u.last_digest_sent)
-
-                        if u.digest_interval_minutes:
-                            if not last_digest or now - last_digest >= timedelta(minutes=u.digest_interval_minutes):
-                                jobs = Job.query.limit(5).all()
-                                if jobs:
-                                    job_list = [f"{j.title} at {j.company}" for j in jobs]
-                                    
-                                    # CREATE IN-APP NOTIFICATION
-                                    try:
-                                        push_in_app(
-                                            Notification, DatabaseService, u.email,
-                                            "Job Digest",
-                                            f"📬 Your digest is ready with {len(jobs)} jobs: {', '.join(job_list[:2])}{'...' if len(jobs) > 2 else ''}"
-                                        )
-                                 #       print("✔ CREATED IN-APP DIGEST NOTIFICATION")
-                                    except Exception as e:
-                                        current_app.logger.exception("Failed to create digest notification: %s", e)
-                                    
-                                    # TRY TO SEND EMAIL
-                                    try:
-                                        html = "<h3>Your Job Digest</h3>"
-                                        for j in jobs:
-                                            html += f"<p><b>{j.title}</b> – {j.company} ({j.location})</p>"
-
-                                        mail.send(Message(
-                                            "Your HireHub Digest",
-                                            recipients=[u.email],
-                                            html=html
-                                        ))
-                                   #     print("✔ SENT DIGEST EMAIL")
-                                    except Exception as e:
-                                        current_app.logger.warning("Digest email failed: %s", e)
-
-                                u.last_digest_sent = now
-                                db.session.commit()
-
-                        # ======================================================
-                        # 4) INACTIVITY ALERT
-                        # ======================================================
-                        if u.last_login:
-
-                            last_login = to_aware(u.last_login)
-                            last_inact = to_aware(u.last_login_notification_sent)
-
-                            if (now - last_login) >= INACTIVITY_LIMIT:
-                                if not last_inact or (now - last_inact) >= INACTIVITY_LIMIT:
-
-                                    # CREATE IN-APP NOTIFICATION
-                                    try:
-                                        push_in_app(
-                                            Notification, DatabaseService, u.email,
-                                            "Inactivity Alert",
-                                            build_inapp_inactivity_notification()
-                                        )
-                             #           print("✔ CREATED IN-APP INACTIVITY ALERT")
-                                    except Exception as e:
-                                        current_app.logger.exception("Failed to create inactivity notification: %s", e)
-                                    
-                                    # TRY TO SEND EMAIL
-                                    try:
-                                        mail.send(Message(
-                                            "We Miss You at HireHub! 💙",
-                                            recipients=[u.email],
-                                            html=html
-                                        ))
-                                #        print("✔ SENT INACTIVITY EMAIL")
-                                    except Exception as e:
-                                        current_app.logger.warning("Inactivity email failed: %s", e)
-                                    
-                                    u.last_login_notification_sent = now
-                                    db.session.commit()
-
-                        # ======================================================
-                        # 5) PROFILE REMINDER
-                        # ======================================================
-                        last_profile = to_aware(u.last_profile_reminder_sent)
-
-                        if u.profile_completion is not None and u.profile_completion < 60:
-                            if not last_profile or (now - last_profile) >= timedelta(hours=24):
-
-                                # CREATE IN-APP NOTIFICATION
-                                try:
-                                    push_in_app(
-                                        Notification, DatabaseService, u.email,
-                                        "Profile Reminder",
-                                        f"📝 Your profile is {u.profile_completion}% complete. Add more details to get better job recommendations!"
-                                    )
-                          #          print("✔ CREATED IN-APP PROFILE REMINDER")
-                                except Exception as e:
-                                    current_app.logger.exception("Failed to create profile reminder: %s", e)
-                                
-                                # TRY TO SEND EMAIL
-                                try:
-                                    mail.send(Message(
-                                        "Complete Your HireHub Profile",
-                                        recipients=[u.email],
-                                        body=f"Your profile is {u.profile_completion}% complete. Finish it to get better job matches!"
-                                    ))
-                          #          print("✔ SENT PROFILE REMINDER EMAIL")
-                                except Exception as e:
-                                    current_app.logger.warning("Profile reminder email failed: %s", e)
-
-                                u.last_profile_reminder_sent = now
-                                db.session.commit()
-
-                except Exception as e:
-                    current_app.logger.exception("Unified Worker ERROR: %s", e)
-
-                time.sleep(CHECK_INTERVAL_SECONDS)
+                time.sleep(SLEEP_TIME_SECONDS) # 12 hours
 
     threading.Thread(target=_worker, daemon=True).start()
+
+
+# ============================================================
+# REGISTER ALL WORKERS
+# ============================================================
+
+def init_notification_workers(app):
+    print("🔥 init_notification_workers() CALLED")
+    daily_digest_worker(app)
+    weekly_insights_worker(app)
+    job_match_worker(app)
+    deadline_worker(app) 
+    app.logger.info("[NotificationSystem] All workers started successfully.")

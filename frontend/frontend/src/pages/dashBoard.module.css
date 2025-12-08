@@ -88,6 +88,15 @@ body, .container {
   pointer-events: none;
 }
 
+/* 2) Main container: glass panel instead of plain transparent box */
+.dashboard-container .main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  box-sizing: border-box;
+  
+}
 
 /* 3) Columns — keep widths but ensure content reads well on the glass */
 .searchInput {
@@ -124,10 +133,10 @@ body, .container {
   min-height: calc(100vh - var(--nav-h) - 120px);
   box-shadow: 0 8px 30px rgba(2,6,23,0.45);
   box-sizing: border-box;
-  height: 100%;
-
-  /* background-color: red; */
+  display: flex;
+  align-items: center;
   
+  /* justify-content: center; */
 }
 
 @media (max-width: 900px) {

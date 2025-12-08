@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import styles from "./forgot_password.module.css";   // ⬅️ use module
 import { Link } from "react-router-dom";
-import placeholderImg from "../../public/assets/login_reg_Place_holder1.png";
+import placeholderImg from "../assets/login_reg_Place_holder1.png";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");

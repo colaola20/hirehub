@@ -8,12 +8,17 @@ from datetime import datetime
 from werkzeug.utils import secure_filename
 from app.models.recommended_job import RecommendedJob
 from app.models.job import Job
-from app.services.s3_service import s3_service
 import os
 import openai
 import json
 
 profile_bp = Blueprint('profile', __name__, url_prefix='/api/profile')
+
+
+def allowed_file(filename):
+    """Check if file extension is allowed"""
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in current_app.config['ALLOWED_EXTENSIONS']
 
 
 @profile_bp.route('', methods=['GET'])
@@ -49,11 +54,6 @@ def get_profile():
         skills = Skill.query.filter_by(profile_id=profile.profile_id).all()
         skills_list = [skill.skill_name for skill in skills]
 
-        # Generate signed URL for profile image if it exists
-        profile_image_url = None
-        if profile.profile_image:
-            profile_image_url = s3_service.generate_signed_url(profile.profile_image, expiration=86400)  # 24 hours
-
         # Return combined user and profile data
         return jsonify({
             'user': user.to_dict(),
@@ -63,7 +63,7 @@ def get_profile():
                 'education': profile.education,
                 'experience': profile.experience,
                 'skills': skills_list,
-                'profile_image': profile_image_url,
+                'profile_image': profile.profile_image,
                 'created_at': profile.created_at.isoformat() if profile.created_at else None,
                 'updated_at': profile.updated_at.isoformat() if profile.updated_at else None
             }
@@ -128,11 +128,6 @@ def update_profile():
         skills = Skill.query.filter_by(profile_id=profile.profile_id).all()
         skills_list = [skill.skill_name for skill in skills]
 
-        # Generate signed URL for profile image if it exists
-        profile_image_url = None
-        if profile.profile_image:
-            profile_image_url = s3_service.generate_signed_url(profile.profile_image, expiration=86400)  # 24 hours
-
         return jsonify({
             'message': 'Profile updated successfully',
             'profile': {
@@ -141,7 +136,7 @@ def update_profile():
                 'education': profile.education,
                 'experience': profile.experience,
                 'skills': skills_list,
-                'profile_image': profile_image_url,
+                'profile_image': profile.profile_image,
                 'created_at': profile.created_at.isoformat() if profile.created_at else None,
                 'updated_at': profile.updated_at.isoformat() if profile.updated_at else None
             }
@@ -158,7 +153,7 @@ def update_profile():
 @profile_bp.route('/image', methods=['POST'])
 @jwt_required()
 def upload_profile_image():
-    """Upload a profile image to S3"""
+    """Upload a profile image"""
     try:
         current_user_id = int(get_jwt_identity())
         user = User.query.get(current_user_id)
@@ -176,6 +171,10 @@ def upload_profile_image():
         if file.filename == '':
             return jsonify({'error': 'No file selected'}), 400
 
+        # Validate file type
+        if not allowed_file(file.filename):
+            return jsonify({'error': 'Invalid file type. Only PNG, JPG, and JPEG are allowed'}), 400
+
         # Get or create profile
         profile = Profile.query.filter_by(user_email=user.email).first()
         if not profile:
@@ -187,31 +186,38 @@ def upload_profile_image():
             db.session.add(profile)
             db.session.flush()  # Get profile_id
 
-        # Delete old image from S3 if exists
+        # Delete old image if exists
         if profile.profile_image:
-            s3_service.delete_profile_image(profile.profile_image)
+            old_image_path = os.path.join(
+                current_app.config['UPLOAD_FOLDER'],
+                'profile_images',
+                profile.profile_image
+            )
+            if os.path.exists(old_image_path):
+                os.remove(old_image_path)
 
-        # Upload to S3 (returns S3 key/filename)
-        s3_key = s3_service.upload_profile_image(file, current_user_id)
+        # Generate unique filename
+        file_ext = secure_filename(file.filename).rsplit('.', 1)[1].lower()
+        filename = f"{user.user_id}_{int(datetime.utcnow().timestamp())}.{file_ext}"
 
-        # Update profile with S3 key
-        profile.profile_image = s3_key
+        # Save file
+        upload_path = os.path.join(
+            current_app.config['UPLOAD_FOLDER'],
+            'profile_images'
+        )
+        os.makedirs(upload_path, exist_ok=True)
+        file.save(os.path.join(upload_path, filename))
+
+        # Update profile with image filename
+        profile.profile_image = filename
         profile.updated_at = datetime.utcnow()
         db.session.commit()
 
-        # Generate signed URL to return to frontend
-        signed_url = s3_service.generate_signed_url(s3_key, expiration=86400)  # 24 hours
-
         return jsonify({
             'message': 'Profile image uploaded successfully',
-            'profile_image': signed_url
+            'profile_image': filename
         }), 200
 
-    except ValueError as e:
-        db.session.rollback()
-        return jsonify({
-            'error': str(e)
-        }), 400
     except Exception as e:
         db.session.rollback()
         return jsonify({
@@ -220,21 +226,20 @@ def upload_profile_image():
         }), 500
 
 
-# No longer needed - images are served directly from S3
-# @profile_bp.route('/image/<filename>', methods=['GET'])
-# def get_profile_image(filename):
-#     """Serve profile images"""
-#     try:
-#         upload_path = os.path.join(
-#             current_app.config['UPLOAD_FOLDER'],
-#             'profile_images'
-#         )
-#         return send_from_directory(upload_path, filename)
-#     except Exception as e:
-#         return jsonify({
-#             'error': 'Image not found',
-#             'message': str(e)
-#         }), 404
+@profile_bp.route('/image/<filename>', methods=['GET'])
+def get_profile_image(filename):
+    """Serve profile images"""
+    try:
+        upload_path = os.path.join(
+            current_app.config['UPLOAD_FOLDER'],
+            'profile_images'
+        )
+        return send_from_directory(upload_path, filename)
+    except Exception as e:
+        return jsonify({
+            'error': 'Image not found',
+            'message': str(e)
+        }), 404
 
 
 
@@ -476,10 +481,9 @@ def generate_recommendations():
                 match = json.loads(raw_reply[start:end])
 
             score = match.get("percentage_match", 0)
-            matched_skills = match.get("matched_skills", [])
 
             if score >= 85:
-                recommended_list.append((job, score, matched_skills))
+                recommended_list.append((job, score))
 
             if len(recommended_list) == 20:
                 break
@@ -487,7 +491,7 @@ def generate_recommendations():
         # ----------------------------------------------------
         # Insert new recommendations safely
         # ----------------------------------------------------
-        for job, score, matched_skills in recommended_list:
+        for job, score in recommended_list:
             new_rec = RecommendedJob(
                 user_id=current_user_id,
                 job_id=job.id,
@@ -495,7 +499,7 @@ def generate_recommendations():
                 created_at=now,
                 expires_at=now + timedelta(days=7),
                 is_active=True,
-                matched_skills=matched_skills
+                matched_skills=match.get("matched_skills", [])
             )
             db.session.add(new_rec)
 

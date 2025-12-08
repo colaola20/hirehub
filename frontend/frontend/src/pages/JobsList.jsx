@@ -281,11 +281,11 @@ useEffect(() => {
           
           {/* Empty / Job display (use filteredJobs) */}
           {!loading && jobs.length > 0 && (
-            <>
+            <div className={styles.jobCard}>
               {jobs.map((job, idx) => (
                 <JobCard key={job.id || idx} job={job} onClick={() => onJobClick(job)} />
               ))}
-            </>
+            </div>
           )}
           {!loading && !error && jobs.length === 0 && (
             <div className={styles.emptyState}>
