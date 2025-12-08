@@ -258,13 +258,14 @@ const UserDashboard = () => {
                 {showLiked ? (
                   likedJobs.length > 0 ? (
                     likedJobs.map((job) => (
-                      // Switch this from JobCardDev to JobCard
+                       <div className={style.theCardContainer}>
                       <JobCard 
                         key={job.id} 
                         job={job} 
                         cardForLikedJobs={true} 
                         onClick={handleJobClick} 
                       />
+                      </div>
                     ))
                   ) : (
                     <p style={{ color: "white", textAlign: "center", marginTop: "20px" }}>
@@ -282,12 +283,15 @@ const UserDashboard = () => {
                     recommendedJobs.map((rec) => {
                       if (!rec.job) return null;
                       return (
-                        <RecommendedJobCard
+                         <div className={style.theCardContainer}>
+                        <JobCard
                           key={rec.id}
                           job={rec.job}
                           recommendation={rec}
+                          cardForRecommendedJobcard={true}
                           onClick={handleJobClick}
                         />
+                        </div>
                       );
                     })
                   ) : (

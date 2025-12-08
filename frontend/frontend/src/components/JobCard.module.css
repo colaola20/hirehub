@@ -88,14 +88,16 @@
     color: #ffffff;  
 
 }
-/* 
+
 .jobInfo{
-    display: grid;
-    grid-template-columns: 1fr 1fr; /* 2 columns
-    grid-auto-rows: auto;         
-    gap: 10px 20px;                
-    padding-left: 5%;
-} */
+display: flex;
+flex-direction: row;
+align-items: center;
+justify-content: space-between;
+margin: 40px 0;
+
+
+}
 
 
 .job-card:hover {
@@ -283,6 +285,16 @@
   border-radius: 12px;
   padding: 4px 10px;
   font-size: 0.85rem;
+}
+
+.centeredMessage {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  font-size: 18px;
+  color: #ffffff;
 }
 
 .error , .loading {
