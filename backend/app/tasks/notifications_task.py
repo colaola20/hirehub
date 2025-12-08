@@ -487,14 +487,14 @@ def unified_notification_worker(app):
                     users = DatabaseService.get_all(User)
 
                     for u in users:
-                        print("\n----------------------------")
-                        print(f"USER: {u.email}")
-                        print(f"GENERAL ENABLED: {u.general_notifications_enabled}")
-                        print(f"GENERAL FREQ: {u.general_notifications_frequency}")
-                        print(f"JOB ALERTS ENABLED: {u.job_alerts_enabled}")
-                        print(f"JOB ALERTS FREQ: {u.job_alerts_frequency}")
-                        print(f"SKILLS: {u.skills}")
-                        print("----------------------------")
+                        # print("\n----------------------------")
+                        # print(f"USER: {u.email}")
+                        # print(f"GENERAL ENABLED: {u.general_notifications_enabled}")
+                        # print(f"GENERAL FREQ: {u.general_notifications_frequency}")
+                        # print(f"JOB ALERTS ENABLED: {u.job_alerts_enabled}")
+                        # print(f"JOB ALERTS FREQ: {u.job_alerts_frequency}")
+                        # print(f"SKILLS: {u.skills}")
+                        # print("----------------------------")
 
                         # ======================================================
                         # 1) GENERAL NOTIFICATIONS
@@ -567,7 +567,7 @@ def unified_notification_worker(app):
 
                                 db.session.commit()
 
-                                print("RECOMMENDED JOBS FOR USER:", [r.job.title for r in matched_jobs])
+                               # print("RECOMMENDED JOBS FOR USER:", [r.job.title for r in matched_jobs])
 
                                 # Send the alerts with STYLED EMAIL + IN-APP
                                 if matched_jobs:
@@ -585,7 +585,7 @@ def unified_notification_worker(app):
                                             "Job Recommendation",
                                             build_inapp_job_notification(matched_jobs)
                                         )
-                                        print("✔ CREATED IN-APP JOB NOTIFICATION")
+                                      #  print("✔ CREATED IN-APP JOB NOTIFICATION")
                                     except Exception as e:
                                         current_app.logger.exception("Failed to create in-app notification: %s", e)
                                     
@@ -599,14 +599,14 @@ def unified_notification_worker(app):
                                             recipients=[u.email],
                                             html=email_html
                                         ))
-                                        print("✔ SENT JOB RECOMMENDATION EMAIL")
+                                    #    print("✔ SENT JOB RECOMMENDATION EMAIL")
                                     except Exception as e:
                                         current_app.logger.warning("Email failed (in-app notification still created): %s", e)
 
                                     u.last_job_alert_sent = now
                                     db.session.commit()
 
-                                    print("✔ JOB RECOMMENDATIONS PROCESSED")
+                               #     print("✔ JOB RECOMMENDATIONS PROCESSED")
 
                         # ======================================================
                         # 3) DIGEST (old behavior)
@@ -626,7 +626,7 @@ def unified_notification_worker(app):
                                             "Job Digest",
                                             f"📬 Your digest is ready with {len(jobs)} jobs: {', '.join(job_list[:2])}{'...' if len(jobs) > 2 else ''}"
                                         )
-                                        print("✔ CREATED IN-APP DIGEST NOTIFICATION")
+                                 #       print("✔ CREATED IN-APP DIGEST NOTIFICATION")
                                     except Exception as e:
                                         current_app.logger.exception("Failed to create digest notification: %s", e)
                                     
@@ -641,7 +641,7 @@ def unified_notification_worker(app):
                                             recipients=[u.email],
                                             html=html
                                         ))
-                                        print("✔ SENT DIGEST EMAIL")
+                                   #     print("✔ SENT DIGEST EMAIL")
                                     except Exception as e:
                                         current_app.logger.warning("Digest email failed: %s", e)
 
@@ -666,7 +666,7 @@ def unified_notification_worker(app):
                                             "Inactivity Alert",
                                             build_inapp_inactivity_notification()
                                         )
-                                        print("✔ CREATED IN-APP INACTIVITY ALERT")
+                             #           print("✔ CREATED IN-APP INACTIVITY ALERT")
                                     except Exception as e:
                                         current_app.logger.exception("Failed to create inactivity notification: %s", e)
                                     
@@ -677,7 +677,7 @@ def unified_notification_worker(app):
                                             recipients=[u.email],
                                             html=html
                                         ))
-                                        print("✔ SENT INACTIVITY EMAIL")
+                                #        print("✔ SENT INACTIVITY EMAIL")
                                     except Exception as e:
                                         current_app.logger.warning("Inactivity email failed: %s", e)
                                     
@@ -699,7 +699,7 @@ def unified_notification_worker(app):
                                         "Profile Reminder",
                                         f"📝 Your profile is {u.profile_completion}% complete. Add more details to get better job recommendations!"
                                     )
-                                    print("✔ CREATED IN-APP PROFILE REMINDER")
+                          #          print("✔ CREATED IN-APP PROFILE REMINDER")
                                 except Exception as e:
                                     current_app.logger.exception("Failed to create profile reminder: %s", e)
                                 
@@ -710,7 +710,7 @@ def unified_notification_worker(app):
                                         recipients=[u.email],
                                         body=f"Your profile is {u.profile_completion}% complete. Finish it to get better job matches!"
                                     ))
-                                    print("✔ SENT PROFILE REMINDER EMAIL")
+                          #          print("✔ SENT PROFILE REMINDER EMAIL")
                                 except Exception as e:
                                     current_app.logger.warning("Profile reminder email failed: %s", e)
 

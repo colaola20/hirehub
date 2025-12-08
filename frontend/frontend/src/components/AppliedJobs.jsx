@@ -276,8 +276,6 @@ const job = {
         />
       )}
 
-      <JobCard job={job} />
-      
 
     </div>
   );
