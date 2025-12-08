@@ -1,9 +1,10 @@
 import {useState, useRef, useEffect} from 'react'
 import Error from '../components/UsersMessages/Error'
 import styles from './Documents.module.css'
-import { Plus, Info, MoreVertical, Eye, Download, Trash2, Pencil } from 'lucide-react';
+import { Plus, Info, MoreVertical, Eye, Download, Trash2, Pencil, FilePenLine } from 'lucide-react';
 import Btn from '../components/buttons/Btn'
 import Confirmation from'../components/UsersMessages/Confirmation'
+import RenameModal from '../components/documents/RenameModal'
 
 const Documents = () => {
     const [file, setFile] = useState(null);
@@ -29,11 +30,14 @@ const Documents = () => {
     const [showConfirmation, setShowConfirmation] = useState(false)
     const [deleteDocumentId, setDeleteDocumentId] = useState(null)
 
+    const [showRenameModal, setShowRenameModal] = useState(false)
+    const [renameDoc, setRenameDoc] = useState(null)
+
     const handleFileChange = async (e, type) => {
         setLoadingFileType(type)
         const selectedFile = e.target.files?.[0];
         if (!selectedFile) return
-        
+       
         setShowError(false);
         setResult(null);
         setFile(selectedFile);
@@ -47,6 +51,7 @@ const Documents = () => {
             setDocuments(prevDocuments=> {
                 return [...prevDocuments, res]
             })
+            setDocumentsCount(prev => prev + 1);
         } catch (err) {
             setErrorTitle("Upload failed");
             setErrorDescription(err?.message || String(err) || "Unknown error");
@@ -137,6 +142,7 @@ const Documents = () => {
 
                 const data = await response.json()
                 setDocuments(data.data)
+                console.log(data.data.length)
                 setDocumentsCount(data.data.length)
                 console.log(data.data)
             } catch (err) {
@@ -241,6 +247,21 @@ const Documents = () => {
         }
     }
 
+    const handleRename = (doc) => {
+        setRenameDoc(doc)
+        setShowRenameModal(true)
+    }
+
+    const handleRenameSuccess = (updatedDoc) => {
+        setDocuments(prevDocs => 
+            prevDocs.map(doc => 
+                doc.id === updatedDoc.id
+                ? {...doc, original_filename: updatedDoc.original_filename}
+                : doc
+            )
+        )
+    }
+
 
     return (
         <div className={styles.container}>
@@ -248,7 +269,10 @@ const Documents = () => {
                 <div className={styles.docsUploading}>
                     <div className={styles.info}>
                         <Info />
-                        <p> You have {5-documentsCount} documents saved out of 5 available.</p>
+                        <p style={{ color: documentsCount >= 5 ? '#ff6b6b' : 'inherit' }}>
+                            You have {documentsCount} documents saved out of 5 available.
+                            {documentsCount >= 5 && ' Please delete a document to upload more.'}
+                        </p>
                     </div>
                     <div className={styles.uploadBtnContainer}>
                         <div>
@@ -259,7 +283,12 @@ const Documents = () => {
                                 onChange={(e) => {handleFileChange(e, "resume")}}
                                 style={{ display: 'none' }}
                             />
-                            <Btn onClick={() => resumeInputRef.current?.click()} disabled={uploading} icon={<Plus size={20}/>} label="Add Resume"/>
+                            <Btn 
+                                onClick={() => resumeInputRef.current?.click()} 
+                                disabled={uploading || documentsCount >= 5} 
+                                icon={<Plus size={20}/>} 
+                                label="Add Resume"
+                                />
                         </div>
                         <div>
                             <input
@@ -269,7 +298,12 @@ const Documents = () => {
                                 onChange={(e) => {handleFileChange(e, "cover_letter")}}
                                 style={{ display: 'none' }}
                             />
-                            <Btn onClick={() => coverInputRef.current?.click()} disabled={uploading} icon={<Plus size={20}/>} label="Add Cover Letter"/>
+                            <Btn 
+                                onClick={() => coverInputRef.current?.click()} 
+                                disabled={uploading || documentsCount >= 5} 
+                                icon={<Plus size={20}/>} 
+                                label="Add Cover Letter"
+                                />
                         </div>
                     </div>
                 </div>
@@ -316,6 +350,19 @@ const Documents = () => {
                                             onClick={(e) => {
                                                 e.preventDefault()
                                                 e.stopPropagation();
+                                                handleRename(doc)
+                                                setOpenDropdownId(null)
+                                            }}
+                                            onMouseEnter={(e) => e.currentTarget.style.background = '#6f67f0'}
+                                            onMouseLeave={(e) => e.currentTarget.style.background = 'none'}
+                                            className={styles.dropdownItem}
+                                        >
+                                            <Pencil size={16}/> Rename
+                                        </button>
+                                        <button
+                                            onClick={(e) => {
+                                                e.preventDefault()
+                                                e.stopPropagation();
                                                 handleEdit(doc.id)
                                                 setOpenDropdownId(null)
                                             }}
@@ -323,7 +370,7 @@ const Documents = () => {
                                             onMouseLeave={(e) => e.currentTarget.style.background = 'none'}
                                             className={styles.dropdownItem}
                                         >
-                                            <Pencil size={16}/> Edit
+                                            <FilePenLine size={16}/> Edit
                                         </button>
                                         <button
                                             onClick={(e) => {
@@ -371,6 +418,16 @@ const Documents = () => {
                         setDeleteDocumentId(null)
                     }} 
                     onSubmission={deleteDocument}/>
+            )}
+            {showRenameModal && (
+                <RenameModal
+                    doc={renameDoc}
+                    onClose={() => {
+                        setShowRenameModal(false)
+                        setRenameDoc(null)
+                    }}
+                    onSuccess = {handleRenameSuccess}
+                />
             )}
         </div>
     )

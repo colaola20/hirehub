@@ -12,6 +12,8 @@ import uuid
 from app.models.user import User
 from app.extensions import db
 
+from datetime import datetime 
+
 # from groq import Groq
 
 # groq_client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
@@ -253,6 +255,74 @@ def get_user_documents():
             'message': 'Failed to retrieve documents',
             'error': str(e)
         }), 500
+
+# ------------------------
+# Rename user's doc
+# ------------------------
+@documents_bp.route('/api/documents/<int:document_id>/rename', methods=['PATCH'])
+@jwt_required()
+def rename_file(document_id):
+    try:
+        user_id = int(get_jwt_identity())
+        user = User.query.get(user_id)
+
+        if not user:
+            return jsonify({'error': 'User not found'}), 404
+
+        document = Document.query.get(document_id)
+
+        if not document:
+            return jsonify({'error': 'Document not found'}), 404
+        
+        if document.user_email != user.email:
+            return jsonify({'error': 'Unauthorized'}), 403
+        
+        # Get the new filename from request
+        data = request.get_json()
+        new_filename = data.get('original_filename')
+
+        if not new_filename:
+            return jsonify({'error': 'Filename is required'}), 400
+        
+        # Validate filename
+        new_filename = new_filename.strip()
+        if not new_filename:
+            return jsonify({'error': 'Filename cannot be empty'}), 400
+        
+        # Optional: Add forbidden characters check
+        forbidden_chars = ['/', '\\', ':', '*', '?', '"', '<', '>', '|']
+        if any(char in new_filename for char in forbidden_chars):
+            return jsonify({'error': 'Filename contains invalid characters'}), 400
+        
+        # preserve original extension if present
+        original_extension = ''
+        orig_name = getattr(document, 'original_filename', '') or ''
+        if '.' in orig_name:
+            original_extension = orig_name.rsplit('.', 1)[-1]
+        if original_extension and not new_filename.lower().endswith(f'.{original_extension.lower()}'):
+            new_filename = f"{new_filename}.{original_extension}"
+        
+        
+        # Update the document
+        document.original_filename = new_filename
+        document.updated_at = datetime.utcnow()  # Update timestamp
+        
+        db.session.commit()
+        
+        return jsonify({
+            'message': 'Document renamed successfully',
+            'data': {
+                'id': document.document_id,
+                'original_filename': document.original_filename,
+                'updated_at': document.updated_at.isoformat()
+            }
+        }), 200
+        
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error renaming document: {str(e)}")
+        return jsonify({'error': 'Failed to rename document'}), 500
+
 
 
 # ------------------------

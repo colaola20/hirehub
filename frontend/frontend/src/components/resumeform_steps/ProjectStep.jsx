@@ -1,49 +1,44 @@
 import './stepstyle.css'
+import Btn from '../buttons/Btn'
+import {Plus} from 'lucide-react'
 
 const ProjectComponent = ({ project, index, updateProj, removeProj, removeable }) => {
     return (
         <div className="project-form">
-
-            <input
-                type="text"
-                name='projTitle'
-                placeholder="Project Title"
-                value={project.projTitle}
-                onChange={(e) => updateProj(index, e.target.name, e.target.value)}
-            />
-
-            <input
-                type="text"
-                name='projDesc'
-                placeholder="Paste Short Description"
-                value={project.projDesc}
-                onChange={(e) => {
-                    const el = e.target;
-
-                    updateProj(index, el.name, el.value);
-
-                    const maxWidth = 300; 
-                    el.style.width = "20px";  // reset to minimum width
-                    const newWidth = Math.min(el.scrollWidth, maxWidth);
-                    el.style.width = newWidth + "px";
-
-                    el.style.height = "auto"; // reset
-                    el.style.height = el.scrollHeight + "px"; // grow vertically
-                }
-                }
-            />
-
-            <input
-                type="url"
-                name='projLink'
-                placeholder="Project Link"
-                value={project.projLink}
-                onChange={(e) => updateProj(index, e.target.name, e.target.value)}
-            />
-            {removeable &&
-                <button type="button" onClick={() => removeProj(index)}>Remove</button>
-            }
-
+            <div className="jobInput">
+                <div>
+                    <input
+                        type="text"
+                        name='projTitle'
+                        placeholder="Project Title"
+                        value={project.projTitle}
+                        onChange={(e) => updateProj(index, e.target.name, e.target.value)}
+                    />
+                </div>
+                <div>
+                    <input
+                        type="url"
+                        name='projLink'
+                        placeholder="Project Link"
+                        value={project.projLink}
+                        onChange={(e) => updateProj(index, e.target.name, e.target.value)}
+                    />
+                </div>
+            </div>
+            <div className="expirienceField">
+                <textarea
+                    name="projectDescription"
+                    value={project.projDesc}
+                    onChange={(e) => updateJobs(index, e.target.name, e.target.value)}
+                    placeholder="Describe your project..."
+                    className="textArea"
+                />
+                <div className="removeBtnContainer">
+                    {removeable &&
+                        <button type="button" onClick={() => removeProj(index)}>Remove</button>
+                    }
+                </div>
+            </div>
         </div >
     )
 };
@@ -75,9 +70,11 @@ const ProjectStep = ({ formData, onChange, errors }) => { // PROJECT INFO STEP /
     }
 
     return (
-        <div>
-            <h2>Projects</h2>
-            <h3>Add Any, Up To Three</h3>
+        <div className="resume-form">
+            <div className="title">
+                <h2>Projects</h2>
+                <p>Add Up To Three</p>
+            </div>
             {projects.map((project, index) => (
                 <ProjectComponent
                     key={index}
@@ -88,8 +85,11 @@ const ProjectStep = ({ formData, onChange, errors }) => { // PROJECT INFO STEP /
                     removeable={projects.length > 1}
                 />
             ))}
-            {projects.length < 3 &&
-                <button type='button' onClick={addProj}>+</button>}
+            <div className="addBtnContaier">
+                {projects.length < 3 &&
+                    <Btn icon={<Plus />} onClick={addProj}/>
+                }
+            </div>
         </div>
     )
 };
