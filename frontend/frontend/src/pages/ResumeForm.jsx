@@ -369,12 +369,13 @@ const ResumeForm = () => {
                         {currentStep === 6 && <ProjectStep formData={formData.step6} onChange={handleInputChange} errors={errors} />}
                         {currentStep === 7 && <ResumeViewStep backendData={formData} />}
                     </div>
+                    
                     <div className={styles['back-btn']}>
-                        <Link to="/dev_dashboard">
+                        {currentStep === 7 ? (<span className={styles.placeholder}></span>): (<Link to="/dev_dashboard">
                             <CTA
                                 label={"Save progress for later"}
                             />
-                        </Link>
+                        </Link>)}
                     </div>
                 </div>
 
