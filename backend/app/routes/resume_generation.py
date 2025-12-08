@@ -9,7 +9,7 @@ GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
 GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
 
 HTML_TEMPLATE = """
-<div class="resume-preview">
+
     <div class="header">
         <h1 class="headerName">{{fullname}}</h1>
         <p>
@@ -20,7 +20,6 @@ HTML_TEMPLATE = """
         <hr class="divider" />
     </div>
 
-    <div class="body">
 
         {{#skills_section}}
         <div class="misc">
@@ -36,23 +35,52 @@ HTML_TEMPLATE = """
         <div class="projects">
             <h2 class="sectionTitle">Projects</h2>
             <hr class="dividerSmall" />
-            {{projects}}
+            {{#projects}}
+            <div class="projectEntry">
+                <div class="projectHeader">
+                    <div class="projectTitle">{Project Title}</div>
+                    <div class="projectLink">
+                        <a href="{Project Link}" target="_blank" rel="noopener noreferrer">Project Link</a>
+                    </div>
+                </div>
+                <div class="projectDescription">
+                    {1–2 sentence description}
+                </div>
+            </div>
+            {{/projects}}
         </div>
 
         <div class="experience">
             <h2 class="sectionTitle">Experience</h2>
             <hr class="dividerSmall" />
-            {{experience}}
+            {{#experience}}
+            <div class="experienceEntry">
+                <div class="experienceCompany">{Company Name}</div>
+                <div class="experienceTime">{Time Period}</div>
+                <div class="experienceRole">{Role Name}</div>
+                <div class="experienceBullets">
+                    - {Bullet 1}<br>
+                    - {Bullet 2}
+                </div>
+            </div>
+            {{/experience}}
         </div>
 
         <div class="education">
             <h2 class="sectionTitle">Education</h2>
             <hr class="dividerSmall" />
-            {{education}}
+            {{#education}}
+            <div class="educationEntry">
+                <div class="educationSchool">{School Name}</div>
+                <div class="educationGradYear">{Graduation Year}</div>
+                <div class="educationDegree">
+                    Degree in: {Degree}
+                </div>
+            </div>
+            {{/education}}
         </div>
 
-    </div>
-</div>
+
 """
 
 @resume_bp.route("/api/generate_resume", methods=['POST'])
@@ -66,124 +94,57 @@ def generate_resume():
 
     system_prompt = """
         You will receive:
-        1. A JSON object of structured resume data.
-        2. An HTML resume template containing placeholders.
+        1. Structured resume JSON data.
+        2. Instructions to generate a modern, visually appealing resume.
 
-        Your job:
-        - Fill the HTML template with the JSON data.
-        - Keep content concise and fit within a single page of 816px x 1056px.
-        - Avoid excessive padding or margins.
+        Your task:
+        - Do NOT include any outer container div. 
+        - Only output the sections themselves (header, skills, projects, experience, education).
+        - Do NOT wrap everything in a single parent div.
+        - Each section should start at the top level of the HTML.
+        - Do NOT follow any previous CSS or templates.
+        - Make it look modern, professional, and readable.
+        - Keep the content concise and one-page friendly.
+        - Fill all placeholders like {{fullname}}, {{email}}, {{projects}}, etc.
+        - Include sections for Skills, Languages, Projects, Experience, Education.
+        - Use creative styling: colors, fonts, spacing, layout (columns, flexbox, grids, etc.)
+        - Output HTML only, no explanations.
 
-        - For job experience: write 1 to 2 concise bullet points per job describing achievements or responsibilities.
-        Do not just repeat the role name; create realistic, professional sentences.
-        Put role on a separate line from the company name and time period, but above the job description bullets.
-        Do NOT use commas to separate fields in the experience section in any circumstance. Use hyphens only.
+        Enhancement Rules:
 
-        - For projects: summarize each project in 1–2 sentences describing its purpose, functionality, and impact.
-        Include a link if available. Do not simply copy the form’s description.
-        Description MUST be separate from the title and link.
-        Insert the description on a NEW LINE after the title+link.
-        Output links as: <a href="{projLink}" target="_blank" rel="noopener noreferrer">Project Link</a>
-        Do NOT use commas to separate fields in projects.
+        1. Job Experience (step4.jobs):
+        - Use company, role, roleTime, and jobDescription fields.
+        - Rewrite the jobDescription into 1–2 professional bullet points per job.
+        - Highlight accomplishments, skills, or measurable impact.
+        - Avoid simply repeating the role name.
+        - Use active, results-oriented language.
+        - Place the role on a separate line from company and time period.
+        - Use hyphens for bullets; do not use commas to separate fields.
+        - Example enhancement:
+            Input: "Worked as a Sales Associate -"
+            Output:
+                - Delivered excellent customer service, assisting 50+ customers daily.
+                - Organized store displays to increase product visibility and sales.
 
-        - For skills and languages, list them clearly and on separate lines.
-        Capitalize the first letter of each word.
+        2. Projects (step6.projects):
+        - Summarize each project in 1–2 sentences describing purpose, functionality, and impact.
+        - Include a link if available using:
+        <a href="{projLink}" target="_blank" rel="noopener noreferrer">Project Link</a>
+        - Put the description on a new line below the title and link.
+        - Do not copy the description verbatim; improve clarity and professionalism.
+        - Use concise language emphasizing achievements or results.
 
-        - For education: school name + graduation year on one line, then “Degree in: {degree}” on the next line.
-        Do NOT use commas for education. Use hyphens only.
+        3. Skills and Languages (step3):
+        - List skills and languages clearly on separate lines.
+        - Capitalize the first letter of each word.
+        - Skills must be on their own line, languages directly below.
+        - Do NOT use hyphens for skills, use commas for skills ONLY.
+        - On each new line, specify what section you are writing about. Example: "Skills: Skill1, Skill2", etc.
 
-        ----------------------------------------
-        STRUCTURE RULES
-        ----------------------------------------
-
-        When replacing {{projects}}, use EXACTLY this HTML:
-
-        <div class="projectEntry">
-            <div class="projectHeader">
-                <div class="projectTitle">{Project Title}</div>
-                <div class="projectLink">
-                    <a href="{Project Link}" target="_blank" rel="noopener noreferrer">Project Link</a>
-                </div>
-            </div>
-            <div class="projectDescription">
-                {1–2 sentence description}
-            </div>
-        </div>
-
-        When replacing {{experience}}, use EXACTLY this structure:
-
-        <div class="experienceEntry">
-            <div class="experienceCompany">{Company Name}</div>
-            <div class="experienceTime">{Time Period}</div>
-            <div class="experienceRole">{Role Name}</div>
-            <div class="experienceBullets">
-                - {Bullet 1}<br>
-                - {Bullet 2}
-            </div>
-        </div>
-
-        When replacing {{education}}, use EXACTLY this structure:
-
-        <div class="educationEntry">
-            <div class="educationSchool">{School Name}</div>
-            <div class="educationGradYear">{Graduation Year}</div>
-            <div class="educationDegree">
-                Degree in: {Degree}
-            </div>
-        </div>
-
-        ----------------------------------------
-        SKILLS / LANGUAGES RULES
-        ----------------------------------------
-
-        The template contains a .misc section containing:
-
-        {{skills_line}}
-        {{languages_line}}
-
-        When replacing {{skills_line}}, output:
-
-        Skills: Skill1, Skill2, Skill3
-
-        When replacing {{languages_line}}, output:
-
-        Languages: Lang1, Lang2
-
-        These MUST be two separate lines.
-        Skills ALWAYS on its own line.
-        Languages ALWAYS directly below skills.
-        Any additional misc fields must also be separate lines.
-
-        ----------------------------------------
-        STRICT STRUCTURE ENFORCEMENT
-        ----------------------------------------
-
-        You MUST:
-        - Follow the exact HTML structures above.
-        - Put each field ONLY in its correct div.
-        - NOT merge title/link/description fields.
-        - NOT merge fields in experience.
-        - NOT add or remove divs.
-        - NOT rearrange elements.
-        - NOT combine fields into one line.
-
-        If you deviate from these structures, the output is invalid.
-
-        ----------------------------------------
-        GLOBAL RESTRICTIONS
-        ----------------------------------------
-
-        - The HTML template uses full lines to separate fields — preserve this.
-        - Do NOT modify layout, class names, or structure.
-        - Do NOT add explanations, comments, or JSX.
-        - Only fill placeholders such as {{projects}}, {{experience}}, etc.
-        - Remove sections if data is empty.
-        - Return ONLY the final HTML.
-
-        Available placeholders:
-        {{fullname}}, {{email}}, {{phone}}, {{city}}, {{linkedin}}, {{github}}
-        {{skills_section}}
-        {{projects}}, {{experience}}, {{education}}
+        4. Education (step5.education):
+        - Display school name + graduation year on one line.
+        - Display degree on a new line: "Degree in: {Degree}".
+        - Use hyphens only; do not use commas to separate fields.
         """
 
     prompt = f"""
