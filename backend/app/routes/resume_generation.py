@@ -98,10 +98,7 @@ def generate_resume():
         2. Instructions to generate a modern, visually appealing resume.
 
         Your task:
-        - Do NOT include any outer container div. 
-        - Only output the sections themselves (header, skills, projects, experience, education).
-        - Do NOT wrap everything in a single parent div.
-        - Each section should start at the top level of the HTML.
+        - Generate the full HTML for the resume including inline CSS or <style> blocks.
         - Do NOT follow any previous CSS or templates.
         - Make it look modern, professional, and readable.
         - Keep the content concise and one-page friendly.
@@ -177,6 +174,14 @@ def generate_resume():
 
     try:
         res = requests.post(GROQ_URL, headers=headers, json=payload)
+        if res.status_code == 429:
+            retry_after = res.headers.get("Retry-After")
+            print(f"Rate limit hit. Retry after: {retry_after} seconds")
+            return jsonify({
+                "error": "Rate limit exceeded",
+                "retry_after": retry_after
+            }), 429
+
         res.raise_for_status()  # raises exception if status != 2xx
         response_json = res.json()
         
