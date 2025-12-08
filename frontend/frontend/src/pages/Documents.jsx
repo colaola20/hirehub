@@ -1,4 +1,5 @@
 import {useState, useRef, useEffect} from 'react'
+import { useNavigate } from 'react-router-dom'
 import Error from '../components/UsersMessages/Error'
 import styles from './Documents.module.css'
 import { Plus, Info, MoreVertical, Eye, Download, Trash2, Pencil, FilePenLine } from 'lucide-react';
@@ -7,6 +8,7 @@ import Confirmation from'../components/UsersMessages/Confirmation'
 import RenameModal from '../components/documents/RenameModal'
 
 const Documents = () => {
+    const navigate = useNavigate();
     const [file, setFile] = useState(null);
     const [progress, setProgress] = useState(0);
     const [uploading, setUploading] = useState(false);
@@ -253,13 +255,20 @@ const Documents = () => {
     }
 
     const handleRenameSuccess = (updatedDoc) => {
-        setDocuments(prevDocs => 
-            prevDocs.map(doc => 
+        setDocuments(prevDocs =>
+            prevDocs.map(doc =>
                 doc.id === updatedDoc.id
                 ? {...doc, original_filename: updatedDoc.original_filename}
                 : doc
             )
         )
+    }
+
+    const handleEdit = (documentId) => {
+        // Get current username from URL
+        const username = window.location.pathname.split('/')[1];
+        // Navigate to the document editor page
+        navigate(`/${username}/documents/edit/${documentId}`);
     }
 
 

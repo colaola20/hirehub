@@ -39,14 +39,22 @@ const DocumentEditor = () => {
                 const data = await response.json();
                 const { config, token: onlyofficeToken, documentServerUrl } = data;
 
+                console.log('OnlyOffice config:', { documentServerUrl, config });
+
                 // Load OnlyOffice API script
                 const script = document.createElement('script');
                 script.src = `${documentServerUrl}/web-apps/apps/api/documents/api.js`;
                 script.async = true;
 
+                console.log('Loading OnlyOffice script from:', script.src);
+
                 script.onload = () => {
+                    console.log('OnlyOffice script loaded. DocsAPI available:', !!window.DocsAPI);
+                    console.log('window.DocsAPI:', window.DocsAPI);
+
                     // Initialize OnlyOffice editor
-                    if (window.DocsAPI) {
+                    if (window.DocsAPI && window.DocsAPI.DocEditor) {
+                        console.log('Initializing OnlyOffice editor...');
                         new window.DocsAPI.DocEditor("onlyoffice-editor", {
                             ...config,
                             width: "100%",
