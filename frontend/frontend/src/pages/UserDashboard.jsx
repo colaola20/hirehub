@@ -10,7 +10,6 @@ import style from "./JobsList.module.css";
 import PersonalizedNavbar from "../components/PersonalizedNavbar.jsx";
 import SideBar  from "../components/sideBar.jsx";
 import ChatBot from "../components/ChatBot.jsx";
-import JobDetailsModal from "../components/JobDetailsModal.jsx"; 
 import JobCard from "../components/JobCard.jsx";
 import AppliedJobs from "../components/AppliedJobs.jsx";
 import RecommendedJobCard from "../components/RecommendedJobCard.jsx";

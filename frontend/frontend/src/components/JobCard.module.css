@@ -164,6 +164,12 @@ margin: 40px 0;
   align-items: center;
 }
 
+.iconBox:hover {
+  
+  transform: translateY(-7px);
+
+}
+
 .iconBox svg {
   font-size: 24px;
   color: #a3bffa;
@@ -271,20 +277,28 @@ margin: 40px 0;
 }
 
 .skillPill {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(223, 132, 27, 0.2);
   color: #ffffff;
   border-radius: 12px;
   padding: 4px 10px;
   font-size: 0.85rem;
+  border: 2px solid #d89229; 
+  border: 2px solid #e28821;
 }
 
 .matchedSkillPill{
-  background-color: #232c27; 
-  color: #b5e0b5; 
-  border: 1px solid #66c566; 
+  background: rgba(0, 255, 0, 0.08);
+  color: #ffffff;
   border-radius: 12px;
   padding: 4px 10px;
   font-size: 0.85rem;
+  border: 2px solid #17aa17; 
+}
+
+.matchedSkillPill:hover, .skillPill:hover {
+
+  transform: translateY(-4px);
+
 }
 
 .centeredMessage {
@@ -296,7 +310,6 @@ margin: 40px 0;
   font-size: 18px;
   color: #ffffff;
 }
-
 .error , .loading {
   transform: translateY(20px);
   font-weight: bold;

@@ -9,7 +9,6 @@ import Login from './pages/Login';
 import Registration from './pages/Registration';
 import Home from './pages/Home';
 import ForgotPassword from './pages/forgot_password';
-import JobDetails from "./components/JobDetailsModal.jsx";
 import JobsList from './pages/JobsList.jsx'
 import UserDashboard from './pages/UserDashboard';
 import ResumeForm from './pages/ResumeForm';
