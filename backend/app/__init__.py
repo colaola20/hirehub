@@ -32,6 +32,7 @@ from app.models.application import Application
 from app.models.profile import Profile
 from app.models.skill import Skill
 from app.routes.chat_bot import chat_bp
+from app.routes.form_doc import docx_bp
 
 load_dotenv()
 
@@ -95,6 +96,7 @@ def create_app():
     app.register_blueprint(settings_bp, url_prefix="/api")
     app.register_blueprint(contact_bp)    
     app.register_blueprint(resume_bp)
+    app.register_blueprint(docx_bp, url_prefix="/api")
 
     # --------------------------------------------------
     # Unified notification worker integration (FIXED)

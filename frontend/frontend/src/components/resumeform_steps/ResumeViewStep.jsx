@@ -133,6 +133,39 @@ const ResumeViewStep = ({ backendData }) => {
         });
     }
 
+    const downloadDocx = async () => {
+    const resumeElement = document.getElementById("resume-container");
+    if (!resumeElement) return;
+
+    const htmlContent = resumeElement.innerHTML;
+
+    const token = localStorage.getItem("token");
+
+    const res = await fetch("/api/generate-docx", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+        },
+        body: JSON.stringify({ html: htmlContent }),
+    });
+
+    if (!res.ok) {
+        console.error("Failed to generate DOCX");
+        return;
+    }
+
+    const blob = await res.blob();
+    const url = window.URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "resume.docx";
+    a.click();
+
+    window.URL.revokeObjectURL(url);
+};
+
     const newTab = () => {
         const resumeElement = document.getElementById("resume-container");
         if (!resumeElement) return;
@@ -202,7 +235,8 @@ const ResumeViewStep = ({ backendData }) => {
                     onClick={() => resumeInputRef.current?.click()}
                     disabled={uploading}
                 />
-                <Btn label={"Download Resume"} onClick={pdfDL} />
+                {/* <Btn label={"Download Resume"} onClick={pdfDL} /> */}
+                <Btn label={"Download as DOCX"} onClick={downloadDocx} />
             </div>
 
             <div className={style.successMsg}>
