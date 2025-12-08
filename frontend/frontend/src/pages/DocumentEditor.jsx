@@ -112,7 +112,8 @@ const DocumentEditor = () => {
     }, [documentId, navigate]);
 
     const handleBack = () => {
-        navigate('/documents');
+        const username = window.location.pathname.split('/')[1];
+        navigate(`/${username}/documents`);
     };
 
     return (
