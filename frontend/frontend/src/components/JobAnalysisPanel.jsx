@@ -1,12 +1,16 @@
 import { useEffect, useState, useRef } from "react";
 import styles from "./JobCard.module.css";
+import PercentCircle from "./circle/MatchCircle";
 
 // ✅ Global cache outside component - survives remounts
 const analysisCache = new Map();
 const CACHE_DURATION = 30 * 60 * 1000; // 30 minutes
 const inFlightRequests = new Map();
 
-const JobAnalysisPanel = ({ job }) => {
+const JobAnalysisPanel = ({ job  }) => {
+  
+//  analysisCache.clear(); // temp fix while styling
+
   const [analysis, setAnalysis] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isVisible, setIsVisible] = useState(false);
@@ -51,6 +55,26 @@ const setCachedAnalysis = (jobId, data) => {
 
 
   useEffect(() => {
+
+  //     if (skipAnalysis) {
+  //   // Provide mock data for styling
+  //   const mock = {
+  //     percentage_match: 72,
+  //     job_skills: [
+  //   "JavaScript", "TypeScript", "Python", "Java", "C#", "C++", "Rust", "Go",
+  //   "Kotlin", "Swift", "Ruby", "PHP", "Node.js", "Express", "Next.js",
+
+  // ],
+  //     matched_skills: [
+  //   "JavaScript", "TypeScript", "Python", "Java", "C#", "C++", "Rust", "Go",
+  //   "NLP", "Computer Vision", "Pandas", "NumPy", "TensorFlow", "PyTorch",
+  // ],
+  //   };
+
+  //   setAnalysis(mock);
+  //   setLoading(false);
+  //   return;
+  // }
 
     if (!job?.id || !isVisible) return; // Wait until visible
 
@@ -122,19 +146,26 @@ const setCachedAnalysis = (jobId, data) => {
     };
   }, [job?.id, isVisible]);
 
-  if (loading) return <div ref={containerRef} className={styles.loading}>Analyzing...</div>;
-  if (analysis?.error) return <div className={styles.error}>{analysis.error}</div>;
+
+if (!analysis)
+  return <div ref={containerRef} className={styles.loading}>Analyzing...</div>;
+
+if (analysis?.error)
+  return <div className={styles.error}>{analysis.error}</div>;
+if (analysis.percentage_match === 0 ){
+  return <div className={styles.noMatch}>No match data available.</div>;
+}
+
+  const rawPct = Number(analysis.percentage_match || 0); 
+  const formattedPct = rawPct % 1 === 0 ? rawPct : Number(rawPct.toFixed(2));
 
   return (
     <div ref={containerRef} className={styles.wrapper}>
       <div className={styles.pctRow}>
-        <div className={styles.pctBig}>
-        {(() => {
-            const pct = Number(analysis.percentage_match || 0);
-            return pct % 1 === 0 ? pct : pct.toFixed(2);
-        })()}%
-        </div>
-        <div className={styles.pctLabel}>Match</div>
+
+        {/* Circle */}
+        <PercentCircle percent={formattedPct} />
+    
       </div>
 
       <div className={styles.section}>
@@ -150,7 +181,7 @@ const setCachedAnalysis = (jobId, data) => {
         <div className={styles.sectionTitle}>Matched Skills</div>
         <div className={styles.skillList}>
           {(analysis.matched_skills || []).map((s, i) => (
-            <span key={i} className={styles.skillPill}>{s}</span>
+            <span key={i} className={styles.matchedSkillPill}>{s}</span>
           ))}
         </div>
       </div>
