@@ -1,0 +1,146 @@
+services:
+  # Flask Backend
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: hirehub-backend
+    restart: unless-stopped
+    env_file:
+      - ./backend/.env
+    volumes:
+      - ./backend:/app
+      - backend-uploads:/app/uploads
+    networks:
+      - hirehub-network
+    ports:
+      - "5001:5001"  # Expose for development/debugging (remove in production)
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5001/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    depends_on:
+      - db-check
+
+  # React Frontend
+  frontend:
+    build:
+      context: ./frontend/frontend
+      dockerfile: Dockerfile
+    container_name: hirehub-frontend
+    restart: unless-stopped
+    environment:
+      - VITE_API_URL=http://localhost/api
+    networks:
+      - hirehub-network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Nginx Reverse Proxy
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    container_name: hirehub-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - nginx-logs:/var/log/nginx
+    networks:
+      - hirehub-network
+    depends_on:
+      - backend
+      - frontend
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Local PostgreSQL Database (for OnlyOffice)
+  postgres:
+    image: postgres:15-alpine
+    container_name: hirehub-postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=onlyoffice_db
+      - POSTGRES_USER=onlyoffice_user
+      - POSTGRES_PASSWORD=local_dev_password
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - hirehub-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U onlyoffice_user -d onlyoffice_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # OnlyOffice Document Server
+  onlyoffice:
+    image: onlyoffice/documentserver:7.5.1
+    container_name: hirehub-onlyoffice
+    restart: unless-stopped
+    environment:
+      - JWT_ENABLED=true
+      - JWT_SECRET=local-dev-secret-change-in-production-min32chars
+      - JWT_HEADER=Authorization
+      - DB_TYPE=postgres
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=onlyoffice_db
+      - DB_USER=onlyoffice_user
+      - DB_PWD=local_dev_password
+    volumes:
+      - onlyoffice-data:/var/www/onlyoffice/Data
+      - onlyoffice-logs:/var/log/onlyoffice
+    networks:
+      - hirehub-network
+    ports:
+      - "8080:80"  # Direct access for testing
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/healthcheck"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # Database connection check (utility service)
+  db-check:
+    image: postgres:15-alpine
+    container_name: hirehub-db-check
+    env_file:
+      - ./backend/.env
+    command: >
+      sh -c "
+      echo 'Checking database connection...';
+      until pg_isready -h hirehub-psql.c1ag4mogwrr6.us-east-2.rds.amazonaws.com -p 5432 -U postgres; do
+        echo 'Waiting for database...';
+        sleep 2;
+      done;
+      echo 'Database is ready!';
+      "
+    networks:
+      - hirehub-network
+
+networks:
+  hirehub-network:
+    driver: bridge
+
+volumes:
+  backend-uploads:
+  nginx-logs:
+  postgres-data:
+  onlyoffice-data:
+  onlyoffice-logs:

@@ -4,10 +4,10 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import styles from "./login_Page.module.css";
 import jwt_decode from "jwt-decode";
-import githubLogo from "../assets/github.png";
-import linkedinLogo from "../assets/linkedin.png";
-import googleLogo from "../assets/google.png";
-import placeholderImg from "../assets/login_reg_Place_holder1.png";
+import githubLogo from "../../public/assets/github.png";
+import linkedinLogo from "../../public/assets/linkedin.png";
+import googleLogo from "../../public/assets/google.png";
+import placeholderImg from "../../public/assets/login_reg_Place_holder1.png";
 
 const Login = () => {
   const [email, setEmail] = useState("");
