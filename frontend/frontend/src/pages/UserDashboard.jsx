@@ -6,6 +6,7 @@ import axios from "axios";
 
 
 import styles from "./dashBoard.module.css";
+import style from "./JobsList.module.css";
 import PersonalizedNavbar from "../components/PersonalizedNavbar.jsx";
 import SideBar  from "../components/sideBar.jsx";
 import ChatBot from "../components/ChatBot.jsx";
@@ -26,11 +27,14 @@ const UserDashboard = () => {
   const [recommendedLoading, setRecommendedLoading] = useState(false);
   const [recommendedError, setRecommendedError] = useState(null);
 
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
   const [likedJobs, setLikedJobs] = useState([]);
 
   const location = useLocation();
 
-  const handleJobClick = (job) => {
+  const handleJobClick = useCallback((job) => {
     try {
       localStorage.setItem("job_dashboard_payload", JSON.stringify(job));
     } catch (e) {
@@ -38,7 +42,7 @@ const UserDashboard = () => {
     }
 
     navigate("/job_dashboard"); // same tab navigation
-  };
+  }, [navigate]);
 
 
 
@@ -146,7 +150,7 @@ const UserDashboard = () => {
 
 
     // Fetch liked jobs
-  const fetchLikedJobs = async () => {
+  const fetchLikedJobs = useCallback(async () => {
     try {
       const token = localStorage.getItem("token");
       const res = await axios.get("/api/favorites", {
@@ -163,7 +167,7 @@ const UserDashboard = () => {
     } catch (err) {
       console.error("Failed to fetch liked jobs:", err);
     }
-  };
+  }, []);
 
   const fetchRecommendedJobs = useCallback(async () => {
   const token = localStorage.getItem("token");
@@ -233,8 +237,6 @@ const UserDashboard = () => {
     
   };
 
-
-
   return (
     <>
       <ToastContainer position="top-right" />
@@ -246,46 +248,56 @@ const UserDashboard = () => {
             onReset = {() => {
               setShowLiked(false);
               setShowApplied(false);
+              setShowRecommended(false)
              
             }}
           />
           <main className={styles["dashboard-container"]} role="main">
-            <div className={styles["main-content"]}>
-            {showLiked ? (
-              likedJobs.length > 0 ? (
-                likedJobs.map(job => (
-                  <JobCard key={job.id} job={job} cardForLikedJobs={true} onClick={handleJobClick} />
-                ))
-              ) : (
-                <p>No liked jobs yet.</p>
-                )
-              ) : showApplied ? (
-                  <AppliedJobs/>
-
-              ) : showRecommended ? (
-                    recommendedLoading ? (
-                      <p>Loading recommendations...</p>
-                    ) : recommendedError ? (
-                      <p>Error: {recommendedError}</p>
-                    ) : recommendedJobs.length > 0 ? (
-                      recommendedJobs.map(rec => {
-                        if (!rec.job) return null;
-                        return (
-                          <RecommendedJobCard 
-                            key={rec.id}
-                            job={rec.job}
-                            recommendation={rec}
-                            onClick={handleJobClick}
-                          />
-                        );
-                      })
-                    ) : (
-                      <p>No recommended jobs available.</p>
-                    )
+              <div className={styles["main-content"]}>
+                <div className={style.cardList}>
+                {showLiked ? (
+                  likedJobs.length > 0 ? (
+                    likedJobs.map((job) => (
+                      // Switch this from JobCardDev to JobCard
+                      <JobCard 
+                        key={job.id} 
+                        job={job} 
+                        cardForLikedJobs={true} 
+                        onClick={handleJobClick} 
+                      />
+                    ))
                   ) : (
-                    <Outlet context={{ onJobClick: handleJobClick, fetchJobs }} />
-                  )}
-           </div>
+                    <p style={{ color: "white", textAlign: "center", marginTop: "20px" }}>
+                      No liked jobs yet.
+                    </p>
+                  )
+                ) : showApplied ? (
+                  <AppliedJobs />
+                ) : showRecommended ? (
+                  recommendedLoading ? (
+                    <p style={{ color: "white", textAlign: "center" }}>Loading recommendations...</p>
+                  ) : recommendedError ? (
+                    <p style={{ color: "red", textAlign: "center" }}>Error: {recommendedError}</p>
+                  ) : recommendedJobs.length > 0 ? (
+                    recommendedJobs.map((rec) => {
+                      if (!rec.job) return null;
+                      return (
+                        <RecommendedJobCard
+                          key={rec.id}
+                          job={rec.job}
+                          recommendation={rec}
+                          onClick={handleJobClick}
+                        />
+                      );
+                    })
+                  ) : (
+                    <p style={{ color: "white", textAlign: "center" }}>No recommended jobs available.</p>
+                  )
+                ) : (
+                  <Outlet context={{ onJobClick: handleJobClick, fetchJobs }} />
+                )}
+                </div>
+              </div>
           </main>
         </div>
       </div>

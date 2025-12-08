@@ -1,6 +1,6 @@
 import {React ,useState } from "react";
 
-import styles from "./SmallModal.module.css";
+import styles from "./smallModal.module.css";
 import Error from "./UsersMessages/Error.jsx";
 import Success from "./UsersMessages/Success.jsx";
 

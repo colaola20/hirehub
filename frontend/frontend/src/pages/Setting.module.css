@@ -1,8 +1,8 @@
 .container {
+  box-sizing: border-box;
   width: 100%;
-  min-height: calc(100vh - var(--nav-h) - 120px);
+  min-height: 100vh;
   border-radius: 10px;
-
 }
 
 .settingContainer {
@@ -14,7 +14,6 @@
     align-items: center;
     padding: 3rem;
     background: rgba(20, 15, 40, 0.75);
-    height: 100vh;
     -webkit-backdrop-filter: blur(12px);
     backdrop-filter: blur(12px);
     border: 1px solid rgba(255, 255, 255, 0.05);
@@ -31,8 +30,9 @@
 .email,
 .password,
 .deleteAccount,
-.jobAlerts {
-  margin:1.2rem 0 0 0;
+.jobAlerts,
+.alertsFrequency {
+  margin:1rem 0;
 }
 
 .password, .deleteAccount {
@@ -52,7 +52,7 @@
 }
 
 .label {
-  margin:0 0 6px 0;
+  margin-bottom: 10px;
   font-size: 1rem;
   color: #ffffff;
 }
@@ -60,7 +60,8 @@
 .email,
 .password,
 .deleteAccount,
-.jobAlerts .description {
+.jobAlerts .description,
+.alertsFrequency {
   margin: 0;
   margin-bottom: 8px;
   color: #9aa4b2;
@@ -79,6 +80,21 @@
   justify-content: space-between;
 }
 
+.dropdownItems {
+    width: 100%;
+    text-align: left;
+    background: none;
+    border-bottom: none;
 
+    padding: 10px 16px;
+    color: #ffffff;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 8px;
 
+    transition: background 0.2s ease;
+}
 
+.dropDownItems:hover {
+    background: #6f67f0;
+}

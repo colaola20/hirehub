@@ -13,6 +13,20 @@ class User(db.Model):
     last_name = db.Column(db.String(50), nullable=False)
     password_hash = db.Column(db.String(255), nullable=False)
 
+    # ------------------------------------
+    # Notification Preferences (NEW)
+    # ------------------------------------
+    general_notifications_enabled = db.Column(db.Boolean, default=True)
+    general_notifications_frequency = db.Column(db.String, default="Immediately")
+        # options: "Immediately", "Daily summary", "Weekly summary"
+
+    job_alerts_enabled = db.Column(db.Boolean, default=True)
+    job_alerts_frequency = db.Column(db.String, default="Up to 1 alert/day")
+        # options: "Up to 1 alert/day", "Up to 3 alerts/week", "Unlimited"
+
+    last_general_notification_sent = db.Column(db.DateTime, nullable=True)
+    last_job_alert_sent = db.Column(db.DateTime, nullable=True)
+
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     updated_at = db.Column(
         db.DateTime,
@@ -22,10 +36,9 @@ class User(db.Model):
 
     is_active = db.Column(db.Boolean, default=True)
 
-    # -----------------------------
-    # NEW FIELDS FOR NOTIFICATIONS
-    # -----------------------------
-
+    # ------------------------------------
+    # Login + resume logic
+    # ------------------------------------
     last_login = db.Column(db.DateTime, nullable=True)
     login_streak = db.Column(db.Integer, default=0)
     last_streak_date = db.Column(db.DateTime, nullable=True)
@@ -36,11 +49,34 @@ class User(db.Model):
     skills = db.Column(db.JSON, nullable=True)
     profile_completion = db.Column(db.Integer, default=0)
 
+    # ------------------------------------
+    # Digest Preferences (NEW)
+    # ------------------------------------
+    digest_interval_minutes = db.Column(db.Integer, default=1440)  # 24 hours
+    last_digest_sent = db.Column(db.DateTime, nullable=True)
+
+    # ------------------------------------
+    # Job Match Alerts (NEW)
+    # ------------------------------------
+    last_job_match_sent = db.Column(db.DateTime, nullable=True)
+
+    # ------------------------------------
+    # Profile Completion Reminder (NEW)
+    # ------------------------------------
+    last_profile_reminder_sent = db.Column(db.DateTime, nullable=True)
+
+    # ------------------------------------
+    # Login Inactivity Alert (NEW)
+    # ------------------------------------
+    last_login_notification_sent = db.Column(db.DateTime, nullable=True)
+
+    # ------------------------------------
+    # Old fields you already had
+    # ------------------------------------
     daily_digest_enabled = db.Column(db.Boolean, default=True)
     weekly_digest_enabled = db.Column(db.Boolean, default=True)
 
     followed_companies = db.Column(db.JSON, nullable=True)
-
     saved_filters = db.Column(db.JSON, nullable=True)
 
     favorites = db.relationship(
@@ -49,6 +85,7 @@ class User(db.Model):
         lazy=True,
         cascade='all, delete-orphan'
     )
+
 
     def __repr__(self):
         return f'<User {self.username}>'
@@ -72,4 +109,5 @@ class User(db.Model):
             'resume_score': self.resume_score,
             'profile_completion': self.profile_completion,
             'login_streak': self.login_streak,
+            'digest_interval_minutes': self.digest_interval_minutes
         }

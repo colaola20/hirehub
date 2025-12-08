@@ -1,6 +1,20 @@
 
 
+.dashboard-container .main-content {
+  background: rgba(255,255,255,0.02);
+  border-radius: 12px;
+  /* padding: 20px; */
+  width: 100%;
+  min-height: calc(100vh - var(--nav-h) - 120px);
+  box-shadow: 0 8px 30px rgba(2,6,23,0.45);
+  box-sizing: border-box;
+
+}
+
 .job-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     width: 95%;
     background: rgba(20, 15, 40, 0.75); /* glassy panel effect */
      -webkit-backdrop-filter: blur(12px);     /* Safari support */
@@ -12,16 +26,18 @@
     transition: all 0.25s ease;
     cursor: pointer;
     margin-bottom: 10px;
-    /* margin-left: 20px; */
     margin-top: 40px;
     color: #ffffff;    
+    
+    
 }
+
 .card-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
   margin-bottom: 16px;
+
 }
 
 .card-header h3 {
@@ -59,23 +75,27 @@
   display: flex;
   align-items: center;
   gap: 6px;
+
 }
 
 
 .date{
+  display: flex;
+  flex-direction: row;
+
     font-size: 13px;
     font-weight: bold;
-    color: #ffffff;    
-}
+    color: #ffffff;  
 
+}
+/* 
 .jobInfo{
     display: grid;
-    grid-template-columns: 1fr 1fr; /* 2 columns */
+    grid-template-columns: 1fr 1fr; /* 2 columns
     grid-auto-rows: auto;         
     gap: 10px 20px;                
     padding-left: 5%;
-}
-
+} */
 
 
 .job-card:hover {
@@ -83,53 +103,96 @@
   box-shadow: 0 8px 30px rgba(255, 120, 170, 0.15);
 }
 
-.apply-btn {
-  margin-top: 10px;
-  padding: 8px 16px;
-  background-color: #4f46e5;
-  color: #ffffff;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-}
 
-.apply-btn:hover {
-  background-color: #4338ca;
-}
-
-.analysisPlaceholder{
+/* .analysisPlaceholder{
   height: 80%;
   display: flex;
   justify-content: center;
   align-items: center;
-}
+  background-color: #c6d4ff;
+} */
 
 
 .cardWrapper {
   display: flex;              
-  justify-content: space-between; 
-  align-items: stretch;
-
+  flex-direction: column;
+  justify-content: center;
+  margin: 20px;
+  flex-wrap: wrap;
     
 }
 
-.leftSide {
-  flex: 2;
 
-                 
+.leftSide {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 10px;
+  flex: 1;
+  min-width: 200px;
+ 
 }
 
+
+
+.infoBlock {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content:center;
+  gap: 6px;
+  min-width: 120px;
+  flex-wrap: wrap;
+ 
+}
+
+.columnStyle{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  
+}
+
+.iconBox {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 12px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+}
+
+.iconBox svg {
+  font-size: 24px;
+  color: #a3bffa;
+}
+
+.label {
+  font-size: 16px;
+  font-weight: bold;
+
+  text-transform: uppercase;
+  color: #c6d4ff;
+  letter-spacing: 1px;
+  margin-left: 10px;
+}
+
+.value {
+  font-size: 17px;
+  /* font-weight: bold; */
+  color: white;
+  margin-left: 10px;
+}
+
+
 .rightSide {
-  flex: 1; 
+
   display: flex;
   text-align: center;  
-
-  flex-direction: column;
+  flex-direction: row;
   justify-content: space-between; 
   align-items: center;
   min-height: 100%;
-  margin-right: 9%;
-
  
 }
 
@@ -138,69 +201,85 @@
   flex-direction: row;
   align-items: center;
   width: 130%;
-  
-  
-
 }
 
-.analyzeBtn {
-  margin-top: 12px;
-  background-color: #667eea;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  padding: 8px 16px;
-  cursor: pointer;
-  
-}
-.analyzeBtn:hover {
-  background-color: #5a67d8;
-}
 
 .analysisPlaceholder {
   color: #888;
   font-style: italic;
 }
 
+.wrapper{
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content:space-evenly;
+  align-items: center;
+  
+
+}
+
+
 .pctRow {
+
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin: 50px 0 0 20px;
+  width: 20%;
+
 }
 
-.pctBig {
+/* .pctBig {
   font-size: 30px;
   font-weight: bold;
   color: #4c51bf;
-}
+} */
 
 .pctLabel {
   font-size: 1rem;
   color: #6b7280;
+   
 }
 
 .section {
-  margin-top: 12px;
+  margin-top: 50px;
   width: 100%;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-left: 30px;
+ 
 }
+
 
 .sectionTitle {
   font-weight: 600;
   margin-bottom: 6px;
-  color: #4a5568;
+  color: #ffffff;
 }
 
 .skillList {
   display: flex;
- 
   justify-content: center;
   flex-wrap: wrap;
   gap: 6px;
 }
 
 .skillPill {
-  background-color: #d8d9dc;
-  color: #3730a3;
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  border-radius: 12px;
+  padding: 4px 10px;
+  font-size: 0.85rem;
+}
+
+.matchedSkillPill{
+  background-color: #232c27; 
+  color: #b5e0b5; 
+  border: 1px solid #66c566; 
   border-radius: 12px;
   padding: 4px 10px;
   font-size: 0.85rem;
@@ -212,6 +291,36 @@
 
 }
 
+.noMatch{
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  height: 50px;
+  width: 100%;
+  color: #ff6666;
+  font-weight: bold;
+  margin-top: 20px;
+}
+
+@media (max-width: 600px) {
+  .cardWrapper {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .infoBlock {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .label, .value {
+    margin-left: 0;
+  }
+
+  .iconBox {
+    margin-bottom: 4px;
+  }
+}
 
 
 

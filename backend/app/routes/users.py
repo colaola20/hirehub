@@ -208,11 +208,13 @@ def forgot_password_token():
         data = request.get_json()
         email = data.get("email")
         if not email:
+            email = data.get("newEmail")
+        if not email:
             return jsonify({"status": "error", "message": "Email is required"}), 400
 
         users = DatabaseService.filter_by(User, email=email)
         if not users:
-            return jsonify({"status": "error", "message": "No account found with that email"}), 404
+            return jsonify({"status": "error", "message": "No account found with that email."}), 404
 
         user = users[0]
 
@@ -227,9 +229,10 @@ def forgot_password_token():
         reset_link = f"{FRONTEND_URL}/reset-password?token={urllib.parse.quote(token)}"
 
         try:
-            msg = Message("HireHub Password Reset", recipients=[email])
+            msg = Message("HireHub Password Reset",recipients=[email],sender=current_app.config['MAIL_USERNAME'])
             msg.body = f"Hello {user.username}, reset link: {reset_link}"
             mail.send(msg)
+
         except Exception as e:
             print(f"[DEBUG] Could not send email. Reset link: {reset_link}")
             print(f"[DEBUG] Error: {e}")
@@ -433,18 +436,18 @@ def delete_user():
         profile = Profile.query.filter_by(user_email=user.email).first()
         if profile:
             db.session.query(Skill).filter_by(profile_id=profile.profile_id).delete(synchronize_session=False)
-        if Profile is not None:
-            db.session.query(Profile).filter(getattr(Profile, "user_email") == user.email).delete(synchronize_session=False)
+        # Documents / CoverLetters may reference user by email
+        if Document is not None:
+             db.session.query(Document).filter(getattr(Document, "user_email") == user.email).delete(synchronize_session=False)
         if Application is not None:
             db.session.query(Application).filter(getattr(Application, "user_id") == user_id).delete(synchronize_session=False)
         if Favorite is not None:
             if hasattr(Favorite, "user_id"):
                 db.session.query(Favorite).filter(getattr(Favorite, "user_id") == user_id).delete(synchronize_session=False)
-        # Documents / CoverLetters may reference user by email
-        if Document is not None:
-            if hasattr(Document, "user_id"):
-                db.session.query(Document).filter(getattr(Document, "user_id") == user_id).delete(synchronize_session=False)
-
+        
+        if Profile is not None:
+            db.session.query(Profile).filter(getattr(Profile, "user_email") == user.email).delete(synchronize_session=False)
+        
 
         try:
             db.session.delete(user)

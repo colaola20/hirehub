@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import { data, Link } from "react-router-dom";
 import * as Yup from 'yup'
 
 import ProgressIndicator from "../components/ProgressIndicator";
 import Btn from "../components/buttons/Btn";
 import CancelBtn from "../components/buttons/CancelBtn";
+import CTA from "../components/buttons/CTA";
 
 import PersonalStep from "../components/resumeform_steps/PersonalStep";
 import ResumeViewStep from "../components/resumeform_steps/ResumeViewStep";
@@ -15,6 +16,8 @@ import SchoolStep from "../components/resumeform_steps/SchoolStep";
 import ProjectStep from "../components/resumeform_steps/ProjectStep";
 
 import styles from './resumeform.module.css';
+
+import {ChevronRight, ChevronLeft} from 'lucide-react'
 
 const ResumeForm = () => {
 
@@ -44,7 +47,7 @@ const ResumeForm = () => {
         /* ---MAIN SECTIONS--- */
         step4: {
 
-            jobs: [{ company: '', role: '', roleTime: '' }]
+            jobs: [{ company: '', role: '', roleTime: '', jobDescription: ''}]
 
         },
 
@@ -56,7 +59,7 @@ const ResumeForm = () => {
 
         step6: {
 
-            projects: [{ projTitle: '', projDesc: '', projLink: '' }]
+            projects: [{ projTitle: '', projDesc: '', projLink: ''}]
 
         }
     })
@@ -95,28 +98,41 @@ const ResumeForm = () => {
 
     // pull info from user profile to prefill form
     useEffect(() => {
-        fetch('/api/form', {
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem('token')}`,
+    fetch('/api/form', {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            console.error('Failed to fetch form data');
+            return null;
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (!data) return;
 
-            }
-        })
-            .then(response => {
-                if (!response.ok) {
-                    console.error('Failed to fetch form data');
-                    return;
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (data.step3) {
-                    data.step3.skills = Array.isArray(data.step3.skills) ? data.step3.skills.join(', ') : data.step3.skills
-                    data.step3.languages = Array.isArray(data.step3.languages) ? data.step3.languages.join(', ') : data.step3.languages
-                }
-                setFormData(data)
-            })
-            .catch(err => console.error('Error fetching form data:', err));
-    }, []);
+        const step3 = data.step3 || {};
+        const formattedStep3 = {
+            skills: Array.isArray(step3.skills) ? step3.skills.join(', ') : step3.skills || '',
+            languages: Array.isArray(step3.languages) ? step3.languages.join(', ') : step3.languages || '',
+            certs: Array.isArray(step3.certs) ? step3.certs.join(', ') : step3.certs || '',
+            interests: Array.isArray(step3.interests) ? step3.interests.join(', ') : step3.interests || '',
+        };
+
+        setFormData(prev => ({
+            step1: { ...prev.step1, ...(data.step1 || {}) },
+            step2: { ...prev.step2, ...(data.step2 || {}) },
+            step3: { ...prev.step3, ...formattedStep3 },
+            step4: { ...prev.step4, ...(data.step4 || {}) },
+            step5: { ...prev.step5, ...(data.step5 || {}) },
+            step6: { ...prev.step6, ...(data.step6 || {}) },
+            aiResumeText: prev.aiResumeText || data.aiResumeText || ''
+        }));
+    })
+    .catch(err => console.error('Error fetching form data:', err));
+}, []);
 
     useEffect(() => {
         if (contentRef.current) {
@@ -168,26 +184,26 @@ const ResumeForm = () => {
             val => val.split(',').filter(s => s.trim()).length > 0
         ),
         interests: Yup.string().transform(value => {
-            if (!value || value.trim() === ""){
+            if (!value || value.trim() === "") {
                 return undefined;
             }
             return value
-                .split (',')
-                .map(v=> v.trim())
+                .split(',')
+                .map(v => v.trim())
                 .filter(Boolean);
         })
-        .notRequired(),
+            .optional(),
 
         certs: Yup.string().transform(value => {
-            if (!value || value.trim() === ""){
+            if (!value || value.trim() === "") {
                 return undefined;
             }
             return value
-                .split (',')
-                .map(v=> v.trim())
+                .split(',')
+                .map(v => v.trim())
                 .filter(Boolean);
         })
-        .notRequired(),
+            .optional(),
     });
 
     const jobValidation = Yup.object({
@@ -301,30 +317,41 @@ const ResumeForm = () => {
     return (
 
         <div className={styles["container"]}>
-            <div className={styles['back-btn']}>
-                <Link to="/dev_dashboard">
-                    <CancelBtn
-                        label={"Back"}
-                        className={styles['back-btn']}
-                    />
-                </Link>
-            </div>
-
             <div className={styles["form-box"]}>
                 <h1>Let's Build Your Resume!</h1>
-
-                <ProgressIndicator currentStep={currentStep} />
+                 <ProgressIndicator currentStep={currentStep} />
                 <div className={styles["prog-btn"]}>
-                    {currentStep > 1 ? (<CancelBtn label={"Back"} onClick={prevStep}/>) : (<span className={styles.placeholder}></span>)}
-                    <div className={styles["progress-indicator"]}>
-                        <span>Step {currentStep} of 7</span>
-                    </div>
-                    {currentStep < 6 && (<CancelBtn label={"Next"} onClick={nextStep}/>)}
+                    {currentStep > 1 ? (<Btn icon={<ChevronLeft />} onClick={prevStep} />) : (<span className={styles.placeholder}></span>)}
+                    {currentStep < 6 && (<Btn icon={<ChevronRight />} onClick={nextStep} />)}
                     {currentStep === 6 && (<Btn
                         label={"Generate"}
                         onClick={async () => {
                             const response = await submitForm();
-                            setFormData(prev => ({ ...prev }));
+
+                            console.log("Form data being sent to AI:", formData);
+
+                            try {
+                                const aiResponse = await fetch('/api/generate_resume', {
+                                    method: "POST",
+                                    headers: {
+                                        "Content-Type": "application/json",
+                                        Authorization: `Bearer ${localStorage.getItem("token")}`,
+                                    },
+                                    body: JSON.stringify(formData),
+                                });
+                                const aiData = await aiResponse.json();
+                                if (aiData.resume_text) {
+                                    setFormData(prev => ({
+                                        ...prev,
+                                        aiResumeText: aiData.resume_text
+                                    }));
+                                } else {
+                                    console.error("AI response missing resume_text:", aiData);
+                                }
+                            } catch (error) {
+                                console.error("Error generating AI resume:", error);
+                            }
+
                             setCurrentStep(7);
                         }}
                     />)}
@@ -342,7 +369,15 @@ const ResumeForm = () => {
                         {currentStep === 6 && <ProjectStep formData={formData.step6} onChange={handleInputChange} errors={errors} />}
                         {currentStep === 7 && <ResumeViewStep backendData={formData} />}
                     </div>
+                    <div className={styles['back-btn']}>
+                        <Link to="/dev_dashboard">
+                            <CTA
+                                label={"Save progress for later"}
+                            />
+                        </Link>
+                    </div>
                 </div>
+
             </div>
         </div>
     )

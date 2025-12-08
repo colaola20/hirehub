@@ -1,6 +1,6 @@
 .container {
   width: 100%;
-  min-height: calc(100vh - var(--nav-h) - 120px);
+  min-height: 100vh;
   border-radius: 10px;
 
 }
@@ -48,8 +48,8 @@
 }
 
 .tableContainer {
-    overflow-x: auto; 
-    overflow-y: auto; 
+    /* overflow-x: auto;  */
+    /* overflow-y: auto;  */
     border-radius: 8px;
     border: 1px solid #ccc;
 
@@ -59,9 +59,14 @@
     width: 100%;
 }
 
+.tableContainer::-webkit-scrollbar {
+  width: 0px; 
+  height: 0px; 
+}
+
 .columns {
     display: grid;
-    grid-template-columns: 3fr 1fr 1fr;
+    grid-template-columns: 3fr 1fr 1fr 0.5fr;
     width: 100%;
     gap: 23px;
     padding: 10px;
@@ -72,4 +77,140 @@
     position: sticky;
     top: 0;
     z-index: 1;
+    border-radius: 10px 10px  0px 0px;
+    align-items: center;
+}
+
+.dataRow {
+  display: grid;
+  grid-template-columns: 3fr 1fr 1fr 0.5fr;
+  gap: 23px;
+  padding: 8px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  color: rgb(255, 255, 255);
+  text-align: center; 
+  align-items: center;
+  position: relative;
+}
+
+.dataRow:nth-child(even) {
+  background: rgba(255, 255, 255, 0.09);
+  /* background:rgba(20, 15, 40, 0.2);  */
+}
+
+.headerRow span,
+.dataRow span,
+.dataRow select {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dataRow select {
+  background: #333;
+  color: white;
+  border: 1px solid #555;
+  border-radius: 5px;
+  padding: 2px 4px;
+  width: 100%;
+}
+
+.dropdownWrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: visible !important;
+}
+
+.dropdown {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    overflow: hidden;
+}
+
+.dropdownMenu {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 4px);
+    background-color: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    min-width: 160px;
+    z-index: 1000;
+    margin-top: 0.25rem;
+}
+
+.dropdownItem {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 0.875rem;
+    text-align: left;
+    color: #1f2937;
+    transition: background 0.2s;
+}
+
+.dropdownItem:hover {
+    background: #6f67f0;
+    color: white;
+}
+
+
+.dropdownItem:last-child:hover {
+    background: rgba(255, 107, 107, 0.2);
+}
+
+
+
+@media (max-width: 1024px) {
+  .headerRow {
+    grid-template-columns: 120px 100px 100px 120px 50px 90px 70px 180px 120px;
+    gap: 12px;
+  }
+
+  .dataRow {
+    grid-template-columns: 120px 100px 100px 120px 50px 90px 70px 180px 120px;
+    gap: 12px;
+  }
+}
+
+@media (max-width: 768px) {
+  .headerRow {
+    grid-template-columns: 100px 90px 90px 100px 50px 80px 60px 75px 120px;
+    gap: 10px;
+  }
+
+  .dataRow {
+    grid-template-columns: 100px 90px 90px 100px 50px 80px 60px 75px 120px;
+    gap: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .tableContainer {
+    overflow-x: auto;
+  }
+
+  .headerRow,
+  .dataRow {
+    grid-template-columns: 120px 100px 100px 120px auto; /* allow scrolling */
+    gap: 8px;
+  }
 }
