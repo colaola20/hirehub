@@ -60,7 +60,8 @@ def get_resume_form():
                 {
                     "company": "",
                     "role": "",
-                    "roleTime": ""
+                    "roleTime": "",
+                    "jobDescription": ""
                 }
             ]
         },

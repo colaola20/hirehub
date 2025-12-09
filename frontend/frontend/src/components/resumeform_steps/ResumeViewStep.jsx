@@ -6,6 +6,7 @@ import html2pdf from "html2pdf.js";
 
 
 const ResumeViewStep = ({ backendData }) => {
+    const [aiResumeHTML, setAiResumeHTML] = useState(backendData.aiResumeText || "");
 
     // stuff for doc upload
     const [documents, setDocuments] = useState([]);
@@ -100,38 +101,38 @@ const ResumeViewStep = ({ backendData }) => {
 
     // download stuff
 
-    const pdfDL = () => {
-        const element = document.getElementById("resume-container")
+    const downloadDocx = async () => {
+        const resumeElement = document.getElementById("resume-container");
+        if (!resumeElement) return;
 
-        if (!element) {
-            console.error("Resume container not found!");
+        const htmlContent = resumeElement.innerHTML;
+
+        const token = localStorage.getItem("token");
+
+        const res = await fetch("/api/generate-docx", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
+            },
+            body: JSON.stringify({ html: htmlContent }),
+        });
+
+        if (!res.ok) {
+            console.error("Failed to generate DOCX");
             return;
         }
 
-        const scaler = document.querySelector(`.${style.resumeScaler}`);
-        const originalTransform = scaler?.style.transform || "";
-        const originalTransformOrigin = scaler?.style.transformOrigin || "";
+        const blob = await res.blob();
+        const url = window.URL.createObjectURL(blob);
 
-        if (scaler) {
-            scaler.style.transform = "none";
-            scaler.style.transformOrigin = "top left";
-        }
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "resume.docx";
+        a.click();
 
-        const options = {
-            margin: 0,
-            filename: 'resume.pdf',
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 2 },
-            jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-        }
-
-        html2pdf().set(options).from(element).save().then(() => {
-            if (scaler) {
-                scaler.style.transform = originalTransform;
-                scaler.style.transformOrigin = originalTransformOrigin;
-            }
-        });
-    }
+        window.URL.revokeObjectURL(url);
+    };
 
     const newTab = () => {
         const resumeElement = document.getElementById("resume-container");
@@ -178,17 +179,23 @@ const ResumeViewStep = ({ backendData }) => {
         newWindow.document.close();
     };
 
+    useEffect(() => {
+        if (backendData.aiResumeText) {
+            setAiResumeHTML(backendData.aiResumeText);
+        }
+    }, [backendData.aiResumeText]);
+
     return (
         <div className="resume-form">
             <div className="title">
                 <h2>Resume Preview</h2>
             </div>
             <div className={style.resumeScaler}>
-                <div className={style['resume-preview']} id="resume-container">
-                    {backendData.aiResumeText ?
-                        <ResumeTemplate resumeHTML={backendData.aiResumeText} /> :
-                        <ResumeTemplate resumeHTML={null} data={backendData} />
-                    }
+                <div  id="resume-container">
+
+                        {console.log("Rendering ResumeTemplate with HTML:", aiResumeHTML)}
+                        <ResumeTemplate resumeHTML={aiResumeHTML} />
+
                 </div>
             </div>
 
@@ -204,7 +211,8 @@ const ResumeViewStep = ({ backendData }) => {
                     onClick={() => resumeInputRef.current?.click()}
                     disabled={uploading}
                 />
-                <Btn label={"Download Resume"} onClick={pdfDL} />
+                {/* <Btn label={"Download Resume"} onClick={pdfDL} /> */}
+                <Btn label={"Download as DOCX"} onClick={downloadDocx} />
             </div>
 
             <div className={style.successMsg}>
