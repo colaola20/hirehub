@@ -38,57 +38,153 @@ def generate_resume():
     if not form_data:
         return jsonify({"error": "No form data provided"}), 400
 
-    # -------------------------------------------------------------
-    # SYSTEM PROMPT (OpenAI will generate ALL styling + HTML)
-    # -------------------------------------------------------------
+    # Professional Resume Design - Exact Template Match
     system_prompt = """
-    You are an expert resume generator and professional designer.
+You are a resume HTML generator. Generate ONLY pure HTML code with embedded CSS.
 
-    Your task:
-    - Generate a complete, visually modern, professionally styled resume in clean HTML.
-    - Include a <style> section with elegant, polished, modern CSS.
-    - DO NOT output backticks of any kind.
-    - DO NOT wrap the HTML in ```html or any code block.
-    - Your response must be PURE HTML.
+CRITICAL REQUIREMENTS:
+- Output ONLY HTML, nothing else
+- Start with <!DOCTYPE html>
+- Include <html>, <head>, <body> tags
+- Put all CSS in <style> tag in <head>
+- NO markdown, NO backticks, NO code fences
+- NO explanations before or after
+- White background (#ffffff)
+- Black text (#000000)
+- Arial font
+- Professional traditional resume layout
+- Left AND RIGHT margin/padding: 40-50px for indentation
+- Font size: 11-12px for body text, slightly larger for headers
+- ONLY INCLUDE SECTIONS THAT HAVE DATA - skip empty sections
 
-    Design requirements:
-    - Use a centered container with soft shadows, rounded corners, and generous spacing.
-    - Use a beautiful, readable Google-style font (e.g., Inter, Roboto, Lato, etc.).
-    - Use clear section headers with accent colors and horizontal dividers.
-    - Use good spacing, padding, and alignment.
-    - Use subtle blue accent lines for section separators.
-    - Use bold headings, structured grids, and clean whitespace.
-    - Ensure everything fits a one-page resume layout.
+EXACT LAYOUT PATTERN:
+1. NAME (large 20px, bold, centered)
+2. Location • Email (centered, 11px)
+3. Phone • LinkedIn URL (centered, 11px)
+4. BLANK LINE
 
-    Content requirements:
-    - Rewrite job descriptions into 2–3 impactful bullet points showing measurable outcomes.
-    - Rewrite projects into 1–2 polished sentences explaining purpose, impact, and technology.
-    - Present Skills and Languages in clean tag-like boxes or comma-separated lists.
-    - Format Education cleanly with degree, school, year, and details.
-    - Include sections ONLY if data is provided.
-    - Improve clarity and professionalism of all user text.
+SECTION HEADERS (ONLY capitalize first letter, NOT all caps):
+Education
+Relevant Experience
+Additional Experience
+Community Involvement
+Projects
+Skills Summary
+Certifications
 
-    Output:
-    - Return ONLY the final HTML document with <html>, <head>, <style>, and <body>.
-    - NO explanations.
-    - NO markdown.
-    - NO backticks.
-    """
+STRUCTURE FOR EACH SECTION:
+- Section Title: Title Case (not ALL CAPS), bold, followed by horizontal line (full width, 1px solid black)
+- Company/School/Project: **Bold**, City, State (or project details) - format with HTML <b> tags, NO asterisks
+- Position/Degree/Project Title: Position title, Duration/Dates
+- Bullets: · Detailed bullet point (2-3 lines describing responsibilities and achievements)
+- Spacing: Single line between entries, blank line before next section
+- Left padding: 40px
+- Right padding: 40px
+- Total body width with padding: 816px (8.5 inches)
 
+PROJECTS SECTION FORMAT (if projects exist):
+Project Name (bold, no asterisks)
+Project description or link
+· Achievement/detail about project
+· Technology used / impact
 
-    # -------------------------------------------------------------
-    # USER PROMPT – sends the raw JSON
-    # -------------------------------------------------------------
+SKILLS SECTION FORMAT:
+Technical Skills: item1, item2, item3
+Social Media: item1, item2, item3
+Soft Skills: item1, item2, item3
+Languages: item1, item2
+
+CSS REQUIREMENTS:
+- body: background white, color black, font Arial 11pt, max-width 816px
+- Page width: 8.5 x 11 inches (816px)
+- Margins: 0.5 inch all sides (40px left and right)
+- Left AND right padding on all content: 40px
+- Section headers: bold, Title Case, with horizontal line below (1px solid black)
+- Company/School/Project names: bold
+- No colors, pure black and white
+- Line spacing: 1.4 for body content
+- Horizontal lines: full width, 1px solid black
+- Hide/skip sections with no data
+
+OUTPUT ONLY THE HTML CODE STARTING WITH <!DOCTYPE html>
+"""
+
     user_prompt = f"""
-    Here is the JSON resume data you must use:
+Generate a professional resume in HTML/CSS matching this EXACT layout:
 
-    {json.dumps(form_data, indent=2)}
+NAME (centered, large bold)
+Location, State • email@domain.com (centered)
+Phone • LinkedIn URL (centered)
 
-    Generate a more detailed, polished, professionally written resume.
-    Enhance all descriptions using strong action verbs and quantifiable impact.
+[ONLY INCLUDE SECTIONS BELOW IF THEY HAVE DATA - SKIP EMPTY SECTIONS]
 
-    Return ONLY valid HTML.
-    """
+Education
+[with horizontal line below]
+
+Relevant Experience
+[with horizontal line below]
+
+Additional Experience
+[with horizontal line below]
+
+Community Involvement
+[with horizontal line below]
+
+Projects
+[with horizontal line below]
+
+Skills Summary
+[Technical Skills, Social Media, Soft Skills, Languages]
+
+Certifications
+[with horizontal line below]
+
+Data to use:
+{json.dumps(form_data, indent=2)}
+
+IMPORTANT RULES:
+1. Only display sections that have actual data
+2. Skip/hide sections with no data (e.g., if no certifications, don't show certifications section)
+3. Include Projects section if projects exist
+4. Create detailed, professional bullet points for EVERY job and project
+
+JOB DESCRIPTION GENERATION:
+Create detailed, professional bullet points for EVERY job entry. If description is minimal or empty:
+
+For specific job titles, generate relevant bullets:
+- "Data Analyst" → "• Analyzed large datasets using SQL and Python to identify business trends and opportunities for improvement", "• Created comprehensive reports and visualizations to present findings to senior management", "• Collaborated with cross-functional teams to implement data-driven solutions improving efficiency by 15%"
+
+- "Software Developer" → "• Designed and developed full-stack web applications using modern technologies and best practices", "• Debugged complex issues and optimized code performance, reducing load times by 20%", "• Participated in code reviews and mentored junior developers on coding standards and design patterns"
+
+- "Marketing Intern" → "• Assisted in planning and executing integrated marketing campaigns across multiple channels", "• Conducted market research and competitor analysis to inform marketing strategy", "• Created engaging content for social media and marketing materials, increasing engagement by 25%"
+
+- "Sales Associate" → "• Provided excellent customer service and product expertise to drive sales and customer satisfaction", "• Exceeded monthly sales targets consistently through effective upselling and relationship building", "• Processed transactions accurately and maintained store displays to ensure positive shopping experience"
+
+PROJECTS GENERATION:
+For each project, include:
+- **Project Name** (bold)
+- Brief description or technologies used
+- 2-3 bullet points with achievements and impact
+
+Requirements:
+1. White background, black text, Arial font, 11-12pt
+2. Centered name at top (large, bold ~20px)
+3. Contact info centered below name (location • email, then phone • linkedin)
+4. Section headers: Title Case (not ALL CAPS) with horizontal line below
+5. Format: Company/School/Project Name in bold (use <b> HTML tags), City, State - NO ASTERISKS
+6. Position/degree/project details on second line
+7. 3-4 detailed bullet points with · symbol for each entry
+8. Skills: "Technical Skills: x, y, z" format
+9. Left AND right padding on all content: 40px
+10. One page layout
+11. ONLY INCLUDE SECTIONS WITH DATA - skip empty sections
+12. Include Projects section if projects exist
+13. Project names should be bold with NO asterisks (use HTML <b> tags)
+14. Company names AND locations should be bold
+
+Output ONLY the complete HTML code starting with <!DOCTYPE html>
+Do NOT include backticks, markdown, explanations, or code fences.
+"""
 
     headers = {
         "Authorization": f"Bearer {OPENAI_API_KEY}",
@@ -101,8 +197,8 @@ def generate_resume():
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_prompt}
         ],
-        "temperature": 0.5,
-        "max_tokens": 1500,
+        "temperature": 0.6,
+        "max_tokens": 2000,
         "stream": False
     }
 
@@ -134,43 +230,47 @@ def generate_resume():
 def html_to_docx(html_content):
     """Convert resume HTML to DOCX document"""
     doc = Document()
+    doc.core_properties.author = "HireHub Resume Builder"
     
-    # Parse the HTML
     soup = BeautifulSoup(html_content, 'html.parser')
     
-    # Process HTML elements and convert to DOCX
-    for element in soup.find_all(['h1', 'h2', 'h3', 'p', 'ul', 'li', 'strong', 'a']):
+    # Remove script and style tags
+    for script in soup(["script", "style"]):
+        script.decompose()
+    
+    # Process elements more intelligently
+    processed_elements = set()
+    
+    for element in soup.find_all(['h1', 'h2', 'h3', 'p', 'ul', 'li', 'strong', 'a', 'span']):
+        if id(element) in processed_elements:
+            continue
+            
+        text = element.get_text(strip=True)
+        if not text:
+            continue
+        
         if element.name == 'h1':
-            p = doc.add_paragraph()
-            p.style = 'Heading 1'
-            p.text = element.get_text(strip=True)
+            p = doc.add_paragraph(text, style='Heading 1')
             p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+            processed_elements.add(id(element))
             
         elif element.name == 'h2':
-            p = doc.add_paragraph()
-            p.style = 'Heading 2'
-            p.text = element.get_text(strip=True)
+            p = doc.add_paragraph(text, style='Heading 2')
+            processed_elements.add(id(element))
             
         elif element.name == 'h3':
-            p = doc.add_paragraph()
-            p.style = 'Heading 3'
-            p.text = element.get_text(strip=True)
+            p = doc.add_paragraph(text, style='Heading 3')
+            processed_elements.add(id(element))
             
-        elif element.name == 'p':
-            text = element.get_text(strip=True)
-            if text:
-                p = doc.add_paragraph(text)
+        elif element.name in ['p', 'span']:
+            if text and len(text) > 2:
+                doc.add_paragraph(text)
+                processed_elements.add(id(element))
                 
         elif element.name == 'li':
-            text = element.get_text(strip=True)
             if text:
                 doc.add_paragraph(text, style='List Bullet')
-                
-        elif element.name == 'ul':
-            for li in element.find_all('li', recursive=False):
-                text = li.get_text(strip=True)
-                if text:
-                    doc.add_paragraph(text, style='List Bullet')
+                processed_elements.add(id(element))
     
     return doc
 
@@ -185,10 +285,8 @@ def generate_docx():
         if not html_content:
             return jsonify({"error": "No HTML content provided"}), 400
         
-        # Convert HTML to DOCX
         doc = html_to_docx(html_content)
         
-        # Save DOCX to BytesIO
         docx_io = BytesIO()
         doc.save(docx_io)
         docx_io.seek(0)
@@ -244,22 +342,18 @@ def save_resume_to_storage():
             print(f"Error: {error_msg}")
             return jsonify({"error": error_msg}), 400
         
-        # Convert HTML to DOCX
         print("Converting HTML to DOCX...")
         doc = html_to_docx(html_content)
         
-        # Save to BytesIO
         docx_io = BytesIO()
         doc.save(docx_io)
         docx_io.seek(0)
         print(f"DOCX file size: {len(docx_io.getvalue())} bytes")
         
-        # Generate S3 key with user_id and timestamp
         timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
         s3_key = f"resumes/{user_id}/{timestamp}_{filename}"
         print(f"S3 Key: {s3_key}")
         
-        # Upload to S3
         print("Uploading to S3...")
         s3_client.put_object(
             Bucket=AWS_S3_BUCKET,
@@ -269,8 +363,6 @@ def save_resume_to_storage():
         )
         print("Successfully uploaded to S3")
         
-        # Import here to avoid circular imports
-        from flask_jwt_extended import get_jwt_identity
         from app.extensions import db
         from app.models.document import Document
         from app.models.user import User
@@ -287,7 +379,6 @@ def save_resume_to_storage():
                     "filename": filename
                 }), 200
             
-            # Create database record for the uploaded resume
             new_document = Document(
                 user_email=user.email,
                 file_path=s3_key,
@@ -303,7 +394,6 @@ def save_resume_to_storage():
             print(f"Warning: Could not create database record: {str(db_error)}")
             import traceback
             traceback.print_exc()
-            # Don't fail the S3 upload if database insert fails
         
         return jsonify({
             "message": "Resume saved to storage successfully",

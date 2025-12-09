@@ -1,3 +1,65 @@
+.resumeWrapper {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    width: 100%;
+    padding: 20px 0;
+}
+
+.resume-preview {
+    width: 816px;
+    min-height: 1056px;
+    background: white !important;
+    border: 1px solid #ccc;
+    border-radius: 0;
+    padding: 0;
+    margin: 0 auto;
+    color: #2b2b2b;
+    font-family: Arial, sans-serif;
+    text-align: left;
+    overflow: visible;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    flex-shrink: 0;
+}
+
+/* Override all background colors to white */
+.resume-preview,
+.resume-preview * {
+    background-color: white !important;
+    background: white !important;
+}
+
+/* Set text color to dark for readability */
+.resume-preview {
+    color: #2b2b2b !important;
+}
+
+.resume-preview p,
+.resume-preview span,
+.resume-preview div,
+.resume-preview li,
+.resume-preview h1,
+.resume-preview h2,
+.resume-preview h3,
+.resume-preview h4,
+.resume-preview h5,
+.resume-preview h6 {
+    background-color: white !important;
+    background: white !important;
+    color: #2b2b2b !important;
+}
+
+/* Keep links blue */
+.resume-preview a {
+    color: #0066cc !important;
+    background-color: white !important;
+    text-decoration: none !important;
+}
+
+.resume-preview a:hover {
+    text-decoration: underline !important;
+}
+
 .resumeScaler {
     display: flex;
     justify-content: center;
@@ -8,36 +70,33 @@
     padding: 20px 0;
 }
 
-.resume-preview {
-    width: 816px;
-    min-height: 1056px;
-    background: white;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    padding: 40px;
-    margin: 0 auto;
-    color: black;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    text-align: left;
-    overflow: visible;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    flex-shrink: 0;
+/* Responsive scaling */
+@media (max-width: 1024px) {
+    .resumeScaler {
+        padding: 10px;
+    }
+
+    .resume-preview {
+        width: 95%;
+        min-height: auto;
+    }
 }
 
-.resume-preview * {
-    color: black;
-    font-family: inherit;
+@media (max-width: 768px) {
+    .resumeScaler {
+        padding: 10px;
+    }
+
+    .resume-preview {
+        width: 100%;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+    }
 }
 
-.resume-preview a {
-    color: #0066cc;
-    text-decoration: none;
-    transition: color 0.2s ease;
-}
-
-.resume-preview a:hover {
-    color: #0052a3;
-    text-decoration: underline;
+@media (max-width: 480px) {
+    .resume-preview {
+        padding: 16px;
+    }
 }
 
 .headerName {
