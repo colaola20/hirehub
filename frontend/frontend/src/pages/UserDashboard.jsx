@@ -34,6 +34,8 @@ const UserDashboard = () => {
   const location = useLocation();
 
   const handleJobClick = useCallback((job) => {
+
+    
     try {
       localStorage.setItem("job_dashboard_payload", JSON.stringify(job));
     } catch (e) {

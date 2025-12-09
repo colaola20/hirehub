@@ -10,6 +10,7 @@
     position: relative;
     overflow: visible;
     width: 100%;
+    height: 100vh;
     box-sizing: border-box;
     padding: 8px 0;
     box-sizing: border-box;
@@ -19,6 +20,7 @@
     height: calc(100vh - calc(var(--nav-h) + 16px));
 
 }
+
 
 /* -------Search starts --------*/
 
@@ -172,7 +174,7 @@
     /* Hide scrollbar styles  */
     -ms-overflow-style: none;
     scrollbar-width: none;
-    
+    border-radius: 13px;
     
 }
 
@@ -182,6 +184,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    
 }
 
 .cardList::-webkit-scrollbar {
