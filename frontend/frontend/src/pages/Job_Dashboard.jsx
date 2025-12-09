@@ -1,6 +1,6 @@
 // job_dashboard.jsx
 import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link , useNavigate, useOutletContext} from "react-router-dom";
 import styles from "./Job_Dashboard.module.css";
 import Chatbot from "./chat_bot";
 import SmallModal from "../components/SmallModal.jsx";
@@ -102,9 +102,11 @@ const JobDashboard = () => {
   const [showModal, setShowModal] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     const raw = localStorage.getItem("job_dashboard_payload");
-    console.log(raw)
+    // console.log(raw)
     if (!raw) return;
     try { setJob(JSON.parse(raw)); } catch {}
   }, []);
@@ -128,6 +130,15 @@ const JobDashboard = () => {
     );
   }
 
+const handleBackClick = () => {
+    
+    setJob(null); 
+    
+    setTimeout(() => {
+    navigate("/UserDashboard");
+    }, 500); 
+};
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.shell}>
@@ -140,9 +151,9 @@ const JobDashboard = () => {
             {/* LEFT: content */}
             <div className={`${styles.card} ${isChatOpen ? styles.chatOpen : ''}`}>
   <div className={styles.titleSection}>
-    <Link to="/UserDashboard" className={styles.backBtn}>
+    <button onClick={handleBackClick} className={styles.backBtn}> 
       <span className={styles.backText}>Go back to home</span>
-    </Link>
+    </button>
     <h1 className={styles.title}>{job.title || "Job Details"}</h1>
   </div>
 
