@@ -7,8 +7,39 @@ const analysisCache = new Map();
 const CACHE_DURATION = 30 * 60 * 1000; // 30 minutes
 const inFlightRequests = new Map();
 
-const JobAnalysisPanel = ({ job  }) => {
+const JobAnalysisPanel = ({ job , recommendedCard = false, percentValue = null, recommendation = null }) => {
   
+// If this panel is for a recommended job, skip API analysis completely
+if (recommendedCard && percentValue !== null) {
+  const pct = percentValue % 1 === 0 ? percentValue : Number(percentValue.toFixed(2));
+
+  return (
+    <div className={styles.wrapper}>
+      <div className={styles.pctRow}>
+        <PercentCircle percent={pct} />
+      </div>
+
+      <div className={styles.section}>
+        <div className={styles.sectionTitle}>Skills in Job</div>
+        <div className={styles.skillList}>
+          {(job.skills_extracted || []).map((s, i) => (
+            <span key={i} className={styles.skillPill}>{s}</span>
+          ))}
+        </div>
+      </div>
+
+      <div className={styles.section}>
+        <div className={styles.sectionTitle}>Matched Skills</div>
+        <div className={styles.skillList}>
+          {(recommendation?.matched_skills || []).map((s, i) => (
+            <span key={i} className={styles.matchedSkillPill}>{s}</span>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 //  analysisCache.clear(); // temp fix while styling
 
   const [analysis, setAnalysis] = useState(null);
@@ -148,10 +179,11 @@ const setCachedAnalysis = (jobId, data) => {
 
 
 if (!analysis)
-  return <div ref={containerRef} className={styles.loading}>Analyzing...</div>;
+  return <div ref={containerRef} className={styles.centeredMessage}><div className={styles.loading}>Analyzing...</div></div>;
 
 if (analysis?.error)
   return <div className={styles.error}>{analysis.error}</div>;
+
 if (analysis.percentage_match === 0 ){
   return <div className={styles.noMatch}>No match data available.</div>;
 }
@@ -187,6 +219,7 @@ if (analysis.percentage_match === 0 ){
       </div>
     </div>
   );
+
 };
 
 export default JobAnalysisPanel;

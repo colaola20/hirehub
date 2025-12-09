@@ -159,10 +159,9 @@
 }
 
 .cardList {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    height: 1100px;/* Changed from fixed 1100px */
+ 
+    
+    height: 875px;/* Changed from fixed 1100px */
     width: 100%;
     /* Spacing between cards */
     gap: var(--gap);
@@ -172,8 +171,16 @@
     -ms-overflow-style: none;
     scrollbar-width: none;
     
+    
 }
 
+.theCardContainer{
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
 
 .cardList::-webkit-scrollbar {
     display: none;

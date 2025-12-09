@@ -1,0 +1,67 @@
+
+.wrapper {
+  margin-top: 20%;
+  text-align: center;
+  padding: 50px 20px;
+  color: white;
+  animation: fadeIn 0.8s ease-out forwards;
+  opacity: 0;
+}
+
+/* Main loader */
+.loader {
+  width: 70px;
+  height: 70px;
+  margin: 0 auto 25px auto;
+  border-radius: 50%;
+  border: 6px solid rgba(255, 255, 255, 0.15);
+  border-top-color: #ffffff;
+  animation: spin 2s linear infinite, glowPulse 3s ease-in-out infinite;
+}
+
+
+
+/* Title upgrades */
+.title {
+  font-size: 32px;
+  margin-bottom: 10px;
+  background: linear-gradient(90deg, #ffffff, #91aef1, #5178d4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientShift 3s linear infinite;
+}
+
+.subtitle {
+  font-size: 17px;
+  opacity: 0.9;
+  margin-bottom: 8px;
+}
+
+.smallText {
+  font-size: 14px;
+  opacity: 0.6;
+  margin-top: 12px;
+}
+
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes glowPulse {
+  0% { box-shadow: 0 0 8px rgba(255, 255, 255, 0.3); }
+  50% { box-shadow: 0 0 18px rgba(255, 255, 255, 0.6); }
+  100% { box-shadow: 0 0 8px rgba(255, 255, 255, 0.3); }
+}
+
+
+@keyframes gradientShift {
+  0% { background-position: 0% }
+  100% { background-position: 200% }
+}

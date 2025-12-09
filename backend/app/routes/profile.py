@@ -351,12 +351,14 @@ def analyze_job_fit():
             end = raw_reply.rfind('}') + 1
             response_data = json.loads(raw_reply[start:end]) if start >= 0 else {}
 
+        cleaned_job_skills = [clean_skill_name(s) for s in response_data.get("job_skills", [])]
+        cleaned_matched_skills = [clean_skill_name(s) for s in response_data.get("matched_skills", [])]
+
         # Default safe values if something went wrong
         return jsonify({
             "percentage_match": response_data.get("percentage_match", 0),
-            "job_skills": response_data.get("job_skills", []),
-            "matched_skills": response_data.get("matched_skills", [])
-           
+            "job_skills": cleaned_job_skills,
+            "matched_skills": cleaned_matched_skills
         })
 
     except Exception as e:
@@ -407,11 +409,12 @@ def generate_recommendations():
         # ----------------------------------------------------
         # Disable old active recommendations
         # ----------------------------------------------------
-        RecommendedJob.query.filter_by(
-            user_id=current_user_id,
-            is_active=True
-        ).update({"is_active": False, "expires_at": now})
+        old_recs = RecommendedJob.query.filter_by(user_id=current_user_id, is_active=True).all()
+        for rec in old_recs:
+            rec.is_active = False
+            rec.expires_at = now
         db.session.commit()
+
 
         # ----------------------------------------------------
         # Get all job_ids already recommended to avoid duplicates
@@ -478,6 +481,7 @@ def generate_recommendations():
             score = match.get("percentage_match", 0)
             matched_skills = match.get("matched_skills", [])
 
+
             if score >= 85:
                 recommended_list.append((job, score, matched_skills))
 
@@ -497,6 +501,7 @@ def generate_recommendations():
                 is_active=True,
                 matched_skills=matched_skills
             )
+        
             db.session.add(new_rec)
 
         db.session.commit()
@@ -513,22 +518,52 @@ def generate_recommendations():
 @profile_bp.route('/recommendations', methods=['GET'])
 @jwt_required()
 def get_recommendations():
-    current_user_id = int(get_jwt_identity())
+    try:
+        current_user_id = int(get_jwt_identity())
 
-    # Load ACTIVE recommendations only
-    active_recs = (
-        RecommendedJob.query
-        .filter_by(user_id=current_user_id, is_active=True)
-        .order_by(RecommendedJob.match_score.desc())
-        .all()
-    )
+    except Exception:
+        return jsonify({
+            "status": "error",
+            "message": "Invalid user identity."
+        }), 400
 
-    # Serialize to dicts with nested job
-    recommendations = [rec.to_dict() for rec in active_recs]
+    try:
+        # Fetch ACTIVE recommendations
+        active_recs = (
+            RecommendedJob.query
+            .filter_by(user_id=current_user_id, is_active=True)
+            .order_by(RecommendedJob.match_score.desc())
+            .all()
+        )
 
-    return jsonify({
-        "status": "fresh",
-        "message": "Recommendations recently generated. Using cached results.",
-        "recommended_jobs_count": len(recommendations),
-        "recommendations": recommendations,
-    })
+        # No recommendations at all
+        if not active_recs:
+            return jsonify({
+                "status": "empty",
+                "message": "No recommendations available yet. They will be generated soon.",
+                "recommended_jobs_count": 0,
+                "recommendations": []
+            }), 200
+
+        # Convert each recommendation to a dictionary
+        recommendations = [rec.to_dict() for rec in active_recs]
+
+        return jsonify({
+            "status": "success",
+            "message": "Active job recommendations retrieved.",
+            "recommended_jobs_count": len(recommendations),
+            "recommendations": recommendations,
+        }), 200
+
+    except Exception as e:
+        print("❌ Error in /recommendations:", e)
+        return jsonify({
+            "status": "error",
+            "message": "An unexpected error occurred while fetching recommendations.",
+            "details": str(e)
+        }), 500
+
+
+# Clean formatting for user-facing text
+def clean_skill_name(s):
+    return s.replace("_", " ").strip().title()   # Example: "information_technology" -> "Information Technology"
