@@ -10,13 +10,17 @@
     position: relative;
     overflow: visible;
     width: 100%;
+    height: 100vh;
     box-sizing: border-box;
     padding: 8px 0;
     box-sizing: border-box;
     padding: 8px;
     display: flex;
     flex-direction: column;
+    height: calc(100vh - calc(var(--nav-h) + 16px));
+
 }
+
 
 /* -------Search starts --------*/
 
@@ -159,10 +163,9 @@
 }
 
 .cardList {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    height: 1100px;/* Changed from fixed 1100px */
+ 
+    
+    height: calc(100vh - calc(var(--nav-h) + 16px));/* Changed from fixed 1100px */
     width: 100%;
     /* Spacing between cards */
     gap: var(--gap);
@@ -171,9 +174,18 @@
     /* Hide scrollbar styles  */
     -ms-overflow-style: none;
     scrollbar-width: none;
+    border-radius: 13px;
     
 }
 
+.theCardContainer{
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    
+}
 
 .cardList::-webkit-scrollbar {
     display: none;

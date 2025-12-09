@@ -2,16 +2,11 @@ import React, { useEffect, useState, useRef } from 'react';
 import style from './resumeview.module.css'
 import Btn from '../buttons/Btn'
 import ResumeTemplate from './ResumeTemplate';
-import html2pdf from "html2pdf.js";
 
 
 const ResumeViewStep = ({ backendData }) => {
-
-    // stuff for doc upload
-    const [documents, setDocuments] = useState([]);
-    const [file, setFile] = useState(null);
-    const [progress, setProgress] = useState(0);
-    const [uploading, setUploading] = useState(false);
+    const [aiResumeHTML, setAiResumeHTML] = useState(backendData.aiResumeText || "");
+    const [savingToStorage, setSavingToStorage] = useState(false);
     const [successMessage, setSuccessMessage] = useState("");
     const [showError, setShowError] = useState(false);
     const [errorTitle, setErrorTitle] = useState("");
@@ -25,15 +20,12 @@ const ResumeViewStep = ({ backendData }) => {
         const selectedFile = e.target.files?.[0];
         if (!selectedFile) return;
 
-        setFile(selectedFile);
-        setProgress(0);
-        setUploading(true);
+        setSavingToStorage(true);
 
         try {
             const res = await upload(selectedFile, type);
             console.log("Upload response:", res);
 
-            setDocuments(prev => [...prev, res]);
             setSuccessMessage(`File "${res.original_filename}" uploaded successfully!`);
 
             if (type === "resume") {
@@ -47,8 +39,7 @@ const ResumeViewStep = ({ backendData }) => {
             setErrorDescription(err?.message || String(err) || "Unknown error");
             setShowError(true);
         } finally {
-            setUploading(false);
-            setProgress(0);
+            setSavingToStorage(false);
 
             if (type === "resume" && resumeInputRef.current) resumeInputRef.current.value = "";
             if (type === "cover" && coverInputRef.current) coverInputRef.current.value = "";
@@ -71,12 +62,6 @@ const ResumeViewStep = ({ backendData }) => {
             xhr.open("POST", "/api/upload", true);
             xhr.setRequestHeader("Authorization", `Bearer ${token}`);
 
-            xhr.upload.onprogress = (e) => {
-                if (e.lengthComputable) {
-                    setProgress(Math.round((e.loaded / e.total) * 100));
-                }
-            };
-
             xhr.onload = () => {
                 try {
                     const json = xhr.responseText ? JSON.parse(xhr.responseText) : {};
@@ -98,40 +83,82 @@ const ResumeViewStep = ({ backendData }) => {
         });
     };
 
-    // download stuff
+    // Download DOCX directly
+    const downloadDocx = async () => {
+        const resumeElement = document.getElementById("resume-container");
+        if (!resumeElement) return;
 
-    const pdfDL = () => {
-        const element = document.getElementById("resume-container")
+        const htmlContent = resumeElement.innerHTML;
+        const token = localStorage.getItem("token");
 
-        if (!element) {
-            console.error("Resume container not found!");
-            return;
-        }
+        try {
+            const res = await fetch("/api/generate-docx", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
+                body: JSON.stringify({ html: htmlContent }),
+            });
 
-        const scaler = document.querySelector(`.${style.resumeScaler}`);
-        const originalTransform = scaler?.style.transform || "";
-        const originalTransformOrigin = scaler?.style.transformOrigin || "";
-
-        if (scaler) {
-            scaler.style.transform = "none";
-            scaler.style.transformOrigin = "top left";
-        }
-
-        const options = {
-            margin: 0,
-            filename: 'resume.pdf',
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 2 },
-            jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-        }
-
-        html2pdf().set(options).from(element).save().then(() => {
-            if (scaler) {
-                scaler.style.transform = originalTransform;
-                scaler.style.transformOrigin = originalTransformOrigin;
+            if (!res.ok) {
+                throw new Error("Failed to generate DOCX");
             }
-        });
-    }
+
+            const blob = await res.blob();
+            const url = window.URL.createObjectURL(blob);
+
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "resume.docx";
+            a.click();
+
+            window.URL.revokeObjectURL(url);
+        } catch (error) {
+            setErrorTitle("Download failed");
+            setErrorDescription(error.message);
+            setShowError(true);
+        }
+    };
+
+    // Save to AWS S3 storage
+    const saveToStorage = async () => {
+        const resumeElement = document.getElementById("resume-container");
+        if (!resumeElement) return;
+
+        const htmlContent = resumeElement.innerHTML;
+        const token = localStorage.getItem("token");
+
+        setSavingToStorage(true);
+        try {
+            const res = await fetch("/api/save-resume-to-storage", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
+                body: JSON.stringify({ 
+                    html: htmlContent,
+                    user_id: backendData.step1?.email || "user",
+                    filename: `${backendData.step1?.fullname || "resume"}.docx`
+                }),
+            });
+
+            if (!res.ok) {
+                throw new Error("Failed to save resume");
+            }
+
+            const data = await res.json();
+            setSuccessMessage("Resume saved to document storage successfully!");
+            setTimeout(() => setSuccessMessage(""), 5000);
+        } catch (error) {
+            setErrorTitle("Save failed");
+            setErrorDescription(error.message);
+            setShowError(true);
+        } finally {
+            setSavingToStorage(false);
+        }
+    };
 
     const newTab = () => {
         const resumeElement = document.getElementById("resume-container");
@@ -160,7 +187,7 @@ const ResumeViewStep = ({ backendData }) => {
                     body {
                         display: flex;
                         justify-content: center;
-                        align-items: flex-start; /* allows scroll from top */
+                        align-items: flex-start;
                         background: #f0f0f0;
                         overflow: auto;
                     }
@@ -178,17 +205,21 @@ const ResumeViewStep = ({ backendData }) => {
         newWindow.document.close();
     };
 
+    useEffect(() => {
+        if (backendData.aiResumeText) {
+            setAiResumeHTML(backendData.aiResumeText);
+        }
+    }, [backendData.aiResumeText]);
+
     return (
         <div className="resume-form">
             <div className="title">
                 <h2>Resume Preview</h2>
             </div>
             <div className={style.resumeScaler}>
-                <div className={style['resume-preview']} id="resume-container">
-                    {backendData.aiResumeText ?
-                        <ResumeTemplate resumeHTML={backendData.aiResumeText} /> :
-                        <ResumeTemplate resumeHTML={null} data={backendData} />
-                    }
+                <div id="resume-container">
+                    {console.log("Rendering ResumeTemplate with HTML:", aiResumeHTML)}
+                    <ResumeTemplate resumeHTML={aiResumeHTML} />
                 </div>
             </div>
 
@@ -197,20 +228,25 @@ const ResumeViewStep = ({ backendData }) => {
             <input type="file" ref={coverInputRef} style={{ display: 'none' }} onChange={(e) => handleFileChange(e, "cover")} />
 
             <div className={style.viewBtn}>
-                <Btn label={"Open Resume In New Tab"} onClick={newTab} /> {/* might use for mobile if i cant get it to display properly */}
+                <Btn label={"Open Resume In New Tab"} onClick={newTab} />
                 <Btn
                     type="button"
-                    label={uploading ? `Uploading ${progress}%` : "Save To Document Storage"}
-                    onClick={() => resumeInputRef.current?.click()}
-                    disabled={uploading}
+                    label={savingToStorage ? "Saving..." : "Save To Document Storage"}
+                    onClick={saveToStorage}
+                    disabled={savingToStorage}
                 />
-                <Btn label={"Download Resume"} onClick={pdfDL} />
+                <Btn label={"Download as DOCX"} onClick={downloadDocx} />
             </div>
 
             <div className={style.successMsg}>
                 {successMessage && <p>{successMessage}</p>}
             </div>
 
+            {showError && (
+                <div style={{ color: 'red', padding: '10px', marginTop: '10px' }}>
+                    <strong>{errorTitle}:</strong> {errorDescription}
+                </div>
+            )}
         </div>
     );
 }

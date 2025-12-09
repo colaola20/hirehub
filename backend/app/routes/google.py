@@ -75,8 +75,8 @@ def authorize_google():
                 return jsonify({"status": "error", "message": str(e)}), 500
             
         access_token = create_access_token(identity=str(user.id))
-        #frontend_url = f"http://localhost:5173/oauth?token={access_token}&username={user.username}"
-        frontend_url = f"http://localhost/oauth?token={access_token}&username={user.username}"
+        frontend_url = f"http://localhost:5173/oauth?token={access_token}&username={user.username}"
+        #frontend_url = f"http://localhost/oauth?token={access_token}&username={user.username}"
         return redirect(frontend_url)
 
         # session["user"] = {"username": user.username, "email": user.email}

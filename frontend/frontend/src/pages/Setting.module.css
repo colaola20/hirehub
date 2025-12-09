@@ -2,13 +2,15 @@
   box-sizing: border-box;
   width: 100%;
   min-height: 100vh;
-  border-radius: 10px;
+  border-radius: 13px;
+
 }
 
 .settingContainer {
     display: flex;
     flex-direction: column;
     width: 100%;
+    height: calc(100vh - calc(var(--nav-h) + 16px));
     gap: 1rem;
     box-sizing: border-box;
     align-items: center;
@@ -21,6 +23,8 @@
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
     color: #ffffff;
     transition: all 0.3s ease;
+    
+    
 }
 
 .loginSection, .alertsPreference {

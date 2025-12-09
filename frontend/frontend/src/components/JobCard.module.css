@@ -88,14 +88,16 @@
     color: #ffffff;  
 
 }
-/* 
+
 .jobInfo{
-    display: grid;
-    grid-template-columns: 1fr 1fr; /* 2 columns
-    grid-auto-rows: auto;         
-    gap: 10px 20px;                
-    padding-left: 5%;
-} */
+display: flex;
+flex-direction: row;
+align-items: center;
+justify-content: space-between;
+margin: 40px 0;
+
+
+}
 
 
 .job-card:hover {
@@ -160,6 +162,12 @@
   border-radius: 12px;
   display: flex;
   align-items: center;
+}
+
+.iconBox:hover {
+  
+  transform: translateY(-7px);
+
 }
 
 .iconBox svg {
@@ -269,22 +277,39 @@
 }
 
 .skillPill {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(223, 132, 27, 0.2);
   color: #ffffff;
   border-radius: 12px;
   padding: 4px 10px;
   font-size: 0.85rem;
+  border: 2px solid #d89229; 
+  border: 2px solid #e28821;
 }
 
 .matchedSkillPill{
-  background-color: #232c27; 
-  color: #b5e0b5; 
-  border: 1px solid #66c566; 
+  background: rgba(0, 255, 0, 0.08);
+  color: #ffffff;
   border-radius: 12px;
   padding: 4px 10px;
   font-size: 0.85rem;
+  border: 2px solid #17aa17; 
 }
 
+.matchedSkillPill:hover, .skillPill:hover {
+
+  transform: translateY(-4px);
+
+}
+
+.centeredMessage {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  font-size: 18px;
+  color: #ffffff;
+}
 .error , .loading {
   transform: translateY(20px);
   font-weight: bold;

@@ -29,7 +29,7 @@ const AngleLanding = () => {
       </div>
       <div>
         <h4>Faster iterations</h4>
-        <p>Refine bullets, quantify impact, and version for each role—in minutes.</p>
+        <p>Generate improved bullets, quantify achievements, and tailor your resume to each job in seconds.</p>
       </div>
       <div>
         <h4>Privacy-first</h4>
@@ -38,7 +38,7 @@ const AngleLanding = () => {
     </div>,
     <div className={styles.aboutCTA}>
       <h3>Ready to stand out?</h3>
-      <p>Optimize your application materials with measurable results.</p>
+      <p> Create high-impact resumes and cover letters tailored to every role you apply for.</p>
       <a href="#services" className={styles.aboutButton}>Explore Services</a>
     </div>
   ];
@@ -233,7 +233,7 @@ const AngleLanding = () => {
         <div className={styles.heroCopy}>
           <h1 className={styles.heroTitle}>HireHub</h1>
           <p className={styles.heroSub}>
-            The application assistant that optimizes <span className={styles.accent}>every detail</span>
+            The application assistant that <span className={styles.accent}> optimizes every detail</span>
           </p>
         </div>
       </section>
@@ -436,7 +436,7 @@ const AngleLanding = () => {
               </p>
               <div className={styles.memberSocials}>
                 <a href="https://github.com/kazmha" aria-label="Hashim GitHub">GitHub</a>
-                {/* <a href="" aria-label="Hashim LinkedIn">LinkedIn</a> */}
+                <a href="https://www.linkedin.com/in/hashim-kazmi-abb7032b3/" aria-label="Hashim LinkedIn">LinkedIn</a>
               </div>
             </article>
 

@@ -7,9 +7,38 @@ const analysisCache = new Map();
 const CACHE_DURATION = 30 * 60 * 1000; // 30 minutes
 const inFlightRequests = new Map();
 
-const JobAnalysisPanel = ({ job  }) => {
+const JobAnalysisPanel = ({ job , recommendedCard = false, percentValue = null, recommendation = null, onClick  }) => {
   
-//  analysisCache.clear(); // temp fix while styling
+// If this panel is for a recommended job, skip API analysis completely
+if (recommendedCard && percentValue !== null) {
+  const pct = Math.round(percentValue);
+
+  return (
+    <div className={styles.wrapper}>
+      <div className={styles.pctRow}>
+        <PercentCircle percent={pct} />
+      </div>
+
+      <div className={styles.section}>
+        <div className={styles.sectionTitle}>Skills in Job</div>
+        <div className={styles.skillList}>
+          {(job.skills_extracted || []).map((s, i) => (
+            <span key={i} className={styles.skillPill}>{s}</span>
+          ))}
+        </div>
+      </div>
+
+      <div className={styles.section}>
+        <div className={styles.sectionTitle}>Matched Skills</div>
+        <div className={styles.skillList}>
+          {(recommendation?.matched_skills || []).map((s, i) => (
+            <span key={i} className={styles.matchedSkillPill}>{s}</span>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
 
   const [analysis, setAnalysis] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -55,26 +84,6 @@ const setCachedAnalysis = (jobId, data) => {
 
 
   useEffect(() => {
-
-  //     if (skipAnalysis) {
-  //   // Provide mock data for styling
-  //   const mock = {
-  //     percentage_match: 72,
-  //     job_skills: [
-  //   "JavaScript", "TypeScript", "Python", "Java", "C#", "C++", "Rust", "Go",
-  //   "Kotlin", "Swift", "Ruby", "PHP", "Node.js", "Express", "Next.js",
-
-  // ],
-  //     matched_skills: [
-  //   "JavaScript", "TypeScript", "Python", "Java", "C#", "C++", "Rust", "Go",
-  //   "NLP", "Computer Vision", "Pandas", "NumPy", "TensorFlow", "PyTorch",
-  // ],
-  //   };
-
-  //   setAnalysis(mock);
-  //   setLoading(false);
-  //   return;
-  // }
 
     if (!job?.id || !isVisible) return; // Wait until visible
 
@@ -148,19 +157,20 @@ const setCachedAnalysis = (jobId, data) => {
 
 
 if (!analysis)
-  return <div ref={containerRef} className={styles.loading}>Analyzing...</div>;
+  return <div ref={containerRef} className={styles.centeredMessage}><div className={styles.loading}>Analyzing...</div></div>;
 
 if (analysis?.error)
   return <div className={styles.error}>{analysis.error}</div>;
+
 if (analysis.percentage_match === 0 ){
-  return <div className={styles.noMatch}>No match data available.</div>;
+  return <div className={styles.noMatch} onClick={onClick}>We couldn’t find enough skill data to generate a match score.</div>;
 }
 
-  const rawPct = Number(analysis.percentage_match || 0); 
-  const formattedPct = rawPct % 1 === 0 ? rawPct : Number(rawPct.toFixed(2));
+  const rawPct = Number(analysis.percentage_match || 0);
+  const formattedPct = Math.round(rawPct);
 
   return (
-    <div ref={containerRef} className={styles.wrapper}>
+    <div ref={containerRef} className={styles.wrapper} onClick={onClick}>
       <div className={styles.pctRow}>
 
         {/* Circle */}
@@ -187,6 +197,7 @@ if (analysis.percentage_match === 0 ){
       </div>
     </div>
   );
+
 };
 
 export default JobAnalysisPanel;
