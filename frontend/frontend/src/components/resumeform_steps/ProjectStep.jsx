@@ -27,9 +27,9 @@ const ProjectComponent = ({ project, index, updateProj, removeProj, removeable }
             </div>
             <div className="expirienceField">
                 <textarea
-                    name="projectDescription"
+                    name="projDesc"
                     value={project.projDesc}
-                    onChange={(e) => updateJobs(index, e.target.name, e.target.value)}
+                    onChange={(e) => updateProj(index, e.target.name, e.target.value)}
                     placeholder="Describe your project..."
                     className="textArea"
                 />

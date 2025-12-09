@@ -1,239 +1,218 @@
-from flask import Blueprint, request, jsonify
+from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask import Blueprint, request, jsonify, send_file
 import requests
 import os
 import json
+from docx import Document
+from docx.enum.text import WD_ALIGN_PARAGRAPH
+from io import BytesIO
+from bs4 import BeautifulSoup
+import boto3
+from datetime import datetime
 
 resume_bp = Blueprint("resume_generation", __name__)
 
-GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
-GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
+OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
+OPENAI_URL = "https://api.openai.com/v1/chat/completions"
 
-HTML_TEMPLATE = """
-<div class="resume-preview">
-    <div class="header">
-        <h1 class="headerName">{{fullname}}</h1>
-        <p>
-            Email: {{email}} | Phone: {{phone}} | {{city}} |
-            <a href="{{linkedin}}">LinkedIn</a> |
-            <a href="{{github}}">GitHub</a>
-        </p>
-        <hr class="divider" />
-    </div>
+# AWS S3 Configuration
+AWS_ACCESS_KEY = os.environ.get("AWS_ACCESS_KEY_ID")
+AWS_SECRET_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
+AWS_S3_BUCKET = os.environ.get("S3_BUCKET_NAME")
+AWS_REGION = os.environ.get("AWS_REGION", "us-east-1")
 
-    <div class="body">
+s3_client = boto3.client(
+    's3',
+    aws_access_key_id=AWS_ACCESS_KEY,
+    aws_secret_access_key=AWS_SECRET_KEY,
+    region_name=AWS_REGION
+)
 
-        {{#skills_section}}
-        <div class="misc">
-            <h2 class="sectionTitle">Skills</h2>
-            <hr class="dividerSmall" />
-            <div class="miscSection">
-                {{skills_line}} <br>
-                {{languages_line}} <br>
-            </div>
-        </div>
-        {{/skills_section}}
-
-        <div class="projects">
-            <h2 class="sectionTitle">Projects</h2>
-            <hr class="dividerSmall" />
-            {{projects}}
-        </div>
-
-        <div class="experience">
-            <h2 class="sectionTitle">Experience</h2>
-            <hr class="dividerSmall" />
-            {{experience}}
-        </div>
-
-        <div class="education">
-            <h2 class="sectionTitle">Education</h2>
-            <hr class="dividerSmall" />
-            {{education}}
-        </div>
-
-    </div>
-</div>
-"""
 
 @resume_bp.route("/api/generate_resume", methods=['POST'])
 def generate_resume():
-    if not GROQ_API_KEY:
-        return jsonify({"error": "GROQ_API_KEY not set"}), 500
+    if not OPENAI_API_KEY:
+        return jsonify({"error": "OPENAI_API_KEY not set"}), 500
 
     form_data = request.get_json()
     if not form_data:
         return jsonify({"error": "No form data provided"}), 400
 
+    # Professional Resume Design - Exact Template Match
     system_prompt = """
-        You will receive:
-        1. A JSON object of structured resume data.
-        2. An HTML resume template containing placeholders.
+You are a resume HTML generator. Generate ONLY pure HTML code with embedded CSS.
 
-        Your job:
-        - Fill the HTML template with the JSON data.
-        - Keep content concise and fit within a single page of 816px x 1056px.
-        - Avoid excessive padding or margins.
+CRITICAL REQUIREMENTS:
+- Output ONLY HTML, nothing else
+- Start with <!DOCTYPE html>
+- Include <html>, <head>, <body> tags
+- Put all CSS in <style> tag in <head>
+- NO markdown, NO backticks, NO code fences
+- NO explanations before or after
+- White background (#ffffff)
+- Black text (#000000)
+- Arial font
+- Professional traditional resume layout
+- Left AND RIGHT margin/padding: 40-50px for indentation
+- Font size: 11-12px for body text, slightly larger for headers
+- ONLY INCLUDE SECTIONS THAT HAVE DATA - skip empty sections
 
-        - For job experience: write 1 to 2 concise bullet points per job describing achievements or responsibilities.
-        Do not just repeat the role name; create realistic, professional sentences.
-        Put role on a separate line from the company name and time period, but above the job description bullets.
-        Do NOT use commas to separate fields in the experience section in any circumstance. Use hyphens only.
+EXACT LAYOUT PATTERN:
+1. NAME (large 20px, bold, centered)
+2. Location • Email (centered, 11px)
+3. Phone • LinkedIn URL (centered, 11px)
+4. BLANK LINE
 
-        - For projects: summarize each project in 1–2 sentences describing its purpose, functionality, and impact.
-        Include a link if available. Do not simply copy the form’s description.
-        Description MUST be separate from the title and link.
-        Insert the description on a NEW LINE after the title+link.
-        Output links as: <a href="{projLink}" target="_blank" rel="noopener noreferrer">Project Link</a>
-        Do NOT use commas to separate fields in projects.
+SECTION HEADERS (ONLY capitalize first letter, NOT all caps):
+Education
+Relevant Experience
+Additional Experience
+Community Involvement
+Projects
+Skills Summary
+Certifications
 
-        - For skills and languages, list them clearly and on separate lines.
-        Capitalize the first letter of each word.
+STRUCTURE FOR EACH SECTION:
+- Section Title: Title Case (not ALL CAPS), bold, followed by horizontal line (full width, 1px solid black)
+- Company/School/Project: **Bold**, City, State (or project details) - format with HTML <b> tags, NO asterisks
+- Position/Degree/Project Title: Position title, Duration/Dates
+- Bullets: · Detailed bullet point (2-3 lines describing responsibilities and achievements)
+- Spacing: Single line between entries, blank line before next section
+- Left padding: 40px
+- Right padding: 40px
+- Total body width with padding: 816px (8.5 inches)
 
-        - For education: school name + graduation year on one line, then “Degree in: {degree}” on the next line.
-        Do NOT use commas for education. Use hyphens only.
+PROJECTS SECTION FORMAT (if projects exist):
+Project Name (bold, no asterisks)
+Project description or link
+· Achievement/detail about project
+· Technology used / impact
 
-        ----------------------------------------
-        STRUCTURE RULES
-        ----------------------------------------
+SKILLS SECTION FORMAT:
+Technical Skills: item1, item2, item3
+Social Media: item1, item2, item3
+Soft Skills: item1, item2, item3
+Languages: item1, item2
 
-        When replacing {{projects}}, use EXACTLY this HTML:
+CSS REQUIREMENTS:
+- body: background white, color black, font Arial 11pt, max-width 816px
+- Page width: 8.5 x 11 inches (816px)
+- Margins: 0.5 inch all sides (40px left and right)
+- Left AND right padding on all content: 40px
+- Section headers: bold, Title Case, with horizontal line below (1px solid black)
+- Company/School/Project names: bold
+- No colors, pure black and white
+- Line spacing: 1.4 for body content
+- Horizontal lines: full width, 1px solid black
+- Hide/skip sections with no data
 
-        <div class="projectEntry">
-            <div class="projectHeader">
-                <div class="projectTitle">{Project Title}</div>
-                <div class="projectLink">
-                    <a href="{Project Link}" target="_blank" rel="noopener noreferrer">Project Link</a>
-                </div>
-            </div>
-            <div class="projectDescription">
-                {1–2 sentence description}
-            </div>
-        </div>
+OUTPUT ONLY THE HTML CODE STARTING WITH <!DOCTYPE html>
+"""
 
-        When replacing {{experience}}, use EXACTLY this structure:
+    user_prompt = f"""
+Generate a professional resume in HTML/CSS matching this EXACT layout:
 
-        <div class="experienceEntry">
-            <div class="experienceCompany">{Company Name}</div>
-            <div class="experienceTime">{Time Period}</div>
-            <div class="experienceRole">{Role Name}</div>
-            <div class="experienceBullets">
-                - {Bullet 1}<br>
-                - {Bullet 2}
-            </div>
-        </div>
+NAME (centered, large bold)
+Location, State • email@domain.com (centered)
+Phone • LinkedIn URL (centered)
 
-        When replacing {{education}}, use EXACTLY this structure:
+[ONLY INCLUDE SECTIONS BELOW IF THEY HAVE DATA - SKIP EMPTY SECTIONS]
 
-        <div class="educationEntry">
-            <div class="educationSchool">{School Name}</div>
-            <div class="educationGradYear">{Graduation Year}</div>
-            <div class="educationDegree">
-                Degree in: {Degree}
-            </div>
-        </div>
+Education
+[with horizontal line below]
 
-        ----------------------------------------
-        SKILLS / LANGUAGES RULES
-        ----------------------------------------
+Relevant Experience
+[with horizontal line below]
 
-        The template contains a .misc section containing:
+Additional Experience
+[with horizontal line below]
 
-        {{skills_line}}
-        {{languages_line}}
+Community Involvement
+[with horizontal line below]
 
-        When replacing {{skills_line}}, output:
+Projects
+[with horizontal line below]
 
-        Skills: Skill1, Skill2, Skill3
+Skills Summary
+[Technical Skills, Social Media, Soft Skills, Languages]
 
-        When replacing {{languages_line}}, output:
+Certifications
+[with horizontal line below]
 
-        Languages: Lang1, Lang2
+Data to use:
+{json.dumps(form_data, indent=2)}
 
-        These MUST be two separate lines.
-        Skills ALWAYS on its own line.
-        Languages ALWAYS directly below skills.
-        Any additional misc fields must also be separate lines.
+IMPORTANT RULES:
+1. Only display sections that have actual data
+2. Skip/hide sections with no data (e.g., if no certifications, don't show certifications section)
+3. Include Projects section if projects exist
+4. Create detailed, professional bullet points for EVERY job and project
 
-        ----------------------------------------
-        STRICT STRUCTURE ENFORCEMENT
-        ----------------------------------------
+JOB DESCRIPTION GENERATION:
+Create detailed, professional bullet points for EVERY job entry. If description is minimal or empty:
 
-        You MUST:
-        - Follow the exact HTML structures above.
-        - Put each field ONLY in its correct div.
-        - NOT merge title/link/description fields.
-        - NOT merge fields in experience.
-        - NOT add or remove divs.
-        - NOT rearrange elements.
-        - NOT combine fields into one line.
+For specific job titles, generate relevant bullets:
+- "Data Analyst" → "• Analyzed large datasets using SQL and Python to identify business trends and opportunities for improvement", "• Created comprehensive reports and visualizations to present findings to senior management", "• Collaborated with cross-functional teams to implement data-driven solutions improving efficiency by 15%"
 
-        If you deviate from these structures, the output is invalid.
+- "Software Developer" → "• Designed and developed full-stack web applications using modern technologies and best practices", "• Debugged complex issues and optimized code performance, reducing load times by 20%", "• Participated in code reviews and mentored junior developers on coding standards and design patterns"
 
-        ----------------------------------------
-        GLOBAL RESTRICTIONS
-        ----------------------------------------
+- "Marketing Intern" → "• Assisted in planning and executing integrated marketing campaigns across multiple channels", "• Conducted market research and competitor analysis to inform marketing strategy", "• Created engaging content for social media and marketing materials, increasing engagement by 25%"
 
-        - The HTML template uses full lines to separate fields — preserve this.
-        - Do NOT modify layout, class names, or structure.
-        - Do NOT add explanations, comments, or JSX.
-        - Only fill placeholders such as {{projects}}, {{experience}}, etc.
-        - Remove sections if data is empty.
-        - Return ONLY the final HTML.
+- "Sales Associate" → "• Provided excellent customer service and product expertise to drive sales and customer satisfaction", "• Exceeded monthly sales targets consistently through effective upselling and relationship building", "• Processed transactions accurately and maintained store displays to ensure positive shopping experience"
 
-        Available placeholders:
-        {{fullname}}, {{email}}, {{phone}}, {{city}}, {{linkedin}}, {{github}}
-        {{skills_section}}
-        {{projects}}, {{experience}}, {{education}}
-        """
+PROJECTS GENERATION:
+For each project, include:
+- **Project Name** (bold)
+- Brief description or technologies used
+- 2-3 bullet points with achievements and impact
 
-    prompt = f"""
-    Here is the resume template you must fill:
+Requirements:
+1. White background, black text, Arial font, 11-12pt
+2. Centered name at top (large, bold ~20px)
+3. Contact info centered below name (location • email, then phone • linkedin)
+4. Section headers: Title Case (not ALL CAPS) with horizontal line below
+5. Format: Company/School/Project Name in bold (use <b> HTML tags), City, State - NO ASTERISKS
+6. Position/degree/project details on second line
+7. 3-4 detailed bullet points with · symbol for each entry
+8. Skills: "Technical Skills: x, y, z" format
+9. Left AND right padding on all content: 40px
+10. One page layout
+11. ONLY INCLUDE SECTIONS WITH DATA - skip empty sections
+12. Include Projects section if projects exist
+13. Project names should be bold with NO asterisks (use HTML <b> tags)
+14. Company names AND locations should be bold
 
-    {HTML_TEMPLATE}
-
-    Here is the user data in JSON:
-
-    {json.dumps(form_data, indent=2)}
-
-    Return ONLY the final HTML.
-    """
+Output ONLY the complete HTML code starting with <!DOCTYPE html>
+Do NOT include backticks, markdown, explanations, or code fences.
+"""
 
     headers = {
-        "Authorization": f"Bearer {GROQ_API_KEY}",
+        "Authorization": f"Bearer {OPENAI_API_KEY}",
         "Content-Type": "application/json"
     }
 
     payload = {
-        "model": "llama-3.3-70b-versatile",
+        "model": "gpt-4o-mini",
         "messages": [
             {"role": "system", "content": system_prompt},
-            {"role": "user", "content": prompt}
+            {"role": "user", "content": user_prompt}
         ],
-        "temperature": 0.4,
-        "max_tokens": 700,
+        "temperature": 0.6,
+        "max_tokens": 2000,
         "stream": False
     }
 
     try:
-        res = requests.post(GROQ_URL, headers=headers, json=payload)
-        res.raise_for_status()  # raises exception if status != 2xx
-        response_json = res.json()
-        
-        # debug: log the full API response
-        print("GROQ API response:", response_json)
+        res = requests.post(OPENAI_URL, headers=headers, json=payload)
+        res.raise_for_status()
+        data = res.json()
 
-        # safely get the content
-        ai_text = ""
-        choices = response_json.get("choices")
-        if choices and len(choices) > 0:
-            message = choices[0].get("message")
-            if message:
-                ai_text = message.get("content", "")
+        ai_text = data.get("choices", [{}])[0].get("message", {}).get("content", "")
 
         if not ai_text:
             return jsonify({
                 "error": "No resume text returned from AI",
-                "details": response_json
+                "details": data
             }), 500
 
         return jsonify({
@@ -241,15 +220,193 @@ def generate_resume():
             "resume_text": ai_text
         }), 200
 
-    except requests.exceptions.RequestException as e:
-        print("GROQ API request failed:", e)
+    except Exception as e:
         return jsonify({
             "error": "Failed to generate resume",
             "details": str(e)
         }), 500
+
+
+def html_to_docx(html_content):
+    """Convert resume HTML to DOCX document"""
+    doc = Document()
+    doc.core_properties.author = "HireHub Resume Builder"
+    
+    soup = BeautifulSoup(html_content, 'html.parser')
+    
+    # Remove script and style tags
+    for script in soup(["script", "style"]):
+        script.decompose()
+    
+    # Process elements more intelligently
+    processed_elements = set()
+    
+    for element in soup.find_all(['h1', 'h2', 'h3', 'p', 'ul', 'li', 'strong', 'a', 'span']):
+        if id(element) in processed_elements:
+            continue
+            
+        text = element.get_text(strip=True)
+        if not text:
+            continue
+        
+        if element.name == 'h1':
+            p = doc.add_paragraph(text, style='Heading 1')
+            p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+            processed_elements.add(id(element))
+            
+        elif element.name == 'h2':
+            p = doc.add_paragraph(text, style='Heading 2')
+            processed_elements.add(id(element))
+            
+        elif element.name == 'h3':
+            p = doc.add_paragraph(text, style='Heading 3')
+            processed_elements.add(id(element))
+            
+        elif element.name in ['p', 'span']:
+            if text and len(text) > 2:
+                doc.add_paragraph(text)
+                processed_elements.add(id(element))
+                
+        elif element.name == 'li':
+            if text:
+                doc.add_paragraph(text, style='List Bullet')
+                processed_elements.add(id(element))
+    
+    return doc
+
+
+@resume_bp.route("/api/generate-docx", methods=['POST'])
+def generate_docx():
+    """Convert resume HTML to DOCX format and download"""
+    try:
+        data = request.get_json()
+        html_content = data.get('html', '')
+        
+        if not html_content:
+            return jsonify({"error": "No HTML content provided"}), 400
+        
+        doc = html_to_docx(html_content)
+        
+        docx_io = BytesIO()
+        doc.save(docx_io)
+        docx_io.seek(0)
+        
+        return send_file(
+            docx_io,
+            mimetype='application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            as_attachment=True,
+            download_name='resume.docx'
+        )
+        
     except Exception as e:
-        print("Unexpected error in generate_resume:", e)
+        print(f"Error generating DOCX: {str(e)}")
         return jsonify({
-            "error": "Unexpected error generating resume",
+            "error": "Failed to generate DOCX",
+            "details": str(e)
+        }), 500
+
+
+@resume_bp.route("/api/save-resume-to-storage", methods=['POST'])
+@jwt_required()
+def save_resume_to_storage():
+    """Convert resume HTML to DOCX and save to AWS S3"""
+    try:
+        print("=== Starting save-resume-to-storage ===")
+        print(f"AWS_ACCESS_KEY set: {bool(AWS_ACCESS_KEY)}")
+        print(f"AWS_SECRET_KEY set: {bool(AWS_SECRET_KEY)}")
+        print(f"AWS_S3_BUCKET: {AWS_S3_BUCKET}")
+        
+        if not all([AWS_ACCESS_KEY, AWS_SECRET_KEY, AWS_S3_BUCKET]):
+            error_msg = "AWS configuration not set"
+            print(f"Error: {error_msg}")
+            return jsonify({"error": error_msg}), 500
+        
+        data = request.get_json()
+        print(f"Request data keys: {data.keys() if data else 'None'}")
+        
+        html_content = data.get('html', '')
+        user_id = data.get('user_id')
+        filename = data.get('filename', 'resume.docx')
+        
+        print(f"HTML content length: {len(html_content)}")
+        print(f"User ID: {user_id}")
+        print(f"Filename: {filename}")
+        
+        if not html_content:
+            error_msg = "No HTML content provided"
+            print(f"Error: {error_msg}")
+            return jsonify({"error": error_msg}), 400
+        
+        if not user_id:
+            error_msg = "User ID is required"
+            print(f"Error: {error_msg}")
+            return jsonify({"error": error_msg}), 400
+        
+        print("Converting HTML to DOCX...")
+        doc = html_to_docx(html_content)
+        
+        docx_io = BytesIO()
+        doc.save(docx_io)
+        docx_io.seek(0)
+        print(f"DOCX file size: {len(docx_io.getvalue())} bytes")
+        
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        s3_key = f"resumes/{user_id}/{timestamp}_{filename}"
+        print(f"S3 Key: {s3_key}")
+        
+        print("Uploading to S3...")
+        s3_client.put_object(
+            Bucket=AWS_S3_BUCKET,
+            Key=s3_key,
+            Body=docx_io.getvalue(),
+            ContentType='application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+        )
+        print("Successfully uploaded to S3")
+        
+        from app.extensions import db
+        from app.models.document import Document
+        from app.models.user import User
+        
+        try:
+            current_user_id = get_jwt_identity()
+            user = User.query.get(current_user_id)
+            
+            if not user:
+                print(f"Warning: User not found for ID: {current_user_id}")
+                return jsonify({
+                    "message": "Resume saved to S3 but could not link to user account",
+                    "s3_key": s3_key,
+                    "filename": filename
+                }), 200
+            
+            new_document = Document(
+                user_email=user.email,
+                file_path=s3_key,
+                original_filename=filename,
+                document_type='resume'
+            )
+            db.session.add(new_document)
+            db.session.commit()
+            print(f"Database record created for document ID: {new_document.document_id}")
+            
+        except Exception as db_error:
+            db.session.rollback()
+            print(f"Warning: Could not create database record: {str(db_error)}")
+            import traceback
+            traceback.print_exc()
+        
+        return jsonify({
+            "message": "Resume saved to storage successfully",
+            "s3_key": s3_key,
+            "filename": filename
+        }), 200
+        
+    except Exception as e:
+        error_msg = f"Error saving resume to storage: {str(e)}"
+        print(error_msg)
+        import traceback
+        traceback.print_exc()
+        return jsonify({
+            "error": "Failed to save resume to storage",
             "details": str(e)
         }), 500

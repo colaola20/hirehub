@@ -17,7 +17,7 @@ import ProjectStep from "../components/resumeform_steps/ProjectStep";
 
 import styles from './resumeform.module.css';
 
-import {ChevronRight, ChevronLeft} from 'lucide-react'
+import { ChevronRight, ChevronLeft } from 'lucide-react'
 
 const ResumeForm = () => {
 
@@ -47,7 +47,7 @@ const ResumeForm = () => {
         /* ---MAIN SECTIONS--- */
         step4: {
 
-            jobs: [{ company: '', role: '', roleTime: '', jobDescription: ''}]
+            jobs: [{ company: '', role: '', roleTime: '', jobDescription: '' }]
 
         },
 
@@ -59,7 +59,7 @@ const ResumeForm = () => {
 
         step6: {
 
-            projects: [{ projTitle: '', projDesc: '', projLink: ''}]
+            projects: [{ projTitle: '', projDesc: '', projLink: '' }]
 
         }
     })
@@ -98,46 +98,53 @@ const ResumeForm = () => {
 
     // pull info from user profile to prefill form
     useEffect(() => {
-    fetch('/api/form', {
-        headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
-        }
-    })
-    .then(response => {
-        if (!response.ok) {
-            console.error('Failed to fetch form data');
-            return null;
-        }
-        return response.json();
-    })
-    .then(data => {
-        if (!data) return;
+        fetch('/api/form', {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
+            }
+        })
+            .then(response => {
+                if (!response.ok) {
+                    console.error('Failed to fetch form data');
+                    return null;
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (!data) return;
 
-        const step3 = data.step3 || {};
-        const formattedStep3 = {
-            skills: Array.isArray(step3.skills) ? step3.skills.join(', ') : step3.skills || '',
-            languages: Array.isArray(step3.languages) ? step3.languages.join(', ') : step3.languages || '',
-            certs: Array.isArray(step3.certs) ? step3.certs.join(', ') : step3.certs || '',
-            interests: Array.isArray(step3.interests) ? step3.interests.join(', ') : step3.interests || '',
-        };
+                console.log("DEBUG: Data fetched from backend:", data);
 
-        setFormData(prev => ({
-            step1: { ...prev.step1, ...(data.step1 || {}) },
-            step2: { ...prev.step2, ...(data.step2 || {}) },
-            step3: { ...prev.step3, ...formattedStep3 },
-            step4: { ...prev.step4, ...(data.step4 || {}) },
-            step5: { ...prev.step5, ...(data.step5 || {}) },
-            step6: { ...prev.step6, ...(data.step6 || {}) },
-            aiResumeText: prev.aiResumeText || data.aiResumeText || ''
-        }));
-    })
-    .catch(err => console.error('Error fetching form data:', err));
-}, []);
+                const step3 = data.step3 || {};
+                const formattedStep3 = {
+                    skills: Array.isArray(step3.skills) ? step3.skills.join(', ') : step3.skills || '',
+                    languages: Array.isArray(step3.languages) ? step3.languages.join(', ') : step3.languages || '',
+                    certs: Array.isArray(step3.certs) ? step3.certs.join(', ') : step3.certs || '',
+                    interests: Array.isArray(step3.interests) ? step3.interests.join(', ') : step3.interests || '',
+                };
+
+                setFormData(prev => ({
+                    step1: { ...prev.step1, ...(data.step1 || {}) },
+                    step2: { ...prev.step2, ...(data.step2 || {}) },
+                    step3: { ...prev.step3, ...formattedStep3 },
+                    step4: { ...prev.step4, ...(data.step4 || {}) },
+                    step5: { ...prev.step5, ...(data.step5 || {}) },
+                    step6: { ...prev.step6, ...(data.step6 || {}) },
+                    aiResumeText: prev.aiResumeText || data.aiResumeText || ''
+                }));
+
+                console.log("DEBUG: formData after setFormData call:", formData);
+            })
+            .catch(err => console.error('Error fetching form data:', err));
+    }, []);
 
     useEffect(() => {
         if (contentRef.current) {
             if (currentStep === 7) {
-                setContainerHeight("1250px");
+                // Calculate dynamic height for resume preview + buttons
+                const resumeHeight = contentRef.current.scrollHeight;
+                const buttonsHeight = 120; // Approximate height for buttons + padding
+                setContainerHeight(resumeHeight + buttonsHeight + "px");
                 return;
             }
 
@@ -151,7 +158,6 @@ const ResumeForm = () => {
         formData.step6?.projects?.length,
         errors
     ])
-
 
 
 
@@ -183,27 +189,34 @@ const ResumeForm = () => {
             'At least one language required',
             val => val.split(',').filter(s => s.trim()).length > 0
         ),
-        interests: Yup.string().transform(value => {
-            if (!value || value.trim() === "") {
-                return undefined;
-            }
-            return value
-                .split(',')
-                .map(v => v.trim())
-                .filter(Boolean);
-        })
+        interests: Yup.array()
+            .of(Yup.string())
+            .transform(value => {
+                if (!value) return [];
+                if (typeof value === 'string') {
+                    return value
+                        .split(',')
+                        .map(v => v.trim())
+                        .filter(Boolean);
+                }
+                return value;
+            })
             .optional(),
 
-        certs: Yup.string().transform(value => {
-            if (!value || value.trim() === "") {
-                return undefined;
-            }
-            return value
-                .split(',')
-                .map(v => v.trim())
-                .filter(Boolean);
-        })
-            .optional(),
+        certs: Yup.array()
+            .of(Yup.string())
+            .transform(value => {
+                if (!value) return [];
+                if (typeof value === 'string') {
+                    return value
+                        .split(',')
+                        .map(v => v.trim())
+                        .filter(Boolean);
+                }
+                return value;
+            })
+            .optional()
+
     });
 
     const jobValidation = Yup.object({
@@ -298,28 +311,51 @@ const ResumeForm = () => {
         }
     }
 
+    const saveProgress = async () => {
+        try {
+            const safeStep3 = formData.step3 || {};
 
-    /*
-        TODO -------------------------------------------- 
+            const toArray = (val) => {
+                if (!val) return [];
+                if (Array.isArray(val)) return val;
+                if (typeof val === 'string') return val.split(',').map(s => s.trim()).filter(Boolean);
+                return [];
+            }
 
-        fix spacing between elements
-        look at other resume forms to get ideas
+            const payload = {
+                ...formData,
+                step3: {
+                    skills: toArray(safeStep3.skills),
+                    languages: toArray(safeStep3.languages),
+                    certs: toArray(safeStep3.certs),
+                    interests: toArray(safeStep3.interests),
+                }
+            };
 
-        fix fields - styling and layout
-        save progress functionality?
-        -----------------------------------------------
-    */
+            const response = await fetch('/api/form', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                },
+                body: JSON.stringify(payload),
+            });
 
+            const data = await response.json();
+            console.log("Saved progress:", data);
+            return data;
+        } catch (error) {
+            console.error("Error saving progress:", error);
+        }
+    }
 
-    // ---------------------------------Step Components---------------------------------
-    // Currently 7 steps, 7th is to view the resume
 
     return (
 
         <div className={styles["container"]}>
             <div className={styles["form-box"]}>
                 <h1>Let's Build Your Resume!</h1>
-                 <ProgressIndicator currentStep={currentStep} />
+                <ProgressIndicator currentStep={currentStep} />
                 <div className={styles["prog-btn"]}>
                     {currentStep > 1 ? (<Btn icon={<ChevronLeft />} onClick={prevStep} />) : (<span className={styles.placeholder}></span>)}
                     {currentStep < 6 && (<Btn icon={<ChevronRight />} onClick={nextStep} />)}
@@ -340,6 +376,10 @@ const ResumeForm = () => {
                                     body: JSON.stringify(formData),
                                 });
                                 const aiData = await aiResponse.json();
+
+                                console.log("AI response keys:", Object.keys(aiData));
+                                console.log("Length of resume_text:", aiData.resume_text?.length);
+
                                 if (aiData.resume_text) {
                                     setFormData(prev => ({
                                         ...prev,
@@ -369,12 +409,17 @@ const ResumeForm = () => {
                         {currentStep === 6 && <ProjectStep formData={formData.step6} onChange={handleInputChange} errors={errors} />}
                         {currentStep === 7 && <ResumeViewStep backendData={formData} />}
                     </div>
+
                     <div className={styles['back-btn']}>
-                        <Link to="/dev_dashboard">
+                        {currentStep === 7 ? (<span className={styles.placeholder}></span>) : (
                             <CTA
                                 label={"Save progress for later"}
+                                onClick={async () => {
+                                    await saveProgress();
+                                    window.location.href = "/dev_dashboard";
+                                }}
                             />
-                        </Link>
+                        )}
                     </div>
                 </div>
 
