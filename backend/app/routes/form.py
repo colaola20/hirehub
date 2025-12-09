@@ -23,8 +23,17 @@ def get_resume_form():
     # fetch existing form if it can
     resume_form = ResumeForm.query.filter_by(user_id=current_user_id).first()
 
+    def is_resume_form_empty(resume_form_dict):
+        for step in ["step1", "step2", "step3"]:
+            if step in resume_form_dict and any(resume_form_dict[step].values()):
+                return False
+        return True
+
     if resume_form:
-        return jsonify(resume_form.to_dict()), 200
+        saved = resume_form.to_dict()
+        if not is_resume_form_empty(saved):
+            return jsonify(saved), 200
+
 
     # getting skills from profile
     profile = Profile.query.filter_by(user_email=user.email).first()
@@ -52,7 +61,7 @@ def get_resume_form():
         "step3": {
             "skills": skills_list,
             "languages": [],
-            "certifications": [],
+            "certs": [],
             "interests": []
         },
         "step4": {
