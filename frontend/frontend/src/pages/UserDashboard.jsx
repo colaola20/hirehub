@@ -12,7 +12,7 @@ import SideBar  from "../components/sideBar.jsx";
 import ChatBot from "../components/ChatBot.jsx";
 import JobCard from "../components/JobCard.jsx";
 import AppliedJobs from "../components/AppliedJobs.jsx";
-import RecommendedJobCard from "../components/RecommendedJobCard.jsx";
+import RecommendationPending from "../components/UsersMessages/RecommendationPending.jsx";
 
 
 const UserDashboard = () => {
@@ -183,10 +183,10 @@ const UserDashboard = () => {
 
     const getData = await getRes.json();
 
-    if (getRes.ok && getData.recommendations) {
-      console.log("Recommended jobs:", getData.recommendations);
-
-      setRecommendedJobs(getData.recommendations);
+    if (getRes.ok && getData.recommendations && getData.recommendations.length > 0) {
+      setRecommendedJobs(getData.recommendations); // update state if there are jobs
+    } else {
+      setRecommendedJobs([]); 
     }
 
     // After a few seconds → silently update backend recommendations
@@ -267,9 +267,12 @@ const UserDashboard = () => {
                       </div>
                     ))
                   ) : (
-                    <p style={{ color: "white", textAlign: "center", marginTop: "20px" }}>
-                      No liked jobs yet.
-                    </p>
+
+                    <div className={styles.wrapper}>
+                      <h2 className={styles.title}>No liked jobs yet</h2>
+                      <p className={styles.subtitle}>Start exploring and liking jobs to see them here!</p>
+                    </div>
+
                   )
                 ) : showApplied ? (
                   <AppliedJobs />
@@ -294,7 +297,9 @@ const UserDashboard = () => {
                       );
                     })
                   ) : (
-                    <p style={{ color: "white", textAlign: "center" }}>No recommended jobs available.</p>
+
+                   <RecommendationPending />
+
                   )
                 ) : (
                   <Outlet context={{ onJobClick: handleJobClick, fetchJobs }} />

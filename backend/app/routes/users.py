@@ -149,7 +149,7 @@ def login_user():
         # Find user by Email
         users = DatabaseService.filter_by(User, email=data['email'])
         if not users:
-            return jsonify({'status': 'error', 'message': 'Invalid username'}), 401
+            return jsonify({'status': 'error', 'message': 'Invalid email'}), 401
 
         user = users[0]
 
