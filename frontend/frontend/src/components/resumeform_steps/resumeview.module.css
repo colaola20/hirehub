@@ -14,12 +14,23 @@
 
 .resume-preview * {
     color: black; 
-    font-family: inherit;
+    font-family: Georgia, 'Times New Roman', Times, serif;
 }
 
 .resume-preview a {
     color: #007bff;
     text-decoration: none;
+}
+
+.viewBtn{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.header{
+    text-align: center;
 }
 
 .headerName {
@@ -42,13 +53,14 @@
 }
 
 .sectionTitle {
-    font-size: 20px;
-    font-weight: bold;
-    margin-bottom: 8px;
-    margin-left: 40px;
-    padding-bottom: 2px;
-    text-align: left;
-    color: black; 
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #222;
+    border-left: 4px solid #007bff;
+    padding-left: 8px;
+    margin-bottom: 12px;
 }
 
 .projects,
@@ -66,11 +78,12 @@
     margin: 0 50px 10px 50px;
 }
 
-.projectHeader,
+
 .experienceCompany,
 .educationSchool {
     font-weight: bold;
 }
+
 
 .projectDescription,
 .experienceBullets,
@@ -80,9 +93,11 @@
 
 .projectHeader {
     display: flex;
-    justify-content: space-between; /* title left, link right */
+    flex-direction: row;
+    justify-content: space-between;
     align-items: center;
-    margin: 0 50px 5px 50px; /* spacing around the header */
+    margin: 0 50px 5px 50px;
+    font-weight: bold;
 }
 
 .projectTitle {
@@ -128,3 +143,4 @@
         font-size: 15px;
     }
 }
+
