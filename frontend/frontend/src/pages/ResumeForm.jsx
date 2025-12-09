@@ -113,6 +113,8 @@ const ResumeForm = () => {
             .then(data => {
                 if (!data) return;
 
+                console.log("DEBUG: Data fetched from backend:", data);
+
                 const step3 = data.step3 || {};
                 const formattedStep3 = {
                     skills: Array.isArray(step3.skills) ? step3.skills.join(', ') : step3.skills || '',
@@ -130,6 +132,8 @@ const ResumeForm = () => {
                     step6: { ...prev.step6, ...(data.step6 || {}) },
                     aiResumeText: prev.aiResumeText || data.aiResumeText || ''
                 }));
+
+                console.log("DEBUG: formData after setFormData call:", formData);
             })
             .catch(err => console.error('Error fetching form data:', err));
     }, []);
@@ -305,21 +309,44 @@ const ResumeForm = () => {
         }
     }
 
+    const saveProgress = async () => {
+        try {
+            const safeStep3 = formData.step3 || {};
 
-    /*
-        TODO -------------------------------------------- 
+            const toArray = (val) => {
+                if (!val) return [];
+                if (Array.isArray(val)) return val;
+                if (typeof val === 'string') return val.split(',').map(s => s.trim()).filter(Boolean);
+                return [];
+            }
 
-        fix spacing between elements
-        look at other resume forms to get ideas
+            const payload = {
+                ...formData,
+                step3: {
+                    skills: toArray(safeStep3.skills),
+                    languages: toArray(safeStep3.languages),
+                    certs: toArray(safeStep3.certs),
+                    interests: toArray(safeStep3.interests),
+                }
+            };
 
-        fix fields - styling and layout
-        save progress functionality?
-        -----------------------------------------------
-    */
+            const response = await fetch('/api/form', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                },
+                body: JSON.stringify(payload),
+            });
 
+            const data = await response.json();
+            console.log("Saved progress:", data);
+            return data;
+        } catch (error) {
+            console.error("Error saving progress:", error);
+        }
+    }
 
-    // ---------------------------------Step Components---------------------------------
-    // Currently 7 steps, 7th is to view the resume
 
     return (
 
@@ -382,11 +409,15 @@ const ResumeForm = () => {
                     </div>
 
                     <div className={styles['back-btn']}>
-                        {currentStep === 7 ? (<span className={styles.placeholder}></span>) : (<Link to="/dev_dashboard">
+                        {currentStep === 7 ? (<span className={styles.placeholder}></span>) : (
                             <CTA
                                 label={"Save progress for later"}
+                                onClick={async () => {
+                                    await saveProgress();
+                                    window.location.href = "/dev_dashboard";
+                                }}
                             />
-                        </Link>)}
+                        )}
                     </div>
                 </div>
 
