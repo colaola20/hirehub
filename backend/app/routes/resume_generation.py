@@ -238,39 +238,69 @@ def html_to_docx(html_content):
     for script in soup(["script", "style"]):
         script.decompose()
     
-    # Process elements more intelligently
-    processed_elements = set()
-    
-    for element in soup.find_all(['h1', 'h2', 'h3', 'p', 'ul', 'li', 'strong', 'a', 'span']):
-        if id(element) in processed_elements:
-            continue
-            
-        text = element.get_text(strip=True)
-        if not text:
-            continue
+    # Get all text and structure from the entire document
+    def process_element(element, doc):
+        """Recursively process elements and add to document"""
+        if isinstance(element, str):
+            text = element.strip()
+            if text and len(text) > 1:
+                doc.add_paragraph(text)
+            return
         
+        if not hasattr(element, 'name'):
+            return
+        
+        text = element.get_text(strip=True) if hasattr(element, 'get_text') else ''
+        
+        if not text or len(text) < 2:
+            # Still process children even if this element has no text
+            if element.name in ['div', 'span', 'section', 'article']:
+                for child in element.children:
+                    process_element(child, doc)
+            return
+        
+        # Handle headers
         if element.name == 'h1':
             p = doc.add_paragraph(text, style='Heading 1')
             p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-            processed_elements.add(id(element))
-            
         elif element.name == 'h2':
-            p = doc.add_paragraph(text, style='Heading 2')
-            processed_elements.add(id(element))
-            
+            doc.add_paragraph(text, style='Heading 2')
         elif element.name == 'h3':
-            p = doc.add_paragraph(text, style='Heading 3')
-            processed_elements.add(id(element))
-            
-        elif element.name in ['p', 'span']:
-            if text and len(text) > 2:
-                doc.add_paragraph(text)
-                processed_elements.add(id(element))
-                
+            doc.add_paragraph(text, style='Heading 3')
+        elif element.name == 'h4':
+            doc.add_paragraph(text, style='Heading 4')
+        
+        # Handle lists
+        elif element.name == 'ul' or element.name == 'ol':
+            for li in element.find_all('li', recursive=False):
+                li_text = li.get_text(strip=True)
+                if li_text:
+                    doc.add_paragraph(li_text, style='List Bullet')
+        
+        # Handle list items
         elif element.name == 'li':
-            if text:
-                doc.add_paragraph(text, style='List Bullet')
-                processed_elements.add(id(element))
+            doc.add_paragraph(text, style='List Bullet')
+        
+        # Handle paragraphs, divs, and other text containers
+        else:
+            doc.add_paragraph(text)
+    
+    # Process the entire document
+    for element in soup.find_all():
+        if element.name and element.name not in ['html', 'head', 'body', 'meta', 'link', 'title']:
+            # Only process elements that are direct children to avoid duplicates
+            if not element.find_parent(['h1', 'h2', 'h3', 'h4', 'p', 'div', 'li', 'ul', 'ol']):
+                process_element(element, doc)
+    
+    # If document is still empty, try to get all text
+    if len(doc.paragraphs) == 0:
+        all_text = soup.get_text(strip=True)
+        if all_text:
+            # Split by newlines and add as paragraphs
+            for line in all_text.split('\n'):
+                line = line.strip()
+                if line and len(line) > 1:
+                    doc.add_paragraph(line)
     
     return doc
 
