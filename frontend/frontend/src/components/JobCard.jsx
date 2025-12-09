@@ -69,8 +69,8 @@ const JobCard = ({ job, onClick, cardForLikedJobs = false, cardForRecommendedJob
           </div>
 
           {/* RIGHT SIDE */}
-          <div className={styles.rightSide} onClick={(e) => e.stopPropagation()}>
-            <JobAnalysisPanel job={job} skipAnalysis={true} />
+          <div className={styles.rightSide} onClick={() => onClick && onClick(job)}>
+            <JobAnalysisPanel job={job} onClick={onClick} />
           </div>
         </div>
       </div>
@@ -155,12 +155,12 @@ const JobCard = ({ job, onClick, cardForLikedJobs = false, cardForRecommendedJob
 
       </>
                   {/* RIGHT SIDE */}
-          <div className={styles.rightSide} onClick={(e) => e.stopPropagation()}>
+          <div className={styles.rightSide} onClick={() => onClick && onClick(job)}>
            <JobAnalysisPanel 
                 job={job} 
-                recommendedCard={true}
                 percentValue={recommendation?.match_score}
                 recommendation={recommendation}
+                onClick={onClick}
               />
           </div>
 
@@ -248,12 +248,13 @@ const JobCard = ({ job, onClick, cardForLikedJobs = false, cardForRecommendedJob
         
 
           {/* RIGHT SIDE */}
-          <div className={styles.rightSide} onClick={(e) => e.stopPropagation()}>
+          <div className={styles.rightSide} onClick={() => onClick && onClick(job)}>
            <JobAnalysisPanel 
                 job={job} 
                 recommendedCard={true}
                 percentValue={recommendation?.match_score}
                 recommendation={recommendation}
+                onClick={onClick}
               />
           </div>
 

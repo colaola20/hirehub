@@ -7,11 +7,11 @@ const analysisCache = new Map();
 const CACHE_DURATION = 30 * 60 * 1000; // 30 minutes
 const inFlightRequests = new Map();
 
-const JobAnalysisPanel = ({ job , recommendedCard = false, percentValue = null, recommendation = null }) => {
+const JobAnalysisPanel = ({ job , recommendedCard = false, percentValue = null, recommendation = null, onClick  }) => {
   
 // If this panel is for a recommended job, skip API analysis completely
 if (recommendedCard && percentValue !== null) {
-  const pct = percentValue % 1 === 0 ? percentValue : Number(percentValue.toFixed(2));
+  const pct = Math.round(percentValue);
 
   return (
     <div className={styles.wrapper}>
@@ -39,8 +39,6 @@ if (recommendedCard && percentValue !== null) {
     </div>
   );
 }
-
-//  analysisCache.clear(); // temp fix while styling
 
   const [analysis, setAnalysis] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -86,26 +84,6 @@ const setCachedAnalysis = (jobId, data) => {
 
 
   useEffect(() => {
-
-  //     if (skipAnalysis) {
-  //   // Provide mock data for styling
-  //   const mock = {
-  //     percentage_match: 72,
-  //     job_skills: [
-  //   "JavaScript", "TypeScript", "Python", "Java", "C#", "C++", "Rust", "Go",
-  //   "Kotlin", "Swift", "Ruby", "PHP", "Node.js", "Express", "Next.js",
-
-  // ],
-  //     matched_skills: [
-  //   "JavaScript", "TypeScript", "Python", "Java", "C#", "C++", "Rust", "Go",
-  //   "NLP", "Computer Vision", "Pandas", "NumPy", "TensorFlow", "PyTorch",
-  // ],
-  //   };
-
-  //   setAnalysis(mock);
-  //   setLoading(false);
-  //   return;
-  // }
 
     if (!job?.id || !isVisible) return; // Wait until visible
 
@@ -185,14 +163,14 @@ if (analysis?.error)
   return <div className={styles.error}>{analysis.error}</div>;
 
 if (analysis.percentage_match === 0 ){
-  return <div className={styles.noMatch}>No match data available.</div>;
+  return <div className={styles.noMatch} onClick={onClick}>We couldn’t find enough skill data to generate a match score.</div>;
 }
 
-  const rawPct = Number(analysis.percentage_match || 0); 
-  const formattedPct = rawPct % 1 === 0 ? rawPct : Number(rawPct.toFixed(2));
+  const rawPct = Number(analysis.percentage_match || 0);
+  const formattedPct = Math.round(rawPct);
 
   return (
-    <div ref={containerRef} className={styles.wrapper}>
+    <div ref={containerRef} className={styles.wrapper} onClick={onClick}>
       <div className={styles.pctRow}>
 
         {/* Circle */}

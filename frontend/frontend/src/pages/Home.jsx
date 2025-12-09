@@ -436,7 +436,7 @@ const AngleLanding = () => {
               </p>
               <div className={styles.memberSocials}>
                 <a href="https://github.com/kazmha" aria-label="Hashim GitHub">GitHub</a>
-                {/* <a href="" aria-label="Hashim LinkedIn">LinkedIn</a> */}
+                <a href="https://www.linkedin.com/in/hashim-kazmi-abb7032b3/" aria-label="Hashim LinkedIn">LinkedIn</a>
               </div>
             </article>
 

@@ -9,7 +9,7 @@
   background: rgba(20, 15, 40, 0.75);
   border: 1px solid rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(10px);
-  /* -webkit-backdrop-filter: saturate(120%) blur(10px); */
+  -webkit-backdrop-filter: saturate(120%) blur(10px);
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 10px 28px rgba(0,0,0,0.18);
 
   color: #f6f7fb;
@@ -19,7 +19,8 @@
   padding: 20px 15px;
 
   /* soften the edge that meets the page */
-  border-radius: 0 14px 0 0;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
   box-sizing: border-box;
 
   /* ensure smooth open/close on all widths */
