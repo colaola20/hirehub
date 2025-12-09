@@ -137,7 +137,10 @@ const ResumeForm = () => {
     useEffect(() => {
         if (contentRef.current) {
             if (currentStep === 7) {
-                setContainerHeight("1250px");
+                // Calculate dynamic height for resume preview + buttons
+                const resumeHeight = contentRef.current.scrollHeight;
+                const buttonsHeight = 120; // Approximate height for buttons + padding
+                setContainerHeight(resumeHeight + buttonsHeight + "px");
                 return;
             }
 
@@ -151,7 +154,6 @@ const ResumeForm = () => {
         formData.step6?.projects?.length,
         errors
     ])
-
 
 
 

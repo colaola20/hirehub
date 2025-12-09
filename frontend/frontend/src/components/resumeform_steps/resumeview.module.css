@@ -1,130 +1,378 @@
+.resumeScaler {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    width: 100%;
+    margin: 30px 0;
+    overflow-x: auto;
+    padding: 20px 0;
+}
+
 .resume-preview {
     width: 816px;
-    height: 1056px;
+    min-height: 1056px;
     background: white;
-    border: 1px solid #eee;
-    border-radius: 4px;
-    padding: 16px;
-    margin-bottom: 20px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 40px;
+    margin: 0 auto;
     color: black;
-    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     text-align: left;
     overflow: visible;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    flex-shrink: 0;
 }
 
 .resume-preview * {
-    color: black; 
+    color: black;
     font-family: inherit;
 }
 
 .resume-preview a {
-    color: #007bff;
+    color: #0066cc;
     text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.resume-preview a:hover {
+    color: #0052a3;
+    text-decoration: underline;
 }
 
 .headerName {
-    font-size: 40px;
-    font-weight: bold ;
-    margin-bottom: 8px;
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    text-align: center;
+    letter-spacing: -0.5px;
 }
 
 .divider {
-    background-color: black;
+    background-color: #0066cc;
     border: none;
     height: 2px;
+    margin: 16px 0;
+    width: 100%;
 }
 
 .dividerSmall {
-    background-color: black;
+    background-color: #0066cc;
     border: none;
-    height: 2px;
-    width: 95%;
+    height: 1px;
+    width: 100%;
+    margin: 12px 0;
 }
 
 .sectionTitle {
-    font-size: 20px;
-    font-weight: bold;
-    margin-bottom: 8px;
-    margin-left: 40px;
-    padding-bottom: 2px;
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    margin-top: 20px;
+    padding-bottom: 8px;
     text-align: left;
-    color: black; 
+    color: black;
+    border-bottom: 2px solid #0066cc;
 }
 
 .projects,
 .experience,
 .education,
 .misc {
-    margin-bottom: 35px;
-    font-size: 18px;
-    /* background: rgba(255, 0, 0, 0.05);  */
+    margin-bottom: 24px;
+    font-size: 14px;
 }
 
 .projectEntry,
 .experienceEntry,
 .educationEntry {
-    margin: 0 50px 10px 50px;
+    margin: 0 0 16px 0;
+    line-height: 1.6;
 }
 
 .projectHeader,
 .experienceCompany,
 .educationSchool {
-    font-weight: bold;
+    font-weight: 700;
+    font-size: 15px;
+    margin-bottom: 4px;
 }
 
 .projectDescription,
 .experienceBullets,
 .educationDegree {
-    margin-top: 4px;
+    margin-top: 6px;
+    font-size: 13px;
+    line-height: 1.5;
+    color: #333;
 }
 
 .projectHeader {
     display: flex;
-    justify-content: space-between; /* title left, link right */
-    align-items: center;
-    margin: 0 50px 5px 50px; /* spacing around the header */
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+    gap: 12px;
 }
 
 .projectTitle {
-    font-weight: bold;
-    font-size: 18px;
+    font-weight: 700;
+    font-size: 15px;
 }
 
 .projectLink a {
-    font-size: 0.9em;
-    color: #007bff !important; /* blue link */
-    text-decoration: none !important;
+    font-size: 12px;
+    color: #0066cc;
+    text-decoration: none;
     white-space: nowrap;
+    flex-shrink: 0;
 }
 
-/* responsive scaling */
+.projectLink a:hover {
+    text-decoration: underline;
+}
+
+/* Skills and Languages Tags */
+.skillsContainer,
+.languagesContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.skill,
+.language {
+    background: #e8f0ff;
+    color: #0066cc;
+    padding: 4px 12px;
+    border-radius: 16px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+/* View Buttons Styling */
+.viewBtn {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 30px 20px;
+    flex-wrap: nowrap;
+    margin-top: 20px;
+    flex-direction: row;
+}
+
+.viewBtn button {
+    padding: 12px 28px;
+    border-radius: 8px;
+    border: 1px solid rgba(79, 39, 245, 0.5);
+    background: rgba(79, 39, 245, 0.2);
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 14px;
+    white-space: nowrap;
+    flex: 1;
+    max-width: 220px;
+}
+
+.viewBtn button:hover:not(:disabled) {
+    background: rgba(79, 39, 245, 0.4);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: translateY(-2px);
+}
+
+.viewBtn button:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.viewBtn button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.successMsg {
+    color: #4ade80;
+    padding: 12px 20px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 500;
+    width: 100%;
+}
+
 @media (max-width: 900px) {
-    .resume-preview {
-        transform: scale(0.85);
-        transform-origin: top left;
+    .viewBtn {
+        gap: 12px;
+        padding: 20px 10px;
+    }
+
+    .viewBtn button {
+        padding: 10px 20px;
+        font-size: 13px;
+        max-width: 200px;
+        flex: 1;
+    }
+}
+
+@media (max-width: 768px) {
+    .viewBtn {
+        gap: 10px;
+        padding: 20px 10px;
+        flex-wrap: wrap;
+    }
+
+    .viewBtn button {
+        padding: 10px 18px;
+        font-size: 13px;
+        max-width: none;
+        flex: 1 1 auto;
+        min-width: 140px;
     }
 }
 
 @media (max-width: 600px) {
+    .viewBtn {
+        flex-direction: column;
+        gap: 10px;
+        padding: 15px 10px;
+    }
+
+    .viewBtn button {
+        width: 100%;
+        padding: 12px 16px;
+        font-size: 12px;
+        flex: none;
+    }
+}
+
+/* Contact Info */
+.contactInfo {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+    font-size: 12px;
+}
+
+.contactInfo span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* Bullet Points */
+ul {
+    margin: 8px 0 8px 20px;
+    padding: 0;
+}
+
+li {
+    margin-bottom: 6px;
+    line-height: 1.5;
+    font-size: 13px;
+}
+
+/* Responsive scaling */
+@media (max-width: 1024px) {
+    .resumeScaler {
+        padding: 10px;
+    }
+
     .resume-preview {
-        transform: scale(0.65);
-        transform-origin: top left;
+        width: 95%;
+        padding: 30px;
+        min-height: auto;
     }
 
     .headerName {
-        font-size: 26px;
-        text-align: center;
+        font-size: 28px;
     }
 
     .sectionTitle {
         font-size: 16px;
-        margin-left: 10px;
+    }
+}
+
+@media (max-width: 768px) {
+    .resumeScaler {
+        padding: 10px;
     }
 
-    .projects,
-    .experience,
-    .education,
-    .misc {
+    .resume-preview {
+        width: 100%;
+        padding: 24px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    }
+
+    .headerName {
+        font-size: 24px;
+    }
+
+    .sectionTitle {
         font-size: 15px;
+        margin-top: 16px;
+    }
+
+    .projectEntry,
+    .experienceEntry,
+    .educationEntry {
+        margin-bottom: 12px;
+    }
+
+    .projectHeader,
+    .experienceCompany,
+    .educationSchool {
+        font-size: 14px;
+    }
+
+    .projectDescription,
+    .experienceBullets,
+    .educationDegree {
+        font-size: 12px;
+    }
+
+    .contactInfo {
+        gap: 12px;
+        font-size: 11px;
+    }
+
+    li {
+        font-size: 12px;
+        margin-bottom: 4px;
+    }
+}
+
+@media (max-width: 480px) {
+    .resume-preview {
+        padding: 16px;
+    }
+
+    .headerName {
+        font-size: 20px;
+    }
+
+    .sectionTitle {
+        font-size: 14px;
+    }
+
+    .projectHeader,
+    .experienceCompany,
+    .educationSchool {
+        font-size: 13px;
+    }
+
+    .projectDescription,
+    .experienceBullets,
+    .educationDegree {
+        font-size: 11px;
+    }
+
+    .projectHeader {
+        flex-direction: column;
+        align-items: flex-start;
     }
 }
