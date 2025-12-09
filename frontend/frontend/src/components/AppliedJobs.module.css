@@ -118,6 +118,7 @@
   cursor: pointer;
   transition: color 0.2s ease, transform 0.2s ease;
   user-select: none;
+  -webkit-user-select: none;
 }
 
 .sortable:hover {
