@@ -51,52 +51,19 @@
 
 /* Keep links blue */
 .resume-preview a {
-    color: #0066cc !important;
-    background-color: white !important;
-    text-decoration: none !important;
+    color: #007bff;
+    text-decoration: none;
 }
 
-.resume-preview a:hover {
-    text-decoration: underline !important;
-}
-
-.resumeScaler {
+.viewBtn{
     display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    width: 100%;
-    margin: 30px 0;
-    overflow-x: auto;
-    padding: 20px 0;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
 }
 
-/* Responsive scaling */
-@media (max-width: 1024px) {
-    .resumeScaler {
-        padding: 10px;
-    }
-
-    .resume-preview {
-        width: 95%;
-        min-height: auto;
-    }
-}
-
-@media (max-width: 768px) {
-    .resumeScaler {
-        padding: 10px;
-    }
-
-    .resume-preview {
-        width: 100%;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
-    }
-}
-
-@media (max-width: 480px) {
-    .resume-preview {
-        padding: 16px;
-    }
+.header{
+    text-align: center;
 }
 
 .headerName {
@@ -149,13 +116,14 @@
     line-height: 1.6;
 }
 
-.projectHeader,
+
 .experienceCompany,
 .educationSchool {
     font-weight: 700;
     font-size: 15px;
     margin-bottom: 4px;
 }
+
 
 .projectDescription,
 .experienceBullets,
@@ -168,6 +136,11 @@
 
 .projectHeader {
     display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0 50px 5px 50px;
+    font-weight: bold;
     justify-content: space-between;
     align-items: flex-start;
     margin-bottom: 8px;
