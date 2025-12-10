@@ -1,11 +1,7 @@
-
-
 /* -------- Reset for full-bleed BG -------- */
-:global(html, body, #root) {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  overflow-x: hidden;
+:global(#root), :global(body), :global(html) {
+  width: 100% !important;
+  max-width: 100% !important;
 }
 
 .container {
@@ -84,29 +80,6 @@
     font-weight: 500;
 }
 
-.resume-form-container {
-    width: 100%;
-    max-width: 1200px;
-    transition: height 0.35s ease;
-    margin: 0; 
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 15px;
-    padding: 30px;
-    min-height: 400px;
-    width: 90%;
-    max-width: 1200px;
-    border-radius: 20px;
-    padding: 30px;
-    gap: 10ps;
-    color: white;
-    text-align: center;
-    box-sizing: border-box;
-    overflow: visible;
-}
-
-
 .prog-btn {
     display: flex;
     flex-direction: row;
@@ -114,14 +87,130 @@
     align-items: center;
     width: 100%;
     max-width: 1100px;
+    z-index: 10;
+    position: relative;
+    margin-bottom: 20px;
 }
 
+.placeholder {
+    width: 48px;
+    height: 48px;
+}
+
+.resume-form-container {
+    width: 90%;
+    max-width: 1200px;
+    transition: height 0.35s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    padding: 30px;
+    padding-bottom: 150px;
+    min-height: 400px;
+    border-radius: 20px;
+    color: white;
+    text-align: center;
+    box-sizing: border-box;
+    overflow: visible;
+    position: relative;
+    z-index: 1;
+}
 
 .progress-indicator {
     font-weight: 400;
     font-size: 1rem;
 }
 
+.back-btn {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding-top: 20px;
+    position: relative;
+    z-index: 5;
+}
+
+/* --------- MODAL STYLES --------- */
+
+.resumeFormModalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.80);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1001;
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+}
+
+.resumeFormModal {
+    background: rgba(56, 40, 87, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    padding: 20px;
+    border-radius: 10px;
+    width: 700px;
+    height: 350px;
+    max-width: 90%;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+    animation: fadeIn 0.3s ease forwards;
+    color: #fff;
+    z-index: 1002;
+}
+
+.resumeFormModal p {
+    margin-bottom: 24px;
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.buttonContainer {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    gap: 20px;
+    justify-content: space-around;
+    margin-top: 20px;
+    padding: 30px;
+}
+
+.buttonContainer button {
+    flex: 1;
+    padding: 12px 18px;
+    font-size: 15px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.buttonContainer button:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.45);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
 
 /* Extra small devices */
 @media (max-width: 360px) {
@@ -130,5 +219,86 @@
     }
     .resume-form-container {
         padding: 10px;
+    }
+    .resumeFormModal {
+        width: 95%;
+        height: auto;
+        padding: 15px;
+    }
+    .buttonContainer {
+        flex-direction: column;
+        padding: 15px;
+    }
+}
+
+/* View Buttons Styling */
+.viewBtn {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 30px 20px;
+    flex-wrap: nowrap;
+    margin-top: 20px;
+}
+
+.viewBtn button {
+    padding: 12px 28px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: rgba(79, 39, 245, 0.2);
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 14px;
+    white-space: nowrap;
+    flex: 1;
+    max-width: 200px;
+}
+
+.viewBtn button:hover {
+    background: rgba(79, 39, 245, 0.4);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: translateY(-2px);
+}
+
+.viewBtn button:active {
+    transform: translateY(0);
+}
+
+.successMsg {
+    color: #4ade80;
+    padding: 12px 20px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+@media (max-width: 768px) {
+    .viewBtn {
+        gap: 12px;
+        padding: 20px 10px;
+    }
+
+    .viewBtn button {
+        padding: 10px 20px;
+        font-size: 13px;
+        max-width: 180px;
+    }
+}
+
+@media (max-width: 600px) {
+    .viewBtn {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .viewBtn button {
+        flex: 1;
+        min-width: 140px;
+        padding: 10px 16px;
+        font-size: 12px;
     }
 }

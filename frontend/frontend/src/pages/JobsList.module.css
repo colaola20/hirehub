@@ -17,6 +17,8 @@
     padding: 8px;
     display: flex;
     flex-direction: column;
+    height: calc(100vh - calc(var(--nav-h) + 16px));
+
 }
 
 
@@ -162,7 +164,8 @@
 
 .cardList {
  
-    height: 100vh;
+    
+    height: calc(100vh - calc(var(--nav-h) + 16px));/* Changed from fixed 1100px */
     width: 100%;
     /* Spacing between cards */
     gap: var(--gap);
