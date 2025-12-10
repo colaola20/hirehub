@@ -136,7 +136,7 @@ const handleBackClick = () => {
     
     setTimeout(() => {
     navigate("/UserDashboard");
-    }, 500); 
+    }, ); 
 };
 
   return (
