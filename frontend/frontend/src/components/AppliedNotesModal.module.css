@@ -10,6 +10,27 @@
   align-items: center;
   backdrop-filter: blur(8px);
   z-index: 999;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .modal {
@@ -29,13 +50,20 @@
   right: 12px;
   background: transparent;
   border: none;
+  padding: 8px;
   color: #ccc;
   cursor: pointer;
-  transition: color 0.2s;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .closeBtn:hover {
+  background: rgba(255, 102, 102, 0.15);
+  border-color: rgba(255, 102, 102, 0.3);
   color: #ff6666;
+  transform: rotate(90deg);
 }
 
 .title {
@@ -43,6 +71,7 @@
   margin-bottom: 10px;
   font-size: 1.3rem;
   font-weight: 600;
+  margin: 16px 0 8px 0;
 }
 
 .status {

@@ -130,6 +130,49 @@ body, .container {
   
 }
 
+
+
+/* RecommendationPending.module.css */
+
+.wrapper {
+  margin-top: 20%;
+  text-align: center;
+  padding: 50px 20px;
+  animation: fadeIn 0.8s ease-out forwards;
+  opacity: 0;
+}
+
+.title {
+  font-size: 32px;
+  margin-bottom: 10px;
+  background: linear-gradient(90deg, #ffffff, #91aef1, #5178d4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientShift 3s linear infinite;
+}
+
+.subtitle {
+  font-size: 17px;
+  opacity: 0.9;
+  margin-bottom: 8px;
+}
+
+
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0%; }
+  100% { background-position: 200%; }
+}
+
+
+
+
+
 @media (max-width: 900px) {
   .dashboard-wrapper {
     grid-template-columns: 1fr;
@@ -140,3 +183,7 @@ body, .container {
     grid-column: 1 / 2; /* take full width */
   }
 }
+
+
+
+

@@ -8,12 +8,17 @@ import githubLogo from "../../public/assets/github.png";
 import linkedinLogo from "../../public/assets/linkedin.png";
 import googleLogo from "../../public/assets/google.png";
 import placeholderImg from "../../public/assets/login_reg_Place_holder1.png";
+import ErrorMessage from "../components/UsersMessages/Error.jsx";
+
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const [error, setErrorMessage] = useState(false);
+  const [errorTitle, setErrorTitle] = useState("");
+  const [errorDescription, setErrorDescription] = useState("");
 
   useEffect(() => {
     const token = searchParams.get("token");
@@ -21,13 +26,13 @@ const Login = () => {
     const error = searchParams.get("error");
 
     if (error) {
-      alert(`OAuth login failed: ${error}`);
+      handleErrorMessage("OAuth Login Failed", error);
       return;
     }
 
     if (token && username) {
       localStorage.setItem("token", token);
-      console.log("OAuth login successful, redirecting to:", `/${username}`);
+
       navigate(`/${username}`);
     }
   }, [searchParams, navigate]);
@@ -48,11 +53,8 @@ const Login = () => {
         localStorage.setItem("token", data.access_token);
 
         try {
-          const decoded = jwt_decode(data.access_token);
-          console.log("Decoded JWT:", decoded);
-
+          
           const username = data.data?.username;
-          console.log(username)
           if (username) {
             navigate(`/${username}`);
           } else {
@@ -63,15 +65,25 @@ const Login = () => {
           navigate("/");
         }
 
-        console.log("Login successful:", data);
       } else {
-        alert(data.message || "Login failed");
+        handleErrorMessage("Login Failed", data.message || "Login failed. Please try again.");
+        
       }
     } catch (error) {
       console.error("Backend not available:", error);
       navigate("/home"); // fallback while backend isn’t ready
     }
   };
+
+const handleErrorMessage = (title, description) => {
+    setErrorTitle(title);
+    setErrorDescription(description);
+    setErrorMessage(true);
+  }
+
+const handleCloseError = () => {
+    setErrorMessage(false);
+  }
 
   return (
   <div className={styles.container}>
@@ -170,7 +182,19 @@ const Login = () => {
         </div>
       </div>
     </div>
+
+    <>
+      {error && (
+      <ErrorMessage
+          title={errorTitle}
+          description={errorDescription}
+          handleClose={handleCloseError}
+        />
+      )}
+    </>
+
   </div>
+
 );
 };
 

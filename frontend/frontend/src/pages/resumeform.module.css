@@ -1,9 +1,7 @@
 /* -------- Reset for full-bleed BG -------- */
-:global(html, body, #root) {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  overflow-x: hidden;
+:global(#root), :global(body), :global(html) {
+  width: 100% !important;
+  max-width: 100% !important;
 }
 
 .container {
