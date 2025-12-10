@@ -10,7 +10,8 @@
     display: flex;
     flex-direction: column;
     width: 100%;
-    height: calc(100vh - calc(var(--nav-h) + 16px));
+    /* height: calc(100vh - calc(var(--nav-h) + 16px)); */
+    height: 100%;
     gap: 1rem;
     box-sizing: border-box;
     align-items: center;
