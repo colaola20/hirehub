@@ -459,9 +459,10 @@ def unified_notification_worker(app):
     def _worker():
 
         with app.app_context():
-
+                 
             DatabaseService, User, Job, Notification, RecommendedJob, mail, db, Message = _load_dependencies()
             current_app.logger.info("🔥 Notification Worker Running")
+            print("🔥 Notification Worker Running")
 
             CHECK_INTERVAL_SECONDS = 10
             INACTIVITY_LIMIT = timedelta(hours=72)
@@ -486,55 +487,66 @@ def unified_notification_worker(app):
                     now = datetime.now(timezone.utc)
                     users = DatabaseService.get_all(User)
 
+
                     for u in users:
-                        # print("\n----------------------------")
-                        # print(f"USER: {u.email}")
-                        # print(f"GENERAL ENABLED: {u.general_notifications_enabled}")
-                        # print(f"GENERAL FREQ: {u.general_notifications_frequency}")
-                        # print(f"JOB ALERTS ENABLED: {u.job_alerts_enabled}")
-                        # print(f"JOB ALERTS FREQ: {u.job_alerts_frequency}")
-                        # print(f"SKILLS: {u.skills}")
-                        # print("----------------------------")
+                        try:
+                            # print("\n----------------------------")
+                            # print(f"USER: {u.email}")
+                          #  print(f"GENERAL ENABLED: {u.general_notifications_enabled}")
+                          #  print(f"GENERAL FREQ: {u.general_notifications_frequency}")
+                           # print(f"JOB ALERTS ENABLED: {u.job_alerts_enabled}")
+                           # print(f"JOB ALERTS FREQ: {u.job_alerts_frequency}")
+                            # print(f"SKILLS: {u.skills}")
+                            # print("----------------------------")
 
-                        # ======================================================
-                        # 1) GENERAL NOTIFICATIONS
-                        # ======================================================
-                        if u.general_notifications_enabled:
+                            # ======================================================
+                            # 1) GENERAL NOTIFICATIONS
+                            # ======================================================
+                            if u.general_notifications_enabled:
+                                #print("Processing General Notifications for user:", u.email)
 
-                            freq = (u.general_notifications_frequency or "immediately").lower()
-                            delta = freq_map.get(freq, timedelta(seconds=0))
-                            last = to_aware(u.last_general_notification_sent)
+                                freq = (u.general_notifications_frequency or "immediately").lower()
+                                delta = freq_map.get(freq, timedelta(seconds=0))
+                                last = to_aware(u.last_general_notification_sent)
 
-                            if not last or (now - last) >= delta:
-                                # CREATE IN-APP NOTIFICATION (always works)
-                                try:
-                                    push_in_app(
-                                        Notification, DatabaseService, u.email,
-                                        "General Notification",
-                                        build_inapp_general_notification()
-                                    )
-                                    print("✔ CREATED IN-APP NOTIFICATION")
-                                except Exception as e:
-                                    current_app.logger.exception("Failed to create in-app notification: %s", e)
-                                
-                                # TRY TO SEND EMAIL (may fail, but won't stop in-app notifications)
-                                try:
-                                    user_name = u.full_name if hasattr(u, "full_name") and u.full_name else u.email.split("@")[0]
-                                    html = generate_general_notification_email(user_name)
+                                if not last or (now - last) >= delta:
+                                   # print("if not last Stament")
+                                    # CREATE IN-APP NOTIFICATION (always works)
+                                    try:
+                                        push_in_app(
+                                            Notification, DatabaseService, u.email,
+                                            "General Notification",
+                                            build_inapp_general_notification()
+                                        )
+                                       # print("✔ CREATED IN-APP NOTIFICATION")
+                                    except Exception as e:
+                                        current_app.logger.exception("Failed to create in-app notification: %s", e)
+                                    
+                                    # TRY TO SEND EMAIL (may fail, but won't stop in-app notifications)
+                                    try:
+                                        user_name = u.full_name if hasattr(u, "full_name") and u.full_name else u.email.split("@")[0]
+                                        html = generate_general_notification_email(user_name)
 
-                                    mail.send(Message(
-                                        "Your HireHub Update 🔔",
-                                        recipients=[u.email],
-                                        html=html
-                                    ))
-                                    print("✔ SENT STYLED GENERAL EMAIL")
-                                except Exception as e:
-                                    current_app.logger.warning("General email failed: %s", e)
+                                        with mail.connect() as conn:
+                                            msg = Message(
+                                                "Your HireHub Update 🔔",
+                                                recipients=[u.email],
+                                                html=html
+                                            )
+                                            conn.send(msg)
+                                       # print("✔ SENT STYLED GENERAL EMAIL")
+                                    except Exception as e:
+                                        print("❌ EMAIL FAILED:", e)
+                                        current_app.logger.warning("General email failed: %s", e)
 
 
-                                u.last_general_notification_sent = now
-                                db.session.commit()
+                                    u.last_general_notification_sent = now
+                                    db.session.commit()
+                        except Exception as e:
+                            print("❌ ERROR PROCESSING USER:", u.email, e)
+                            current_app.logger.exception("Unified Worker ERROR for user %s: %s", u.email, e)
                         
+
                         # ======================================================
                         # 2) JOB ALERTS (using RecommendedJob table)
                         # ======================================================
@@ -553,8 +565,13 @@ def unified_notification_worker(app):
                                 ).all()
 
                                 matched_jobs = []
+                                
 
                                 for r in recs:
+
+                                    #Check if they are not null
+                                    print( r.job , r.job.is_active)
+
                                     # Skip expired recommendations
                                     exp = to_aware(r.expires_at)
                                     if exp and exp < now:

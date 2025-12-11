@@ -33,12 +33,13 @@ class Config:
     AWS_S3_BUCKET = os.getenv("AWS_S3_BUCKET", "hirehub-storage")
     AWS_REGION = os.getenv("AWS_REGION", "us-east-2")
 
-    MAIL_SERVER = 'smtp.gmail.com'
-    MAIL_PORT = 587
-    MAIL_USE_TLS = True
-    MAIL_USERNAME = 'h1r3hub@gmail.com'
-    MAIL_PASSWORD = 'jlep ysje dcvf kmuz'
-    MAIL_DEFAULT_SENDER = ('HireHub', 'h1r3hub@gmail.com')
+    # Gmail SMTP
+    MAIL_SERVER = os.getenv("MAIL_SERVER", "smtp.gmail.com")
+    MAIL_PORT = int(os.getenv("MAIL_PORT", 587))
+    MAIL_USE_TLS = os.getenv("MAIL_USE_TLS", "True").lower() in ["true", "1", "yes"]
+    MAIL_USERNAME = os.getenv("MAIL_USERNAME")
+    MAIL_PASSWORD = os.getenv("MAIL_PASSWORD")
+    MAIL_DEFAULT_SENDER = (os.getenv("MAIL_SENDER_NAME", "HireHub"), MAIL_USERNAME)
 
 
 class DevelopmentConfig(Config):
