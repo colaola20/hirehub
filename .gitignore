@@ -49,3 +49,5 @@ docker-compose.override.yml
 
 # Nginx logs
 nginx/logs/
+
+node_modules/

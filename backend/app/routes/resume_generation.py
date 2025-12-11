@@ -398,55 +398,71 @@ def generate_docx():
 def save_resume_to_storage():
     """Save resume HTML directly to AWS S3"""
     try:
-        print("=== Starting save-resume-to-storage ===")
-        print(f"AWS_ACCESS_KEY set: {bool(AWS_ACCESS_KEY)}")
-        print(f"AWS_SECRET_KEY set: {bool(AWS_SECRET_KEY)}")
-        print(f"AWS_S3_BUCKET: {AWS_S3_BUCKET}")
-        
         if not all([AWS_ACCESS_KEY, AWS_SECRET_KEY, AWS_S3_BUCKET]):
             error_msg = "AWS configuration not set"
             print(f"Error: {error_msg}")
             return jsonify({"error": error_msg}), 500
         
-        data = request.get_json()
-        print(f"Request data keys: {data.keys() if data else 'None'}")
+        # data = request.get_json()
+        file = request.files.get("file")
+        # user_id = request.form.get("user_id")
+        filename = request.form.get("filename", "resume.docx")
+
+        if file is None:
+            return jsonify({"error": "No file uploaded"}), 400
+
+
+        # print(f"Request data keys: {data.keys() if data else 'None'}")
         
-        html_content = data.get('html', '')
-        user_id = data.get('user_id')
-        filename = data.get('filename', 'resume')
+        # html_content = data.get('html', '')
+        # user_id = data.get('user_id')
+        # filename = data.get('filename', 'resume.docx')
         
-        print(f"HTML content length: {len(html_content)}")
-        print(f"User ID: {user_id}")
-        print(f"Filename: {filename}")
+        # print(f"HTML content length: {len(html_content)}")
+        # print(f"User ID: {user_id}")
+        # print(f"Filename: {filename}")
         
-        if not html_content:
-            error_msg = "No HTML content provided"
-            print(f"Error: {error_msg}")
-            return jsonify({"error": error_msg}), 400
+        # if not html_content:
+        #     error_msg = "No HTML content provided"
+        #     print(f"Error: {error_msg}")
+        #     return jsonify({"error": error_msg}), 400
         
-        if not user_id:
+        # Get current user
+        current_user_id = get_jwt_identity()
+        from app.models.user import User
+        user = User.query.get(current_user_id)
+
+        if not user:
             error_msg = "User ID is required"
             print(f"Error: {error_msg}")
             return jsonify({"error": error_msg}), 400
         
-        # Remove .docx extension if present and add .html
-        if filename.endswith('.docx'):
-            filename = filename.replace('.docx', '.html')
-        elif not filename.endswith('.html'):
-            filename = filename + '.html'
+        # print("Converting HTML to DOCX...")
+        # doc = html_to_docx(html_content)
         
-        print("Uploading HTML resume to S3...")
+        # docx_io = BytesIO()
+        # doc.save(docx_io)
+        # docx_io.seek(0)
+        # print(f"DOCX file size: {len(docx_io.getvalue())} bytes")
+
+        # Get filename from the uploaded file
+        filename = file.filename or "resume.doc"
+
+
+        doc_bytes = file.read()
+        print(f"DOCX file size: {len(doc_bytes)} bytes")
         
         timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-        s3_key = f"resumes/{user_id}/{timestamp}_{filename}"
+        s3_key = f"resumes/{user}/{timestamp}_{filename}"
         print(f"S3 Key: {s3_key}")
         
         # Upload HTML directly to S3
         s3_client.put_object(
             Bucket=AWS_S3_BUCKET,
             Key=s3_key,
-            Body=html_content.encode('utf-8'),
-            ContentType='text/html'
+            Body = doc_bytes,
+            # Body=docx_io.getvalue(),
+            ContentType='application/vnd.openxmlformats-officedocument.wordprocessingml.document'
         )
         print("Successfully uploaded HTML to S3")
         
@@ -455,17 +471,6 @@ def save_resume_to_storage():
         from app.models.user import User
         
         try:
-            current_user_id = get_jwt_identity()
-            user = User.query.get(current_user_id)
-            
-            if not user:
-                print(f"Warning: User not found for ID: {current_user_id}")
-                return jsonify({
-                    "message": "Resume saved to S3 but could not link to user account",
-                    "s3_key": s3_key,
-                    "filename": filename
-                }), 200
-            
             new_document = Document(
                 user_email=user.email,
                 file_path=s3_key,
