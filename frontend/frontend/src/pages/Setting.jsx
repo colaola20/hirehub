@@ -23,7 +23,7 @@ const Settings = () => {
     const [isJobAlerts, setIsJobAlerts] = useState(true)
     const [alertFrequency, setAlertsFrequency] = useState("Immediately")
     const [isGeneralDropdownOpen, setIsGeneralDropdownOpen] = useState(false)
-    const [jobAlertsFrequency, setJobAlerstFrequency] = useState("Up to 1 alert/day")
+    const [jobAlertsFrequency, setJobAlertsFrequency] = useState("Up to 1 alert/day")
     const [isJobsDropdownOpen, setIsJobsDropdownOpen] = useState(false)
     const [isOnGeneralNotification, setIsOnGeneralNotification] = useState(true)
 
@@ -72,7 +72,7 @@ const Settings = () => {
             setIsOnGeneralNotification(data.general_enabled);
             setAlertsFrequency(data.general_frequency);
             setIsJobAlerts(data.job_alerts_enabled);
-            setJobAlerstFrequency(data.job_alerts_frequency);
+            setJobAlertsFrequency(data.job_alerts_frequency);
         };
 
         fetchSettings();
@@ -153,28 +153,47 @@ const Settings = () => {
         }
     }
 
-    const handleGeneralNotificationSwitch = () => {
+    const handleGeneralNotificationSwitch = async () => {
         const newValue = !isOnGeneralNotification;
         setIsOnGeneralNotification(newValue);
-        saveSettings({ general_enabled: newValue });
+        try {
+            await saveSettings({ general_enabled: newValue });
+        } catch (err) {
+            console.log("Failed to save general notification:", err);
+        }
     };
 
-    const handleDropdownClickGeneral = (label) => {
+    const handleDropdownClickGeneral = async (label) => {
         setAlertsFrequency(label);
-        saveSettings({ general_frequency: label });
         setIsGeneralDropdownOpen(false)
+
+        try {
+        await saveSettings({ general_frequency: label });
+        } catch (err) {
+            console.log("Failed to save general frequency:", err);
+        }
+        
     };
 
-    const handleJobAlertsSwitch = () => {
+    const handleJobAlertsSwitch = async () => {
         const newValue = !isJobAlerts;
         setIsJobAlerts(newValue);
-        saveSettings({ job_alerts_enabled: newValue });
+        try {
+            await saveSettings({ job_alerts_enabled: newValue });
+        } catch (err) {
+            console.log("Failed to toggle job alerts:", err);
+        }
+        
     };
 
-    const handleDropdownClickRecommendation = (label) => {
-        setJobAlerstFrequency(label);
-        saveSettings({ job_alerts_frequency: label });
+    const handleDropdownClickRecommendation = async (label) => {
+        setJobAlertsFrequency(label);
         setIsJobsDropdownOpen(false)
+        try {
+            await saveSettings({ job_alerts_frequency: label });
+        } catch (err) {
+            console.log("Failed to save job alerts frequency:", err);
+        }
     };
 
 

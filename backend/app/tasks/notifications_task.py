@@ -688,6 +688,8 @@ def unified_notification_worker(app):
                                     
                                     # TRY TO SEND EMAIL
                                     try:
+                                        
+                                        html = generate_inactivity_email(user_name)
                                         mail.send(Message(
                                             "We Miss You at HireHub! 💙",
                                             recipients=[u.email],
