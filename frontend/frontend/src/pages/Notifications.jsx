@@ -160,9 +160,15 @@ useEffect(() => {
     });
 	
   };
-const selectAll = () => {
-  const allIds = notifications.map(n => n.notification_id);
-  setSelectedItems(new Set(allIds));
+
+  const toggleSelectAll = () => {
+  if (selectedItems.size === notifications.length) {
+    // All are selected → deselect
+    setSelectedItems(new Set());
+  } else {
+    // Select all
+    setSelectedItems(new Set(notifications.map(n => n.notification_id)));
+  }
 };
 
 const deleteAll = async () => {
@@ -206,8 +212,8 @@ const deleteAll = async () => {
 		<h2>Inbox ({unreadCount})</h2>
 
 		<div className={styles.bulkActions}>
-			<button onClick={selectAll} className={styles.bulkButton}>Select All</button>
-			<button onClick={deleteAll} className={styles.bulkButton}>Delete All</button>
+			<button onClick={toggleSelectAll} className={styles.bulkButton}>Select All</button>
+			<button onClick={deleteAll} className={styles.bulkButton}>Delete</button>
       <button onClick={fetchNotifications} className={styles.bulkButton}>
         <FaSync />
       </button>

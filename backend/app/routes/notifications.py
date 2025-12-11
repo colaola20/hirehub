@@ -162,6 +162,7 @@ def delete_notification(note_id):
         user_id = get_jwt_identity()
         user = User.query.get(user_id)
         note = Notification.query.get(note_id)
+        
         if not note:
             return jsonify({'error': 'Not found'}), 404
         if note.user_email != user.email:

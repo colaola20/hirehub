@@ -40,6 +40,7 @@
   flex: 1;
   overflow-y: auto;
   scrollbar-width: none;
+  
 }
 
 .emailList::-webkit-scrollbar {
@@ -53,6 +54,7 @@
   cursor: pointer;
   transition: 0.2s ease;
   border-radius: 6px;
+  
 }
 
 .emailRow:hover {
@@ -234,4 +236,39 @@
 .selectedRow {
   background: rgba(86, 47, 172, 0.25) !important;
   border-left: 4px solid #562fac;
+}
+
+.checkbox{
+  width: 18px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.checkboxContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 8px; 
+  flex-shrink: 0;
+  width: auto; 
+}
+
+.emailRow {
+  position: relative; /* required so absolute items inside stay in card */
+  padding: 14px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.checkboxContainer {
+  position: absolute;
+  top: 8px;       /* adjust */
+  right: 8px;     /* adjust */
+  
+  margin-bottom: 3px;
+  padding: 2px;
+}
+
+.checkboxContainer input {
+  cursor: pointer;
 }
