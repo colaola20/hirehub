@@ -14,7 +14,39 @@ export default function Notifications() {
   const [starred, setStarred] = useState(new Set());
 
 const fetchNotifications = async () => {
-  setLoading(true);
+
+  const cacheExists = localStorage.getItem("notificationsCache");
+  if(!cacheExists){
+    setLoading(true);
+  }
+  
+  try {
+    const token = localStorage.getItem("token");
+    const res = await fetch("/api/notifications", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    if (!res.ok) throw new Error("Failed to fetch");
+
+    const data = await res.json();
+    const notificationsArray = Array.isArray(data) ? data : [];
+    setNotifications(notificationsArray);
+
+    // save to localStorage cache
+    localStorage.setItem("notificationsCache", JSON.stringify(notificationsArray));
+  } catch (err) {
+    toast.error("Could not load notifications");
+  } finally {
+    setLoading(false);
+  }
+};
+
+
+// New function to manually refetch notifications
+const refetchNotifications = async () => {
+
+  setLoading(true); // Always show loading on manual refetch
+
   try {
     const token = localStorage.getItem("token");
     const res = await fetch("/api/notifications", {
@@ -38,13 +70,18 @@ const fetchNotifications = async () => {
 
 
 useEffect(() => {
-  const cached = localStorage.getItem("notificationsCache");
-  if (cached) {
-    setNotifications(JSON.parse(cached));
-  } else {
+    const cached = localStorage.getItem("notificationsCache");
+
+    if (cached) {
+      // 1. Load cached data instantly (fastest display)
+      setNotifications(JSON.parse(cached));
+    }
+
+    // 2. ALWAYS fetch fresh data from the database regardless of cache presence.
+    // This will update the display and overwrite the cache when the fetch completes.
     fetchNotifications();
-  }
-}, []);
+  }, []); // Runs once on mount
+
 
   const markRead = async (id) => {
     try {
@@ -67,7 +104,6 @@ useEffect(() => {
   };
 
   const remove = async (id) => {
-    if (!confirm("Delete this notification?")) return;
 
     try {
       const token = localStorage.getItem("token");
@@ -151,14 +187,31 @@ useEffect(() => {
   return div.textContent || div.innerText || "";
 };
 
+
+// --- UPDATED DATE FUNCTION ---
   const formatDate = (dateStr) => {
     if (!dateStr) return "";
-    const date = new Date(dateStr);
+
+    // 1. Replace the SQL space with an ISO 'T'
+    // "2025-12-11 05:38:35" -> "2025-12-11T05:38:35"
+    let cleanDateStr = dateStr.replace(" ", "T");
+
+    // 2. Ensure timezone indicator exists. 
+    // If it has "+00:00", JS handles it fine, but appending Z to pure strings helps fallback.
+    if (!cleanDateStr.endsWith("Z") && !cleanDateStr.includes("+")) {
+      cleanDateStr = cleanDateStr + "Z";
+    }
+    const date = new Date(cleanDateStr);
+
     return date.toLocaleString("en-US", {
-      hour: "2-digit",
+    
+      month: "short",
+      day: "2-digit",
+      hour: "2-digit",  
+      second: "2-digit", 
       minute: "2-digit",
+      hour12: true,
     });
-	
   };
 
   const toggleSelectAll = () => {
@@ -172,7 +225,6 @@ useEffect(() => {
 };
 
 const deleteAll = async () => {
-  if (!confirm("Delete ALL selected notifications?")) return;
 
   try {
     const token = localStorage.getItem("token");
@@ -214,7 +266,7 @@ const deleteAll = async () => {
 		<div className={styles.bulkActions}>
 			<button onClick={toggleSelectAll} className={styles.bulkButton}>Select All</button>
 			<button onClick={deleteAll} className={styles.bulkButton}>Delete</button>
-      <button onClick={fetchNotifications} className={styles.bulkButton}>
+      <button onClick={refetchNotifications} className={styles.bulkButton}>
         <FaSync />
       </button>
 		</div>
@@ -229,7 +281,7 @@ const deleteAll = async () => {
 				key={n.notification_id}
 				onClick={() => {
 					openNotification(n);
-					toggleSelect(n.notification_id);
+				
 				}}
 				className={`
 					${styles.emailRow} 
@@ -260,7 +312,7 @@ const deleteAll = async () => {
                   <span className={styles.emailPreview}>
                     {" "}
                    — {stripHTML(getMessageText(n)).slice(0, 90)}
-					{stripHTML(getMessageText(n)).length > 90 && "..."}
+					          {stripHTML(getMessageText(n)).length > 90 && "..."}
 
                   </span>
                 </div>
@@ -301,7 +353,8 @@ const deleteAll = async () => {
           <span className={styles.senderName}>HireHub</span>
           <span className={styles.senderEmail}>no-reply@hirehub.com</span>
           <span className={styles.emailTimestamp}>
-            {new Date(selected.created_at).toLocaleString()}
+            {/* {new Date(selected.created_at).toLocaleString()} */}
+            {formatDate(selected.created_at)}
           </span>
         </div>
       </div>
