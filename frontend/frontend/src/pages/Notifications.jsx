@@ -193,6 +193,7 @@ const deleteAll = async () => {
     setSelected(null);
 
   } catch (err) {
+    console.log(err);
     toast.error("Could not delete all");
   }
 };

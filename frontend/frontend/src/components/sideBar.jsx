@@ -27,6 +27,10 @@ const SideBar = ( {showRandomJob, onReset}  ) => {
             if (response.ok) {
                 localStorage.removeItem("token");
                 localStorage.removeItem("user");
+                localStorage.removeItem("notificationsCache");
+                localStorage.removeItem("job_dashboard_payload");
+                sessionStorage.removeItem("jobs_list_cache");
+                localStorage.removeItem("selectedJob");
 
                 console.log("Logout successful:", data.message);
 
