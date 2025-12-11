@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import style from './resumeview.module.css'
 import Btn from '../buttons/Btn'
 import ResumeTemplate from './ResumeTemplate';
+import { useNavigate } from "react-router-dom";
 
 
 const ResumeViewStep = ({ backendData }) => {
@@ -18,6 +19,13 @@ const ResumeViewStep = ({ backendData }) => {
     const resumeRef = useRef(null);
     const [isSaving, setIsSaving] = useState(false);
     const [saveStatus, setSaveStatus] = useState('');
+
+
+    const navigate = useNavigate();
+
+    const goToJobDashboard = () => {
+        navigate("/dev-dashboard"); // or whatever your route path is
+    };
 
     // Generate HTML content for the resume
     const generateResumeHTML = () => {
@@ -116,74 +124,6 @@ const ResumeViewStep = ({ backendData }) => {
         }
         
         return html;
-    };
-
-    const handleFileChange = async (e, type) => {
-        setShowError(false);
-        const selectedFile = e.target.files?.[0];
-        if (!selectedFile) return;
-
-        setSavingToStorage(true);
-
-        try {
-            const res = await upload(selectedFile, type);
-            console.log("Upload response:", res);
-
-            setSuccessMessage(`File "${res.original_filename}" uploaded successfully!`);
-
-            if (type === "resume") {
-                backendData.documentId = res.id;
-            }
-
-            setTimeout(() => setSuccessMessage(""), 5000);
-
-        } catch (err) {
-            setErrorTitle("Upload failed");
-            setErrorDescription(err?.message || String(err) || "Unknown error");
-            setShowError(true);
-        } finally {
-            setSavingToStorage(false);
-
-            if (type === "resume" && resumeInputRef.current) resumeInputRef.current.value = "";
-            if (type === "cover" && coverInputRef.current) coverInputRef.current.value = "";
-        }
-    };
-
-    const upload = (fileToUpload, type) => {
-        return new Promise((resolve, reject) => {
-            const token = localStorage.getItem("token");
-            if (!token) {
-                reject(new Error("Not authenticated"));
-                return;
-            }
-
-            const form = new FormData();
-            form.append("file", fileToUpload);
-            if (type) form.append("type", type);
-
-            const xhr = new XMLHttpRequest();
-            xhr.open("POST", "/api/upload", true);
-            xhr.setRequestHeader("Authorization", `Bearer ${token}`);
-
-            xhr.onload = () => {
-                try {
-                    const json = xhr.responseText ? JSON.parse(xhr.responseText) : {};
-                    if (xhr.status >= 200 && xhr.status < 300) {
-                        resolve(json);
-                    } else {
-                        reject(new Error(json.error || json.message || `Upload failed (${xhr.status})`));
-                    }
-                } catch (err) {
-                    reject(new Error("Invalid server response"));
-                }
-            };
-
-            xhr.onerror = () => {
-                reject(new Error("Network error during upload"));
-            };
-
-            xhr.send(form);
-        });
     };
 
     // Download DOCX directly
@@ -559,6 +499,7 @@ const ResumeViewStep = ({ backendData }) => {
                     disabled={savingToStorage}
                 />
                 <Btn label={"Download as DOCX"} onClick={downloadDocx} />
+                <Btn label={"Go to Main page"} onClick={goToJobDashboard} />
             </div>
 
             <div className={style.successMsg}>
