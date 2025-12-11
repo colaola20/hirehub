@@ -43,7 +43,7 @@ const ResumeViewStep = ({ backendData }) => {
         // Summary
         if (step1.summary) {
             html += `<div style="margin-bottom: 15px;">`;
-            html += `<h2 style="border-bottom: 2px solid #333; padding-bottom: 3px; font-size: 14px;">SUMMARY</h2>`;
+            html += `<h2 style="border-bottom: 2px solid #333; padding-bottom: 3px; font-size: 14px; color: black;">SUMMARY</h2>`;
             html += `<p style="font-size: 11px; line-height: 1.5;">${step1.summary}</p>`;
             html += `</div>`;
         }
@@ -52,7 +52,7 @@ const ResumeViewStep = ({ backendData }) => {
         if (step3.skills) {
             const skills = Array.isArray(step3.skills) ? step3.skills.join(', ') : step3.skills;
             html += `<div style="margin-bottom: 15px;">`;
-            html += `<h2 style="border-bottom: 2px solid #333; padding-bottom: 3px; font-size: 14px;">SKILLS</h2>`;
+            html += `<h2 style="border-bottom: 2px solid #333; padding-bottom: 3px; font-size: 14px; color: black;">SKILLS</h2>`;
             html += `<p style="font-size: 11px;">${skills}</p>`;
             html += `</div>`;
         }
@@ -60,7 +60,7 @@ const ResumeViewStep = ({ backendData }) => {
         // Experience
         if (step4.jobs && step4.jobs.length > 0) {
             html += `<div style="margin-bottom: 15px;">`;
-            html += `<h2 style="border-bottom: 2px solid #333; padding-bottom: 3px; font-size: 14px;">EXPERIENCE</h2>`;
+            html += `<h2 style="border-bottom: 2px solid #333; padding-bottom: 3px; font-size: 14px; color: black;">EXPERIENCE</h2>`;
             step4.jobs.forEach(job => {
                 html += `<div style="margin-bottom: 12px;">`;
                 html += `<p style="margin: 0; font-size: 12px;"><strong>${job.company || 'Company'}</strong> | <em>${job.role || 'Position'}</em></p>`;
@@ -74,7 +74,7 @@ const ResumeViewStep = ({ backendData }) => {
         // Education
         if (step5.education && step5.education.length > 0) {
             html += `<div style="margin-bottom: 15px;">`;
-            html += `<h2 style="border-bottom: 2px solid #333; padding-bottom: 3px; font-size: 14px;">EDUCATION</h2>`;
+            html += `<h2 style="border-bottom: 2px solid #333; padding-bottom: 3px; font-size: 14px; color: black;">EDUCATION</h2>`;
             step5.education.forEach(edu => {
                 html += `<div style="margin-bottom: 10px;">`;
                 html += `<p style="margin: 0; font-size: 12px;"><strong>${edu.school || 'School'}</strong> | ${edu.degree || 'Degree'}</p>`;
@@ -87,7 +87,7 @@ const ResumeViewStep = ({ backendData }) => {
         // Projects
         if (step6.projects && step6.projects.length > 0) {
             html += `<div style="margin-bottom: 15px;">`;
-            html += `<h2 style="border-bottom: 2px solid #333; padding-bottom: 3px; font-size: 14px;">PROJECTS</h2>`;
+            html += `<h2 style="border-bottom: 2px solid #333; padding-bottom: 3px; font-size: 14px; color: black;">PROJECTS</h2>`;
             step6.projects.forEach(proj => {
                 html += `<div style="margin-bottom: 10px;">`;
                 html += `<p style="margin: 0; font-size: 12px;"><strong>${proj.projTitle || 'Project'}</strong></p>`;
@@ -102,7 +102,7 @@ const ResumeViewStep = ({ backendData }) => {
         if (step3.languages) {
             const langs = Array.isArray(step3.languages) ? step3.languages.join(', ') : step3.languages;
             html += `<div style="margin-bottom: 15px;">`;
-            html += `<h2 style="border-bottom: 2px solid #333; padding-bottom: 3px; font-size: 14px;">LANGUAGES</h2>`;
+            html += `<h2 style="border-bottom: 2px solid #333; padding-bottom: 3px; font-size: 14px; color: black;">LANGUAGES</h2>`;
             html += `<p style="font-size: 11px;">${langs}</p>`;
             html += `</div>`;
         }
