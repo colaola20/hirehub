@@ -228,9 +228,23 @@ Do NOT include backticks, markdown, explanations, or code fences.
 
 
 def html_to_docx(html_content):
-    """Convert resume HTML to DOCX document"""
+    """Convert resume HTML to professionally formatted DOCX document"""
+    from docx import Document
+    from docx.shared import Pt, RGBColor, Inches
+    from docx.enum.text import WD_ALIGN_PARAGRAPH
+    from bs4 import BeautifulSoup
+    import re
+    
     doc = Document()
     doc.core_properties.author = "HireHub Resume Builder"
+    
+    # Set document margins
+    sections = doc.sections
+    for section in sections:
+        section.top_margin = Inches(0.5)
+        section.bottom_margin = Inches(0.5)
+        section.left_margin = Inches(0.5)
+        section.right_margin = Inches(0.5)
     
     soup = BeautifulSoup(html_content, 'html.parser')
     
@@ -238,73 +252,116 @@ def html_to_docx(html_content):
     for script in soup(["script", "style"]):
         script.decompose()
     
-    # Get all text and structure from the entire document
-    def process_element(element, doc):
-        """Recursively process elements and add to document"""
+    def add_formatted_text(paragraph, text, is_bold=False, is_italic=False, font_size=11):
+        """Add formatted text to a paragraph"""
+        run = paragraph.add_run(text)
+        run.font.size = Pt(font_size)
+        run.font.bold = is_bold
+        run.font.italic = is_italic
+        return run
+    
+    # Process body content
+    body = soup.find('body')
+    if not body:
+        body = soup
+    
+    for element in body.children:
         if isinstance(element, str):
             text = element.strip()
             if text and len(text) > 1:
-                doc.add_paragraph(text)
-            return
+                p = doc.add_paragraph(text)
+                p.paragraph_format.space_after = Pt(6)
+            continue
         
         if not hasattr(element, 'name'):
-            return
+            continue
         
-        text = element.get_text(strip=True) if hasattr(element, 'get_text') else ''
+        tag = element.name
+        text_content = element.get_text(strip=True) if hasattr(element, 'get_text') else ''
         
-        if not text or len(text) < 2:
-            # Still process children even if this element has no text
-            if element.name in ['div', 'span', 'section', 'article']:
-                for child in element.children:
-                    process_element(child, doc)
-            return
-        
-        # Handle headers
-        if element.name == 'h1':
-            p = doc.add_paragraph(text, style='Heading 1')
+        # Handle headers (name, section titles)
+        if tag == 'h1':
+            p = doc.add_paragraph()
+            add_formatted_text(p, text_content, is_bold=True, font_size=20)
             p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-        elif element.name == 'h2':
-            doc.add_paragraph(text, style='Heading 2')
-        elif element.name == 'h3':
-            doc.add_paragraph(text, style='Heading 3')
-        elif element.name == 'h4':
-            doc.add_paragraph(text, style='Heading 4')
+            p.paragraph_format.space_after = Pt(3)
+        
+        elif tag == 'h2':
+            p = doc.add_paragraph()
+            add_formatted_text(p, text_content, is_bold=True, font_size=12)
+            p.paragraph_format.space_after = Pt(6)
+            p.paragraph_format.space_before = Pt(6)
+        
+        elif tag == 'h3':
+            p = doc.add_paragraph()
+            add_formatted_text(p, text_content, is_bold=True, font_size=11)
+            p.paragraph_format.space_after = Pt(3)
+        
+        elif tag == 'h4':
+            p = doc.add_paragraph()
+            add_formatted_text(p, text_content, is_bold=True, font_size=11)
+            p.paragraph_format.space_after = Pt(2)
+        
+        # Handle paragraphs and divs
+        elif tag in ['p', 'div', 'span']:
+            if text_content and len(text_content) > 1:
+                p = doc.add_paragraph()
+                # Check if content has bold or other formatting
+                for child in element.children:
+                    if isinstance(child, str):
+                        text = str(child).strip()
+                        if text:
+                            add_formatted_text(p, text, font_size=11)
+                    elif hasattr(child, 'name'):
+                        child_text = child.get_text(strip=True)
+                        if child.name == 'b' or child.name == 'strong':
+                            add_formatted_text(p, child_text, is_bold=True, font_size=11)
+                        elif child.name == 'i' or child.name == 'em':
+                            add_formatted_text(p, child_text, is_italic=True, font_size=11)
+                        else:
+                            add_formatted_text(p, child_text, font_size=11)
+                p.paragraph_format.space_after = Pt(4)
+                p.paragraph_format.line_spacing = 1.15
         
         # Handle lists
-        elif element.name == 'ul' or element.name == 'ol':
+        elif tag in ['ul', 'ol']:
             for li in element.find_all('li', recursive=False):
                 li_text = li.get_text(strip=True)
                 if li_text:
-                    doc.add_paragraph(li_text, style='List Bullet')
+                    # Check for bullet character
+                    if li_text.startswith('·'):
+                        li_text = li_text[1:].strip()
+                    p = doc.add_paragraph(li_text, style='List Bullet')
+                    p.paragraph_format.space_after = Pt(3)
+                    p.paragraph_format.line_spacing = 1.15
         
-        # Handle list items
-        elif element.name == 'li':
-            doc.add_paragraph(text, style='List Bullet')
-        
-        # Handle paragraphs, divs, and other text containers
-        else:
-            doc.add_paragraph(text)
+        # Handle line breaks / horizontal rules
+        elif tag == 'hr':
+            p = doc.add_paragraph()
+            p.paragraph_format.space_after = Pt(6)
+            pPr = p._element.get_or_add_pPr()
+            pBdr = pPr.find('.//{http://schemas.openxmlformats.org/wordprocessingml/2006/main}pBdr')
+            if pBdr is None:
+                from docx.oxml import OxmlElement
+                pBdr = OxmlElement('w:pBdr')
+                pPr.append(pBdr)
+                bottom = OxmlElement('w:bottom')
+                bottom.set('{http://schemas.openxmlformats.org/wordprocessingml/2006/main}val', 'single')
+                bottom.set('{http://schemas.openxmlformats.org/wordprocessingml/2006/main}sz', '12')
+                bottom.set('{http://schemas.openxmlformats.org/wordprocessingml/2006/main}space', '1')
+                bottom.set('{http://schemas.openxmlformats.org/wordprocessingml/2006/main}color', '000000')
+                pBdr.append(bottom)
     
-    # Process the entire document
-    for element in soup.find_all():
-        if element.name and element.name not in ['html', 'head', 'body', 'meta', 'link', 'title']:
-            # Only process elements that are direct children to avoid duplicates
-            if not element.find_parent(['h1', 'h2', 'h3', 'h4', 'p', 'div', 'li', 'ul', 'ol']):
-                process_element(element, doc)
-    
-    # If document is still empty, try to get all text
+    # If document is empty, fall back to text extraction
     if len(doc.paragraphs) == 0:
         all_text = soup.get_text(strip=True)
         if all_text:
-            # Split by newlines and add as paragraphs
             for line in all_text.split('\n'):
                 line = line.strip()
                 if line and len(line) > 1:
                     doc.add_paragraph(line)
     
     return doc
-
-
 @resume_bp.route("/api/generate-docx", methods=['POST'])
 def generate_docx():
     """Convert resume HTML to DOCX format and download"""
@@ -339,7 +396,7 @@ def generate_docx():
 @resume_bp.route("/api/save-resume-to-storage", methods=['POST'])
 @jwt_required()
 def save_resume_to_storage():
-    """Convert resume HTML to DOCX and save to AWS S3"""
+    """Save resume HTML directly to AWS S3"""
     try:
         if not all([AWS_ACCESS_KEY, AWS_SECRET_KEY, AWS_S3_BUCKET]):
             error_msg = "AWS configuration not set"
@@ -399,7 +456,7 @@ def save_resume_to_storage():
         s3_key = f"resumes/{user}/{timestamp}_{filename}"
         print(f"S3 Key: {s3_key}")
         
-        print("Uploading to S3...")
+        # Upload HTML directly to S3
         s3_client.put_object(
             Bucket=AWS_S3_BUCKET,
             Key=s3_key,
@@ -407,7 +464,7 @@ def save_resume_to_storage():
             # Body=docx_io.getvalue(),
             ContentType='application/vnd.openxmlformats-officedocument.wordprocessingml.document'
         )
-        print("Successfully uploaded to S3")
+        print("Successfully uploaded HTML to S3")
         
         from app.extensions import db
         from app.models.document import Document

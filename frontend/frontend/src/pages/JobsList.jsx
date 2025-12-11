@@ -1,15 +1,16 @@
-import { useEffect, useCallback, useState, useRef, useMemo } from "react";
+import { useEffect, useCallback, useState, useRef, useMemo, useLayoutEffect } from "react";
 import { useOutletContext, useSearchParams } from "react-router-dom";
 
 import styles from "./JobsList.module.css";
 import JobCard from "../components/JobCard.jsx";
 import { MdClose } from "react-icons/md";
-import { MdSearch } from 'react-icons/md';
+// import { MdSearch } from 'react-icons/md';
 
 const JobsList = () => {
 
   const outlet = useOutletContext() || {}
   const { onJobClick = () => {}} = outlet
+  const scrollTarget = useRef(0);
 
   const [jobs, setJobs] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -31,29 +32,86 @@ const JobsList = () => {
 
   const initialLoadDone = useRef(false)
 
-  // on mount: load filters from db if there is some
+
+  const listRef = useRef(null);
+
+  const isRestoring = useRef(false);
+
+  // on mount: load filters from db if there is some AND List State from SessionStorage on Mount
   useEffect(() => {
-    const token = localStorage.getItem("token")
-    fetch("/api/filter-settings", {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`
+    const restoreState = async () => {
+      // 1. Restore Filters from DB
+      const token = localStorage.getItem("token");
+      try {
+        const res = await fetch("/api/filter-settings", {
+          method: "GET",
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        // optional: merge logic here if needed
+      } catch (e) { console.warn(e) }
+
+      // 2. CHECK SESSION STORAGE
+      const savedState = sessionStorage.getItem("jobs_list_cache");
+      
+      if (savedState) {
+        const parsed = JSON.parse(savedState);
+        const isFresh = (Date.now() - parsed.timestamp) < 1000 * 60 * 30; 
+
+        if (isFresh) {
+            console.log("Restoring job list state...");
+            isRestoring.current = true; 
+            
+            // Store the target scroll position in a Ref (don't scroll yet!)
+            // scrollTarget.current = parsed.scrollTop; 
+
+            scrollTarget.current = 10;
+
+            setJobs(parsed.jobs);
+            setTotalJobs(parsed.totalJobs);
+            setSearchQuery(parsed.searchQuery);
+            setFilters(parsed.filters);
+            lastQueryRef.current = parsed.searchQuery;
+            
+            setLoading(false); // This triggers the re-render
+            return; 
+        }
       }
-    })
-    .then(res => res.json())
-    .then(data => {
-      const serverFilters = data
-      setFilters(f => ({...f, ...serverFilters}))
-      initialLoadDone.current = true
-    })
-    .catch(() => {
-      initialLoadDone.current = true
-    })
-  }, [])
+      
+      // If no cache, allow normal fetching behavior
+      // (This requires a small tweak to your debounce effect to ensure it runs if not restoring)
+    };
+
+    restoreState();
+  }, []);
+
+
+// Save State to SessionStorage on Unmount
+useEffect(() => {
+  return () => {
+    // This function runs when you navigate AWAY
+    // Check listRef.current here, right before unmount
+    const currentScrollTop = window.scrollY || document.documentElement.scrollTop;
+
+    const currentState = {
+      jobs,
+      totalJobs,
+      searchQuery,
+      filters,
+      scrollTop: currentScrollTop, 
+      timestamp: Date.now()
+    };
+    
+    // Only save if we actually have jobs
+    if (jobs.length > 0) {
+      sessionStorage.setItem("jobs_list_cache", JSON.stringify(currentState));
+    }
+  };
+}, [jobs, totalJobs, searchQuery, filters]); // Dependencies ensure we have latest state
 
   // save filters
-  useEffect(() => {
-    if (!initialLoadDone.current) return
+useEffect(() => {
+    if (isRestoring.current) return;
+
     const token = localStorage.getItem("token")
     fetch("/api/filter-settings", {
       method: "POST",
@@ -120,12 +178,19 @@ const JobsList = () => {
   // ----------------------------
   // Initial load + search/filters debounce
 
-  useEffect(() => {
+useEffect(() => {
+
+    if (isRestoring.current) {
+        
+        setTimeout(() => { isRestoring.current = false; }, 500);
+        return; 
+    }
+
     if (debounceRef.current) clearTimeout(debounceRef.current)
     debounceRef.current = setTimeout(async () => {
       lastQueryRef.current = searchQuery
 
-      const {items, total} = await fetchJobs(50, 0, searchQuery, filters)
+      const { items, total } = await fetchJobs(50, 0, searchQuery, filters)
       setJobs(items)
       setTotalJobs(total)
     }, 300)
@@ -134,7 +199,6 @@ const JobsList = () => {
     }
   }, [searchQuery, filters, fetchJobs])
 
-    // helper used by retry button and explicit reload
   const reloadInitialJobs = useCallback(async (query = "") => {
     const { items, total } = await fetchJobs(20, 0, searchQuery, filters);
     setJobs(items);
@@ -144,22 +208,32 @@ const JobsList = () => {
 // ----------------------------
 // Infinite scroll
 // infinite scroll
+// Infinite scroll
 useEffect(() => {
-  const scrollable = document.querySelector(`.${styles.cardList}`);
+  // ✅ Use listRef.current instead of document.querySelector
+  const scrollable = listRef.current; 
+  
   if (!scrollable) return;
 
-  const handleScroll = async () => {
+  const handleScroll = () => {
+    // 1. Calculate if we are at the bottom
     const scrolledToBottom =
       scrollable.scrollHeight - scrollable.scrollTop <= scrollable.clientHeight + 100;
 
+    // 2. Check conditions: At bottom? Not currently loading? Have more jobs to fetch?
     if (scrolledToBottom && !loadingMore.current && jobs.length < totalJobs) {
       loadingMore.current = true;
-      try {
-        const { items } = await fetchJobs(20, jobs.length, lastQueryRef.current, filters);
-        if (items.length > 0) setJobs(prev => [...prev, ...items]);
-      } finally {
-        loadingMore.current = false;
-      }
+      
+      // 3. Fetch
+      fetchJobs(20, jobs.length, lastQueryRef.current, filters)
+        .then(({ items }) => {
+           if (items.length > 0) {
+             setJobs(prev => [...prev, ...items]);
+           }
+        })
+        .finally(() => {
+           loadingMore.current = false;
+        });
     }
   };
 
@@ -167,14 +241,40 @@ useEffect(() => {
   return () => scrollable.removeEventListener("scroll", handleScroll);
 }, [jobs.length, totalJobs, filters, fetchJobs]);
 
+
+//Restore scroll position immediately after DOM paint
+  useLayoutEffect(() => {
+    // Only run if we aren't loading, we have jobs, and we are explicitly restoring
+    if (!loading && isRestoring.current && jobs.length > 0 && listRef.current) {
+      
+      console.log("Applying scroll position:", scrollTarget.current);
+     // listRef.current.scrollTop = scrollTarget.current;
+      
+      window.scrollTo({ 
+            top: scrollTarget.current, 
+            behavior: 'instant' // Use instant, not smooth, for restoration
+        });
+
+      // Turn off restoring mode after a short delay to allow for any image layout shifts
+      setTimeout(() => {
+        isRestoring.current = false;
+      }, 100);
+    }
+  }, [loading, jobs]);
+
+
   // ----------------------------
   // Clear search
-  const clearSearch = () => setSearchQuery("")
+const clearSearch = () => {
+      setSearchQuery("");
+      sessionStorage.removeItem("jobs_list_cache"); 
+  }
 
   //------------------------------------
   // new filter state
-  const handleFilterChange = (key, value) => {
-    setFilters((f) => ({...f, [key]: value}))
+const handleFilterChange = (key, value) => {
+    setFilters((f) => ({ ...f, [key]: value }));
+    sessionStorage.removeItem("jobs_list_cache"); 
   }
 
   const companyOptions = useMemo(() => {
@@ -263,7 +363,7 @@ useEffect(() => {
       </div>
 
       {/* Left Column: Job Cards */}
-      <div className={styles.cardList}>
+      <div className={styles.cardList} ref={listRef}>
          {/* Loading state */}
           {loading && (
             <div className={styles.loadingState}>

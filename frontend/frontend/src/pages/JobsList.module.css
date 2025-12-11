@@ -165,7 +165,7 @@
 .cardList {
  
     
-    height: calc(100vh - calc(var(--nav-h) + 16px));/* Changed from fixed 1100px */
+    /* height: calc(100vh - calc(var(--nav-h) + 16px)); */
     width: 100%;
     /* Spacing between cards */
     gap: var(--gap);
@@ -175,6 +175,7 @@
     -ms-overflow-style: none;
     scrollbar-width: none;
     border-radius: 13px;
+    
     
 }
 

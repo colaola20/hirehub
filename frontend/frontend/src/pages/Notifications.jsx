@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styles from "./Notifications.module.css";
 import { toast } from "react-toastify";
+import { FaSync } from "react-icons/fa";
 
 export default function Notifications() {
   const [notifications, setNotifications] = useState([]);
@@ -12,30 +13,75 @@ export default function Notifications() {
   const [selectedItems, setSelectedItems] = useState(new Set());
   const [starred, setStarred] = useState(new Set());
 
-  const fetchNotifications = async () => {
+const fetchNotifications = async () => {
+
+  const cacheExists = localStorage.getItem("notificationsCache");
+  if(!cacheExists){
     setLoading(true);
-    try {
-      const token = localStorage.getItem("token");
-      const res = await fetch("/api/notifications", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+  }
+  
+  try {
+    const token = localStorage.getItem("token");
+    const res = await fetch("/api/notifications", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
 
-      if (!res.ok) throw new Error("Failed to fetch");
+    if (!res.ok) throw new Error("Failed to fetch");
 
-      const data = await res.json();
-      setNotifications(Array.isArray(data) ? data : []);
-    } catch (err) {
-      toast.error("Could not load notifications");
-    } finally {
-      setLoading(false);
+    const data = await res.json();
+    const notificationsArray = Array.isArray(data) ? data : [];
+    setNotifications(notificationsArray);
+
+    // save to localStorage cache
+    localStorage.setItem("notificationsCache", JSON.stringify(notificationsArray));
+  } catch (err) {
+    toast.error("Could not load notifications");
+  } finally {
+    setLoading(false);
+  }
+};
+
+
+// New function to manually refetch notifications
+const refetchNotifications = async () => {
+
+  setLoading(true); // Always show loading on manual refetch
+
+  try {
+    const token = localStorage.getItem("token");
+    const res = await fetch("/api/notifications", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    if (!res.ok) throw new Error("Failed to fetch");
+
+    const data = await res.json();
+    const notificationsArray = Array.isArray(data) ? data : [];
+    setNotifications(notificationsArray);
+
+    // save to localStorage cache
+    localStorage.setItem("notificationsCache", JSON.stringify(notificationsArray));
+  } catch (err) {
+    toast.error("Could not load notifications");
+  } finally {
+    setLoading(false);
+  }
+};
+
+
+useEffect(() => {
+    const cached = localStorage.getItem("notificationsCache");
+
+    if (cached) {
+      // 1. Load cached data instantly (fastest display)
+      setNotifications(JSON.parse(cached));
     }
-  };
 
-  useEffect(() => {
+    // 2. ALWAYS fetch fresh data from the database regardless of cache presence.
+    // This will update the display and overwrite the cache when the fetch completes.
     fetchNotifications();
-    const interval = setInterval(fetchNotifications, 10000);
-    return () => clearInterval(interval);
-  }, []);
+  }, []); // Runs once on mount
+
 
   const markRead = async (id) => {
     try {
@@ -58,7 +104,6 @@ export default function Notifications() {
   };
 
   const remove = async (id) => {
-    if (!confirm("Delete this notification?")) return;
 
     try {
       const token = localStorage.getItem("token");
@@ -142,22 +187,44 @@ export default function Notifications() {
   return div.textContent || div.innerText || "";
 };
 
+
+// --- UPDATED DATE FUNCTION ---
   const formatDate = (dateStr) => {
     if (!dateStr) return "";
-    const date = new Date(dateStr);
+
+    // 1. Replace the SQL space with an ISO 'T'
+    // "2025-12-11 05:38:35" -> "2025-12-11T05:38:35"
+    let cleanDateStr = dateStr.replace(" ", "T");
+
+    // 2. Ensure timezone indicator exists. 
+    // If it has "+00:00", JS handles it fine, but appending Z to pure strings helps fallback.
+    if (!cleanDateStr.endsWith("Z") && !cleanDateStr.includes("+")) {
+      cleanDateStr = cleanDateStr + "Z";
+    }
+    const date = new Date(cleanDateStr);
+
     return date.toLocaleString("en-US", {
-      hour: "2-digit",
+    
+      month: "short",
+      day: "2-digit",
+      hour: "2-digit",  
+      second: "2-digit", 
       minute: "2-digit",
+      hour12: true,
     });
-	
   };
-const selectAll = () => {
-  const allIds = notifications.map(n => n.notification_id);
-  setSelectedItems(new Set(allIds));
+
+  const toggleSelectAll = () => {
+  if (selectedItems.size === notifications.length) {
+    // All are selected → deselect
+    setSelectedItems(new Set());
+  } else {
+    // Select all
+    setSelectedItems(new Set(notifications.map(n => n.notification_id)));
+  }
 };
 
 const deleteAll = async () => {
-  if (!confirm("Delete ALL selected notifications?")) return;
 
   try {
     const token = localStorage.getItem("token");
@@ -170,15 +237,21 @@ const deleteAll = async () => {
     }
 
     // remove from UI
-    setNotifications(prev =>
-      prev.filter(n => !selectedItems.has(n.notification_id))
+  setNotifications((prev) => {
+    const updated = prev.map((n) =>
+      n.notification_id === id ? { ...n, is_read: true } : n
     );
+    localStorage.setItem("notificationsCache", JSON.stringify(updated));
+    return updated;
+  });
+
 
     setSelectedItems(new Set());
     toast.success("Deleted all selected");
     setSelected(null);
 
   } catch (err) {
+    console.log(err);
     toast.error("Could not delete all");
   }
 };
@@ -191,8 +264,11 @@ const deleteAll = async () => {
 		<h2>Inbox ({unreadCount})</h2>
 
 		<div className={styles.bulkActions}>
-			<button onClick={selectAll} className={styles.bulkButton}>Select All</button>
-			<button onClick={deleteAll} className={styles.bulkButton}>Delete All</button>
+			<button onClick={toggleSelectAll} className={styles.bulkButton}>Select All</button>
+			<button onClick={deleteAll} className={styles.bulkButton}>Delete</button>
+      <button onClick={refetchNotifications} className={styles.bulkButton}>
+        <FaSync />
+      </button>
 		</div>
 		</div>
 
@@ -205,7 +281,7 @@ const deleteAll = async () => {
 				key={n.notification_id}
 				onClick={() => {
 					openNotification(n);
-					toggleSelect(n.notification_id);
+				
 				}}
 				className={`
 					${styles.emailRow} 
@@ -236,7 +312,7 @@ const deleteAll = async () => {
                   <span className={styles.emailPreview}>
                     {" "}
                    — {stripHTML(getMessageText(n)).slice(0, 90)}
-					{stripHTML(getMessageText(n)).length > 90 && "..."}
+					          {stripHTML(getMessageText(n)).length > 90 && "..."}
 
                   </span>
                 </div>
@@ -277,7 +353,8 @@ const deleteAll = async () => {
           <span className={styles.senderName}>HireHub</span>
           <span className={styles.senderEmail}>no-reply@hirehub.com</span>
           <span className={styles.emailTimestamp}>
-            {new Date(selected.created_at).toLocaleString()}
+            {/* {new Date(selected.created_at).toLocaleString()} */}
+            {formatDate(selected.created_at)}
           </span>
         </div>
       </div>

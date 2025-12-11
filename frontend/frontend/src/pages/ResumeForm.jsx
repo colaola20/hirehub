@@ -400,7 +400,7 @@ const ResumeForm = () => {
 
 
                 <div className={styles["resume-form-container"]} style={{ height: containerHeight }}>
-                    <div ref={contentRef}>
+                    <div ref={contentRef} className="resumeForm">
                         {currentStep === 1 && <PersonalStep formData={formData.step1} onChange={handleInputChange} errors={errors} />}
                         {currentStep === 2 && <SocialStep formData={formData.step2} onChange={handleInputChange} errors={errors} />}
                         {currentStep === 3 && <MiscStep formData={formData.step3} onChange={handleMiscChange} errors={errors} />}
@@ -411,7 +411,16 @@ const ResumeForm = () => {
                     </div>
 
                     <div className={styles['back-btn']}>
-                        {currentStep === 7 ? (<span className={styles.placeholder}></span>) : (
+                        {currentStep === 7 ? 
+                        (<CTA
+                                label={"Back To Dashboard"}
+                                onClick={async () => {
+                                    await saveProgress();
+                                    window.location.href = "/dev_dashboard";
+                                }}
+                            />) 
+                        : 
+                        (
                             <CTA
                                 label={"Save progress for later"}
                                 onClick={async () => {
