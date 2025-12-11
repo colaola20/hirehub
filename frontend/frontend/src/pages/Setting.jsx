@@ -213,7 +213,7 @@ const Settings = () => {
                     </div>
                     <div className={styles.deleteAccount}>
                         <div>
-                            <h5 className={styles.label}>Delete my acount</h5>
+                            <h5 className={styles.label}>Delete my account</h5>
                             <p className={styles.description}>Permanently delete your HireHub account and all associated data</p>
                         </div>
                         <Btn icon={null} label="Delete my account" onClick={handleDeletion}/>
@@ -248,7 +248,7 @@ const Settings = () => {
                     <h3 className={styles.title}>Job Recommendation Notifications</h3>
                     <div className={styles.separator}></div>
                     <div className={styles.jobAlerts}>
-                        <h5 className={styles.label}>Enable Instant Job Alerst</h5>
+                        <h5 className={styles.label}>Enable Instant Job Alerts</h5>
                         <div className={styles.infoContainer}>
                             <p className={styles.description}>Turn this on to receive personalized job alerts based on your profile, preferences, and activity.</p>
                             <Switch checked={isJobAlerts} onChange={handleJobAlertsSwitch}/>
