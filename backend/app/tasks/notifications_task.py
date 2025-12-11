@@ -569,8 +569,7 @@ def unified_notification_worker(app):
 
                                 for r in recs:
 
-                                    #Check if they are not null
-                                    print( r.job , r.job.is_active)
+                            
 
                                     # Skip expired recommendations
                                     exp = to_aware(r.expires_at)

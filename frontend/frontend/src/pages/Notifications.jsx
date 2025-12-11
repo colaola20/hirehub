@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styles from "./Notifications.module.css";
 import { toast } from "react-toastify";
+import { FaSync } from "react-icons/fa";
 
 export default function Notifications() {
   const [notifications, setNotifications] = useState([]);
@@ -12,30 +13,38 @@ export default function Notifications() {
   const [selectedItems, setSelectedItems] = useState(new Set());
   const [starred, setStarred] = useState(new Set());
 
-  const fetchNotifications = async () => {
-    setLoading(true);
-    try {
-      const token = localStorage.getItem("token");
-      const res = await fetch("/api/notifications", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+const fetchNotifications = async () => {
+  setLoading(true);
+  try {
+    const token = localStorage.getItem("token");
+    const res = await fetch("/api/notifications", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
 
-      if (!res.ok) throw new Error("Failed to fetch");
+    if (!res.ok) throw new Error("Failed to fetch");
 
-      const data = await res.json();
-      setNotifications(Array.isArray(data) ? data : []);
-    } catch (err) {
-      toast.error("Could not load notifications");
-    } finally {
-      setLoading(false);
-    }
-  };
+    const data = await res.json();
+    const notificationsArray = Array.isArray(data) ? data : [];
+    setNotifications(notificationsArray);
 
-  useEffect(() => {
+    // save to localStorage cache
+    localStorage.setItem("notificationsCache", JSON.stringify(notificationsArray));
+  } catch (err) {
+    toast.error("Could not load notifications");
+  } finally {
+    setLoading(false);
+  }
+};
+
+
+useEffect(() => {
+  const cached = localStorage.getItem("notificationsCache");
+  if (cached) {
+    setNotifications(JSON.parse(cached));
+  } else {
     fetchNotifications();
-    const interval = setInterval(fetchNotifications, 10000);
-    return () => clearInterval(interval);
-  }, []);
+  }
+}, []);
 
   const markRead = async (id) => {
     try {
@@ -170,9 +179,14 @@ const deleteAll = async () => {
     }
 
     // remove from UI
-    setNotifications(prev =>
-      prev.filter(n => !selectedItems.has(n.notification_id))
+  setNotifications((prev) => {
+    const updated = prev.map((n) =>
+      n.notification_id === id ? { ...n, is_read: true } : n
     );
+    localStorage.setItem("notificationsCache", JSON.stringify(updated));
+    return updated;
+  });
+
 
     setSelectedItems(new Set());
     toast.success("Deleted all selected");
@@ -193,6 +207,9 @@ const deleteAll = async () => {
 		<div className={styles.bulkActions}>
 			<button onClick={selectAll} className={styles.bulkButton}>Select All</button>
 			<button onClick={deleteAll} className={styles.bulkButton}>Delete All</button>
+      <button onClick={fetchNotifications} className={styles.bulkButton}>
+        <FaSync />
+      </button>
 		</div>
 		</div>
 
