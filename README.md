@@ -11,10 +11,12 @@
   <img src="https://img.shields.io/badge/React-2b204f?style=for-the-badge&logo=react&logoColor=61DAFB" alt="Rect"/>
   <img src="https://img.shields.io/badge/Vite-2b204f?style=for-the-badge&logo=vite&logoColor=white" alt="Vite"/>
   <img src="https://img.shields.io/badge/CSS-2b204f?style=for-the-badge&logo=css&logoColor=white" alt="CSS" />
-  <img src="https://img.shields.io/badge/AWS%20S3-2b204f?style=for-the-badge&logo=amazon-s3&logoColor=white" alt="AWS" />
-  <img src="https://img.shields.io/badge/AWS%20RDS-2b204f?style=for-the-badge&logo=amazon-aws&logoColor=white" alt="AWS" />
+  <img src="https://img.shields.io/badge/AWS%20S3-2b204f?style=for-the-badge&logo=amazons3&logoColor=white" alt="AWS S3" />
+  <img src="https://img.shields.io/badge/AWS%20RDS-2b204f?style=for-the-badge&logo=amazonrds&logoColor=white" alt="AWS RDS" />
   <img src="https://img.shields.io/badge/PostgreSQL-2b204f?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL" />
   <img src="https://img.shields.io/badge/OpenAI-2b204f?style=for-the-badge&logo=openai&logoColor=white" alt="OpenAI" />
+  <img alt="Static Badge" src="https://img.shields.io/badge/Only%20Office-2b204f?style=for-the-badge&logo=onlyoffice&logoColor=white">
+  <img alt="Static Badge" src="https://img.shields.io/badge/Groq-2b204f?style=for-the-badge&logo=groq&logoColor=white">
 </div>
 
   
