@@ -5,21 +5,31 @@
     <strong>Apply smarter. Track faster. Get hired.</strong>
   </p>
 </div>
-
+<br>
 <div align="center">
   <img src="https://img.shields.io/badge/JavaScript-2b204f?style=for-the-badge&logo=javascript" alt="JavaScript"/>
   <img src="https://img.shields.io/badge/React-2b204f?style=for-the-badge&logo=react&logoColor=61DAFB" alt="Rect"/>
-  <img src="https://img.shields.io/badge/Vite-2b204f?style=for-the-badge&logo=vite&logoColor=white" alt="Vite"/>
-  <img src="https://img.shields.io/badge/CSS-2b204f?style=for-the-badge&logo=css&logoColor=white" alt="CSS" />
+  <img src="https://img.shields.io/badge/Vite-2b204f?style=for-the-badge&logo=vite&logoColor=646CFF" alt="Vite"/>
+  <img src="https://img.shields.io/badge/CSS-2b204f?style=for-the-badge&logo=css&logoColor=F43059" alt="CSS" />
   <img src="https://img.shields.io/badge/AWS%20S3-2b204f?style=for-the-badge&logo=amazons3&logoColor=white" alt="AWS S3" />
   <img src="https://img.shields.io/badge/AWS%20RDS-2b204f?style=for-the-badge&logo=amazonrds&logoColor=white" alt="AWS RDS" />
-  <img src="https://img.shields.io/badge/PostgreSQL-2b204f?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL" />
+  <img src="https://img.shields.io/badge/PostgreSQL-2b204f?style=for-the-badge&logo=postgresql&logoColor=4169E1" alt="PostgreSQL" />
   <img src="https://img.shields.io/badge/OpenAI-2b204f?style=for-the-badge&logo=openai&logoColor=white" alt="OpenAI" />
-  <img alt="Static Badge" src="https://img.shields.io/badge/Only%20Office-2b204f?style=for-the-badge&logo=onlyoffice&logoColor=white">
-  <img alt="Static Badge" src="https://img.shields.io/badge/Groq-2b204f?style=for-the-badge&logo=groq&logoColor=white">
+  <img src="https://img.shields.io/badge/Only%20Office-2b204f?style=for-the-badge&logo=onlyoffice&logoColor=444444" alt="Only Office">
+  <img src="https://img.shields.io/badge/Groq-2b204f?style=for-the-badge&logo=groq&logoColor=white" alt="Groq">
+  <img src="https://img.shields.io/badge/Docker-2b204f?style=for-the-badge&logo=docker&logoColor=2496ED" alt="Docker" />
 </div>
-
-  
+<br>
+<div align="center">
+  <img src="https://img.shields.io/github/repo-size/colaola20/hirehub?style=social" alt="Repo size" />&nbsp;
+  <img src="https://img.shields.io/github/stars/colaola20/hirehub?style=social" alt="Stars" />&nbsp;
+  <img src="https://img.shields.io/github/issues/colaola20/hirehub?style=social" alt="Issues" />&nbsp;
+  <img src="https://img.shields.io/github/issues-pr/colaola20/hirehub?style=social" alt="PRs" />&nbsp;
+  <img src="https://img.shields.io/github/last-commit/colaola20/hirehub?style=social" alt="Last commit" />&nbsp;
+  <img src="https://img.shields.io/github/languages/top/colaola20/hirehub?style=social" alt="Top language" />&nbsp;
+  <img src="https://img.shields.io/github/languages/count/colaola20/hirehub?style=social" alt="Languages count" />
+</div>
+<br>
 
 
 **AI-Powered Job Application Platform**  
