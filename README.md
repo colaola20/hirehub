@@ -1,5 +1,4 @@
 ![HireHub_Logo](https://github.com/user-attachments/assets/21210dd0-b47d-46e5-bbd8-a030fbce33f0)
-
 <div>
   <p align="center">
     <strong>Apply smarter. Track faster. Get hired.</strong>
@@ -23,17 +22,13 @@
 <br>
 <div align="center">
   <img src="https://img.shields.io/github/stars/colaola20/hirehub?style=social" alt="Stars" />&nbsp;
+  <img src="https://img.shields.io/github/commit-activity/m/colaola20/hirehub?style=social" />
   <img src="https://img.shields.io/github/last-commit/colaola20/hirehub?style=social" alt="Last commit" />&nbsp;
   <img src="https://img.shields.io/github/languages/top/colaola20/hirehub?style=social" alt="Top language" />&nbsp;
 </div>
 <br>
-
-
-**AI-Powered Job Application Platform**  
-
-HireHub is an intelligent job search companion that helps job seekers apply faster and smarter. With AI-powered resume tailoring, personalized cover letters, job matching, application tracking, and cloud document storage — it's your complete end-to-end job search solution.
-
----
+<h2 align="center">HireHub is an AI-Powered Job Application Platform</h2>
+<p align="center">designed to support an intelligent job search by combining all the essential features needed for a smooth and successful process. These include a resume builder, an AI-powered matching and recommendation system, an application tracking dashboard, and document storage with an integrated editor. With everything in one place, users are always prepared to take advantage of new opportunities as they arise.</p>
 
 ## ✨ Key Features
 
