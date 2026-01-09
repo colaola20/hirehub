@@ -11,12 +11,13 @@
   <img src="https://img.shields.io/badge/React-2b204f?style=for-the-badge&logo=react&logoColor=61DAFB" alt="Rect"/>
   <img src="https://img.shields.io/badge/Vite-2b204f?style=for-the-badge&logo=vite&logoColor=646CFF" alt="Vite"/>
   <img src="https://img.shields.io/badge/CSS-2b204f?style=for-the-badge&logo=css&logoColor=F43059" alt="CSS" />
+  <img src="https://img.shields.io/badge/Flask-2b204f?style=for-the-badge&logo=flask&logoColor=3BABC3" alt="Flask" />
+  <img src="https://img.shields.io/badge/OpenAI-2b204f?style=for-the-badge&logo=openai&logoColor=white" alt="OpenAI" />
+  <img src="https://img.shields.io/badge/Groq-2b204f?style=for-the-badge&logo=groq&logoColor=white" alt="Groq">
   <img src="https://img.shields.io/badge/AWS%20S3-2b204f?style=for-the-badge&logo=amazons3&logoColor=white" alt="AWS S3" />
   <img src="https://img.shields.io/badge/AWS%20RDS-2b204f?style=for-the-badge&logo=amazonrds&logoColor=white" alt="AWS RDS" />
   <img src="https://img.shields.io/badge/PostgreSQL-2b204f?style=for-the-badge&logo=postgresql&logoColor=4169E1" alt="PostgreSQL" />
-  <img src="https://img.shields.io/badge/OpenAI-2b204f?style=for-the-badge&logo=openai&logoColor=white" alt="OpenAI" />
   <img src="https://img.shields.io/badge/Only%20Office-2b204f?style=for-the-badge&logo=onlyoffice&logoColor=444444" alt="Only Office">
-  <img src="https://img.shields.io/badge/Groq-2b204f?style=for-the-badge&logo=groq&logoColor=white" alt="Groq">
   <img src="https://img.shields.io/badge/Docker-2b204f?style=for-the-badge&logo=docker&logoColor=2496ED" alt="Docker" />
 </div>
 <br>
