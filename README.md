@@ -22,13 +22,9 @@
 </div>
 <br>
 <div align="center">
-  <img src="https://img.shields.io/github/repo-size/colaola20/hirehub?style=social" alt="Repo size" />&nbsp;
   <img src="https://img.shields.io/github/stars/colaola20/hirehub?style=social" alt="Stars" />&nbsp;
-  <img src="https://img.shields.io/github/issues/colaola20/hirehub?style=social" alt="Issues" />&nbsp;
-  <img src="https://img.shields.io/github/issues-pr/colaola20/hirehub?style=social" alt="PRs" />&nbsp;
   <img src="https://img.shields.io/github/last-commit/colaola20/hirehub?style=social" alt="Last commit" />&nbsp;
   <img src="https://img.shields.io/github/languages/top/colaola20/hirehub?style=social" alt="Top language" />&nbsp;
-  <img src="https://img.shields.io/github/languages/count/colaola20/hirehub?style=social" alt="Languages count" />
 </div>
 <br>
 
