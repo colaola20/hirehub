@@ -1,4 +1,24 @@
-# 🚀 HireHub
+![HireHub_Logo](https://github.com/user-attachments/assets/21210dd0-b47d-46e5-bbd8-a030fbce33f0)
+
+<div>
+  <p align="center">
+    <strong>Apply smarter. Track faster. Get hired.</strong>
+  </p>
+</div>
+
+<div align="center">
+  <img src="https://img.shields.io/badge/JavaScript-2b204f?style=for-the-badge&logo=javascript" alt="JavaScript"/>
+  <img src="https://img.shields.io/badge/React-2b204f?style=for-the-badge&logo=react&logoColor=61DAFB" alt="Rect"/>
+  <img src="https://img.shields.io/badge/Vite-2b204f?style=for-the-badge&logo=vite&logoColor=white" alt="Vite"/>
+  <img src="https://img.shields.io/badge/CSS-2b204f?style=for-the-badge&logo=css&logoColor=white" alt="CSS" />
+  <img src="https://img.shields.io/badge/AWS%20S3-2b204f?style=for-the-badge&logo=amazon-s3&logoColor=white" alt="AWS" />
+  <img src="https://img.shields.io/badge/AWS%20RDS-2b204f?style=for-the-badge&logo=amazon-aws&logoColor=white" alt="AWS" />
+  <img src="https://img.shields.io/badge/PostgreSQL-2b204f?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL" />
+  <img src="https://img.shields.io/badge/OpenAI-2b204f?style=for-the-badge&logo=openai&logoColor=white" alt="OpenAI" />
+</div>
+
+  
+
 
 **AI-Powered Job Application Platform**  
 Built with Flask, React, PostgreSQL & Groq
