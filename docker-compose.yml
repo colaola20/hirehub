@@ -65,17 +65,17 @@ services:
       timeout: 10s
       retries: 3
 
-  # Local PostgreSQL Database (for OnlyOffice)
-  postgres:
+  # Local PostgreSQL for OnlyOffice (cache only, documents stored in S3)
+  postgres-onlyoffice:
     image: postgres:15-alpine
-    container_name: hirehub-postgres
+    container_name: hirehub-postgres-onlyoffice
     restart: unless-stopped
     environment:
       - POSTGRES_DB=onlyoffice_db
       - POSTGRES_USER=onlyoffice_user
-      - POSTGRES_PASSWORD=local_dev_password
+      - POSTGRES_PASSWORD=onlyoffice_local_password
     volumes:
-      - postgres-data:/var/lib/postgresql/data
+      - postgres-onlyoffice-data:/var/lib/postgresql/data
     networks:
       - hirehub-network
     healthcheck:
@@ -94,11 +94,11 @@ services:
       - JWT_SECRET=local-dev-secret-change-in-production-min32chars
       - JWT_HEADER=Authorization
       - DB_TYPE=postgres
-      - DB_HOST=postgres
+      - DB_HOST=postgres-onlyoffice
       - DB_PORT=5432
       - DB_NAME=onlyoffice_db
       - DB_USER=onlyoffice_user
-      - DB_PWD=local_dev_password
+      - DB_PWD=onlyoffice_local_password
     volumes:
       - onlyoffice-data:/var/www/onlyoffice/Data
       - onlyoffice-logs:/var/log/onlyoffice
@@ -107,7 +107,7 @@ services:
     ports:
       - "8080:80"  # Direct access for testing
     depends_on:
-      postgres:
+      postgres-onlyoffice:
         condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost/healthcheck"]
@@ -141,6 +141,6 @@ networks:
 volumes:
   backend-uploads:
   nginx-logs:
-  postgres-data:
+  postgres-onlyoffice-data:
   onlyoffice-data:
   onlyoffice-logs:

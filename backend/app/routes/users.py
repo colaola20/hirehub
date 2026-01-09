@@ -9,6 +9,8 @@ from app.models.resume import Resume
 from app.models.skill import Skill
 from app.models.notification import Notification
 from app.models.favorite import Favorite
+from app.models.recommended_job import RecommendedJob
+from app.models.form import ResumeForm
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, unset_jwt_cookies
 from flask_mail import Message
 from app.extensions import mail
@@ -433,7 +435,16 @@ def delete_user():
         
         # Use set-based deletes (faster) and avoid loading objects into memory.
         # Adjust filters to match your FK fields (user_id or user_email).
+        # Delete resume_form records
+        if ResumeForm is not None:
+            db.session.query(ResumeForm).filter_by(user_id=user_id).delete(synchronize_session=False)
+
+
+        # Delete recommended_jobs first (this was missing!)
+        if RecommendedJob is not None:
+            db.session.query(RecommendedJob).filter_by(user_id=user_id).delete(synchronize_session=False)
         profile = Profile.query.filter_by(user_email=user.email).first()
+
         if profile:
             db.session.query(Skill).filter_by(profile_id=profile.profile_id).delete(synchronize_session=False)
         # Documents / CoverLetters may reference user by email
