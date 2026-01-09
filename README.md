@@ -34,11 +34,8 @@
 
 
 **AI-Powered Job Application Platform**  
-Built with Flask, React, PostgreSQL & Groq
 
 HireHub is an intelligent job search companion that helps job seekers apply faster and smarter. With AI-powered resume tailoring, personalized cover letters, job matching, application tracking, and cloud document storage — it's your complete end-to-end job search solution.
-
-[![GitHub](https://img.shields.io/badge/GitHub-Repository-blue)](https://github.com/colaola20/hirehub)
 
 ---
 
