@@ -30,6 +30,20 @@
 <h2 align="center">HireHub is an AI-Powered Job Application Platform</h2>
 <p align="center">designed to support an intelligent job search by combining all the essential features needed for a smooth and successful process. These include a resume builder, an AI-powered matching and recommendation system, an application tracking dashboard, and document storage with an integrated editor. With everything in one place, users are always prepared to take advantage of new opportunities as they arise.</p>
 
+## 🧭 Table of Contents
+- [🚀 Introduction](#-introduction)
+- [✨ Features](#-features)
+- [🧰 Tech Stack](#-tech-stack)
+- [🧭 How It Works](#-how-it-works)
+- [🖥️ Demo & Screenshots](#️-demo--screenshots)
+- [⚙️ Installation](#️-installation)
+- [▶️ Usage](#️-usage)
+- [🧪 Testing](#-testing)
+- [📚 Documentation](#-documentation)
+- [🤝 Contributing](#-contributing)
+- [🧑‍💻 Contributors](#-contributors)
+- [🙏 Acknowledgments](#-acknowledgments)
+
 ## ✨ Key Features
 
 ### 🔐 User Management & Security
