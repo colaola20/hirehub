@@ -124,7 +124,7 @@ body, .container {
   min-height: calc(100vh - var(--nav-h) - 120px);
   box-shadow: 0 8px 30px rgba(2,6,23,0.45);
   box-sizing: border-box;
-  height: 100%;
+  height: fit-content;
 
   /* background-color: red; */
   

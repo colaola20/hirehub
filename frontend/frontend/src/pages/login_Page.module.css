@@ -205,6 +205,19 @@
   text-decoration: none;
 }
 
+.forgotPs{
+  color:#4e7fff;;
+  font-weight: 400;
+  text-decoration: none;
+
+}
+
+.no-account .signUpLink {
+  color: #4e7fff;;
+  font-weight: 600;
+  text-decoration: none;
+}
+
 .login-info-section {
   flex: 1;
   background: #f9fbff;
@@ -269,3 +282,5 @@
     padding: 20px;
   }
 }
+
+

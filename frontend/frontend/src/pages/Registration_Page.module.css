@@ -5,6 +5,7 @@
   align-items: center;
   min-height: 100vh;
   padding: 16px;
+  
 }
 .container::before {
    content: "";
@@ -50,6 +51,7 @@
   box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   margin: auto;
+  
 }
 
 .register-form-section {
@@ -58,6 +60,7 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
+ 
 }
 
 .brand {
@@ -220,4 +223,71 @@
   .register-form-section {
     padding: 20px;
   }
+}
+
+
+
+/* Mobile Responsive */
+@media (max-width: 600px) {
+
+  .register-box{
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+   
+   
+  }
+
+  .register-info-section{
+    Width: 80%;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+  
+  }
+
+  .register-form-section{
+    border-radius: 10px;
+    Width: 80%;
+   
+  }
+
+  .brand{
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+  
+  }
+
+  .brand-text{
+    display: flex;
+    margin-bottom: 5%;
+
+  }
+
+  .brand-title{
+    padding-right: 40%;
+  }
+
+  .brand-tagline{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: 230px;
+    padding-right: 20%;
+    
+  }
+
+
+  .have-account{
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    font-size: 15px;
+  }
+
+
+
 }

@@ -111,11 +111,13 @@ const setInfoForModal = (title ,description) => {
         {/* Left Side: Registration Form */}
         <div className={styles["register-form-section"]}>
          <Link to="/" className={styles.brand} style={{ textDecoration: "none" }}>
+          
           <div className={styles.logo}>H</div>
           <div className={styles["brand-text"]}>
             <h2 className={styles["brand-title"]}>ireHub</h2>
             <p className={styles["brand-tagline"]}>Your AI Career Companion</p>
           </div>
+
         </Link>
 
 
@@ -185,7 +187,9 @@ const setInfoForModal = (title ,description) => {
             <img src={placeholderImg} alt="AI Assistant" />
           </div>
         </div>
+
       </div>
+
       {error && (
         <ErrorMessage
           title={errorTitle}

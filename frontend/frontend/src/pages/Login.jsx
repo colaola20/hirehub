@@ -85,6 +85,9 @@ const handleCloseError = () => {
     setErrorMessage(false);
   }
 
+  console.log(styles.signUpLink);
+
+  
   return (
   <div className={styles.container}>
     <div className={styles["login-box"]}>
@@ -162,12 +165,12 @@ const handleCloseError = () => {
         </form>
 
         <div className={styles["login-options"]}>
-          <Link to="/forgot_password">Forgot Password?</Link>
+          <Link className={styles.forgotPs} to="/forgot_password">Forgot Password?</Link>
         </div>
 
         <p className={styles["no-account"]}>
           <span style={{ color: "black" }}>Don’t have an account?</span>{" "}
-          <Link to="/registration">Sign up</Link>
+          <Link className={styles.signUpLink} to="/registration">Sign up</Link>
         </p>
       </div>
 
