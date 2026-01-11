@@ -189,6 +189,10 @@
   height: auto;
 }
 
+.hirehubtext{
+  display: none;
+}
+
 /* -------- Responsive Layouts -------- */
 @media (max-width: 1024px) {
   .register-box {
@@ -201,55 +205,110 @@
   }
 }
 
-@media (max-width: 600px) {
-  .register-box {
-    flex-direction: column;
-    border-radius: 0;
-    box-shadow: none;
-    height: auto;
-    min-height: 100vh;
-  }
-
-  .brand {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-  }
-
-  .logo {
-    margin-bottom: 10px;
-  }
-
-  .register-form-section {
-    padding: 20px;
-  }
-}
 
 
 
 /* Mobile Responsive */
+
+
+@media (max-width: 400px) {
+
+  
+  .register-form-section .brand{
+    display: flex;
+    flex-direction: row;
+
+  }
+
+ .register-form-section .brand-text{
+    display: flex;
+    margin-bottom: 5%;
+
+  }
+
+  .logo{
+    transform: translateY(15px);
+    
+  }
+
+  .brand-title{
+    display: none;
+  }
+
+ .register-form-section .brand-tagline{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin-left: 10%;
+    transform: translateY(-8px);
+  }
+
+  .hirehubtext{
+    display: flex;
+    padding-right: 5px;
+    
+  }
+
+
+}
+
+
+@media (max-width: 508px) {
+
+  .logo{
+    transform: translateY(15px);
+    
+  }
+
+  .brand-title{
+    display: none;
+  }
+
+ .register-form-section .brand-tagline{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin-left: 10%;
+    transform: translateY(-8px);
+  }
+
+  .hirehubtext{
+    display: flex;
+    padding-right: 5px;
+    
+  }
+  
+}
+
+
 @media (max-width: 600px) {
 
   .register-box{
     border-radius: 10px;
     display: flex;
     align-items: center;
-   
-   
+    height:50%;
+
   }
 
   .register-info-section{
-    Width: 80%;
     border-radius: 10px;
     display: flex;
-    align-items: center;
+    justify-content: flex-end;
+    padding: none;
+    margin-bottom: 6%;
+   
   
   }
 
   .register-form-section{
     border-radius: 10px;
     Width: 80%;
-   
+     display: flex;
+    justify-content: flex-start;
+    
   }
 
   .brand{

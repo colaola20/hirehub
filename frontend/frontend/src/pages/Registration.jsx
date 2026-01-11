@@ -113,6 +113,7 @@ const setInfoForModal = (title ,description) => {
          <Link to="/" className={styles.brand} style={{ textDecoration: "none" }}>
           
           <div className={styles.logo}>H</div>
+           <h2 className={styles.hirehubtext}>ireHub</h2>
           <div className={styles["brand-text"]}>
             <h2 className={styles["brand-title"]}>ireHub</h2>
             <p className={styles["brand-tagline"]}>Your AI Career Companion</p>
