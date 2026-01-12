@@ -74,7 +74,8 @@
   display:flex;
   align-items:center;     
   gap:12px;
-  flex-wrap:wrap;         
+  flex-wrap:wrap; 
+  margin-bottom: 2%;        
 }
 
 .logo{
@@ -112,7 +113,7 @@
 }
 
 .brand-tagline{
-  margin:6px 0 0;
+  margin:0 0 0;
   font-size:clamp(12px,2.2vw,18px);
   font-weight:600;
   color:#111;
@@ -260,27 +261,34 @@
 }
 
 @media (max-width: 600px) {
-  .login-box {
-    flex-direction: column;
-    border-radius: 0;
-    box-shadow: none;
-    height: auto;
-    min-height: 100vh;
+
+  .logo{
+    height:clamp(50px,15vw,80px);
+    width:clamp(50px,15vw,80px);
+    font-size:clamp(30px,10vw,5rem);
   }
 
-  .brand {
-    flex-direction: column;
-    align-items: center;
+.login-options{
+    font-size: 15px;
+}
+
+    .no-account{
     text-align: center;
+    justify-content: center;
+    align-items: center;
+    font-size: 15px;
   }
+
+}
+
+@media (max-width: 400px) {
 
   .logo {
-    margin-bottom: 10px;
+    height: clamp(40px, 20vw, 70px);
+    width: clamp(40px, 20vw, 70px);
+    font-size: clamp(25px, 12vw, 4rem);
   }
-
-  .login-form-section {
-    padding: 20px;
-  }
+  
 }
 
 
