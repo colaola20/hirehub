@@ -203,6 +203,12 @@
   .register-info-section {
     order: -1; /* move illustration above form */
   }
+
+
+
+
+
+
 }
 
 
@@ -213,7 +219,15 @@
 
 @media (max-width: 400px) {
 
-  
+  .register-form-section{
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+
   .register-form-section .brand{
     display: flex;
     flex-direction: row;
@@ -222,7 +236,7 @@
 
  .register-form-section .brand-text{
     display: flex;
-    margin-bottom: 5%;
+   
 
   }
 
@@ -240,8 +254,9 @@
     justify-content: center;
     align-items: center;
     text-align: center;
-    margin-left: 10%;
-    transform: translateY(-8px);
+    margin-left: 20%;
+    width: 200px;
+    transform: translateY(-15px);
   }
 
   .hirehubtext{
@@ -250,46 +265,25 @@
     
   }
 
-
-}
-
-
-@media (max-width: 508px) {
-
-  .logo{
-    transform: translateY(15px);
-    
-  }
-
-  .brand-title{
-    display: none;
-  }
-
- .register-form-section .brand-tagline{
-    display: flex;
+    .have-account{
+    text-align: center;
     justify-content: center;
     align-items: center;
-    text-align: center;
-    margin-left: 10%;
-    transform: translateY(-8px);
+    font-size: 15px;
   }
 
-  .hirehubtext{
-    display: flex;
-    padding-right: 5px;
-    
-  }
-  
+
 }
 
 
-@media (max-width: 600px) {
+@media (min-width: 401px) and (max-width: 507px){
 
   .register-box{
     border-radius: 10px;
     display: flex;
     align-items: center;
     height:50%;
+    
 
   }
 
@@ -297,24 +291,108 @@
     border-radius: 10px;
     display: flex;
     justify-content: flex-end;
-    padding: none;
+    align-items: center;   
+    margin-bottom: 6%;
+    text-align: center;
+   
+
+  }
+
+  .register-form-section{
+    border-radius: 10px;
+   
+    display: flex;
+ 
+ 
+  }
+
+
+  .brand{
+
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: row;
+    padding: 0;
+ 
+
+  }
+
+
+  .brand-text{
+    display: flex;
+    margin-bottom: 5%;
+ 
+  }
+
+  .logo{
+    transform: translateY(40px);
+    
+  }
+
+  .brand-title{
+    display: none;
+
+  }
+
+  .hirehubtext{
+    display: flex;
+    transform: translateY(20px);
+    
+  }
+
+  .brand-tagline{
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    width: 230px;
+    padding-right: 10px;
+  } 
+
+
+  .have-account{
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    font-size: 15px;
+  }
+
+  
+}
+
+
+@media (min-width: 508px) and (max-width: 600px) {
+
+  .register-box{
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    
+    
+  }
+
+  .register-info-section{
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
     margin-bottom: 6%;
    
   
   }
 
+
   .register-form-section{
     border-radius: 10px;
-    Width: 80%;
-     display: flex;
-    justify-content: flex-start;
-    
+    Width: 90%;
+    display: flex;
+
   }
 
   .brand{
 
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     flex-direction: row;
   
@@ -328,6 +406,7 @@
 
   .brand-title{
     padding-right: 40%;
+    
   }
 
   .brand-tagline{
@@ -336,6 +415,7 @@
     align-items: center;
     width: 230px;
     padding-right: 20%;
+   
     
   }
 
