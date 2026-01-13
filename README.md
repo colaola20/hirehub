@@ -173,7 +173,7 @@ https://github.com/user-attachments/assets/63f2ad33-f609-4881-b521-8edc7dad46e6
 4. Install all dependencies from requirements.txt, using python3 -m pip install -r requirements.txt command on Mac
 5. Install all npm dependencies, starting with nmp install command
 6. Create AWS accound for AWS services, including S3 storage. AWS provide credits for free start with their services.
-7. Create a .env file in teh backend folder:
+7. Create a .env file in the backend folder:
    
   DATABASE_URL=
 
