@@ -70,3 +70,9 @@
     pointer-events: auto;
     transform: translateY(0);
 }
+
+
+.dropDownMenu.onTop {
+  bottom: 100%; 
+  top: auto;    
+}

@@ -3,6 +3,7 @@
   width: 100%;
   min-height: 100vh;
   border-radius: 13px;
+ overflow: hidden;
 
 }
 
@@ -23,7 +24,7 @@
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
     color: #ffffff;
     transition: all 0.3s ease;
-     overflow: hidden;
+    overflow: hidden;
     
 }
 
@@ -70,6 +71,7 @@
   margin-bottom: 8px;
   color: #9aa4b2;
 }
+
 
 
 .separator {

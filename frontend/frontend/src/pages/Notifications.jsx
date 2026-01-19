@@ -13,63 +13,65 @@ export default function Notifications() {
   const [selectedItems, setSelectedItems] = useState(new Set());
   const [starred, setStarred] = useState(new Set());
 
-const fetchNotifications = async () => {
+  const fetchNotifications = async () => {
+    const cacheExists = localStorage.getItem("notificationsCache");
+    if (!cacheExists) {
+      setLoading(true);
+    }
 
-  const cacheExists = localStorage.getItem("notificationsCache");
-  if(!cacheExists){
-    setLoading(true);
-  }
-  
-  try {
-    const token = localStorage.getItem("token");
-    const res = await fetch("/api/notifications", {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch("/api/notifications", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
-    if (!res.ok) throw new Error("Failed to fetch");
+      if (!res.ok) throw new Error("Failed to fetch");
 
-    const data = await res.json();
-    const notificationsArray = Array.isArray(data) ? data : [];
-    setNotifications(notificationsArray);
+      const data = await res.json();
+      const notificationsArray = Array.isArray(data) ? data : [];
+      setNotifications(notificationsArray);
 
-    // save to localStorage cache
-    localStorage.setItem("notificationsCache", JSON.stringify(notificationsArray));
-  } catch (err) {
-    toast.error("Could not load notifications");
-  } finally {
-    setLoading(false);
-  }
-};
+      // save to localStorage cache
+      localStorage.setItem(
+        "notificationsCache",
+        JSON.stringify(notificationsArray)
+      );
+    } catch (err) {
+      toast.error("Could not load notifications");
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  // New function to manually refetch notifications
+  const refetchNotifications = async () => {
+    setLoading(true); // Always show loading on manual refetch
 
-// New function to manually refetch notifications
-const refetchNotifications = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch("/api/notifications", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
-  setLoading(true); // Always show loading on manual refetch
+      if (!res.ok) throw new Error("Failed to fetch");
 
-  try {
-    const token = localStorage.getItem("token");
-    const res = await fetch("/api/notifications", {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+      const data = await res.json();
+      const notificationsArray = Array.isArray(data) ? data : [];
+      setNotifications(notificationsArray);
 
-    if (!res.ok) throw new Error("Failed to fetch");
+      // save to localStorage cache
+      localStorage.setItem(
+        "notificationsCache",
+        JSON.stringify(notificationsArray)
+      );
+    } catch (err) {
+      toast.error("Could not load notifications");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    const data = await res.json();
-    const notificationsArray = Array.isArray(data) ? data : [];
-    setNotifications(notificationsArray);
-
-    // save to localStorage cache
-    localStorage.setItem("notificationsCache", JSON.stringify(notificationsArray));
-  } catch (err) {
-    toast.error("Could not load notifications");
-  } finally {
-    setLoading(false);
-  }
-};
-
-
-useEffect(() => {
+  useEffect(() => {
     const cached = localStorage.getItem("notificationsCache");
 
     if (cached) {
@@ -81,7 +83,6 @@ useEffect(() => {
     // This will update the display and overwrite the cache when the fetch completes.
     fetchNotifications();
   }, []); // Runs once on mount
-
 
   const markRead = async (id) => {
     try {
@@ -104,7 +105,6 @@ useEffect(() => {
   };
 
   const remove = async (id) => {
-
     try {
       const token = localStorage.getItem("token");
       const res = await fetch(`/api/notifications/${id}`, {
@@ -114,9 +114,7 @@ useEffect(() => {
 
       if (!res.ok) throw new Error("failed");
 
-      setNotifications((prev) =>
-        prev.filter((n) => n.notification_id !== id)
-      );
+      setNotifications((prev) => prev.filter((n) => n.notification_id !== id));
 
       toast.success("Deleted");
       if (selected?.notification_id === id) setSelected(null);
@@ -157,6 +155,7 @@ useEffect(() => {
 
   const openNotification = (n) => {
     setSelected(n);
+
     if (!n.is_read) markRead(n.notification_id);
   };
 
@@ -182,13 +181,12 @@ useEffect(() => {
   const getNotificationType = (n) => n?.type || n?.title || "Notification";
 
   const stripHTML = (html = "") => {
-  const div = document.createElement("div");
-  div.innerHTML = html;
-  return div.textContent || div.innerText || "";
-};
+    const div = document.createElement("div");
+    div.innerHTML = html;
+    return div.textContent || div.innerText || "";
+  };
 
-
-// --- UPDATED DATE FUNCTION ---
+  // --- UPDATED DATE FUNCTION ---
   const formatDate = (dateStr) => {
     if (!dateStr) return "";
 
@@ -196,7 +194,7 @@ useEffect(() => {
     // "2025-12-11 05:38:35" -> "2025-12-11T05:38:35"
     let cleanDateStr = dateStr.replace(" ", "T");
 
-    // 2. Ensure timezone indicator exists. 
+    // 2. Ensure timezone indicator exists.
     // If it has "+00:00", JS handles it fine, but appending Z to pure strings helps fallback.
     if (!cleanDateStr.endsWith("Z") && !cleanDateStr.includes("+")) {
       cleanDateStr = cleanDateStr + "Z";
@@ -204,73 +202,100 @@ useEffect(() => {
     const date = new Date(cleanDateStr);
 
     return date.toLocaleString("en-US", {
-    
       month: "short",
       day: "2-digit",
-      hour: "2-digit",  
-      second: "2-digit", 
+      hour: "2-digit",
+      second: "2-digit",
       minute: "2-digit",
       hour12: true,
     });
   };
 
   const toggleSelectAll = () => {
-  if (selectedItems.size === notifications.length) {
-    // All are selected → deselect
-    setSelectedItems(new Set());
-  } else {
-    // Select all
-    setSelectedItems(new Set(notifications.map(n => n.notification_id)));
-  }
-};
-
-const deleteAll = async () => {
-
-  try {
-    const token = localStorage.getItem("token");
-
-    for (let id of selectedItems) {
-      await fetch(`/api/notifications/${id}`, {
-        method: "DELETE",
-        headers: { Authorization: `Bearer ${token}` },
-      });
+    if (selectedItems.size === notifications.length) {
+      // All are selected → deselect
+      setSelectedItems(new Set());
+    } else {
+      // Select all
+      setSelectedItems(new Set(notifications.map((n) => n.notification_id)));
     }
+  };
 
-    // remove from UI
-  setNotifications((prev) => {
-    const updated = prev.map((n) =>
-      n.notification_id === id ? { ...n, is_read: true } : n
-    );
-    localStorage.setItem("notificationsCache", JSON.stringify(updated));
-    return updated;
-  });
+  const deleteAll = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      for (let id of selectedItems) {
+        await fetch(`/api/notifications/${id}`, {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${token}` },
+        });
+      }
+
+      // remove from UI
+      setNotifications((prev) => {
+        const updated = prev.map((n) =>
+          n.notification_id === id ? { ...n, is_read: true } : n
+        );
+        localStorage.setItem("notificationsCache", JSON.stringify(updated));
+        return updated;
+      });
+
+      setSelectedItems(new Set());
+      toast.success("Deleted all selected");
+      setSelected(null);
+    } catch (err) {
+      console.log(err);
+      toast.error("Could not delete all");
+    }
+  };
 
 
-    setSelectedItems(new Set());
-    toast.success("Deleted all selected");
-    setSelected(null);
-
-  } catch (err) {
-    console.log(err);
-    toast.error("Could not delete all");
-  }
-};
+  const testHTML = `
+  <p>This is test content.</p>
+  <p>This is test content.</p>
+  <p>This is test content.</p>
+  <p>This is test content.</p>
+  <p>This is test content.</p>
+    <p>This is test content.</p>
+  <p>This is test content.</p>
+  <p>This is test content.</p>
+  <p>This is test content.</p>
+  <p>This is test content.</p>
+    <p>This is test content.</p>
+  <p>This is test content.</p>
+  <p>This is test content.</p>
+  <p>This is test content.</p>
+  <p>This is test content.</p>
+    <p>This is test content.</p>
+  <p>This is test content.</p>
+  <p>This is test content.</p>
+  <p>This is test content.</p>
+  <p>This is test content.</p>
+`;
 
   return (
     <div className={styles.container}>
       {/* LEFT LIST */}
-      <div className={styles.listPanel}>
+      <div className={selected ? styles.listPanelSelected : styles.listPanel}>
         <div className={styles.inboxHeaderRow}>
-		<h2>Inbox ({unreadCount})</h2>
+          <h2>Inbox ({unreadCount})</h2>
 
-		<div className={styles.bulkActions}>
-			<button onClick={toggleSelectAll} className={styles.bulkButton}>Select All</button>
-			<button onClick={deleteAll} className={styles.bulkButton}>Delete</button>
-      <button onClick={refetchNotifications} className={styles.bulkButton}>
-        <FaSync />
-      </button>
-		</div>
-		</div>
+          <div className={styles.bulkActions}>
+            <button onClick={toggleSelectAll} className={styles.bulkButton}>
+              Select All
+            </button>
+            <button onClick={deleteAll} className={styles.bulkButton}>
+              Delete
+            </button>
+            <button
+              onClick={refetchNotifications}
+              className={styles.bulkButton}
+            >
+              <FaSync />
+            </button>
+          </div>
+        </div>
 
         <div className={styles.emailList}>
           {loading && <div className={styles.loading}>Loading…</div>}
@@ -278,25 +303,27 @@ const deleteAll = async () => {
           {!loading &&
             notifications.map((n) => (
               <div
-				key={n.notification_id}
-				onClick={() => {
-					openNotification(n);
-				
-				}}
-				className={`
+                key={n.notification_id}
+                onClick={() => {
+                  openNotification(n);
+                }}
+                className={`
 					${styles.emailRow} 
 					${!n.is_read ? styles.unread : ""} 
 					${selectedItems.has(n.notification_id) ? styles.selectedRow : ""}
 				`}
-				>
-				<input
-				type="checkbox"
-				checked={selectedItems.has(n.notification_id)}
-				onChange={(e) => {
-					e.stopPropagation();
-					toggleSelect(n.notification_id);
-				}}
-				/>
+              >
+                <div
+                  className={styles.checkboxContainer}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <input
+                    className={styles.checkBox}
+                    type="checkbox"
+                    checked={selectedItems.has(n.notification_id)}
+                    onChange={() => toggleSelect(n.notification_id)}
+                  />
+                </div>
 
                 <div className={styles.emailRowTop}>
                   <span className={styles.emailSender}>HireHub</span>
@@ -311,66 +338,67 @@ const deleteAll = async () => {
                   </span>
                   <span className={styles.emailPreview}>
                     {" "}
-                   — {stripHTML(getMessageText(n)).slice(0, 90)}
-					          {stripHTML(getMessageText(n)).length > 90 && "..."}
-
+                    — {stripHTML(getMessageText(n)).slice(0, 210)}
+                    {stripHTML(getMessageText(n)).length > 210 && "..."}
                   </span>
                 </div>
               </div>
             ))}
         </div>
       </div>
-{/* RIGHT PANEL */}
-<div className={styles.contentPanel}>
-  {selected ? (
-    <>
-      {/* Toolbar */}
-      <div className={styles.emailToolbar}>
-        <button
-          className={styles.toolbarButton}
-          onClick={() => remove(selected.notification_id)}
-        >
-          Delete
-        </button>
-        <button
-          className={styles.toolbarButton}
-          onClick={() => setSelected(null)}
-        >
-          Close
-        </button>
-      </div>
 
-      {/* Subject */}
-      <div className={styles.emailSubjectBar}>
-        {getNotificationType(selected)}
-      </div>
+      {/* RIGHT PANEL */}
+      {selected && (
+        <>
+          <div className={styles.contentPanel}>
+            {/* Toolbar */}
+            <div className={styles.emailToolbar}>
+              <button
+                className={styles.toolbarButton}
+                onClick={() => remove(selected.notification_id)}
+              >
+                Delete
+              </button>
+              <button
+                className={styles.toolbarButton}
+                onClick={() => setSelected(null)}
+              >
+                Close
+              </button>
+            </div>
 
-      {/* Sender Block */}
-      <div className={styles.emailHeader}>
-        <div className={styles.senderAvatar}>H</div>
+            {/* Subject */}
+            <div className={styles.emailSubjectBar}>
+              {getNotificationType(selected)}
+            </div>
 
-        <div className={styles.headerInfo}>
-          <span className={styles.senderName}>HireHub</span>
-          <span className={styles.senderEmail}>no-reply@hirehub.com</span>
-          <span className={styles.emailTimestamp}>
-            {/* {new Date(selected.created_at).toLocaleString()} */}
-            {formatDate(selected.created_at)}
-          </span>
-        </div>
-      </div>
+            {/* Sender Block */}
+            <div className={styles.emailHeader}>
+              <div className={styles.senderAvatar}>H</div>
 
-      {/* Email Body */}
-      <div
-		className="emailBody"
-		dangerouslySetInnerHTML={{ __html: selected.message }}
-	></div>
-    </>
-  ) : (
-    <div className={styles.noEmail}>
-      Select an email to read
-    </div>
-  )}
-</div>
+              <div className={styles.headerInfo}>
+                <span className={styles.senderName}>HireHub</span>
+                <span className={styles.senderEmail}>no-reply@hirehub.com</span>
+                <span className={styles.emailTimestamp}>
+                  {/* {new Date(selected.created_at).toLocaleString()} */}
+                  {formatDate(selected.created_at)}
+                </span>
+              </div>
+            </div>
+
+            {/* Email Body */}
+            <div
+              className="emailBody"
+              dangerouslySetInnerHTML={{ __html: (selected.message || "") }}
+            > 
+
+            </div>
+
+
+            
+          </div>
+        </>
+      )}
     </div>
   );
 }

@@ -465,6 +465,7 @@ def unified_notification_worker(app):
             print("🔥 Notification Worker Running")
 
             CHECK_INTERVAL_SECONDS = 43200  # 12 hours
+            # CHECK_INTERVAL_SECONDS = 3
             INACTIVITY_LIMIT = timedelta(hours=72)
 
             # Frequency → timedelta map

@@ -1,31 +1,50 @@
 /* MAIN CONTAINER — same as documents */
 .container {
   display: flex;
+
   width: 100%;
   height: 100%;
-  padding: 0;           /* REMOVE GAP */
-  margin: 0;            /* REMOVE GAP */
-  border-radius: 0;     /* REMOVE ROUNDED CORNERS */
+  padding: 0; /* REMOVE GAP */
+  margin: 0; /* REMOVE GAP */
+  border-radius: 0; /* REMOVE ROUNDED CORNERS */
   background: transparent !important; /* let parent gradient fill */
+  overflow: hidden;
 }
-
-
 
 /* LEFT PANEL — same blur + glass effect as documentsContainer */
 .listPanel {
-  width: 360px;
+  width: 100%;
   height: 100%;
   padding: 1.5rem;
   background: rgba(20, 15, 40, 0.75);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-radius: 12px;
-  box-shadow: 0 8px 30px rgba(0,0,0,0.3);
-  border: 1px solid rgba(255,255,255,0.05);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.05);
   display: flex;
   flex-direction: column;
   color: white;
   border-radius: 0 !important;
+  overflow: hidden;
+}
+
+/* when selected === true */
+.listPanelSelected {
+  width: 520px; /* fixed width */
+  height: 100%;
+  padding: 1.5rem;
+  background: rgba(20, 15, 40, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  flex-direction: column;
+  color: white;
+  border-radius: 0 !important;
+  overflow: hidden;
 }
 
 /* Inbox Title */
@@ -37,10 +56,11 @@
 
 /* Scrollable notifications list */
 .emailList {
-  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
   overflow-y: auto;
-  scrollbar-width: none;
-  
+  height: 960px;
 }
 
 .emailList::-webkit-scrollbar {
@@ -50,7 +70,7 @@
 /* Each notification row — same style as Documents table rows */
 .emailRow {
   padding: 14px 14px;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   cursor: pointer;
   transition: 0.2s ease;
   border-radius: 6px;
@@ -58,11 +78,11 @@
 }
 
 .emailRow:hover {
-  background: rgba(255,255,255,0.08);
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .unread {
-  background: rgba(255,255,255,0.12);
+  background: rgba(255, 255, 255, 0.12);
   font-weight: 600;
 }
 
@@ -70,13 +90,14 @@
   display: flex;
   justify-content: space-between;
   font-size: 14px;
-  color: rgba(255,255,255,0.85);
+  color: rgba(255, 255, 255, 0.85);
 }
 
 .emailRowBottom {
   margin-top: 4px;
   font-size: 13px;
-  color: rgba(255,255,255,0.65);
+  color: rgba(255, 255, 255, 0.65);
+  margin-bottom: 4px;
 }
 
 .emailSubject {
@@ -85,7 +106,7 @@
 }
 
 .emailPreview {
-  color: rgba(255,255,255,0.6);
+  color: rgba(255, 255, 255, 0.6);
 }
 
 /* RIGHT PANEL — matches documentsContainer exactly */
@@ -93,16 +114,23 @@
   flex: 1;
   padding: 2rem;
   background: rgba(20, 15, 40, 0.75);
+   -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-radius: 12px;
-  border: 1px solid rgba(255,255,255,0.05);
-  box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
   color: white;
   display: flex;
   flex-direction: column;
-  overflow-y: auto;
-  border-radius: 0 !important;
+  border-bottom-right-radius: 10px;
+  border-bottom-left-radius: 10px;
+  padding-bottom: 8%;
+  scrollbar-width: none; /* Firefox */
+
+
+}
+
+.contentPanel::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
 }
 
 /* Toolbar buttons — styled like documents dropdown */
@@ -115,8 +143,8 @@
 
 .toolbarButton {
   padding: 6px 14px;
-  background: rgba(255,255,255,0.12);
-  border: 1px solid rgba(255,255,255,0.18);
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: 8px;
   color: white;
   font-size: 14px;
@@ -125,15 +153,15 @@
 }
 
 .toolbarButton:hover {
-  background: rgba(255,255,255,0.22);
+  background: rgba(255, 255, 255, 0.22);
 }
 
 /* Subject bar */
 .emailSubjectBar {
-  background: rgba(255,255,255,0.08);
+  background: rgba(255, 255, 255, 0.08);
   padding: 18px 24px;
   border-radius: 10px;
-  border: 1px solid rgba(255,255,255,0.07);
+  border: 1px solid rgba(255, 255, 255, 0.07);
   font-size: 22px;
   font-weight: 600;
   margin-bottom: 1rem;
@@ -141,10 +169,10 @@
 
 /* Sender block */
 .emailHeader {
-  background: rgba(255,255,255,0.06);
+  background: rgba(255, 255, 255, 0.06);
   padding: 16px 24px;
   border-radius: 10px;
-  border: 1px solid rgba(255,255,255,0.05);
+  border: 1px solid rgba(255, 255, 255, 0.05);
   display: flex;
   gap: 14px;
   margin-bottom: 1.5rem;
@@ -176,20 +204,22 @@
 .senderEmail,
 .emailTimestamp {
   font-size: 13px;
-  color: rgba(255,255,255,0.7);
+  color: rgba(255, 255, 255, 0.7);
 }
 
 /* Body container */
 .emailBody {
   padding: 28px 32px;
-  background: rgba(255,255,255,0.10);
+  background: rgba(255, 255, 255, 0.1);
   border-radius: 12px;
-  border: 1px solid rgba(255,255,255,0.15);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   color: white;
   font-size: 15px;
   line-height: 1.7;
   white-space: pre-wrap;
   min-height: 300px;
+  height: fit-content;
+  overflow-y: auto;
 }
 
 /* Placeholder when no notification selected */
@@ -197,9 +227,10 @@
   flex: 1;
   display: flex;
   justify-content: center;
-  align-items: center;
-  color: rgba(255,255,255,0.6);
+  align-items: flex-start;
+  color: rgba(255, 255, 255, 0.8);
   font-size: 18px;
+  margin-top: 10%;
 }
 .inboxHeaderRow {
   display: flex;
@@ -221,8 +252,8 @@
 
 .bulkButton {
   padding: 6px 12px;
-  background: rgba(255,255,255,0.15);
-  border: 1px solid rgba(255,255,255,0.25);
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.25);
   border-radius: 8px;
   color: white;
   font-size: 13px;
@@ -231,26 +262,17 @@
 }
 
 .bulkButton:hover {
-  background: rgba(255,255,255,0.25);
+  background: rgba(255, 255, 255, 0.25);
 }
 .selectedRow {
   background: rgba(86, 47, 172, 0.25) !important;
   border-left: 4px solid #562fac;
 }
 
-.checkbox{
+.checkbox {
   width: 18px;
   height: 16px;
   cursor: pointer;
-}
-
-.checkboxContainer {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: 8px; 
-  flex-shrink: 0;
-  width: auto; 
 }
 
 .emailRow {
@@ -261,14 +283,24 @@
 }
 
 .checkboxContainer {
-  position: absolute;
-  top: 8px;       /* adjust */
-  right: 8px;     /* adjust */
-  
-  margin-bottom: 3px;
-  padding: 2px;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: flex-end;
+  width: 100%;
+  height: fit-content;
+  margin-left: 50%;
+  margin-bottom: 5px;
 }
 
-.checkboxContainer input {
+.checkBox {
+  width: 20px;
+  height: 15px;
+  border: 2px solid #999;
+  border-radius: 4px;
   cursor: pointer;
+}
+
+.checkBox:checked {
+  background-color: #4f46e5;
 }
