@@ -3,6 +3,7 @@ import Btn from '../buttons/Btn'
 import {Plus} from 'lucide-react'
 
 const JobComponent = ({ job, index, updateJobs, removeJob, removeable }) => {
+    
     return (
         <div className="job-form">
             <div className="jobInput">
@@ -10,30 +11,29 @@ const JobComponent = ({ job, index, updateJobs, removeJob, removeable }) => {
                     <input
                         type="text"
                         name='company'
-                        placeholder="Company Name *"
+                        placeholder="Company Name"
                         value={job.company}
                         onChange={(e) => updateJobs(index, e.target.name, e.target.value)}
-                        required
+                       
                     />
                 </div>
                 <div>   
                     <input
                         type="text"
                         name='role'
-                        placeholder="Position Title *"
+                        placeholder="Position Title"
                         value={job.role}
                         onChange={(e) => updateJobs(index, e.target.name, e.target.value)}
-                        required
+                       
                     />
                 </div>
                 <div>
                     <input
                         type="text"
                         name='roleTime'
-                        placeholder="Time Period *" // change this to a date picker later
+                        placeholder="Time Period" 
                         value={job.roleTime}
                         onChange={(e) => updateJobs(index, e.target.name, e.target.value)}
-                        required
                     />
                 </div>
             </div>
@@ -85,8 +85,8 @@ const JobStep = ({ formData, onChange, errors }) => { // JOB HISTORY INFO STEP /
     return (
         <div className="resume-form">
             <div className="title">
-                <h2>Relevant Experience</h2>
-                <p>Add Up To Three</p>
+                <h2>Professional Experience</h2>
+                <p>List your three last jobs</p>
             </div>
             <div className ="inputField">
                 {jobs.map((job, index) => (

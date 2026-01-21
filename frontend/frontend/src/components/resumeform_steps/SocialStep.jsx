@@ -7,7 +7,7 @@ const SocialStep = ({ formData, onChange, errors }) => ( // SOCIAL INFO STEP //
             <h2>Social Links</h2>
         </div>
         <div className="inputField">
-            <p>LinkedIn <span style={{ color: 'red', fontSize: '20px' }}> *</span></p>
+            <p>LinkedIn </p>
             <input
                 type="url"
                 name='linkedIn'
@@ -15,10 +15,10 @@ const SocialStep = ({ formData, onChange, errors }) => ( // SOCIAL INFO STEP //
                 value={formData.linkedIn}
                 onChange={onChange}
             />
-            {errors.linkedIn && <p style={{ color: 'red' }}>{errors.linkedIn}</p>}
+            {/* {errors.linkedIn && <p style={{ color: 'red' }}>{errors.linkedIn}</p>} */}
         </div>
         <div className="inputField">
-            <p>GitHub <span style={{ color: 'red', fontSize: '20px' }}> *</span></p>
+            <p>GitHub </p>
             <input
                 type="url"
                 name='github'
@@ -26,7 +26,7 @@ const SocialStep = ({ formData, onChange, errors }) => ( // SOCIAL INFO STEP //
                 value={formData.github}
                 onChange={onChange}
             />
-            {errors.github && <p style={{ color: 'red' }}>{errors.github}</p>}
+            {/* {errors.github && <p style={{ color: 'red' }}>{errors.github}</p>} */}
         </div>
         <div className="inputField">
             <p>Portfolio</p>
@@ -37,7 +37,7 @@ const SocialStep = ({ formData, onChange, errors }) => ( // SOCIAL INFO STEP //
                 value={formData.portfolio}
                 onChange={onChange}
             />
-            {errors.portfolio && <p style={{ color: 'red' }}>{errors.portfolio}</p>}
+            {/* {errors.portfolio && <p style={{ color: 'red' }}>{errors.portfolio}</p>} */}
         </div>
     </div>
 

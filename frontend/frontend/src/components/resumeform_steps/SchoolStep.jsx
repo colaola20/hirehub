@@ -10,37 +10,37 @@ const SchoolComponent = ({ school, index, updateSchools, removeSchool, removeabl
                     <input
                         type="text"
                         name='school'
-                        placeholder="School Name *"
+                        placeholder="School Name "
                         value={school.school}
                         onChange={(e) => updateSchools(index, e.target.name, e.target.value)}
-                        required
+                        
                     />
                 </div>
                 <div>
                     <input
                         type="text"
                         name='degree'
-                        placeholder="Degree *"
+                        placeholder="Degree "
                         value={school.degree}
                         onChange={(e) => updateSchools(index, e.target.name, e.target.value)}
-                        required
+                        
                     />
                 </div>
                 <div>
                     <input
                         type="text"
                         name='gradYear'
-                        placeholder="Graduation Year * (Or Estimated)"
+                        placeholder="Graduation Year "
                         value={school.gradYear}
                         onChange={(e) => updateSchools(index, e.target.name, e.target.value)}
-                        required
+                        
                     />
                 </div>
             </div>
             <div className="expirienceField">
                 <div className="removeBtnContainer">
                     {removeable && (
-                        <button type="button" onClick={() => removeSchool(index)}>Remove</button>
+                        <button className="removeButton" type="button" onClick={() => removeSchool(index)}>Remove</button>
                     )}
                 </div>
             </div>
@@ -49,6 +49,7 @@ const SchoolComponent = ({ school, index, updateSchools, removeSchool, removeabl
         </div>
     )
 };
+
 const SchoolStep = ({ formData, onChange, errors }) => { // SCHOOL HISTORY INFO STEP //
 
 

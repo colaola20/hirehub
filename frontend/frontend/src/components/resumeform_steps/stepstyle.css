@@ -11,6 +11,16 @@
     overflow: visible;
 }
 
+.resumeForm{
+
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+}
+
 .title {
     text-align: center;
 }
@@ -34,7 +44,7 @@
     display: flex;
     flex-direction: column;
     width: 100%;
-    margin-bottom: 5px;
+    margin-bottom: 4%;
 }
 
 .inputField p {
@@ -92,13 +102,11 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 10px;
-    margin: 10px;
-    gap: 10px;
     width: 100%;
     border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 14px;
     box-sizing: border-box;
+    margin-bottom: 20px;
 }
 
 .job-validation {
@@ -136,6 +144,16 @@
 
 .school-validation.show {
     display: flex;
+}
+
+.removeButton{
+    font-size: small;
+    background-color: rgba(0, 0, 0, 0.6);
+    
+}
+
+.removeButton:hover{
+    background-color: rgba(83, 83, 83, 0.3);
 }
 
 .project-form {
@@ -178,13 +196,21 @@
 
 .expirienceField{
     width: 100%;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow-y: auto;
+
 }
 
 .textArea{
-    width: 100%;
-    min-height: 80px;
-    max-height: 400px;
-    padding: 14px 16px;
+    width: 95%;
+    min-height: 200px;
+    max-height: 600px;
+    padding: 5% 2% 1% 2%;
+    text-align :left;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 10px;
@@ -193,6 +219,13 @@
     resize: vertical;    /* allow user resizing */
     box-sizing: border-box;
     white-space: pre-line;
+    overflow-y: auto;
+    scrollbar-width: none;  /* Firefox */
+}
+
+/* Chrome, Edge, Safari */
+.textArea::-webkit-scrollbar {
+  display: none;
 }
 
 .job-form {
@@ -201,12 +234,18 @@
     width: 100%;
 }
 
+
 .jobInput{
+    width: 95%;
+    height: 20%;
     display: flex;
     flex-direction: row;
-    gap: 10px;
-    justify-content: center;
+    justify-content: space-evenly;
+    align-items: center;
     box-sizing: border-box;
+    margin: 3%;
+    gap: 3%;
+    
 }
 
 /* Extra small devices */

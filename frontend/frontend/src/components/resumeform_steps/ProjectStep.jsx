@@ -35,7 +35,7 @@ const ProjectComponent = ({ project, index, updateProj, removeProj, removeable }
                 />
                 <div className="removeBtnContainer">
                     {removeable &&
-                        <button type="button" onClick={() => removeProj(index)}>Remove</button>
+                        <button className="removeButton" type="button" onClick={() => removeProj(index)}>Remove</button>
                     }
                 </div>
             </div>

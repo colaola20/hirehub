@@ -362,6 +362,7 @@ def html_to_docx(html_content):
                     doc.add_paragraph(line)
     
     return doc
+
 @resume_bp.route("/api/generate-docx", methods=['POST'])
 def generate_docx():
     """Convert resume HTML to DOCX format and download"""

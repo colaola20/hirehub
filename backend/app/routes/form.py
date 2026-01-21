@@ -23,18 +23,16 @@ def get_resume_form():
     # fetch existing form if it can
     resume_form = ResumeForm.query.filter_by(user_id=current_user_id).first()
 
-
-
     # getting skills from profile
-    profile = Profile.query.filter_by(user_email=user.email).first()
-    skills_list = []
-    if profile:
-        skills = Skill.query.filter_by(profile_id=profile.profile_id).all()
-        skills_list = [skill.skill_name for skill in skills]
+    # profile = Profile.query.filter_by(user_email=user.email).first()
+    # skills_list = []
+    # if profile:
+    #     skills = Skill.query.filter_by(profile_id=profile.profile_id).all()
+    #     skills_list = [skill.skill_name for skill in skills]
 
     if resume_form:
         saved = resume_form.to_dict()
-        print("DEBUG: resume_form.to_dict() =", saved)
+        # print("DEBUG: resume_form.to_dict() =", saved)
 
         mapped = {
             "step1": saved.get("personalInfo", {}),
@@ -47,10 +45,10 @@ def get_resume_form():
 
         # merge profile info if empty
         step1 = mapped["step1"]
-        step3 = mapped["step3"]
+        # step3 = mapped["step3"]
         step1["fullname"] = step1.get("fullname") or f"{user.first_name} {user.last_name}"
         step1["email"] = step1.get("email") or user.email
-        step3["skills"] = step3.get("skills") or skills_list
+        # step3["skills"] = step3.get("skills") 
 
         return jsonify(mapped), 200
 
@@ -71,10 +69,9 @@ def get_resume_form():
             "portfolio": ""
         },
         "step3": {
-            "skills": skills_list,
-            "languages": [],
-            "certs": [],
-            "interests": []
+            "skills": [] ,
+            "technicalSkills": [],
+            "certs": [] 
         },
         "step4": {
             "jobs": [

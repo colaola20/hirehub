@@ -1,102 +1,107 @@
-import React from 'react';
-import './stepstyle.css'
+import React from "react";
+import "./stepstyle.css";
 
-const PersonalStep = ({ formData, onChange, errors }) => (  // PERSONAL INFO STEP //
-    <div className="resume-form">
-        <div className="title">
-            <h2>Personal Information</h2>
-        </div>
-        <div className="inputField">
-            <p> Name <span style={{ color: 'red', fontSize: '20px' }}> *</span></p>
-            <input
-                
-                type="text"
-                name='fullname'
-                placeholder="Full Name"
-                value={formData.fullname}
-                onChange={onChange}
-            />
-        {errors.fullname && <p style={{ color: 'red' }}>{errors.fullname}</p>}
-        </div>
-        <div className="inputField">
-            <p>Email <span style={{ color: 'red', fontSize: '20px' }}> *</span></p>
-            <input
-                type="email"
-                name='email'
-                placeholder="Email"
-                value={formData.email}
-                onChange={onChange}
-                required
-            />
-            {errors.email && <p style={{ color: 'red' }}>{errors.email}</p>}
-        </div>
-        <div className="inputField">
-            <p>Phone Number <span style={{ color: 'red', fontSize: '20px' }}> *</span></p>
-            <input
-                type="text"
-                name='phNum'
-                placeholder="Phone Number"
-                value={formData.phNum}
-                onChange={onChange}
-                required
-            />
-            {errors.phNum && <p style={{ color: 'red' }}>{errors.phNum}</p>}
-        </div>
-        <div className="inputField">
-            <p>Location</p>
-        <div className="location-form">
-            <input
-                className='field-wrap'
-                type="text"
-                name='address'
-                placeholder="Address"
-                value={formData.address}
-                onChange={onChange}
-                required
-            />
-
-            {/* City */}
-            <input
-                className='field-wrap'
-                type="text"
-                name='city'
-                placeholder="City Name *"
-                value={formData.city}
-                onChange={onChange}
-                required
-            />
-        </div>
-        <div className="location-form">
-             {/* State */}
-            <input
-                className='field-wrap'
-                type="text"
-                name='state'
-                placeholder="State Name"
-                value={formData.state}
-                onChange={onChange}
-                required
-            />
-
-            {/* Zip */}
-            <input
-                className='field-wrap'
-                type="text"
-                name='zip'
-                placeholder="Zip Code"
-                value={formData.zip}
-                onChange={onChange}
-                required
-            />
-        </div>
-        <div className='location-validation'>
-            {errors.address && <p style={{ color: 'red' }}>{errors.address}</p>}
-            {errors.city && <p style={{ color: 'red' }}>{errors.city}</p>}
-            {errors.state && <p style={{ color: 'red' }}>{errors.state}</p>}
-            {errors.zip && <p style={{ color: 'red' }}>{errors.zip}</p>}
-        </div>
-        </div>
+const PersonalStep = (
+  { formData, onChange, errors }, // PERSONAL INFO STEP //
+) => (
+  <div className="resume-form">
+    <div className="title">
+      <h2>Personal Information</h2>
     </div>
+    <div className="inputField">
+      <p>
+        {" "}
+        Name <span style={{ color: "red", fontSize: "20px" }}> *</span>
+      </p>
+      <input
+        type="text"
+        name="fullname"
+        placeholder="Full Name"
+        value={formData.fullname}
+        onChange={onChange}
+      />
+      {errors.fullname && <p style={{ color: "red" }}>{errors.fullname}</p>}
+    </div>
+    <div className="inputField">
+      <p>
+        Email <span style={{ color: "red", fontSize: "20px" }}> *</span>
+      </p>
+      <input
+        type="email"
+        name="email"
+        placeholder="Email"
+        value={formData.email}
+        onChange={onChange}
+        
+      />
+      {errors.email && <p style={{ color: "red" }}>{errors.email}</p>}
+    </div>
+    <div className="inputField">
+      <p>Phone Number </p>
+      <input
+        type="text"
+        name="phNum"
+        placeholder="Phone Number"
+        value={formData.phNum}
+        onChange={onChange}
+      />
+      {/* {errors.phNum && <p style={{ color: "red" }}>{errors.phNum}</p>} */}
+    </div>
+    <div className="inputField">
+      <p>Location</p>
+      <div className="location-form">
+        <input
+          className="field-wrap"
+          type="text"
+          name="address"
+          placeholder="Address"
+          value={formData.address}
+          onChange={onChange}
+          
+        />
+
+        {/* City */}
+        <input
+          className="field-wrap"
+          type="text"
+          name="city"
+          placeholder="City Name"
+          value={formData.city}
+          onChange={onChange}
+          
+        />
+      </div>
+      <div className="location-form">
+        {/* State */}
+        <input
+          className="field-wrap"
+          type="text"
+          name="state"
+          placeholder="State Name"
+          value={formData.state}
+          onChange={onChange}
+          
+        />
+
+        {/* Zip */}
+        <input
+          className="field-wrap"
+          type="text"
+          name="zip"
+          placeholder="Zip Code"
+          value={formData.zip}
+          onChange={onChange}
+          
+        />
+      </div>
+      <div className="location-validation">
+        {errors.address && <p style={{ color: "red" }}>{errors.address}</p>}
+        {errors.city && <p style={{ color: "red" }}>{errors.city}</p>}
+        {errors.state && <p style={{ color: "red" }}>{errors.state}</p>}
+        {errors.zip && <p style={{ color: "red" }}>{errors.zip}</p>}
+      </div>
+    </div>
+  </div>
 );
 
 export default PersonalStep;
