@@ -19,6 +19,7 @@ import Confirmation from "../components/UsersMessages/Confirmation";
 import styles from "./resumeform.module.css";
 
 import { ChevronRight, ChevronLeft } from "lucide-react";
+import ResumeTemplate from "../components/resumeform_steps/ResumeTemplate";
 
 const ResumeForm = () => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -393,7 +394,7 @@ const ResumeForm = () => {
                     },
                     body: JSON.stringify(formData),
                   });
-                  
+
                   const aiData = await aiResponse.json();
 
 
@@ -462,6 +463,8 @@ const ResumeForm = () => {
                 onChange={handleInputChange}
                 errors={errors}
               />
+              
+            
             )}
             {currentStep === 7 && <ResumeViewStep backendData={formData} />}
           </div>

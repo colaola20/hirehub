@@ -474,10 +474,13 @@ const ResumeViewStep = ({ backendData }) => {
 
   return (
     <div className="resume-form">
+      
       <div className="title">
         <h2>Resume Preview</h2>
       </div>
+
       <div className={style.resumeScaler}>
+        {false && (
         <div id="resume-container">
           {/* PDF Preview */}
           <div
@@ -487,7 +490,6 @@ const ResumeViewStep = ({ backendData }) => {
               padding: "20px",
               display: "flex",
               justifyContent: "center",
-            
             }}
           >
             <div
@@ -517,12 +519,17 @@ const ResumeViewStep = ({ backendData }) => {
                         }
                     `}</style>
 
-          {/* {console.log("Rendering ResumeTemplate with HTML:", aiResumeHTML)}
-                    <ResumeTemplate resumeHTML={aiResumeHTML} /> */}
+          {/* {console.log("Rendering ResumeTemplate with HTML:", aiResumeHTML)} */}
+          {console.log(
+            "Rendering ResumeTemplate with backendData:",
+            backendData,
+          )}
         </div>
+        )}
+
+        <ResumeTemplate data={backendData} />
       </div>
 
-      {/* hidden file inputs for upload */}
       <input
         type="file"
         ref={resumeInputRef}
