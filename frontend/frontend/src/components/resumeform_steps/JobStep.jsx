@@ -7,31 +7,34 @@ const JobComponent = ({ job, index, updateJobs, removeJob, removeable }) => {
     return (
         <div className="job-form">
             <div className="jobInput">
-                <div>
+                <div className="InputDiv">
+                    <p> Company Name</p>
                     <input
                         type="text"
                         name='company'
-                        placeholder="Company Name"
+                        placeholder="Google"
                         value={job.company}
                         onChange={(e) => updateJobs(index, e.target.name, e.target.value)}
                        
                     />
                 </div>
-                <div>   
+                <div className="InputDiv">
+                    <p> Position Title</p>
                     <input
                         type="text"
                         name='role'
-                        placeholder="Position Title"
+                        placeholder="Supervisor"
                         value={job.role}
                         onChange={(e) => updateJobs(index, e.target.name, e.target.value)}
                        
                     />
                 </div>
-                <div>
+                <div className="InputDiv">
+                    <p> Time Period</p>
                     <input
                         type="text"
                         name='roleTime'
-                        placeholder="Time Period" 
+                        placeholder="Time Period (e.g. 2020 - Present)" 
                         value={job.roleTime}
                         onChange={(e) => updateJobs(index, e.target.name, e.target.value)}
                     />

@@ -15,6 +15,7 @@ import JobStep from "../components/resumeform_steps/JobStep";
 import SchoolStep from "../components/resumeform_steps/SchoolStep";
 import ProjectStep from "../components/resumeform_steps/ProjectStep";
 import Confirmation from "../components/UsersMessages/Confirmation";
+import Loader from "../components/Loaders/ResumeGeneratorLoader";
 
 import styles from "./resumeform.module.css";
 
@@ -25,7 +26,8 @@ const ResumeForm = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [errors, setErrors] = useState({});
   const contentRef = useRef(null);
- 
+  const [showloader, setLoaderVisible] = useState(false);
+
   const [formData, setFormData] = useState({
     /* ---PERSONAL INFO--- */
     step1: {
@@ -50,7 +52,7 @@ const ResumeForm = () => {
     step3: {
       skills: "",
       technicalSkills: "",
-      certs: ""
+      certs: "",
     },
 
     /* ---MAIN SECTIONS--- */
@@ -85,7 +87,7 @@ const ResumeForm = () => {
       step3: {
         skills: toArray(safe3.skills),
         technicalSkills: toArray(safe3.technicalSkills),
-        certs: toArray(safe3.certs)
+        certs: toArray(safe3.certs),
       },
     };
 
@@ -98,7 +100,6 @@ const ResumeForm = () => {
       body: JSON.stringify(payload),
     });
     const data = await response.json();
-  
   };
 
   // pull info from user profile to prefill form
@@ -110,7 +111,6 @@ const ResumeForm = () => {
     })
       .then((response) => {
         if (!response.ok) {
-         
           return null;
         }
         return response.json();
@@ -118,7 +118,6 @@ const ResumeForm = () => {
       .then((data) => {
         if (!data) return;
 
-       
         const step3 = data.step3 || {};
         const formattedStep3 = {
           skills: Array.isArray(step3.skills)
@@ -141,11 +140,9 @@ const ResumeForm = () => {
           step6: { ...prev.step6, ...(data.step6 || {}) },
           aiResumeText: prev.aiResumeText || data.aiResumeText || "",
         }));
-
-       
       })
-      .catch((err) => {3
-
+      .catch((err) => {
+        3;
       });
   }, []);
 
@@ -160,7 +157,6 @@ const ResumeForm = () => {
 
       const newHeight = contentRef.current.scrollHeight;
       const padding = 65;
-      
     }
   }, [
     currentStep,
@@ -169,7 +165,6 @@ const ResumeForm = () => {
     formData.step6?.projects?.length,
     errors,
   ]);
-
 
   //validation
 
@@ -343,7 +338,6 @@ const ResumeForm = () => {
           skills: toArray(safeStep3.skills),
           technicalSkills: toArray(safeStep3.technicalSkills),
           certs: toArray(safeStep3.certs),
-          
         },
       };
 
@@ -357,11 +351,9 @@ const ResumeForm = () => {
       });
 
       const data = await response.json();
-     
+
       return data;
-    } catch (error) {
-    
-    }
+    } catch (error) {}
   };
 
   return (
@@ -382,10 +374,12 @@ const ResumeForm = () => {
           {currentStep === 6 && (
             <Btn
               label={"Generate"}
+              disabled={showloader}
               onClick={async () => {
-                const response = await submitForm();
+                setLoaderVisible(true);
 
                 try {
+                  submitForm();
                   const aiResponse = await fetch("/api/generate_resume", {
                     method: "POST",
                     headers: {
@@ -394,33 +388,25 @@ const ResumeForm = () => {
                     },
                     body: JSON.stringify(formData),
                   });
-
                   const aiData = await aiResponse.json();
-
-
                   if (aiData.resume_text) {
                     setFormData((prev) => ({
                       ...prev,
                       aiResumeText: aiData.resume_text,
                     }));
-                  } else {
-                 
                   }
+                  setCurrentStep(7);
                 } catch (error) {
-                 
+                } finally {
+                  setLoaderVisible(false);
                 }
-
-                setCurrentStep(7);
               }}
             />
           )}
           {currentStep === 7 && <span className={styles.placeholder}></span>}
         </div>
 
-        <div
-          className={styles["resume-form-container"]}
-         
-        >
+        <div className={styles["resume-form-container"]}>
           <div ref={contentRef} className="resumeForm">
             {currentStep === 1 && (
               <PersonalStep
@@ -463,8 +449,6 @@ const ResumeForm = () => {
                 onChange={handleInputChange}
                 errors={errors}
               />
-              
-            
             )}
             {currentStep === 7 && <ResumeViewStep backendData={formData} />}
           </div>
@@ -490,6 +474,8 @@ const ResumeForm = () => {
           </div>
         </div>
       </div>
+
+      {showloader && <Loader />}
     </div>
   );
 };
