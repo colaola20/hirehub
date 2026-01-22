@@ -98,7 +98,7 @@
 }
 
 .resume-form-container {
-    width: 90%;
+    width: 100%;
     max-width: 1200px;
     transition: height 0.35s ease;
     display: flex;
@@ -116,7 +116,9 @@
     position: relative;
     z-index: 1;
     overflow-y: auto;
+   
 }
+
 
 .progress-indicator {
     font-weight: 400;
@@ -133,6 +135,7 @@
 }
 
 /* --------- MODAL STYLES --------- */
+
 
 .resumeFormModalOverlay {
     position: fixed;

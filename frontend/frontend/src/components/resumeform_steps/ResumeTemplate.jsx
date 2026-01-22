@@ -2,6 +2,7 @@ import React from "react";
 import styles from "./resumeview.module.css";
 
 const ResumeTemplate = ({ data = {} }) => {
+
   const {
     step1 = {},
     step2 = {},
@@ -15,33 +16,27 @@ const ResumeTemplate = ({ data = {} }) => {
   const education = step5.education || [];
   const projects = step6.projects || [];
 
-  const formatList = (value) => {
-    if (!value) return "";
-    if (Array.isArray(value)) return value.join(", ");
-    return value;
-  };
-
   return (
     <div className={styles.resume}>
       {/* HEADER */}
       <header className={styles.header}>
         <h2>{step1.fullname}</h2>
         <div className={styles.contactInfo}>
-            <p className={styles.contact}>
+          <p className={styles.contact}>
             {[
-                step1.email,
-                step1.phNum,
-                step2.linkedIn,
-                step2.github,
-                step2.portfolio, 
-                step1.address,
-                step1.city,
-                step1.state,
-                step1.zipcode
+              step1.email,
+              step1.phNum,
+              step2.linkedIn,
+              step2.github,
+              step2.portfolio,
+              step1.address,
+              step1.city,
+              step1.state,
+              step1.zipcode,
             ]
-                .filter(Boolean)
-                .join(" | ")}
-            </p>
+              .filter(Boolean)
+              .join(" | ")}
+          </p>
         </div>
       </header>
 
@@ -52,10 +47,9 @@ const ResumeTemplate = ({ data = {} }) => {
           {education.map((edu, index) => (
             <div key={index} className={styles.entry}>
               <p>
-                <strong>{edu.school}</strong> 
-               
+                <strong>{edu.school}</strong>
               </p>
-              <p className= {styles.schoolDetails}> 
+              <p className={styles.schoolDetails}>
                 {edu.degree}
                 {edu.gradYear && ` , ${edu.gradYear}`}
               </p>
@@ -73,8 +67,9 @@ const ResumeTemplate = ({ data = {} }) => {
               <p>
                 • <strong>{proj.projTitle}</strong>
               </p>
-              {proj.projDesc && <p className={styles.projectDescription}>{proj.projDesc}</p>}
-
+              {proj.projDesc && (
+                <p className={styles.projectDescription}>{proj.projDesc}</p>
+              )}
             </div>
           ))}
         </section>
@@ -87,7 +82,10 @@ const ResumeTemplate = ({ data = {} }) => {
           {jobs.map((job, index) => (
             <div key={index} className={styles.entry}>
               <p>
-                <strong>{job.company}</strong> — <span style={{fontStyle: 'italic'}}>{job.role}, {job.roleTime}</span>
+                <strong>{job.company}</strong> —{" "}
+                <span style={{ fontStyle: "italic" }}>
+                  {job.role}, {job.roleTime}
+                </span>
               </p>
               {job.jobDescription && <p>• {job.jobDescription}</p>}
             </div>
@@ -100,12 +98,12 @@ const ResumeTemplate = ({ data = {} }) => {
         <h3>Skills</h3>
         {step3.technicalSkills && (
           <p>
-            <strong>Technical Skills:</strong> {formatList(step3.technicalSkills)}
+            <strong>Technical Skills:</strong>{step3.technicalSkills.join(", ")}
           </p>
         )}
         {step3.skills && (
           <p>
-            <strong>Soft Skills:</strong> {formatList(step3.skills)}
+            <strong>Soft Skills:</strong> {step3.skills.join(",")}
           </p>
         )}
       </section>
@@ -114,7 +112,7 @@ const ResumeTemplate = ({ data = {} }) => {
       {step3.certs && (
         <section>
           <h3>Certifications</h3>
-          <p>{formatList(step3.certs)}</p>
+          <p>{step3.certs.join(",")}</p>
         </section>
       )}
     </div>

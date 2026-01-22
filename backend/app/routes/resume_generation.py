@@ -29,161 +29,44 @@ s3_client = boto3.client(
 )
 
 
-@resume_bp.route("/api/generate_resume", methods=['POST'])
-def generate_resume():
+@resume_bp.route("/api/generate_resume", methods=["POST"])
+def generate_resume_json():
     if not OPENAI_API_KEY:
         return jsonify({"error": "OPENAI_API_KEY not set"}), 500
 
-    form_data = request.get_json()
-    if not form_data:
+    raw_data = request.get_json()
+    if not raw_data:
         return jsonify({"error": "No form data provided"}), 400
 
-    # Professional Resume Design - Exact Template Match
+    data = raw_data
+
+    # SYSTEM PROMPT: JSON output only, improve wording & bullet points
     system_prompt = """
-You are a resume HTML generator. Generate ONLY pure HTML code with embedded CSS.
+You are a professional resume JSON generator. You must output a JSON object ONLY in the following format:
 
-CRITICAL REQUIREMENTS:
-- Output ONLY HTML, nothing else
-- Start with <!DOCTYPE html>
-- Include <html>, <head>, <body> tags
-- Put all CSS in <style> tag in <head>
-- NO markdown, NO backticks, NO code fences
-- NO explanations before or after
-- White background (#ffffff)
-- Black text (#000000)
-- Arial font
-- Professional traditional resume layout
-- Left AND RIGHT margin/padding: 40-50px for indentation
-- Font size: 11-12px for body text, slightly larger for headers
-- ONLY INCLUDE SECTIONS THAT HAVE DATA - skip empty sections
+{
+  step1: {...},
+  step2: {...},
+  step3: {...},
+  step4: { jobs: [...] },
+  step5: { education: [...] },
+  step6: { projects: [...] }
+}
 
-EXACT LAYOUT PATTERN:
-1. NAME (large 20px, bold, centered)
-2. Location • Email (centered, 11px)
-3. Phone • LinkedIn URL (centered, 11px)
-4. BLANK LINE
-
-SECTION HEADERS (ONLY capitalize first letter, NOT all caps):
-Education
-Relevant Experience
-Additional Experience
-Community Involvement
-Projects
-Skills Summary
-Certifications
-
-STRUCTURE FOR EACH SECTION:
-- Section Title: Title Case (not ALL CAPS), bold, followed by horizontal line (full width, 1px solid black)
-- Company/School/Project: **Bold**, City, State (or project details) - format with HTML <b> tags, NO asterisks
-- Position/Degree/Project Title: Position title, Duration/Dates
-- Bullets: · Detailed bullet point (2-3 lines describing responsibilities and achievements)
-- Spacing: Single line between entries, blank line before next section
-- Left padding: 40px
-- Right padding: 40px
-- Total body width with padding: 816px (8.5 inches)
-
-PROJECTS SECTION FORMAT (if projects exist):
-Project Name (bold, no asterisks)
-Project description or link
-· Achievement/detail about project
-· Technology used / impact
-
-SKILLS SECTION FORMAT:
-Technical Skills: item1, item2, item3
-Social Media: item1, item2, item3
-Soft Skills: item1, item2, item3
-Languages: item1, item2
-
-CSS REQUIREMENTS:
-- body: background white, color black, font Arial 11pt, max-width 816px
-- Page width: 8.5 x 11 inches (816px)
-- Margins: 0.5 inch all sides (40px left and right)
-- Left AND right padding on all content: 40px
-- Section headers: bold, Title Case, with horizontal line below (1px solid black)
-- Company/School/Project names: bold
-- No colors, pure black and white
-- Line spacing: 1.4 for body content
-- Horizontal lines: full width, 1px solid black
-- Hide/skip sections with no data
-
-OUTPUT ONLY THE HTML CODE STARTING WITH <!DOCTYPE html>
+Rules:
+1. Only include entries that have actual data.
+2. For jobs and projects, if the description is missing or minimal, generate 2-4 professional, detailed bullet points.
+3. Improve wording, grammar, and professionalism for all fields.
+4. Do not output HTML or markdown. JSON only.
+5. Ensure step3 fields are arrays. All other fields are strings/objects.
+6. Do not add extra keys or metadata.
+7. Output valid JSON.
 """
 
     user_prompt = f"""
-Generate a professional resume in HTML/CSS matching this EXACT layout:
+Generate a professional resume JSON object using the following user data:
 
-NAME (centered, large bold)
-Location, State • email@domain.com (centered)
-Phone • LinkedIn URL (centered)
-
-[ONLY INCLUDE SECTIONS BELOW IF THEY HAVE DATA - SKIP EMPTY SECTIONS]
-
-Education
-[with horizontal line below]
-
-Relevant Experience
-[with horizontal line below]
-
-Additional Experience
-[with horizontal line below]
-
-Community Involvement
-[with horizontal line below]
-
-Projects
-[with horizontal line below]
-
-Skills Summary
-[Technical Skills, Social Media, Soft Skills, Languages]
-
-Certifications
-[with horizontal line below]
-
-Data to use:
-{json.dumps(form_data, indent=2)}
-
-IMPORTANT RULES:
-1. Only display sections that have actual data
-2. Skip/hide sections with no data (e.g., if no certifications, don't show certifications section)
-3. Include Projects section if projects exist
-4. Create detailed, professional bullet points for EVERY job and project
-
-JOB DESCRIPTION GENERATION:
-Create detailed, professional bullet points for EVERY job entry. If description is minimal or empty:
-
-For specific job titles, generate relevant bullets:
-- "Data Analyst" → "• Analyzed large datasets using SQL and Python to identify business trends and opportunities for improvement", "• Created comprehensive reports and visualizations to present findings to senior management", "• Collaborated with cross-functional teams to implement data-driven solutions improving efficiency by 15%"
-
-- "Software Developer" → "• Designed and developed full-stack web applications using modern technologies and best practices", "• Debugged complex issues and optimized code performance, reducing load times by 20%", "• Participated in code reviews and mentored junior developers on coding standards and design patterns"
-
-- "Marketing Intern" → "• Assisted in planning and executing integrated marketing campaigns across multiple channels", "• Conducted market research and competitor analysis to inform marketing strategy", "• Created engaging content for social media and marketing materials, increasing engagement by 25%"
-
-- "Sales Associate" → "• Provided excellent customer service and product expertise to drive sales and customer satisfaction", "• Exceeded monthly sales targets consistently through effective upselling and relationship building", "• Processed transactions accurately and maintained store displays to ensure positive shopping experience"
-
-PROJECTS GENERATION:
-For each project, include:
-- **Project Name** (bold)
-- Brief description or technologies used
-- 2-3 bullet points with achievements and impact
-
-Requirements:
-1. White background, black text, Arial font, 11-12pt
-2. Centered name at top (large, bold ~20px)
-3. Contact info centered below name (location • email, then phone • linkedin)
-4. Section headers: Title Case (not ALL CAPS) with horizontal line below
-5. Format: Company/School/Project Name in bold (use <b> HTML tags), City, State - NO ASTERISKS
-6. Position/degree/project details on second line
-7. 3-4 detailed bullet points with · symbol for each entry
-8. Skills: "Technical Skills: x, y, z" format
-9. Left AND right padding on all content: 40px
-10. One page layout
-11. ONLY INCLUDE SECTIONS WITH DATA - skip empty sections
-12. Include Projects section if projects exist
-13. Project names should be bold with NO asterisks (use HTML <b> tags)
-14. Company names AND locations should be bold
-
-Output ONLY the complete HTML code starting with <!DOCTYPE html>
-Do NOT include backticks, markdown, explanations, or code fences.
+{json.dumps(data, indent=2)}
 """
 
     headers = {
@@ -197,171 +80,31 @@ Do NOT include backticks, markdown, explanations, or code fences.
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_prompt}
         ],
-        "temperature": 0.6,
-        "max_tokens": 2000,
-        "stream": False
+        "temperature": 0.5,
+        "max_tokens": 1000
     }
 
     try:
         res = requests.post(OPENAI_URL, headers=headers, json=payload)
         res.raise_for_status()
-        data = res.json()
+        ai_data = res.json()
 
-        ai_text = data.get("choices", [{}])[0].get("message", {}).get("content", "")
-
+        # Extract JSON from AI output
+        ai_text = ai_data.get("choices", [{}])[0].get("message", {}).get("content", "")
         if not ai_text:
-            return jsonify({
-                "error": "No resume text returned from AI",
-                "details": data
-            }), 500
+            return jsonify({"error": "No resume text returned from AI", "details": ai_data}), 500
 
-        return jsonify({
-            "message": "Resume generated successfully",
-            "resume_text": ai_text
-        }), 200
+        # Parse AI JSON safely
+        try:
+            ai_json = json.loads(ai_text)
+        except Exception as e:
+            return jsonify({"error": "AI returned invalid JSON", "details": str(e), "raw": ai_text}), 500
+
+        return jsonify({"message": "Resume JSON generated successfully", "resume_json": ai_json}), 200
 
     except Exception as e:
-        return jsonify({
-            "error": "Failed to generate resume",
-            "details": str(e)
-        }), 500
+        return jsonify({"error": "Failed to generate resume JSON", "details": str(e)}), 500
 
-
-def html_to_docx(html_content):
-    """Convert resume HTML to professionally formatted DOCX document"""
-    from docx import Document
-    from docx.shared import Pt, RGBColor, Inches
-    from docx.enum.text import WD_ALIGN_PARAGRAPH
-    from bs4 import BeautifulSoup
-    import re
-    
-    doc = Document()
-    doc.core_properties.author = "HireHub Resume Builder"
-    
-    # Set document margins
-    sections = doc.sections
-    for section in sections:
-        section.top_margin = Inches(0.5)
-        section.bottom_margin = Inches(0.5)
-        section.left_margin = Inches(0.5)
-        section.right_margin = Inches(0.5)
-    
-    soup = BeautifulSoup(html_content, 'html.parser')
-    
-    # Remove script and style tags
-    for script in soup(["script", "style"]):
-        script.decompose()
-    
-    def add_formatted_text(paragraph, text, is_bold=False, is_italic=False, font_size=11):
-        """Add formatted text to a paragraph"""
-        run = paragraph.add_run(text)
-        run.font.size = Pt(font_size)
-        run.font.bold = is_bold
-        run.font.italic = is_italic
-        return run
-    
-    # Process body content
-    body = soup.find('body')
-    if not body:
-        body = soup
-    
-    for element in body.children:
-        if isinstance(element, str):
-            text = element.strip()
-            if text and len(text) > 1:
-                p = doc.add_paragraph(text)
-                p.paragraph_format.space_after = Pt(6)
-            continue
-        
-        if not hasattr(element, 'name'):
-            continue
-        
-        tag = element.name
-        text_content = element.get_text(strip=True) if hasattr(element, 'get_text') else ''
-        
-        # Handle headers (name, section titles)
-        if tag == 'h1':
-            p = doc.add_paragraph()
-            add_formatted_text(p, text_content, is_bold=True, font_size=20)
-            p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-            p.paragraph_format.space_after = Pt(3)
-        
-        elif tag == 'h2':
-            p = doc.add_paragraph()
-            add_formatted_text(p, text_content, is_bold=True, font_size=12)
-            p.paragraph_format.space_after = Pt(6)
-            p.paragraph_format.space_before = Pt(6)
-        
-        elif tag == 'h3':
-            p = doc.add_paragraph()
-            add_formatted_text(p, text_content, is_bold=True, font_size=11)
-            p.paragraph_format.space_after = Pt(3)
-        
-        elif tag == 'h4':
-            p = doc.add_paragraph()
-            add_formatted_text(p, text_content, is_bold=True, font_size=11)
-            p.paragraph_format.space_after = Pt(2)
-        
-        # Handle paragraphs and divs
-        elif tag in ['p', 'div', 'span']:
-            if text_content and len(text_content) > 1:
-                p = doc.add_paragraph()
-                # Check if content has bold or other formatting
-                for child in element.children:
-                    if isinstance(child, str):
-                        text = str(child).strip()
-                        if text:
-                            add_formatted_text(p, text, font_size=11)
-                    elif hasattr(child, 'name'):
-                        child_text = child.get_text(strip=True)
-                        if child.name == 'b' or child.name == 'strong':
-                            add_formatted_text(p, child_text, is_bold=True, font_size=11)
-                        elif child.name == 'i' or child.name == 'em':
-                            add_formatted_text(p, child_text, is_italic=True, font_size=11)
-                        else:
-                            add_formatted_text(p, child_text, font_size=11)
-                p.paragraph_format.space_after = Pt(4)
-                p.paragraph_format.line_spacing = 1.15
-        
-        # Handle lists
-        elif tag in ['ul', 'ol']:
-            for li in element.find_all('li', recursive=False):
-                li_text = li.get_text(strip=True)
-                if li_text:
-                    # Check for bullet character
-                    if li_text.startswith('·'):
-                        li_text = li_text[1:].strip()
-                    p = doc.add_paragraph(li_text, style='List Bullet')
-                    p.paragraph_format.space_after = Pt(3)
-                    p.paragraph_format.line_spacing = 1.15
-        
-        # Handle line breaks / horizontal rules
-        elif tag == 'hr':
-            p = doc.add_paragraph()
-            p.paragraph_format.space_after = Pt(6)
-            pPr = p._element.get_or_add_pPr()
-            pBdr = pPr.find('.//{http://schemas.openxmlformats.org/wordprocessingml/2006/main}pBdr')
-            if pBdr is None:
-                from docx.oxml import OxmlElement
-                pBdr = OxmlElement('w:pBdr')
-                pPr.append(pBdr)
-                bottom = OxmlElement('w:bottom')
-                bottom.set('{http://schemas.openxmlformats.org/wordprocessingml/2006/main}val', 'single')
-                bottom.set('{http://schemas.openxmlformats.org/wordprocessingml/2006/main}sz', '12')
-                bottom.set('{http://schemas.openxmlformats.org/wordprocessingml/2006/main}space', '1')
-                bottom.set('{http://schemas.openxmlformats.org/wordprocessingml/2006/main}color', '000000')
-                pBdr.append(bottom)
-    
-    # If document is empty, fall back to text extraction
-    if len(doc.paragraphs) == 0:
-        all_text = soup.get_text(strip=True)
-        if all_text:
-            for line in all_text.split('\n'):
-                line = line.strip()
-                if line and len(line) > 1:
-                    doc.add_paragraph(line)
-    
-    return doc
 
 @resume_bp.route("/api/generate-docx", methods=['POST'])
 def generate_docx():

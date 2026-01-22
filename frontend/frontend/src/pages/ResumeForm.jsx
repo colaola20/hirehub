@@ -25,8 +25,8 @@ import ResumeTemplate from "../components/resumeform_steps/ResumeTemplate";
 const ResumeForm = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [errors, setErrors] = useState({});
-  const contentRef = useRef(null);
   const [showloader, setLoaderVisible] = useState(false);
+  const [aiResumeData, setAiResumeData] = useState(null);
 
   const [formData, setFormData] = useState({
     /* ---PERSONAL INFO--- */
@@ -138,33 +138,13 @@ const ResumeForm = () => {
           step4: { ...prev.step4, ...(data.step4 || {}) },
           step5: { ...prev.step5, ...(data.step5 || {}) },
           step6: { ...prev.step6, ...(data.step6 || {}) },
-          aiResumeText: prev.aiResumeText || data.aiResumeText || "",
+          aiResume: prev.aiResume || data.aiResume || "",
         }));
       })
       .catch((err) => {
         3;
       });
   }, []);
-
-  useEffect(() => {
-    if (contentRef.current) {
-      if (currentStep === 7) {
-        // Calculate dynamic height for resume preview + buttons
-        const resumeHeight = contentRef.current.scrollHeight;
-        const buttonsHeight = 120; // Approximate height for buttons + padding
-        return;
-      }
-
-      const newHeight = contentRef.current.scrollHeight;
-      const padding = 65;
-    }
-  }, [
-    currentStep,
-    formData.step4?.jobs?.length,
-    formData.step5?.education?.length,
-    formData.step6?.projects?.length,
-    errors,
-  ]);
 
   //validation
 
@@ -379,7 +359,7 @@ const ResumeForm = () => {
                 setLoaderVisible(true);
 
                 try {
-                  submitForm();
+                  await submitForm();
                   const aiResponse = await fetch("/api/generate_resume", {
                     method: "POST",
                     headers: {
@@ -389,11 +369,10 @@ const ResumeForm = () => {
                     body: JSON.stringify(formData),
                   });
                   const aiData = await aiResponse.json();
-                  if (aiData.resume_text) {
-                    setFormData((prev) => ({
-                      ...prev,
-                      aiResumeText: aiData.resume_text,
-                    }));
+                  console.log("AI API response", aiData);
+
+                  if (aiData.resume_json) {
+                    setAiResumeData(aiData.resume_json);
                   }
                   setCurrentStep(7);
                 } catch (error) {
@@ -406,8 +385,11 @@ const ResumeForm = () => {
           {currentStep === 7 && <span className={styles.placeholder}></span>}
         </div>
 
-        <div className={styles["resume-form-container"]}>
-          <div ref={contentRef} className="resumeForm">
+          <div
+            className={styles["resume-form-container"]}
+            style={currentStep === 7 ? { width: "100%", maxWidth: "100%" } : {}}
+          >
+          <div className="resumeForm">
             {currentStep === 1 && (
               <PersonalStep
                 formData={formData.step1}
@@ -450,7 +432,13 @@ const ResumeForm = () => {
                 errors={errors}
               />
             )}
-            {currentStep === 7 && <ResumeViewStep backendData={formData} />}
+
+            {currentStep === 7 && (
+              <ResumeViewStep
+                backendData={formData}
+                AIresponse={aiResumeData}
+              />
+            )}
           </div>
 
           <div className={styles["back-btn"]}>
